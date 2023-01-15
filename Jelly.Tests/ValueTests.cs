@@ -87,4 +87,10 @@ public class ValueTests
 
         hash.Should().Be(StringComparer.InvariantCulture.GetHashCode(str));
     }
+
+    [Test]
+    public void ValueProvidesAConstantEmptyValue()
+    {
+        Value.Empty.ToString().Should().Be(string.Empty);
+    }
 }

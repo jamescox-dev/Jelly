@@ -42,6 +42,6 @@ public class DictionaryValueTests
         var age = dict[new StringValue("age")];
         
         name.Should().Be(new StringValue("James"));
-        name.Should().Be(new StringValue("38"));
+        age.Should().Be(new StringValue("38"));
     }
 }
