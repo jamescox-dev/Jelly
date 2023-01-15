@@ -4,6 +4,6 @@ public class LiteralInterpreter : IInterpreter
 {
     static readonly StringValue ValueKey = new StringValue("value");
 
-    public Value Evaluate(DictionaryValue node, IInterpreter interpreter) =>
+    public Value Evaluate(Scope scope, DictionaryValue node, IInterpreter interpreter) =>
         node[ValueKey];
 }

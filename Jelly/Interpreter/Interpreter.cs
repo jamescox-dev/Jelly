@@ -11,9 +11,9 @@ public class Interpreter : IInterpreter
         _interpreters.Add(nodeType, interpreter);
     }
 
-    public Value Evaluate(DictionaryValue node) =>
-        Evaluate(node, this);
+    public Value Evaluate(Scope scope, DictionaryValue node) =>
+        Evaluate(scope, node, this);
 
-    public Value Evaluate(DictionaryValue node, IInterpreter interpreter) =>
-        _interpreters[node[TypeKey].ToString()].Evaluate(node, interpreter);
+    public Value Evaluate(Scope scope, DictionaryValue node, IInterpreter interpreter) =>
+        _interpreters[node[TypeKey].ToString()].Evaluate(scope, node, interpreter);
 }

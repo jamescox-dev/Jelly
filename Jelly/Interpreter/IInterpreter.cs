@@ -2,5 +2,5 @@ namespace Jelly.Interpreter;
 
 public interface IInterpreter
 {
-    Value Evaluate(DictionaryValue node, IInterpreter interpreter);
+    Value Evaluate(Scope scope, DictionaryValue node, IInterpreter interpreter);
 }
