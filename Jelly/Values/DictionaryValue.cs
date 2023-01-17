@@ -1,11 +1,11 @@
+namespace Jelly.Values;
+
 using System.Collections.Immutable;
 using System.Text;
 
-namespace Jelly;
-
 public class DictionaryValue : Value
 {
-    private ImmutableSortedDictionary<Value, Value> _items;
+    ImmutableSortedDictionary<Value, Value> _items;
     
     public DictionaryValue()
     {

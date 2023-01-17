@@ -1,5 +1,7 @@
 namespace Jelly.Evaluator.Tests;
 
+using Jelly.Values;
+
 [TestFixture]
 public class NodeEvaluatorTests
 {

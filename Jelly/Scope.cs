@@ -1,5 +1,7 @@
 namespace Jelly;
 
+using Jelly.Values;
+
 public class Scope
 {
     readonly Dictionary<string, Value> _variables = new();

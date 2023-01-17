@@ -1,5 +1,7 @@
 namespace Jelly.Tests;
 
+using Jelly.Values;
+
 [TestFixture]
 public class ScopeTests
 {

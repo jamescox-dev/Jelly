@@ -1,4 +1,4 @@
-namespace Jelly;
+namespace Jelly.Values;
 
 public class StringValue : Value
 {

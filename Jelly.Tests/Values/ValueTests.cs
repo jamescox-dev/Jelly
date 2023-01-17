@@ -1,6 +1,6 @@
-namespace Jelly.Tests;
+namespace Jelly.Values.Tests;
 
-using Jelly;
+using Jelly.Values;
 
 public class ValueTests
 {
