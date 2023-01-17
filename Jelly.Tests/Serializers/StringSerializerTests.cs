@@ -1,6 +1,6 @@
-namespace Jelly.Tests;
+namespace Jelly.Serializers.Tests;
 
-using Jelly;
+using Jelly.Serializers;
 
 [TestFixture]
 public class StringSerializerTests
