@@ -1,13 +1,13 @@
-namespace Jelly.Interpreter.Tests;
+namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class VariableInterpreterTests
+public class VariableEvaluatorTests
 {
     [Test]
     public void EvaluatingAVariableNodeReturnsTheValueOfTheNamedVariableFromTheGivenScope()
     {
         var scope = new Scope();
-        var interpreter = new VariableInterpreter();
+        var interpreter = new VariableEvaluator();
         scope.DefineVariable("answer", new StringValue("42"));
         var variable = new DictionaryValue(new KeyValuePair<Value, Value>[] {
             new(new StringValue("name"), new StringValue("answer"))

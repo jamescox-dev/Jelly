@@ -1,13 +1,13 @@
-namespace Jelly.Interpreter.Tests;
+namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class LiteralInterpreterTests
+public class LiteralEvaluatorTests
 {
     [Test]
     public void EvaluatingALiteralNodeReturnsTheNodesValue()
     {
         var scope = new Scope();
-        var interpreter = new LiteralInterpreter();
+        var interpreter = new LiteralEvaluator();
         var literal = new DictionaryValue(new KeyValuePair<Value, Value>[] {
             new(new StringValue("value"), new StringValue("hello, world"))
         });
