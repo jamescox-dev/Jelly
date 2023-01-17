@@ -10,9 +10,9 @@ public class ScopeTests
     {
         var scope = new Scope();
 
-        scope.DefineVariable("name", new StringValue("Bob"));
+        scope.DefineVariable("name", "Bob".ToValue());
         var value = scope.GetVariable("name");
 
-        value.Should().Be(new StringValue("Bob"));
+        value.Should().Be("Bob".ToValue());
     }
 }

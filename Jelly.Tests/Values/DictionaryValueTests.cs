@@ -34,14 +34,14 @@ public class DictionaryValueTests
     {
         var dict = new DictionaryValue(new KeyValuePair<Value, Value>[]
         {
-            new(new StringValue("name"), new StringValue("James")),
-            new(new StringValue("age"), new StringValue("38")),
+            new("name".ToValue(), "James".ToValue()),
+            new("age".ToValue(), "38".ToValue()),
         });
 
-        var name = dict[new StringValue("name")];
-        var age = dict[new StringValue("age")];
+        var name = dict["name".ToValue()];
+        var age = dict["age".ToValue()];
         
-        name.Should().Be(new StringValue("James"));
-        age.Should().Be(new StringValue("38"));
+        name.Should().Be("James".ToValue());
+        age.Should().Be("38".ToValue());
     }
 }

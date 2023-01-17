@@ -23,8 +23,8 @@ public class ValueTests
     [TestCase("Hi", "bye", 1)]
     public void ValuesAreComparedAsStringsWithInvariantCulture(string str1, string str2, int expected)
     {
-        var value1 = new StringValue(str1);
-        var value2 = new StringValue(str2);
+        var value1 = str1.ToValue();
+        var value2 = str2.ToValue();
         
         var result = value1.CompareTo(value2);
 
@@ -36,8 +36,8 @@ public class ValueTests
     [TestCase("five", "five")]
     public void ValuesAreEqualIfTheirComparisonToAnotherValueIsZero(string str1, string str2)
     {
-        var value1 = new StringValue(str1);
-        var value2 = new StringValue(str2);
+        var value1 = str1.ToValue();
+        var value2 = str2.ToValue();
         var comparison = value1.CompareTo(value2);
 
         var equals = value1.Equals(value2);
@@ -48,7 +48,7 @@ public class ValueTests
     [Test]
     public void ValuesComparedForEqualityAgainstNonValueTypesAreNotEqual()
     {
-        var value = new StringValue("0");
+        var value = "0".ToValue();
 
         value.Equals(0).Should().BeFalse();
         value.Equals("0").Should().BeFalse();
@@ -58,8 +58,8 @@ public class ValueTests
     [Test]
     public void WhenValuesComparedForEqualityAreBothValueTypesTheValueSpecificEqualsMethodIsUsed()
     {
-        var value1 = new StringValue("test");
-        object value2 = new StringValue("test");
+        var value1 = "test".ToValue();
+        object value2 = "test".ToValue();
 
         var equal = value1.Equals(value2);
 
@@ -69,7 +69,7 @@ public class ValueTests
     [Test]
     public void WhenAValueIsComparedToANullValueTheNullValueIsTreatedAsAnEmptyString()
     {
-        var empty = new StringValue(string.Empty);
+        var empty = Value.Empty;
 
         var comparison = empty.CompareTo(null);
 
@@ -83,7 +83,9 @@ public class ValueTests
     [TestCase("Maggie")]
     public void ValuesHashCodesAreCalculatedWithTheInvariantCulture(string str)
     {
-        var hash = new StringValue(str).GetHashCode();
+        var value = str.ToValue();
+
+        var hash = value.GetHashCode();
 
         hash.Should().Be(StringComparer.InvariantCulture.GetHashCode(str));
     }

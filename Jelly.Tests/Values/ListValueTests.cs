@@ -20,8 +20,8 @@ public class ListValueTests
     {
         var list = new ListValue(new Value[]
         {
-            new StringValue("Stan"),
-            new StringValue("Ollie"),
+            "Stan".ToValue(),
+            "Ollie".ToValue(),
         });
 
         var str = list.ToString();
