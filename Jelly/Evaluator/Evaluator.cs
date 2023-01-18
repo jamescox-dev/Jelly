@@ -6,12 +6,15 @@ public class Evaluator : IEvaluator
 {
     readonly NodeEvaluator _evaluator;
 
+    public static readonly Evaluator Shared = new();
+
     public Evaluator()
     {
         _evaluator = new NodeEvaluator();
         _evaluator.AddEvaluator("literal", new LiteralEvaluator());
         _evaluator.AddEvaluator("variable", new VariableEvaluator());
         _evaluator.AddEvaluator("command", new CommandEvaluator());
+        _evaluator.AddEvaluator("script", new ScriptEvaluator());
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node)
