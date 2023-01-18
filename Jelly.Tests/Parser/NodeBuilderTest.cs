@@ -55,9 +55,22 @@ public class NodeBuilderTests
 
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "script".ToValue(),
-            "commands".ToValue(), new ListValue(
-                command1, command2
-            )
+            "commands".ToValue(), new ListValue(command1, command2)
+        ));
+    }
+
+    [Test]
+    public void ACompositeNodeCanBeCreatedWithTheCorrectAttributes()
+    {
+        var builder = new NodeBuilder();
+        var part1 = builder.Literal("hello".ToValue());
+        var part2 = builder.Literal("world".ToValue());
+
+        var node = builder.Composite(part1, part2);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "composite".ToValue(),
+            "parts".ToValue(), new ListValue(part1, part2)
         ));
     }
 }

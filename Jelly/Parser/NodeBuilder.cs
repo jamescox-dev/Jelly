@@ -13,6 +13,8 @@ public class NodeBuilder
     static readonly StringValue ArgsKeyword = new StringValue("args");
     static readonly StringValue ScriptKeyword = new StringValue("script");
     static readonly StringValue CommandsKeyword = new StringValue("commands");
+    static readonly StringValue CompositeKeyword = new StringValue("composite");
+    static readonly StringValue PartsKeyword = new StringValue("parts");
     
     public DictionaryValue Literal(Value value)
     {
@@ -32,5 +34,10 @@ public class NodeBuilder
     public DictionaryValue Script(params DictionaryValue[] commands)
     {
         return new DictionaryValue(TypeKeyword, ScriptKeyword, CommandsKeyword, commands.ToValue());
+    }
+
+    public DictionaryValue Composite(params DictionaryValue[] parts)
+    {
+        return new DictionaryValue(TypeKeyword, CompositeKeyword, PartsKeyword, parts.ToValue());
     }
 }
