@@ -22,6 +22,11 @@ public class ListValue : Value, IEnumerable<Value>
         _items = ImmutableList.CreateRange(values);
     }
 
+    public Value this[int index]
+    {
+        get => _items[index];
+    }
+
     public override ListValue ToListValue() => this;
 
     public IEnumerator<Value> GetEnumerator() => _items.GetEnumerator();

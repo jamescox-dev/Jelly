@@ -42,6 +42,32 @@ public class DictionaryValueTests
     }
 
     [Test]
+    public void WhenTryingToGetAValueWithAKeyThatExistsTrueIsReturnedAndTheValueIsSet()
+    {
+        var dict = new DictionaryValue(
+            "name".ToValue(), "James".ToValue(),
+            "age".ToValue(), "38".ToValue());
+
+        var success = dict.TryGetValue("name".ToValue(), out var name);
+        
+        success.Should().BeTrue();
+        name.Should().Be("James".ToValue());
+    }
+
+    [Test]
+    public void WhenTryingToGetAValueWithAKeyThatDoesNotExistsFalseIsReturnedAndTheValueIsSetToEmpty()
+    {
+        var dict = new DictionaryValue(
+            "name".ToValue(), "James".ToValue(),
+            "age".ToValue(), "38".ToValue());
+
+        var success = dict.TryGetValue("unknown".ToValue(), out var name);
+        
+        success.Should().BeFalse();
+        name.Should().Be(Value.Empty);
+    }
+
+    [Test]
     public void ADictionaryValueReturnsItselfWhenAskedToConvertToADictionary()
     {
         Value value = new DictionaryValue();

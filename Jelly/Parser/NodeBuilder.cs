@@ -11,6 +11,8 @@ public class NodeBuilder
     static readonly StringValue CommandKeyword = new StringValue("command");
     static readonly StringValue NameKeyword = new StringValue("name");
     static readonly StringValue ArgsKeyword = new StringValue("args");
+    static readonly StringValue ScriptKeyword = new StringValue("script");
+    static readonly StringValue CommandsKeyword = new StringValue("commands");
     
     public DictionaryValue Literal(Value value)
     {
@@ -25,5 +27,10 @@ public class NodeBuilder
     public DictionaryValue Command(DictionaryValue name, ListValue args)
     {
         return new DictionaryValue(TypeKeyword, CommandKeyword, NameKeyword, name, ArgsKeyword, args);
+    }
+
+    public DictionaryValue Script(params DictionaryValue[] commands)
+    {
+        return new DictionaryValue(TypeKeyword, ScriptKeyword, CommandsKeyword, commands.ToValue());
     }
 }

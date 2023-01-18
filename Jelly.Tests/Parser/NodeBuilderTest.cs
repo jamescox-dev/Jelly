@@ -43,4 +43,21 @@ public class NodeBuilderTests
             "name".ToValue(), name,
             "args".ToValue(), args));
     }
+
+    [Test]
+    public void AScriptNodeCanBeCreatedWithTheCorrectAttributes()
+    {
+        var builder = new NodeBuilder();
+        var command1 = builder.Command(builder.Literal("command1".ToValue()), new ListValue());
+        var command2 = builder.Command(builder.Literal("command2".ToValue()), new ListValue());
+        
+        var node = builder.Script(command1, command2);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "script".ToValue(),
+            "commands".ToValue(), new ListValue(
+                command1, command2
+            )
+        ));
+    }
 }

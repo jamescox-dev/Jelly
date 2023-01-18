@@ -38,4 +38,14 @@ public class ListValueTests
 
         ((IComparable<Value>)list).Should().BeSameAs(value);
     }
+
+    [Test]
+    public void AValueCanBeRetrievedFromAListValueViaItsIndex()
+    {
+        var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+
+        var item = list[1];
+
+        item.Should().Be("b".ToValue());
+    }
 }
