@@ -10,4 +10,7 @@ public static class ValueExtensions
 
     public static DictionaryValue ToValue(this IEnumerable<KeyValuePair<Value, Value>> items) => 
         new DictionaryValue(items);
+
+    public static DictionaryValue ToDictionaryValue(this IEnumerable<Value> items) => 
+        new DictionaryValue(items);
 }

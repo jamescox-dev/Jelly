@@ -4,5 +4,5 @@ using Jelly.Values;
 
 public interface ICommand
 {
-    public Value Invoke(Scope scope, ListValue args);
+    public Value Invoke(IScope scope, ListValue args);
 }

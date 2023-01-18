@@ -2,10 +2,10 @@ namespace Jelly.Evaluator;
 
 using Jelly.Values;
 
-public class LiteralEvaluator : IEvaluator
+internal class LiteralEvaluator : IEvaluator
 {
     static readonly StringValue ValueKey = new StringValue("value");
 
-    public Value Evaluate(Scope scope, DictionaryValue node, IEvaluator interpreter) =>
+    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator) =>
         node[ValueKey];
 }

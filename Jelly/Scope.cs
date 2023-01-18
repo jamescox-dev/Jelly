@@ -1,14 +1,13 @@
 namespace Jelly;
 
-using System;
 using Jelly.Commands;
 using Jelly.Values;
 
-public class Scope
+public class Scope : IScope
 {
     readonly Dictionary<string, Value> _variables = new();
     readonly Dictionary<string, ICommand> _commands = new();
-    
+
     public void DefineVariable(string name, StringValue initialValue)
     {
         _variables.Add(name, initialValue);

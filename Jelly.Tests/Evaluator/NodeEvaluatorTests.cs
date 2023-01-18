@@ -39,11 +39,11 @@ public class NodeEvaluatorTests
 
     public class TestEvaluator : IEvaluator
     {
-        public Scope? ScopePassedToEvaluate { get; private set; }
+        public IScope? ScopePassedToEvaluate { get; private set; }
         public DictionaryValue? NodeEvaluated { get; private set; }
         public IEvaluator? EvaluatorPassedToEvaluate { get; private set; }
 
-        public Value Evaluate(Scope scope, DictionaryValue node, IEvaluator evaluator)
+        public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)
         {
             ScopePassedToEvaluate = scope;
             NodeEvaluated = node;

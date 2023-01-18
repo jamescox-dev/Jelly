@@ -4,6 +4,16 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
 {
     public static readonly Value Empty = new StringValue(string.Empty);
 
+    public virtual ListValue AsList()
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual DictionaryValue AsDictionary()
+    {
+        throw new NotImplementedException();
+    }
+
     public abstract override string ToString();
 
     public int CompareTo(Value? other)

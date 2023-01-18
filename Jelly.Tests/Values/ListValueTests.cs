@@ -28,4 +28,14 @@ public class ListValueTests
 
         str.Should().Be("Stan Ollie");
     }
+
+    [Test]
+    public void AListValueReturnsItselfWhenAskedToConvertToAList()
+    {
+        Value value = new ListValue();
+
+        var list = value.AsList();
+
+        ((IComparable<Value>)list).Should().BeSameAs(value);
+    }
 }

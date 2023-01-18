@@ -4,5 +4,5 @@ using Jelly.Values;
 
 public interface IEvaluator
 {
-    Value Evaluate(Scope scope, DictionaryValue node, IEvaluator interpreter);
+    Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator);
 }

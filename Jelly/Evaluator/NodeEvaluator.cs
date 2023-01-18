@@ -2,17 +2,17 @@ namespace Jelly.Evaluator;
 
 using Jelly.Values;
 
-public class NodeEvaluator : IEvaluator
+internal class NodeEvaluator : IEvaluator
 {
     static readonly StringValue TypeKey = new StringValue("type");
 
-    Dictionary<string, IEvaluator> _interpreters = new();
+    Dictionary<string, IEvaluator> _evaluators = new();
 
-    public void AddEvaluator(string nodeType, IEvaluator interpreter)
+    public void AddEvaluator(string nodeType, IEvaluator evaluator)
     {
-        _interpreters.Add(nodeType, interpreter);
+        _evaluators.Add(nodeType, evaluator);
     }
 
-    public Value Evaluate(Scope scope, DictionaryValue node, IEvaluator interpreter) =>
-        _interpreters[node[TypeKey].ToString()].Evaluate(scope, node, interpreter);
+    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator) =>
+        _evaluators[node[TypeKey].ToString()].Evaluate(scope, node, evaluator);
 }

@@ -18,11 +18,9 @@ public class DictionaryValueTests
     [Test]
     public void ADictionaryValuesStringRepresentationContainsTheStringRepresentationOfEachOfItsKeysAndAssociatedValueInAlphabeticalOrderByKeySeparatedBySpaces()
     {
-        var dict = new DictionaryValue(new KeyValuePair<Value, Value>[]
-        {
-            new(new StringValue("zProp"), new StringValue("26")),
-            new(new StringValue("aProp"), new StringValue("1")),
-        });
+        var dict = new DictionaryValue(
+            "zProp".ToValue(), "26".ToValue(),
+            "aProp".ToValue(), "1".ToValue());
 
         var str = dict.ToString();
 
@@ -32,16 +30,24 @@ public class DictionaryValueTests
     [Test]
     public void AValueFromTheDictionaryCanBeRetrievedWithAKey()
     {
-        var dict = new DictionaryValue(new KeyValuePair<Value, Value>[]
-        {
-            new("name".ToValue(), "James".ToValue()),
-            new("age".ToValue(), "38".ToValue()),
-        });
+        var dict = new DictionaryValue(
+            "name".ToValue(), "James".ToValue(),
+            "age".ToValue(), "38".ToValue());
 
         var name = dict["name".ToValue()];
         var age = dict["age".ToValue()];
         
         name.Should().Be("James".ToValue());
         age.Should().Be("38".ToValue());
+    }
+
+    [Test]
+    public void ADictionaryValueReturnsItselfWhenAskedToConvertToADictionary()
+    {
+        Value value = new DictionaryValue();
+
+        var dict = value.AsDictionary();
+
+        dict.Should().BeSameAs(value);
     }
 }

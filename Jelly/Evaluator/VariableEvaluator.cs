@@ -2,10 +2,10 @@ namespace Jelly.Evaluator;
 
 using Jelly.Values;
 
-public class VariableEvaluator : IEvaluator
+internal class VariableEvaluator : IEvaluator
 {
     static readonly StringValue NameKey = new("name");
 
-    public Value Evaluate(Scope scope, DictionaryValue node, IEvaluator interpreter) =>
+    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator) =>
         scope.GetVariable(node[NameKey].ToString());
 }

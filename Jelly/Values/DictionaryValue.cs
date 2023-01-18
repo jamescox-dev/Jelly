@@ -18,8 +18,23 @@ public class DictionaryValue : Value
 
     public DictionaryValue(IEnumerable<Value> list)
     {
-        _items = ImmutableSortedDictionary.CreateRange(
-            list.Zip(list.Skip(1)).Select(kv => new KeyValuePair<Value, Value>(kv.First, kv.Second)));
+        var items = ImmutableSortedDictionary.CreateBuilder<Value, Value>();
+
+        Value? key = null;
+        foreach (var item in list)
+        {
+            if (key is null)
+            {
+                key = item;
+            }
+            else 
+            {
+                items.Add(key, item);
+                key = null;
+            }
+        }
+
+        _items = items.ToImmutable();
     }
 
     public DictionaryValue(IEnumerable<KeyValuePair<Value, Value>> items)
