@@ -12,10 +12,22 @@ public class DictionaryValue : Value
         _items = ImmutableSortedDictionary<Value, Value>.Empty;
     }
 
+    public DictionaryValue(params Value[] list) : this((IEnumerable<Value>)list)
+    {   
+    }
+
+    public DictionaryValue(IEnumerable<Value> list)
+    {
+        _items = ImmutableSortedDictionary.CreateRange(
+            list.Zip(list.Skip(1)).Select(kv => new KeyValuePair<Value, Value>(kv.First, kv.Second)));
+    }
+
     public DictionaryValue(IEnumerable<KeyValuePair<Value, Value>> items)
     {
         _items = ImmutableSortedDictionary.CreateRange(items);
     }
+
+    public override DictionaryValue AsDictionary() => this;
 
     public Value this[Value key] {
         get => _items[key];
