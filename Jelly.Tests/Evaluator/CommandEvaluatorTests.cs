@@ -41,6 +41,23 @@ public class CommandEvaluatorTests
     }
 
     [Test]
+    public void ArgumentNodesArePassedUnevaluatedWhenTheCommandIsAMacro()
+    {
+        var evaluator = new Evaluator();
+        var scope = new Scope();
+        var command = new TestCommand() { IsMacro = true };
+        scope.DefineCommand("greet", command);
+        var builder = new NodeBuilder();
+        var args = new ListValue(builder.Literal("Vic".ToValue()), builder.Literal("Bob".ToValue()));
+        var commandNode = builder.Command(builder.Literal("greet".ToValue()), args);
+        var commandEvaluator = new CommandEvaluator();
+
+        commandEvaluator.Evaluate(scope, commandNode, evaluator);
+
+        ((IComparable<Value>?)command.ArgsPassedToInvoke).Should().Be(args);
+    }
+
+    [Test]
     public void TheResultOfEvaluatingACommandIsTheValueReturnedFromTheCommandsInvokeMethod()
     {
         var evaluator = new Evaluator();
@@ -58,6 +75,7 @@ public class CommandEvaluatorTests
 
     public class TestCommand : ICommand
     {
+        public bool IsMacro { get; set; }
         public IScope? ScopePassedToInvoke { get; private set; }
         public ListValue? ArgsPassedToInvoke { get; private set; }
 

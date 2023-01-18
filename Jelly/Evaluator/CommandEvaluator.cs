@@ -11,7 +11,9 @@ internal class CommandEvaluator : IEvaluator
     {
         var name = evaluator.Evaluate(scope, node[NameKey].AsDictionary(), evaluator).ToString();
         var command = scope.GetCommand(name);
-        var args = node[ArgsKey].AsList().Select(arg => evaluator.Evaluate(scope, arg.AsDictionary(), evaluator)).ToValue();
+        var args = command.IsMacro 
+            ? node[ArgsKey].AsList()
+            : node[ArgsKey].AsList().Select(arg => evaluator.Evaluate(scope, arg.AsDictionary(), evaluator)).ToValue();
         
         return command.Invoke(scope, args);
     }
