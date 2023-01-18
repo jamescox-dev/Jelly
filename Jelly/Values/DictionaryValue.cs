@@ -42,7 +42,7 @@ public class DictionaryValue : Value
         _items = ImmutableSortedDictionary.CreateRange(items);
     }
 
-    public override DictionaryValue AsDictionary() => this;
+    public override DictionaryValue ToDictionaryValue() => this;
 
     public Value this[Value key] {
         get => _items[key];

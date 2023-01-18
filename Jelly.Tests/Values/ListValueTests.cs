@@ -34,7 +34,7 @@ public class ListValueTests
     {
         Value value = new ListValue();
 
-        var list = value.AsList();
+        var list = value.ToListValue();
 
         ((IComparable<Value>)list).Should().BeSameAs(value);
     }

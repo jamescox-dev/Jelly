@@ -22,7 +22,7 @@ public class ListValue : Value, IEnumerable<Value>
         _items = ImmutableList.CreateRange(values);
     }
 
-    public override ListValue AsList() => this;
+    public override ListValue ToListValue() => this;
 
     public IEnumerator<Value> GetEnumerator() => _items.GetEnumerator();
 

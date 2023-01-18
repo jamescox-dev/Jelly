@@ -4,12 +4,12 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
 {
     public static readonly Value Empty = new StringValue(string.Empty);
 
-    public virtual ListValue AsList()
+    public virtual ListValue ToListValue()
     {
         throw new NotImplementedException();
     }
 
-    public virtual DictionaryValue AsDictionary()
+    public virtual DictionaryValue ToDictionaryValue()
     {
         throw new NotImplementedException();
     }

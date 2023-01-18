@@ -46,7 +46,7 @@ public class DictionaryValueTests
     {
         Value value = new DictionaryValue();
 
-        var dict = value.AsDictionary();
+        var dict = value.ToDictionaryValue();
 
         dict.Should().BeSameAs(value);
     }
