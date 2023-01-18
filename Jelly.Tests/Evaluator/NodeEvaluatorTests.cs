@@ -1,5 +1,6 @@
 namespace Jelly.Evaluator.Tests;
 
+using Jelly.Errors;
 using Jelly.Values;
 
 [TestFixture]
@@ -35,6 +36,30 @@ public class NodeEvaluatorTests
         test2Interpreter.ScopePassedToEvaluate.Should().Be(scope);
         test2Interpreter.NodeEvaluated.Should().Be(test2Node);
         test2Interpreter.EvaluatorPassedToEvaluate.Should().Be(anotherInterpreter);
+    }
+
+    [Test]
+    public void WhenTheTypeOfTheNodeIsMissingAnErrorIsThrown()
+    {
+        var evaluator = new Evaluator();
+        var invalidNode = new DictionaryValue();
+
+        evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
+            .Should().Throw<Error>().WithMessage("Can not evaluate node, not type specified.")
+            .Where(e => e.Type == "/error/eval");
+    }
+
+    [Test]
+    public void WhenTheTypeOfNodeIsNotKnownToTheEvaluatorAEvaluationErrorIsThrown()
+    {
+        var evaluator = new Evaluator();
+        var invalidNode = new DictionaryValue(
+            "type".ToValue(), "invalid".ToValue()
+        );
+
+        evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
+            .Should().Throw<Error>().WithMessage("Can not evaluate node of type: 'invalid'.")
+            .Where(e => e.Type == "/error/eval");
     }
 
     public class TestEvaluator : IEvaluator

@@ -48,6 +48,17 @@ public class DictionaryValue : Value
         get => _items[key];
     }
 
+    public bool TryGetValue(Value key, out Value value)
+    {
+        if (_items.TryGetValue(key, out var itemValue))
+        {
+            value = itemValue;
+            return true;
+        }
+        value = Value.Empty;
+        return false;
+    }
+
     public override string ToString()
     {
         var str = new StringBuilder();

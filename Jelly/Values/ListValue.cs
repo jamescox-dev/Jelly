@@ -47,8 +47,5 @@ public class ListValue : Value, IEnumerable<Value>
         return str.ToString();
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Value>)this).GetEnumerator();
 }

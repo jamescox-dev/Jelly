@@ -1,5 +1,6 @@
 namespace Jelly.Evaluator;
 
+using Jelly.Errors;
 using Jelly.Values;
 
 internal class NodeEvaluator : IEvaluator
@@ -13,6 +14,22 @@ internal class NodeEvaluator : IEvaluator
         _evaluators.Add(nodeType, evaluator);
     }
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator) =>
-        _evaluators[node[TypeKey].ToString()].Evaluate(scope, node, evaluator);
+    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)
+    {
+        if (node.TryGetValue(TypeKey, out var type))
+        {
+            if (_evaluators.TryGetValue(type.ToString(), out var typeEvaluator))
+            {
+                return typeEvaluator.Evaluate(scope, node, evaluator);
+            }
+            else
+            {
+                throw Error.Eval($"Can not evaluate node of type: '{type}'.");
+            }
+        }
+        else
+        {
+            throw Error.Eval("Can not evaluate node, not type specified.");
+        }
+    }
 }
