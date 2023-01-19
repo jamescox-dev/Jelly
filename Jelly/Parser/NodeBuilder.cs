@@ -4,6 +4,8 @@ namespace Jelly.Parser;
 
 public class NodeBuilder
 {
+    public static readonly NodeBuilder Shared = new NodeBuilder();
+
     static readonly StringValue TypeKeyword = new StringValue("type");
     static readonly StringValue LiteralKeyword = new StringValue("literal");
     static readonly StringValue VariableKeyword = new StringValue("variable");

@@ -24,12 +24,12 @@ internal class NodeEvaluator : IEvaluator
             }
             else
             {
-                throw Error.Eval($"Can not evaluate node of type: '{type}'.");
+                throw new EvalError($"Can not evaluate node of type: '{type}'.");
             }
         }
         else
         {
-            throw Error.Eval("Can not evaluate node, not type specified.");
+            throw new EvalError("Can not evaluate node, not type specified.");
         }
     }
 }

@@ -1,13 +1,21 @@
 namespace Jelly.Errors;
 
-public class Error : Exception
+public abstract class Error : Exception
 {
     public string Type { get; private set; }
 
-    public Error(string type, string message) : base(message)
+    protected Error(string type, string message) : base(message)
     {
         Type = type;
     }
+}
 
-    public static Error Eval(string message) => new Error("/error/eval", message);
+internal class EvalError : Error
+{
+    public EvalError(string message) : base("/error/eval", message) {}
+}
+
+internal class ParseError : Error
+{
+    public ParseError(string message) : base("/error/parse", message) {}
 }
