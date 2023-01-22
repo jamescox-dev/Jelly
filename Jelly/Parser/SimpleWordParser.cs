@@ -14,11 +14,7 @@ public class SimpleWordParser : IParser
         while (position < source.Length)
         {
             var ch = source[position];
-            if (config.IsWordSeparator(ch))
-            {
-                break;
-            }
-            else if (config.IsEscapeCharacter(ch))
+            if (config.IsEscapeCharacter(ch))
             {
                 if (position + 1 < source.Length)
                 {
@@ -29,6 +25,10 @@ public class SimpleWordParser : IParser
                 {
                     throw new ParseError($"Unexpected end-of-input after escape-character '{ch}'.");
                 }
+            }
+            else if (config.IsSpecialCharacter(ch))
+            {
+                break;
             }
             else
             {

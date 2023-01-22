@@ -9,20 +9,33 @@ public class Program
 {
     public static void Main()
     {
+        var config = new DefaultParserConfig();
+        var parser = new CommandParser();
+
         var global = new Scope();
+        global.DefineVariable("cmd", "print".ToValue());
+        global.DefineVariable("msg", "jello, world".ToValue());
         global.DefineCommand("print", new PrintCommand());
         global.DefineCommand("repeat", new RepeatCommand());
         global.DefineVariable("message", "jello, world".ToValue());
 
-        var b = new NodeBuilder();
-        var script = b.Script(
-            b.Command(b.Literal("repeat".ToValue()), new ListValue(b.Literal("3".ToValue()),
-                b.Command(b.Literal("print".ToValue()), new ListValue(
-                    b.Variable("message")
-                ))))
-        );
-
-        Evaluator.Shared.Evaluate(global, script);
+        for (;;)
+        {
+            Console.Write("> ");
+            var input = Console.ReadLine();
+            if (input is not null)
+            {
+                var position = 0;
+                var command = parser.Parse(input, ref position, config);
+                Console.WriteLine(command);
+                
+                if (command is not null)
+                {
+                    var result = Evaluator.Shared.Evaluate(global, command);
+                    Console.WriteLine(result);
+                }
+            }
+        }
     }
 }
 
