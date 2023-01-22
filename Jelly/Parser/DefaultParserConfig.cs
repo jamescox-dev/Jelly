@@ -7,4 +7,10 @@ public class DefaultParserConfig : IParserConfig
     public bool IsEscapeCharacter(char ch) => ch == '\\';
 
     public bool IsVariableCharacter(char ch) => ch == '$';
+
+    public bool IsScriptCharacter(char ch) => ch == '{';
+
+    public bool IsScriptEndCharacter(char ch) => ch == '}';
+
+    public bool IsCommandSeparator(char ch) => "\n;".Contains(ch);
 }
