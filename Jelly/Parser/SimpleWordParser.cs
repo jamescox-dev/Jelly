@@ -37,6 +37,6 @@ public class SimpleWordParser : IParser
             }
         }
 
-        return start == position ? null : NodeBuilder.Shared.Literal(value.ToString().ToValue());
+        return start == position ? null : Node.Literal(value.ToString().ToValue());
     }
 }

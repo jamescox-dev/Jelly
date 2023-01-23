@@ -12,7 +12,7 @@ public class EvaluatorTests
     public void TheEvaluatorCanEvaluateALiteralNode()
     {
         var evaluator = new Evaluator();
-        var node = new NodeBuilder().Literal("Hi".ToValue());
+        var node = Node.Literal("Hi".ToValue());
 
         var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
         
@@ -25,7 +25,7 @@ public class EvaluatorTests
         var evaluator = new Evaluator();
         Mock<IScope> scope = new Mock<IScope>();
         scope.Setup(m => m.GetVariable("Name")).Returns("Bill".ToValue());
-        var node = new NodeBuilder().Variable("Name");
+        var node = Node.Variable("Name");
         
         var result = evaluator.Evaluate(scope.Object, node);
         
@@ -39,8 +39,7 @@ public class EvaluatorTests
         Mock<IScope> scope = new Mock<IScope>();
         Mock<ICommand> command = new Mock<ICommand>();
         scope.Setup(m => m.GetCommand("Foo")).Returns(command.Object);
-        var builder = new NodeBuilder();
-        var node = builder.Command(builder.Literal("Foo".ToValue()), new ListValue());
+        var node = Node.Command(Node.Literal("Foo".ToValue()), new ListValue());
         
         var result = evaluator.Evaluate(scope.Object, node);
         
@@ -51,15 +50,14 @@ public class EvaluatorTests
     public void TheEvaluatorCanEvaluateAScriptNode()
     {
         var evaluator = new Evaluator();
-        var builder = new NodeBuilder();
         var scope = new Mock<IScope>();
         var command = new Mock<ICommand>();
         command.Setup(m => m.Invoke(scope.Object, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => args[0]);
-        var command1 = builder.Command(builder.Literal("command1".ToValue()), new ListValue(builder.Literal("1".ToValue())));
-        var command2 = builder.Command(builder.Literal("command2".ToValue()), new ListValue(builder.Literal("2".ToValue())));
+        var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue(Node.Literal("1".ToValue())));
+        var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue(Node.Literal("2".ToValue())));
         scope.Setup(m => m.GetCommand("command1")).Returns(command.Object);
         scope.Setup(m => m.GetCommand("command2")).Returns(command.Object);
-        var node = builder.Script(command1, command2);
+        var node = Node.Script(command1, command2);
 
         var result = evaluator.Evaluate(scope.Object, node, evaluator);
 

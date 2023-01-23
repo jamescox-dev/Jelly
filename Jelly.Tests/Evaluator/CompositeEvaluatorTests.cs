@@ -11,10 +11,9 @@ public class CompositeEvaluatorTests
     {
         var compositeEvaluator = new CompositeEvaluator();
         var evaluator = new LiteralEvaluator();
-        var builder = new NodeBuilder();
-        var part1 = builder.Literal("jello,".ToValue());
-        var part2 = builder.Literal(" world".ToValue());
-        var node = builder.Composite(part1, part2);
+        var part1 = Node.Literal("jello,".ToValue());
+        var part2 = Node.Literal(" world".ToValue());
+        var node = Node.Composite(part1, part2);
 
         var result = compositeEvaluator.Evaluate(new Mock<IScope>().Object, node, evaluator);
 
@@ -25,7 +24,7 @@ public class CompositeEvaluatorTests
     public void TheResultOfEvaluatingACompositeNodeThatHasNoPartsIsAnEmptyValue()
     {
         var compositeEvaluator = new CompositeEvaluator();
-        var node = new NodeBuilder().Composite();
+        var node = Node.Composite();
 
         var result = compositeEvaluator.Evaluate(new Mock<IScope>().Object, node, compositeEvaluator);
 

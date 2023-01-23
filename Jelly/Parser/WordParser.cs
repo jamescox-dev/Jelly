@@ -1,6 +1,7 @@
-using Jelly.Values;
-
 namespace Jelly.Parser;
+
+using Jelly.Errors;
+using Jelly.Values;
 
 public class WordParser : IParser
 {
@@ -21,6 +22,6 @@ public class WordParser : IParser
                 return node;
             }
         }
-        return null; // TODO:  Think this case should throw!
+        return null;
     }
 }

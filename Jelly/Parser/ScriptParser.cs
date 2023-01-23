@@ -39,11 +39,18 @@ public class ScriptParser : IParser
                 ++position;
             }
 
-            if (_subscriptParser && position < source.Length && config.IsScriptEndCharacter(source[position]))
+            if (position < source.Length && config.IsScriptEndCharacter(source[position]))
             {
-                ++position;
-                success = true;
-                break;
+                if (_subscriptParser)
+                {
+                    ++position;
+                    success = true;
+                    break;
+                }
+                else
+                {
+                    throw new ParseError($"Unexpected input '{source[position]}'.");
+                }
             }
 
             var command = CommandParser.Parse(source, ref position, config);
@@ -58,6 +65,6 @@ public class ScriptParser : IParser
             throw new ParseError("Unexpected end-of-file.");
         }
 
-        return NodeBuilder.Shared.Script(commands.ToArray());
+        return Node.Script(commands.ToArray());
     }
 }

@@ -15,7 +15,7 @@ public class SimpleWordParserTests
         
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Literal("hello".ToValue()));
+        node.Should().Be(Node.Literal("hello".ToValue()));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class SimpleWordParserTests
         
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Literal("goodbye".ToValue()));
+        node.Should().Be(Node.Literal("goodbye".ToValue()));
     }
 
     [Test]
@@ -51,7 +51,7 @@ public class SimpleWordParserTests
         
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Literal("hello,".ToValue()));
+        node.Should().Be(Node.Literal("hello,".ToValue()));
         position.Should().Be(6);
     }
 
@@ -77,7 +77,7 @@ public class SimpleWordParserTests
         
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Literal(@" \".ToValue()));
+        node.Should().Be(Node.Literal(@" \".ToValue()));
     }
 
     [Test]

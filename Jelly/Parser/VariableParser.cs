@@ -17,7 +17,7 @@ public class VariableParser : IParser
             }
             if (position > start)
             {
-                return NodeBuilder.Shared.Variable(source[start..position]);
+                return Node.Variable(source[start..position]);
             }
             else
             {

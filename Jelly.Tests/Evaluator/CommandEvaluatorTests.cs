@@ -13,8 +13,7 @@ public class CommandEvaluatorTests
         var evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         scope.Setup(m => m.GetCommand("greet")).Returns(new TestCommand());
-        var builder = new NodeBuilder();
-        var commandNode = builder.Command(builder.Literal("greet".ToValue()), new ListValue());
+        var commandNode = Node.Command(Node.Literal("greet".ToValue()), new ListValue());
         var commandEvaluator = new CommandEvaluator();
 
         commandEvaluator.Evaluate(scope.Object, commandNode, evaluator);
@@ -29,9 +28,8 @@ public class CommandEvaluatorTests
         var scope = new Scope();
         var command = new TestCommand();
         scope.DefineCommand("greet", command);
-        var builder = new NodeBuilder();
-        var args = new ListValue(builder.Literal("Vic".ToValue()), builder.Literal("Bob".ToValue()));
-        var commandNode = builder.Command(builder.Literal("greet".ToValue()), args);
+        var args = new ListValue(Node.Literal("Vic".ToValue()), Node.Literal("Bob".ToValue()));
+        var commandNode = Node.Command(Node.Literal("greet".ToValue()), args);
         var commandEvaluator = new CommandEvaluator();
 
         commandEvaluator.Evaluate(scope, commandNode, evaluator);
@@ -47,9 +45,8 @@ public class CommandEvaluatorTests
         var scope = new Scope();
         var command = new TestCommand() { IsMacro = true };
         scope.DefineCommand("greet", command);
-        var builder = new NodeBuilder();
-        var args = new ListValue(builder.Literal("Vic".ToValue()), builder.Literal("Bob".ToValue()));
-        var commandNode = builder.Command(builder.Literal("greet".ToValue()), args);
+        var args = new ListValue(Node.Literal("Vic".ToValue()), Node.Literal("Bob".ToValue()));
+        var commandNode = Node.Command(Node.Literal("greet".ToValue()), args);
         var commandEvaluator = new CommandEvaluator();
 
         commandEvaluator.Evaluate(scope, commandNode, evaluator);
@@ -64,8 +61,7 @@ public class CommandEvaluatorTests
         var scope = new Scope();
         var command = new TestCommand();
         scope.DefineCommand("greet", command);
-        var builder = new NodeBuilder();
-        var commandNode = builder.Command(builder.Literal("greet".ToValue()), new ListValue());
+        var commandNode = Node.Command(Node.Literal("greet".ToValue()), new ListValue());
         var commandEvaluator = new CommandEvaluator();
 
         var result = commandEvaluator.Evaluate(scope, commandNode, evaluator);

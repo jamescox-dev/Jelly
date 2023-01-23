@@ -15,6 +15,7 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator("variable", new VariableEvaluator());
         _evaluator.AddEvaluator("command", new CommandEvaluator());
         _evaluator.AddEvaluator("script", new ScriptEvaluator());
+        _evaluator.AddEvaluator("assignment", new AssignmentEvaluator());
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node)

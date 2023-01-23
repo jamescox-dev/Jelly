@@ -5,11 +5,13 @@ using Jelly.Values;
 
 public interface IScope
 {
-    void DefineCommand(string name, ICommand command);
-
-    void DefineVariable(string name, StringValue initialValue);
-    
-    ICommand GetCommand(string name);
+    void DefineVariable(string name, Value initialValue);
     
     Value GetVariable(string name);
+
+    void SetVariable(string name, Value value);
+
+    void DefineCommand(string name, ICommand command);
+
+    ICommand GetCommand(string name);
 }

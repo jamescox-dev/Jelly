@@ -15,11 +15,12 @@ public class ScriptParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Script(
-            NodeBuilder.Shared.Command(NodeBuilder.Shared.Literal("print".ToValue()),
+        position.Should().Be(18);
+        node.Should().Be(Node.Script(
+            Node.Command(Node.Literal("print".ToValue()),
             new ListValue(
-                NodeBuilder.Shared.Literal("jello,".ToValue()),
-                NodeBuilder.Shared.Literal("world".ToValue())
+                Node.Literal("jello,".ToValue()),
+                Node.Literal("world".ToValue())
             ))
         ));
     }
@@ -33,11 +34,11 @@ public class ScriptParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Script(
-            NodeBuilder.Shared.Command(NodeBuilder.Shared.Literal("print".ToValue()),
+        node.Should().Be(Node.Script(
+            Node.Command(Node.Literal("print".ToValue()),
             new ListValue(
-                NodeBuilder.Shared.Literal("jello,".ToValue()),
-                NodeBuilder.Shared.Literal("world".ToValue())
+                Node.Literal("jello,".ToValue()),
+                Node.Literal("world".ToValue())
             ))
         ));
     }
@@ -53,7 +54,7 @@ public class ScriptParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Script());
+        node.Should().Be(Node.Script());
     }
 
     [Test]
@@ -65,18 +66,18 @@ public class ScriptParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Script(
-            NodeBuilder.Shared.Command(NodeBuilder.Shared.Literal("print".ToValue()),
+        node.Should().Be(Node.Script(
+            Node.Command(Node.Literal("print".ToValue()),
             new ListValue(
-                NodeBuilder.Shared.Literal("one".ToValue())
+                Node.Literal("one".ToValue())
             )),
-            NodeBuilder.Shared.Command(NodeBuilder.Shared.Literal("print".ToValue()),
+            Node.Command(Node.Literal("print".ToValue()),
             new ListValue(
-                NodeBuilder.Shared.Literal("two".ToValue())
+                Node.Literal("two".ToValue())
             )),
-            NodeBuilder.Shared.Command(NodeBuilder.Shared.Literal("print".ToValue()),
+            Node.Command(Node.Literal("print".ToValue()),
             new ListValue(
-                NodeBuilder.Shared.Literal("three".ToValue())
+                Node.Literal("three".ToValue())
             ))
         ));
     }
@@ -90,10 +91,11 @@ public class ScriptParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Script(
-            NodeBuilder.Shared.Command(NodeBuilder.Shared.Literal("say".ToValue()),
+        position.Should().Be(9);
+        node.Should().Be(Node.Script(
+            Node.Command(Node.Literal("say".ToValue()),
             new ListValue(
-                NodeBuilder.Shared.Literal("hi!".ToValue())
+                Node.Literal("hi!".ToValue())
             ))
         ));
     }
@@ -108,6 +110,17 @@ public class ScriptParserTests
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
         node.Should().BeNull();
+    }
+
+    [Test]
+    public void WhenNotConfiguredAsASubscriptParserIfAScriptEndCharacterIsEncounteredAnErrorIsThrown()
+    {
+        var parser = new ScriptParser();
+        var source = "say hi!}";
+        var position = 0;
+
+        parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
+            .Throw<ParseError>().WithMessage("Unexpected input '}'.");
     }
 
     [Test]

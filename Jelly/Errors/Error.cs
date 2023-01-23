@@ -19,3 +19,8 @@ internal class ParseError : Error
 {
     public ParseError(string message) : base("/error/parse", message) {}
 }
+
+internal class NameError : Error
+{
+    public NameError(string message) : base("/error/name", message) {}
+}

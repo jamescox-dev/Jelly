@@ -38,7 +38,7 @@ public class VariableParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Variable("pi"));
+        node.Should().Be(Node.Variable("pi"));
     }
 
     [Test]

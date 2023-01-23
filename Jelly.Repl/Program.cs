@@ -1,6 +1,7 @@
 ﻿namespace Jelly.Repl;
 
 using Jelly.Commands;
+using Jelly.Errors;
 using Jelly.Evaluator;
 using Jelly.Parser;
 using Jelly.Values;
@@ -10,7 +11,7 @@ public class Program
     public static void Main()
     {
         var config = new DefaultParserConfig();
-        var parser = new CommandParser();
+        var parser = new ScriptParser();
 
         var global = new Scope();
         global.DefineVariable("cmd", "print".ToValue());
@@ -25,14 +26,26 @@ public class Program
             var input = Console.ReadLine();
             if (input is not null)
             {
-                var position = 0;
-                var command = parser.Parse(input, ref position, config);
-                Console.WriteLine(command);
-                
-                if (command is not null)
+                try
                 {
-                    var result = Evaluator.Shared.Evaluate(global, command);
-                    Console.WriteLine(result);
+                    var position = 0;
+                    var command = parser.Parse(input, ref position, config);
+                    if (command is not null)
+                    {
+                        var result = Evaluator.Shared.Evaluate(global, command);
+                        if (result.ToString().Length > 0)
+                        {
+                            Console.WriteLine(result);
+                        }
+                    }
+                }
+                catch (Error error)
+                {
+                    Console.Error.WriteLine($"{error.Type}:  {error.Message}");
+                }
+                catch (Exception unexpected)
+                {
+                    Console.Error.WriteLine($"Unexpected error:  {unexpected.ToString()}");
                 }
             }
         }

@@ -1,6 +1,7 @@
 namespace Jelly.Tests;
 
 using Jelly.Commands;
+using Jelly.Errors;
 using Jelly.Values;
 
 [TestFixture]
@@ -18,6 +19,19 @@ public class ScopeTests
     }
 
     [Test]
+    public void AVariableCanSetInAScope()
+    {
+        var scope = new Scope();
+
+        scope.DefineVariable("name", "Vic".ToValue());
+        scope.SetVariable("name", "Bob".ToValue());
+        
+        var value = scope.GetVariable("name");
+
+        value.Should().Be("Bob".ToValue());
+    }
+
+    [Test]
     public void ACommandCanBeDefinedInAScopeAndRetrievedByItsName()
     {
         var scope = new Scope();
@@ -27,5 +41,14 @@ public class ScopeTests
         var command = scope.GetCommand("test");
 
         command.Should().Be(testCommand.Object);
+    }
+
+    [Test]
+    public void IfACommandDoesNotExistAnErrorIsThrown()
+    {
+        var scope = new Scope();
+
+        scope.Invoking(s => s.GetCommand("test")).Should()
+            .Throw<NameError>().WithMessage("Unknown command 'test'.");
     }
 }

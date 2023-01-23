@@ -1,5 +1,6 @@
 namespace Jelly.Parser.Tests;
 
+using Jelly.Errors;
 using Jelly.Values;
 
 [TestFixture]
@@ -14,7 +15,7 @@ public class WordParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Literal("jelly".ToValue()));
+        node.Should().Be(Node.Literal("jelly".ToValue()));
     }
 
     [Test]
@@ -26,7 +27,7 @@ public class WordParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Variable("jelly"));
+        node.Should().Be(Node.Variable("jelly"));
     }
 
     [Test]
@@ -38,11 +39,11 @@ public class WordParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(NodeBuilder.Shared.Script(
-            NodeBuilder.Shared.Command(NodeBuilder.Shared.Literal("add".ToValue()),
+        node.Should().Be(Node.Script(
+            Node.Command(Node.Literal("add".ToValue()),
             new ListValue(
-                NodeBuilder.Shared.Literal("1".ToValue()),
-                NodeBuilder.Shared.Literal("2".ToValue())
+                Node.Literal("1".ToValue()),
+                Node.Literal("2".ToValue())
             ))
         ));
     }
