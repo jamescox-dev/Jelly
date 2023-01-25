@@ -7,27 +7,38 @@ using Jelly.Values;
 
 public class Scope : IScope
 {
-    readonly Dictionary<string, Value> _variables = new();
-    readonly Dictionary<string, ICommand> _commands = new();
+    readonly Dictionary<string, Value> _variables = new(StringComparer.InvariantCultureIgnoreCase);
+    readonly Dictionary<string, ICommand> _commands = new(StringComparer.InvariantCultureIgnoreCase);
 
     public void DefineVariable(string name, Value initialValue)
     {
-        _variables.Add(name, initialValue);
+        _variables[name] = initialValue;
     }
 
     public Value GetVariable(string name)
     {
-        return _variables[name];
+        if (_variables.TryGetValue(name, out var value))
+        {
+            return value;
+        }
+        throw new NameError($"Variable '{name}' not defined.");
     }
 
     public void SetVariable(string name, Value value)
     {
-        _variables[name] = value;
+        if (_variables.ContainsKey(name))
+        {
+            _variables[name] = value;
+        }
+        else
+        {
+            throw new NameError($"Variable '{name}' not defined.");
+        }
     }
 
     public void DefineCommand(string name, ICommand command)
     {
-        _commands.Add(name, command);
+        _commands[name] = command;
     }
 
     public ICommand GetCommand(string name)
