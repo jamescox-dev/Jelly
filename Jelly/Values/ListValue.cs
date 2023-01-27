@@ -27,6 +27,8 @@ public class ListValue : Value, IEnumerable<Value>
         get => _items[index];
     }
 
+    public int Count => _items.Count;
+
     public override ListValue ToListValue() => this;
 
     public IEnumerator<Value> GetEnumerator() => _items.GetEnumerator();

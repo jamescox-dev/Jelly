@@ -95,4 +95,26 @@ public class ValueTests
     {
         Value.Empty.ToString().Should().Be(string.Empty);
     }
+
+    [TestCase("0", 0)]
+    [TestCase("1", 1)]
+    [TestCase("+2", 2)]
+    [TestCase("-10000", -10000)]
+    [TestCase("bob", double.NaN)]
+    public void ValuesCanBeConvertedParsedIntoDoubles(string str, double expected)
+    {
+        var value = str.ToValue();
+
+        var d = value.ToDouble();
+
+        if (double.IsNaN(expected))
+        {
+            double.IsNaN(d).Should().BeTrue();
+        }
+        else
+        {
+            d.Should().Be(expected);
+        }
+    }
+    
 }

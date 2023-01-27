@@ -3,24 +3,24 @@ namespace Jelly.Commands.Tests;
 using Jelly.Values;
 
 [TestFixture]
-public class SimpleCommandTests
+public class SimpleMacroTests
 {
     [Test]
     public void TheDelegatePassedInTheConstructorIsCalledWithTheArgumentsPassedToInvokeAndItReturnValueReturned()
     {
-        var command = new SimpleCommand(TestCommand);
+        var macro = new SimpleMacro(TestMacro);
         var mockScope = new Mock<IScope>();
         var testArgs = new ListValue("1".ToValue(), "2".ToValue(), "3".ToValue());
         IScope? passedScope = null;
         ListValue? passedArgs = null;
-        Value TestCommand(IScope scope, ListValue args)
+        Value TestMacro(IScope scope, ListValue args)
         {
             passedScope = scope;
             passedArgs = args;
             return "42".ToValue();
         }
 
-        var result = command.Invoke(mockScope.Object, testArgs);
+        var result = macro.Invoke(mockScope.Object, testArgs);
 
         result.Should().Be("42".ToValue());
         passedScope.Should().Be(mockScope.Object);
@@ -28,10 +28,10 @@ public class SimpleCommandTests
     }
 
     [Test]
-    public void TheCommandIsNotFlaggedAsAMacro()
+    public void TheMacroIsFlaggedAsAMacro()
     {
-        var command = new SimpleCommand((s, a) => Value.Empty);
+        var macro = new SimpleMacro((s, a) => Value.Empty);
 
-        command.IsMacro.Should().BeFalse();
+        macro.IsMacro.Should().BeTrue();
     }
 }

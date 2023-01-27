@@ -48,6 +48,8 @@ public class DictionaryValue : Value
         get => _items[key];
     }
 
+    public bool ContainsKey(Value key) => _items.ContainsKey(key);
+
     public bool TryGetValue(Value key, out Value value)
     {
         if (_items.TryGetValue(key, out var itemValue))

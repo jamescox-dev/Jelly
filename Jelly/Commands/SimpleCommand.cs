@@ -6,14 +6,13 @@ public class SimpleCommand : ICommand
 {
     public delegate Value CommandDelegate(IScope scope, ListValue args);
 
-    public bool IsMacro { get; private set; }
+    public bool IsMacro => false;
 
     readonly CommandDelegate _command;
 
-    public SimpleCommand(CommandDelegate command, bool isMacro=false) 
+    public SimpleCommand(CommandDelegate command) 
     {
         _command = command;
-        IsMacro = isMacro;
     }
 
     public Value Invoke(IScope scope, ListValue args)

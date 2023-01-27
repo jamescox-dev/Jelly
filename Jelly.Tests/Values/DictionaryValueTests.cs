@@ -76,4 +76,17 @@ public class DictionaryValueTests
 
         dict.Should().BeSameAs(value);
     }
+
+    [TestCase("name", true)]
+    [TestCase("height", false)]
+    public void TheDictionaryValueCanBeQueriedForAKeysExistence(string key, bool expected)
+    {
+        var dict = new DictionaryValue(
+            "name".ToValue(), "James".ToValue(),
+            "age".ToValue(), "38".ToValue());
+
+        var exists = dict.ContainsKey(key.ToValue());
+        
+        exists.Should().Be(expected);
+    }
 }

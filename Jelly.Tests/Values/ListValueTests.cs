@@ -48,4 +48,14 @@ public class ListValueTests
 
         item.Should().Be("b".ToValue());
     }
+
+    [Test]
+    public void TheNumberOfItemsInAListCanBeRetrieved()
+    {
+        var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+
+        var count = list.Count;
+
+        count.Should().Be(3);
+    }
 }

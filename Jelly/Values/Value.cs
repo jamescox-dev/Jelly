@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Jelly.Values;
 
 public abstract class Value : IEquatable<Value>, IComparable<Value>
@@ -15,6 +17,15 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
     }
 
     public abstract override string ToString();
+
+    public virtual double ToDouble()
+    {
+        if (double.TryParse(ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedDouble))
+        {
+            return parsedDouble;
+        }
+        return double.NaN;
+    }
 
     public int CompareTo(Value? other)
     {
