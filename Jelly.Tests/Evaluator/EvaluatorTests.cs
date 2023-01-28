@@ -20,6 +20,17 @@ public class EvaluatorTests
     }
 
     [Test]
+    public void TheEvaluatorCanEvaluateACompositeNode()
+    {
+        var evaluator = new Evaluator();
+        var node = Node.Composite(Node.Literal("Hi".ToValue()));
+
+        var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
+        
+        result.Should().Be("Hi".ToValue());
+    }
+
+    [Test]
     public void TheEvaluatorCanEvaluateAVariableNode()
     {
         var evaluator = new Evaluator();

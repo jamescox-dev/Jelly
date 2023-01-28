@@ -70,6 +70,6 @@ public class WordParserTests
 
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
-        node.Should().Be(Node.Literal("jelly".ToValue()));
+        node.Should().Be(Node.Composite(Node.Literal("jelly".ToValue())));
     }
 }

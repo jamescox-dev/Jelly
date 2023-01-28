@@ -4,13 +4,15 @@ using System.Text;
 using Jelly.Errors;
 using Jelly.Values;
 
-// TODO:  Add variable, script and expression substitutions.
-
 public class QuotedWordParser : IParser
 {
+    static readonly VariableParser VariableParser = new();
+    static readonly ScriptParser ScriptParser = new(true);
+
     public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
     {
-        var value = new StringBuilder();
+        var parts = new List<DictionaryValue>();
+        var literal = new StringBuilder();
 
         if (position < source.Length && config.IsQuote(source[position]))
         {
@@ -22,7 +24,7 @@ public class QuotedWordParser : IParser
                 {
                     if (position + 1 < source.Length)
                     {
-                        value.Append(source[++position]);
+                        literal.Append(source[++position]);
                         ++position;
                     }
                     else
@@ -30,14 +32,49 @@ public class QuotedWordParser : IParser
                         throw new ParseError($"Unexpected end-of-input after escape-character '{ch}'.");
                     }
                 }
+                else if (config.IsVariableCharacter(ch))
+                {
+                    if (literal.Length != 0)
+                    {
+                        parts.Add(Node.Literal(literal.ToString().ToValue()));
+                        literal.Clear();
+                    }
+                    var variable = VariableParser.Parse(source, ref position, config);
+                    if (variable is not null)
+                    {
+                        parts.Add(variable);
+                        continue;
+                    }
+                    throw new NotImplementedException(); // This should not happen.
+                }
+                else if (config.IsScriptCharacter(ch))
+                {
+                    if (literal.Length != 0)
+                    {
+                        parts.Add(Node.Literal(literal.ToString().ToValue()));
+                        literal.Clear();
+                    }
+                    var script = ScriptParser.Parse(source, ref position, config);
+                    if (script is not null)
+                    {
+                        parts.Add(script);
+                        continue;
+                    }
+                    throw new NotImplementedException(); // This should not happen.
+                }
                 else if (config.IsQuote(ch))
                 {
                     ++position;
-                    return Node.Literal(value.ToString().ToValue());
+                    if (literal.Length != 0)
+                    {
+                        parts.Add(Node.Literal(literal.ToString().ToValue()));
+                        literal.Clear();
+                    }
+                    return Node.Composite(parts.ToArray());
                 }
                 else
                 {
-                    value.Append(ch);
+                    literal.Append(ch);
                     ++position;
                 }
             }

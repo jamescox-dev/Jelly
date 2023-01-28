@@ -3,6 +3,8 @@ namespace Jelly.Parser;
 using Jelly.Errors;
 using Jelly.Values;
 
+// TODO:  Special form for commands that starts with an expression ().
+
 public class CommandParser : IParser
 {
     readonly WordParser _wordParser = new();
