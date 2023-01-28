@@ -63,4 +63,17 @@ public class EvaluatorTests
 
         result.Should().Be("2".ToValue());
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAAssignmentNode()
+    {
+        var evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.Assignment("answer", Node.Literal("42".ToValue()));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        scope.Verify(s => s.SetVariable("answer", "42".ToValue()), Times.Once);
+        result.Should().Be("42".ToValue());
+    }
 }
