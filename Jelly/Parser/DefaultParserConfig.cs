@@ -13,4 +13,6 @@ public class DefaultParserConfig : IParserConfig
     public bool IsScriptEndCharacter(char ch) => ch == '}';
 
     public bool IsCommandSeparator(char ch) => "\n;".Contains(ch);
+
+    public bool IsCommentCharacter(char ch) => ch == '#';
 }

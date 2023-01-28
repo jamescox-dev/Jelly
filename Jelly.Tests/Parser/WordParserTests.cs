@@ -47,4 +47,17 @@ public class WordParserTests
             ))
         ));
     }
+
+    [Test]
+    public void ACommentCanBeParsed()
+    {
+        var parser = new WordParser();
+        var source = "#comment";
+        var position = 0;
+
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        position.Should().Be(8);
+        node.Should().BeNull();
+    }
 }

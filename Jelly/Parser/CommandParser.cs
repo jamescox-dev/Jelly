@@ -11,7 +11,7 @@ public class CommandParser : IParser
     {
         var words = new List<DictionaryValue>();
 
-        for (;;)
+        while (position < source.Length && !config.IsCommandSeparator(source[position]))
         {
             while (position < source.Length && config.IsWordSeparator(source[position]))
             {

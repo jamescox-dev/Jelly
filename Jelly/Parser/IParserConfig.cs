@@ -14,11 +14,14 @@ public interface IParserConfig
 
     bool IsCommandSeparator(char ch);
 
+    bool IsCommentCharacter(char ch);
+
     bool IsSpecialCharacter(char ch) => 
         IsEscapeCharacter(ch) 
         || IsVariableCharacter(ch)
         || IsScriptCharacter(ch)
         || IsScriptEndCharacter(ch)
         || IsCommandSeparator(ch)
-        || IsWordSeparator(ch);
+        || IsWordSeparator(ch)
+        || IsCommentCharacter(ch);
 }

@@ -17,4 +17,6 @@ public class TestParserConfig : IParserConfig
     public bool IsScriptEndCharacter(char ch) => ch == '}';
 
     public bool IsCommandSeparator(char ch) => ch == ';';
+
+    public bool IsCommentCharacter(char ch) => ch == '#';
 }
