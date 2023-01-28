@@ -11,6 +11,10 @@ public class TestParserConfig : IParserConfig
     public bool IsEscapeCharacter(char ch) => ch == '\\';
 
     public bool IsVariableCharacter(char ch) => ch == '$';
+    
+    public bool IsVariableDelimiter(char ch) => ch == '[';
+
+    public bool IsVariableEndDelimiter(char ch) => ch == ']';
 
     public bool IsScriptCharacter(char ch) => ch == '{';
 

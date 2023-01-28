@@ -8,6 +8,10 @@ public class DefaultParserConfig : IParserConfig
 
     public bool IsVariableCharacter(char ch) => ch == '$';
 
+    public bool IsVariableDelimiter(char ch) => ch == '[';
+
+    public bool IsVariableEndDelimiter(char ch) => ch == ']';
+
     public bool IsScriptCharacter(char ch) => ch == '{';
 
     public bool IsScriptEndCharacter(char ch) => ch == '}';

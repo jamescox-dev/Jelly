@@ -12,18 +12,33 @@ public class VariableParser : IParser
         if (position < source.Length && config.IsVariableCharacter(source[position]))
         {
             ++position;
-            var start = position;
-            while (position < source.Length && !config.IsSpecialCharacter(source[position]))
+            int start;
+            if (position < source.Length && config.IsVariableDelimiter(source[position]))
             {
                 ++position;
-            }
-            if (position > start)
-            {
-                return Node.Variable(source[start..position]);
+                start = position;
+                while (position < source.Length && !config.IsVariableEndDelimiter(source[position]))
+                {
+                    ++position;
+                }
+                ++position;
+                return Node.Variable(source[start..(position - 1)]);
             }
             else
             {
-                throw new ParseError("A variable must have a name.");
+                start = position;
+                while (position < source.Length && !config.IsSpecialCharacter(source[position]))
+                {
+                    ++position;
+                }
+                if (position > start)
+                {
+                    return Node.Variable(source[start..position]);
+                }
+                else
+                {
+                    throw new ParseError("A variable must have a name.");
+                }
             }
         }
         return null;

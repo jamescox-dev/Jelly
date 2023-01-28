@@ -8,6 +8,10 @@ public interface IParserConfig
 
     bool IsVariableCharacter(char ch);
 
+    bool IsVariableDelimiter(char ch);
+    
+    bool IsVariableEndDelimiter(char ch);
+
     bool IsScriptCharacter(char ch);
 
     bool IsScriptEndCharacter(char ch);

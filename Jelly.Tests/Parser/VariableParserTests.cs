@@ -51,4 +51,17 @@ public class VariableParserTests
         parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("A variable must have a name.");
     }
+
+    [Test]
+    public void IfAfterTheVariableCharacterAVariableDelimiterCharacterIsFoundTheVariableNameIsParsedUntilAVariableEndDelimiter()
+    {
+        var parser = new VariableParser();
+        var source = "$[pi]";
+        var position = 0;
+
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        position.Should().Be(5);
+        node.Should().Be(Node.Variable("pi"));
+    }
 }
