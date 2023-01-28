@@ -19,6 +19,7 @@ public class Program
         coreLib.LoadIntoScope(global);
         
         global.DefineCommand("print", new SimpleCommand(Print));
+        global.DefineCommand("input", new SimpleCommand(Input));
         global.DefineCommand("+", new SimpleCommand(Add));
         global.DefineCommand("*", new SimpleCommand(Mul));
         global.DefineCommand(">", new SimpleCommand(Gt));
@@ -45,10 +46,10 @@ public class Program
         {
             for (;;)
             {
-                Console.Write("> ");
-                var input = Console.ReadLine();
-                if (input is not null)
+                var input = ReadLine.Read("> ");
+                if (input.Trim().Length > 0)
                 {
+                    ReadLine.AddHistory(input);
                     try
                     {
                         var position = 0;
@@ -79,6 +80,12 @@ public class Program
     {
         Console.WriteLine(string.Join(" ", args));
         return Value.Empty;
+    }
+
+    static Value Input(IScope scope, ListValue args)
+    {
+        Console.Write(string.Join(" ", args));
+        return (Console.ReadLine() ?? "").ToValue();
     }
 
     static Value Lt(IScope scope, ListValue args)
