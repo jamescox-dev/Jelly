@@ -16,6 +16,8 @@ public interface IParserConfig
 
     bool IsCommentCharacter(char ch);
 
+    bool IsQuote(char ch);
+
     bool IsSpecialCharacter(char ch) => 
         IsEscapeCharacter(ch) 
         || IsVariableCharacter(ch)
@@ -23,5 +25,6 @@ public interface IParserConfig
         || IsScriptEndCharacter(ch)
         || IsCommandSeparator(ch)
         || IsWordSeparator(ch)
-        || IsCommentCharacter(ch);
+        || IsCommentCharacter(ch)
+        || IsQuote(ch);
 }

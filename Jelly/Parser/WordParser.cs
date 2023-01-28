@@ -8,6 +8,7 @@ public class WordParser : IParser
     static readonly IParser[] Parsers = new IParser[] 
     {
         new SimpleWordParser(),
+        new QuotedWordParser(),
         new VariableParser(),
         new ScriptParser(true),
         new CommentParser(),

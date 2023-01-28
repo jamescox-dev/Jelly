@@ -60,4 +60,16 @@ public class WordParserTests
         position.Should().Be(8);
         node.Should().BeNull();
     }
+
+    [Test]
+    public void AQuotedWordCanBeParsed()
+    {
+        var parser = new WordParser();
+        var source = "'jelly'";
+        var position = 0;
+
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        node.Should().Be(Node.Literal("jelly".ToValue()));
+    }
 }

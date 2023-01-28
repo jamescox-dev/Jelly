@@ -15,4 +15,6 @@ public class DefaultParserConfig : IParserConfig
     public bool IsCommandSeparator(char ch) => "\n;".Contains(ch);
 
     public bool IsCommentCharacter(char ch) => ch == '#';
+
+    public bool IsQuote(char ch) => "'\"".Contains(ch);
 }
