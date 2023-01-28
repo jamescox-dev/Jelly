@@ -1,7 +1,6 @@
-namespace Jelly.Evaluator;
+namespace Jelly.Evaluator.Tests;
 
 using Jelly.Commands;
-using Jelly.Errors;
 using Jelly.Parser;
 using Jelly.Values;
 
