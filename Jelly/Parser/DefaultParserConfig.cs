@@ -2,7 +2,7 @@ namespace Jelly.Parser;
 
 public class DefaultParserConfig : IParserConfig
 {
-    static readonly string[] Operators = { "<=", "=" };
+    static readonly string[] Operators = { "<=", ">=", "!=", "==", "**", "<>", "<", ">", "=", "+", "-", "*", "/", "%", "!", "&", "|", "^" };
 
     public bool IsWordSeparator(char ch) => "\t ".Contains(ch);
 
