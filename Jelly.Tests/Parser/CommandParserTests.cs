@@ -85,4 +85,16 @@ public class CommandParserTests
         parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("Unexpected literal after assignment value.");
     }
+
+    [Test]
+    public void WhenTheCommandIsJustOneSingleVariableNodeThatIsReturned()
+    {
+        var parser = new CommandParser();
+        var source = "$name";
+        var position = 0;
+        
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        node.Should().Be(Node.Variable("name"));
+    }
 }

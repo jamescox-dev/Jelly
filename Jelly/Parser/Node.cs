@@ -34,4 +34,19 @@ public static class Node
 
     public static DictionaryValue Assignment(string name, DictionaryValue value) =>
         new DictionaryValue(TypeKeyword, AssignmentKeyword, NameKeyword, name.ToValue(), ValueKeyword, value);
+
+    public static bool IsLiteral(DictionaryValue node) => IsType(node, LiteralKeyword);
+
+    public static bool IsVariable(DictionaryValue node) => IsType(node, VariableKeyword);
+
+    public static bool IsCommand(DictionaryValue node) => IsType(node, CommandKeyword);
+    
+    public static bool IsScript(DictionaryValue node) => IsType(node, ScriptKeyword);
+    
+    public static bool IsComposite(DictionaryValue node) => IsType(node, CompositeKeyword);
+    
+    public static bool IsAssignment(DictionaryValue node) => IsType(node, AssignmentKeyword);
+
+    static bool IsType(DictionaryValue node, StringValue type) => 
+        node.TryGetValue(TypeKeyword, out var typeValue) && typeValue == type;
 }

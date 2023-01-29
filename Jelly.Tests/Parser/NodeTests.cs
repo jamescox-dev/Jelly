@@ -78,4 +78,29 @@ public class NodeTests
             "value".ToValue(), Node.Literal("Bob".ToValue())
         ));
     }
+
+    [Test]
+    public void TheTypeOfANodeCanBeChecked()
+    {
+        var literal = Node.Literal("test".ToValue());
+        var variable = Node.Variable("test");
+        var command = Node.Command(literal, new ListValue());
+        var script = Node.Script();
+        var composite = Node.Composite();
+        var assignment = Node.Assignment("test", literal);
+        
+        var isLiteral = Node.IsLiteral(literal);
+        var isVariable = Node.IsVariable(variable);
+        var isCommand = Node.IsCommand(command);
+        var isScript = Node.IsScript(script);
+        var isComposite = Node.IsComposite(composite);
+        var isAssignment = Node.IsAssignment(assignment);
+
+        isLiteral.Should().BeTrue();
+        isVariable.Should().BeTrue();
+        isCommand.Should().BeTrue();
+        isScript.Should().BeTrue();
+        isComposite.Should().BeTrue();
+        isAssignment.Should().BeTrue();
+    }
 }

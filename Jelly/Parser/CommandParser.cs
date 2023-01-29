@@ -3,7 +3,7 @@ namespace Jelly.Parser;
 using Jelly.Errors;
 using Jelly.Values;
 
-// TODO:  Special form for commands that starts with an expression ().
+// TODO:  Special form for commands that is just one expression node ().
 
 public class CommandParser : IParser
 {
@@ -31,6 +31,14 @@ public class CommandParser : IParser
             }
         }
         
+        if (words.Count == 1)
+        {
+            if (Node.IsVariable(words[0]))
+            {
+                return words[0];
+            }
+        }
+
         if (IsAssignment(words))
         {
             if (words.Count > 3)
@@ -46,10 +54,7 @@ public class CommandParser : IParser
 
     static bool IsAssignment(IReadOnlyList<DictionaryValue> words) =>
         words.Count >= 2
-        && MatchWordType(words[0], "variable") 
-        && MatchWordType(words[1], "literal") 
+        && Node.IsVariable(words[0]) 
+        && Node.IsLiteral(words[1])
         && words[1]["value".ToValue()].ToString() == "=";
-
-    static bool MatchWordType(DictionaryValue word, string type) =>
-        word.TryGetValue("type".ToValue(), out var wordType) && wordType.ToString() == type;
 }

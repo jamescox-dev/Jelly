@@ -68,7 +68,7 @@ public class QuotedWordParserTests
     }
 
     [Test]
-    public void IfAVariableIsEncounteredInTheQuotedWordItIsIncludedInTheCompositeReturned()
+    public void IfAVariableIsEncounteredInTheQuotedWordItIsNotIncludedInTheCompositeReturned()
     {
         var parser = new QuotedWordParser();
         var source = @"'hello, $name how do you do'";
@@ -77,9 +77,7 @@ public class QuotedWordParserTests
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
         node.Should().Be(Node.Composite(
-            Node.Literal("hello, ".ToValue()),
-            Node.Variable("name"),
-            Node.Literal(" how do you do".ToValue())));
+            Node.Literal("hello, $name how do you do".ToValue())));
     }
 
     [Test]

@@ -32,21 +32,21 @@ public class QuotedWordParser : IParser
                         throw new ParseError($"Unexpected end-of-input after escape-character '{ch}'.");
                     }
                 }
-                else if (config.IsVariableCharacter(ch))
-                {
-                    if (literal.Length != 0)
-                    {
-                        parts.Add(Node.Literal(literal.ToString().ToValue()));
-                        literal.Clear();
-                    }
-                    var variable = VariableParser.Parse(source, ref position, config);
-                    if (variable is not null)
-                    {
-                        parts.Add(variable);
-                        continue;
-                    }
-                    throw new NotImplementedException(); // This should not happen.
-                }
+                // else if (config.IsVariableCharacter(ch))
+                // {
+                //     if (literal.Length != 0)
+                //     {
+                //         parts.Add(Node.Literal(literal.ToString().ToValue()));
+                //         literal.Clear();
+                //     }
+                //     var variable = VariableParser.Parse(source, ref position, config);
+                //     if (variable is not null)
+                //     {
+                //         parts.Add(variable);
+                //         continue;
+                //     }
+                //     throw new NotImplementedException(); // This should not happen.
+                // }
                 else if (config.IsScriptCharacter(ch))
                 {
                     if (literal.Length != 0)
