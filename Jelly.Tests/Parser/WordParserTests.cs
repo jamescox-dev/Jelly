@@ -84,4 +84,16 @@ public class WordParserTests
 
         node.Should().Be(Node.Composite(Node.Literal("jelly".ToValue())));
     }
+
+    [Test]
+    public void ANestingWordCanBeParsed()
+    {
+        var parser = new WordParser();
+        var source = "[jelly]";
+        var position = 0;
+
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        node.Should().Be(Node.Literal("jelly".ToValue()));
+    }
 }

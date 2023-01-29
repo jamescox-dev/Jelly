@@ -24,6 +24,10 @@ public class DefaultParserConfig : IParserConfig
 
     public bool IsQuote(char ch) => "'\"".Contains(ch);
 
+    public bool IsNestingQuote(char ch) => ch == '[';
+
+    public bool IsNestingEndQuote(char ch) => ch == ']';
+
     public string? GetOperatorAt(string source, int position) =>
         Operators.FirstOrDefault(op => 
             position < source.Length - op.Length 

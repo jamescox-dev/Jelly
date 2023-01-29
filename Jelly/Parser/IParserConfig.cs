@@ -22,6 +22,10 @@ public interface IParserConfig
 
     bool IsQuote(char ch);
 
+    bool IsNestingQuote(char ch);
+
+    bool IsNestingEndQuote(char ch);
+
     bool IsSpecialCharacter(char ch) => 
         IsEscapeCharacter(ch) 
         || IsVariableCharacter(ch)
@@ -30,7 +34,9 @@ public interface IParserConfig
         || IsCommandSeparator(ch)
         || IsWordSeparator(ch)
         || IsCommentCharacter(ch)
-        || IsQuote(ch);
+        || IsQuote(ch)
+        || IsNestingQuote(ch)
+        || IsNestingEndQuote(ch);
     
     string? GetOperatorAt(string source, int position);
 }

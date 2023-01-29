@@ -26,6 +26,10 @@ public class TestParserConfig : IParserConfig
 
     public bool IsQuote(char ch) => ch == '\'';
 
+    public bool IsNestingQuote(char ch) => ch == '[';
+
+    public bool IsNestingEndQuote(char ch) => ch == ']';
+
     public string? GetOperatorAt(string source, int position) =>
         position < source.Length && source[position] == '=' ? "=" : null;
 }
