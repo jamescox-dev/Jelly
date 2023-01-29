@@ -19,6 +19,18 @@ public class WordParserTests
     }
 
     [Test]
+    public void AOperatorCanBeParsed()
+    {
+        var parser = new WordParser();
+        var source = "=";
+        var position = 0;
+
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        node.Should().Be(Node.Literal("=".ToValue()));
+    }
+
+    [Test]
     public void AVariableCanBeParsed()
     {
         var parser = new WordParser();

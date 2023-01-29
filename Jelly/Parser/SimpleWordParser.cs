@@ -26,7 +26,7 @@ public class SimpleWordParser : IParser
                     throw new ParseError($"Unexpected end-of-input after escape-character '{ch}'.");
                 }
             }
-            else if (config.IsSpecialCharacter(ch))
+            else if (config.IsSpecialCharacter(ch) || config.GetOperatorAt(source, position) is not null)
             {
                 break;
             }

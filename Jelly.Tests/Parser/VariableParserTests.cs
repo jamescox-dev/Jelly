@@ -64,4 +64,17 @@ public class VariableParserTests
         position.Should().Be(5);
         node.Should().Be(Node.Variable("pi"));
     }
+
+    [Test]
+    public void IfAOperatorIsEncounteredTheVariableEnds()
+    {
+        var parser = new VariableParser();
+        var source = "$E=mc2";
+        var position = 0;
+        
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        node.Should().Be(Node.Variable("E"));
+        position.Should().Be(2);
+    }
 }

@@ -25,7 +25,7 @@ public class VariableParser : IParser
             else
             {
                 start = position;
-                while (position < source.Length && !config.IsSpecialCharacter(source[position]))
+                while (position < source.Length && !(config.IsSpecialCharacter(source[position]) || config.GetOperatorAt(source, position) is not null))
                 {
                     ++position;
                 }

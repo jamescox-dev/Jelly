@@ -31,4 +31,6 @@ public interface IParserConfig
         || IsWordSeparator(ch)
         || IsCommentCharacter(ch)
         || IsQuote(ch);
+    
+    string? GetOperatorAt(string source, int position);
 }

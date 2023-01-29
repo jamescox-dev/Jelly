@@ -12,6 +12,7 @@ public class WordParser : IParser
         new VariableParser(),
         new ScriptParser(true),
         new CommentParser(),
+        new OperatorParser(),
     };
     
     public DictionaryValue? Parse(string source, ref int position, IParserConfig config)

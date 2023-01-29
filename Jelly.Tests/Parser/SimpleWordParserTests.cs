@@ -90,4 +90,17 @@ public class SimpleWordParserTests
         parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character '\\'.");
     }
+
+    [Test]
+    public void IfAOperatorIsEncounteredTheSimpleWordEnds()
+    {
+        var parser = new SimpleWordParser();
+        var source = "E=mc2";
+        var position = 0;
+        
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        node.Should().Be(Node.Literal("E".ToValue()));
+        position.Should().Be(1);
+    }
 }
