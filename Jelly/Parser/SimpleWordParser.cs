@@ -6,6 +6,8 @@ using System.Text;
 
 public class SimpleWordParser : IParser
 {
+    static readonly EscapeCharacterParser EscapeCharacterParser = new();
+
     public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
     {
         var start = position;
@@ -14,17 +16,10 @@ public class SimpleWordParser : IParser
         while (position < source.Length)
         {
             var ch = source[position];
-            if (config.IsEscapeCharacter(ch))
+            var escapedCh = EscapeCharacterParser.Parse(source, ref position, config);
+            if (escapedCh is not null)
             {
-                if (position + 1 < source.Length)
-                {
-                    value.Append(source[++position]);
-                    ++position;
-                }
-                else
-                {
-                    throw new ParseError($"Unexpected end-of-input after escape-character '{ch}'.");
-                }
+                value.Append(escapedCh);
             }
             else if (config.IsSpecialCharacter(ch) || config.GetOperatorAt(source, position) is not null)
             {

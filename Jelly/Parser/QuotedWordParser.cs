@@ -6,6 +6,7 @@ using Jelly.Values;
 
 public class QuotedWordParser : IParser
 {
+    static readonly EscapeCharacterParser EscapeCharacterParser = new();
     static readonly VariableParser VariableParser = new();
     static readonly ScriptParser ScriptParser = new(true);
 
@@ -20,17 +21,10 @@ public class QuotedWordParser : IParser
             while (position < source.Length)
             {
                 var ch = source[position];
-                if (config.IsEscapeCharacter(ch))
+                var escapedCh = EscapeCharacterParser.Parse(source, ref position, config);
+                if (escapedCh is not null)
                 {
-                    if (position + 1 < source.Length)
-                    {
-                        literal.Append(source[++position]);
-                        ++position;
-                    }
-                    else
-                    {
-                        throw new ParseError($"Unexpected end-of-input after escape-character '{ch}'.");
-                    }
+                    literal.Append(escapedCh);
                 }
                 else if (config.IsScriptCharacter(ch))
                 {

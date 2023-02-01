@@ -6,6 +6,14 @@ public interface IParserConfig
 
     bool IsEscapeCharacter(char ch);
 
+    IReadOnlyDictionary<char, char> EscapeCharacterSubstitutions { get; }
+
+    bool IsEscape8bit(char ch);
+    
+    bool IsEscape16bit(char ch);
+    
+    bool IsEscape24bit(char ch);
+
     bool IsVariableCharacter(char ch);
 
     bool IsVariableDelimiter(char ch);

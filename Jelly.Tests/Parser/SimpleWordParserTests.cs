@@ -88,7 +88,7 @@ public class SimpleWordParserTests
         var position = 0;
         
         parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character '\\'.");
+            .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
     }
 
     [Test]

@@ -4,6 +4,8 @@ public class TestParserConfig : IParserConfig
 {
     public static readonly IParserConfig Shared = new TestParserConfig();
 
+    public IReadOnlyDictionary<char, char> EscapeCharacterSubstitutions => new Dictionary<char, char> { {'n', '\n' } };
+
     private TestParserConfig() {}
 
     public bool IsWordSeparator(char ch) => ch == ' ';
@@ -32,4 +34,10 @@ public class TestParserConfig : IParserConfig
 
     public string? GetOperatorAt(string source, int position) =>
         position < source.Length && source[position] == '=' ? "=" : null;
+
+    public bool IsEscape8bit(char ch) => ch == 'x';
+
+    public bool IsEscape16bit(char ch) => ch == 'u';
+
+    public bool IsEscape24bit(char ch) => ch == 'p';
 }
