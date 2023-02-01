@@ -39,24 +39,32 @@ public class ScriptParser : IParser
                 ++position;
             }
 
-            if (position < source.Length && config.IsScriptEndCharacter(source[position]))
+            if (position < source.Length)
             {
-                if (_subscriptParser)
+                if (config.IsScriptEndCharacter(source[position]))
                 {
-                    ++position;
-                    success = true;
-                    break;
+                    if (_subscriptParser)
+                    {
+                        ++position;
+                        success = true;
+                        break;
+                    }
+                    else
+                    {
+                        throw new ParseError($"Unexpected input '{source[position]}'.");
+                    }
                 }
-                else
+                
+                var startPosition = position;
+                var command = CommandParser.Parse(source, ref position, config);
+                if (command is not null)
+                {
+                    commands.Add(command);
+                }
+                else if (position == startPosition)
                 {
                     throw new ParseError($"Unexpected input '{source[position]}'.");
                 }
-            }
-
-            var command = CommandParser.Parse(source, ref position, config);
-            if (command is not null)
-            {
-                commands.Add(command);
             }
         }
 

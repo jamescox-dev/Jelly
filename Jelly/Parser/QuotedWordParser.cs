@@ -16,7 +16,7 @@ public class QuotedWordParser : IParser
 
         if (position < source.Length && config.IsQuote(source[position]))
         {
-            ++position;
+            var openingQuote = source[position++];
             while (position < source.Length)
             {
                 var ch = source[position];
@@ -47,7 +47,7 @@ public class QuotedWordParser : IParser
                     }
                     throw new NotImplementedException(); // This should not happen.
                 }
-                else if (config.IsQuote(ch))
+                else if (ch == openingQuote)
                 {
                     ++position;
                     if (literal.Length != 0)

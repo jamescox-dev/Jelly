@@ -24,7 +24,7 @@ public class TestParserConfig : IParserConfig
 
     public bool IsCommentCharacter(char ch) => ch == '#';
 
-    public bool IsQuote(char ch) => ch == '\'';
+    public bool IsQuote(char ch) => "\'\"".Contains(ch);
 
     public bool IsNestingQuote(char ch) => ch == '[';
 

@@ -133,4 +133,15 @@ public class ScriptParserTests
         parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-file.");
     }
+
+    [Test]
+    public void IfAWordParserCanNotBeParsedAErrorIsThrown()
+    {
+        var parser = new ScriptParser();
+        var source = "]";
+        var position = 0;
+
+        parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
+            .Throw<ParseError>().WithMessage("Unexpected input ']'.");
+    }
 }

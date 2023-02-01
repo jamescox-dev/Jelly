@@ -46,7 +46,7 @@ public class QuotedWordParserTests
     }
 
     [Test]
-    public void IfAEscapeCharacterTheCharacterIsFoundAtTheEndOfTheSourceAnErrorIsThrown()
+    public void IfAEscapeCharacterIsFoundAtTheEndOfTheSourceAnErrorIsThrown()
     {
         var parser = new QuotedWordParser();
         var source = @"'\";
@@ -105,5 +105,18 @@ public class QuotedWordParserTests
         var node = parser.Parse(source, ref position, TestParserConfig.Shared);
 
         node.Should().Be(Node.Composite());
+    }
+
+    [Test]
+    public void AQuotesWordMustBeginAndEndWithTheSameQuote()
+    {
+        var parser = new QuotedWordParser();
+        var source = "'hello\" world' not parsed!";
+        var position = 0;
+
+        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+
+        position.Should().Be(14);
+        node.Should().Be(Node.Composite(Node.Literal("hello\" world".ToValue())));
     }
 }
