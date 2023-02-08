@@ -2,6 +2,7 @@
 
 using Jelly.Errors;
 using Jelly.Evaluator;
+using Jelly.Library;
 using Jelly.Parser;
 using Jelly.Shell.Io;
 using Jelly.Values;
@@ -11,22 +12,26 @@ public class Shell
     readonly IReader _reader;
     readonly IWriter _writer;
     readonly IScope _globalScope;
-    readonly ShellConfig _config;
     readonly IParser _parser;
     readonly IEvaluator _evaluator;
-
-    public Shell(IReader reader, IWriter writer, IScope globalScope, IParser parser, IEvaluator evaluator, ShellConfig config)
+    readonly IEnumerable<ILibrary> _libraries;
+    readonly ShellConfig _config;
+    
+    public Shell(IReader reader, IWriter writer, IScope globalScope, IParser parser, IEvaluator evaluator, IEnumerable<ILibrary> libraries, ShellConfig config)
     {
         _reader = reader;
         _writer = writer;
         _globalScope = globalScope;
         _parser = parser;
         _evaluator = evaluator;
+        _libraries = libraries;
         _config = config;
     }
 
     public void Repl()
     {
+        SetupGlobalScope();
+
         for (;;)
         {
             try
@@ -42,6 +47,14 @@ public class Shell
             {
                 break;
             }
+        }
+    }
+
+    void SetupGlobalScope()
+    {
+        foreach (var library in _libraries)
+        {
+            library.LoadIntoScope(_globalScope);
         }
     }
 
@@ -81,6 +94,7 @@ public class Shell
             new Scope(),
             new ScriptParser(),
             new Evaluator(),
+            new ILibrary[] { new Jelly.Library.CoreLibrary() },
             new ShellConfig()).Repl();
     }
 }

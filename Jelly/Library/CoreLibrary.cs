@@ -5,7 +5,7 @@ using Jelly.Evaluator;
 using Jelly.Commands;
 using Jelly.Values;
 
-public class CoreLibrary
+public class CoreLibrary : ILibrary
 {
     static readonly StringValue TypeKeyword = new StringValue("type");
     static readonly StringValue VariableKeyword = new StringValue("variable");

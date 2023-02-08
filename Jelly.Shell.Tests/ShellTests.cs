@@ -2,6 +2,7 @@ namespace Jelly.Shell.Tests;
 
 using Jelly.Errors;
 using Jelly.Evaluator;
+using Jelly.Library;
 using Jelly.Parser;
 using Jelly.Values;
 using Jelly.Shell.Io;
@@ -18,6 +19,15 @@ public class ShellTests
     Mock<IParser> _mockParser = null!;
     Mock<IEvaluator> _mockEvaluator = null!;
     Mock<IScope> _mockScope = null!;
+    Mock<ILibrary> _mockLibrary = null!;
+
+    [Test]
+    public void TheLibrariesAreEachLoadedIntoTheGlobalScope()
+    {
+        _shell.Repl();
+
+        _mockLibrary.Verify(m => m.LoadIntoScope(_mockScope.Object), Times.Exactly(2));
+    }
 
     [Test]
     public void TheConfiguredPromptIsDisplayed()
@@ -133,6 +143,7 @@ public class ShellTests
         _mockParser = new Mock<IParser>();
         _mockEvaluator = new Mock<IEvaluator>();
         _mockScope = new Mock<IScope>();
+        _mockLibrary = new Mock<ILibrary>();
 
         _expectedParsedScript = Node.Script(Node.Command(Node.Literal("print".ToValue()), new ListValue(
                 Node.Literal("hello,".ToValue()), Node.Literal("world".ToValue())
@@ -143,7 +154,7 @@ public class ShellTests
 
         _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, _expectedParsedScript)).Returns("the result!".ToValue());
 
-        _shell = new Shell(_fakeReaderWriter, _fakeReaderWriter, _mockScope.Object, _mockParser.Object, _mockEvaluator.Object, _config);
+        _shell = new Shell(_fakeReaderWriter, _fakeReaderWriter, _mockScope.Object, _mockParser.Object, _mockEvaluator.Object, new ILibrary[] { _mockLibrary.Object, _mockLibrary.Object }, _config);
     }
 
     public class FakeReaderWriter : IReader, IWriter
