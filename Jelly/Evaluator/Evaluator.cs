@@ -6,7 +6,7 @@ public class Evaluator : IEvaluator
 {
     readonly NodeEvaluator _evaluator;
 
-    public static readonly Evaluator Shared = new();
+    public static readonly IEvaluator Shared = new Evaluator();
 
     public Evaluator()
     {
@@ -17,11 +17,6 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator("script", new ScriptEvaluator());
         _evaluator.AddEvaluator("assignment", new AssignmentEvaluator());
         _evaluator.AddEvaluator("composite", new CompositeEvaluator());
-    }
-
-    public Value Evaluate(IScope scope, DictionaryValue node)
-    {
-        return Evaluate(scope, node, this);
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)

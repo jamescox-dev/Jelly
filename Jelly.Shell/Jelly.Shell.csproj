@@ -7,4 +7,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ReadLine" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jelly\Jelly.csproj" />
+    <ProjectReference Include="..\Jelly.Experimental\Jelly.Experimental.csproj" />
+  </ItemGroup>
+
 </Project>

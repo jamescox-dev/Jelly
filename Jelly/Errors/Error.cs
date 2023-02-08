@@ -8,6 +8,10 @@ public abstract class Error : Exception
     {
         Type = type;
     }
+
+    public static Error Parse(string message) => new ParseError(message);
+
+    public static Error Name(string message) => new NameError(message);
 }
 
 internal class ArgError : Error
