@@ -19,7 +19,7 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator("composite", new CompositeEvaluator());
     }
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)
+    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         return _evaluator.Evaluate(scope, node, this);
     }

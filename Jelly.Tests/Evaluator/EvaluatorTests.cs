@@ -10,7 +10,7 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateALiteralNode()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         var node = Node.Literal("Hi".ToValue());
 
         var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
@@ -21,7 +21,7 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateACompositeNode()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         var node = Node.Composite(Node.Literal("Hi".ToValue()));
 
         var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
@@ -32,7 +32,7 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateAVariableNode()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         Mock<IScope> scope = new Mock<IScope>();
         scope.Setup(m => m.GetVariable("Name")).Returns("Bill".ToValue());
         var node = Node.Variable("Name");
@@ -45,7 +45,7 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateACommandNode()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         Mock<IScope> scope = new Mock<IScope>();
         Mock<ICommand> command = new Mock<ICommand>();
         scope.Setup(m => m.GetCommand("Foo")).Returns(command.Object);
@@ -59,7 +59,7 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateAScriptNode()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         var command = new Mock<ICommand>();
         command.Setup(m => m.Invoke(scope.Object, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => args[0]);
@@ -77,7 +77,7 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateAAssignmentNode()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         var node = Node.Assignment("answer", Node.Literal("42".ToValue()));
 

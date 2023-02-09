@@ -6,14 +6,14 @@ internal class ScriptEvaluator : IEvaluator
 {
     static readonly StringValue CommandsKeyword = new StringValue("commands");
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)
+    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         var commands = node[CommandsKeyword].ToListValue();
 
         var result = Value.Empty;
         foreach (var command in commands)
         {
-            result = evaluator.Evaluate(scope, command.ToDictionaryValue(), evaluator);
+            result = rootEvaluator.Evaluate(scope, command.ToDictionaryValue(), rootEvaluator);
         }
 
         return result;

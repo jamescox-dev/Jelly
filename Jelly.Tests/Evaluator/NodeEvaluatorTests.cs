@@ -41,7 +41,7 @@ public class NodeEvaluatorTests
     [Test]
     public void WhenTheTypeOfTheNodeIsMissingAnErrorIsThrown()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         var invalidNode = new DictionaryValue();
 
         evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
@@ -52,7 +52,7 @@ public class NodeEvaluatorTests
     [Test]
     public void WhenTheTypeOfNodeIsNotKnownToTheEvaluatorAEvaluationErrorIsThrown()
     {
-        var evaluator = new Evaluator();
+        IEvaluator evaluator = new Evaluator();
         var invalidNode = new DictionaryValue(
             "type".ToValue(), "invalid".ToValue()
         );

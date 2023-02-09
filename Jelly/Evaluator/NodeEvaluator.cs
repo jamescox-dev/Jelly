@@ -9,9 +9,9 @@ internal class NodeEvaluator : IEvaluator
 
     Dictionary<string, IEvaluator> _evaluators = new();
 
-    public void AddEvaluator(string nodeType, IEvaluator evaluator)
+    public void AddEvaluator(string nodeType, IEvaluator rootEvaluator)
     {
-        _evaluators.Add(nodeType, evaluator);
+        _evaluators.Add(nodeType, rootEvaluator);
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)

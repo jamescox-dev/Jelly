@@ -6,9 +6,9 @@ internal class CompositeEvaluator : IEvaluator
 {
     static readonly StringValue PartsKeyword = new StringValue("parts");
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)
+    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         return new StringValue(string.Join("", node[PartsKeyword].ToListValue()
-            .Select(part => evaluator.Evaluate(scope, part.ToDictionaryValue(), evaluator))));
+            .Select(part => rootEvaluator.Evaluate(scope, part.ToDictionaryValue(), rootEvaluator))));
     }
 }
