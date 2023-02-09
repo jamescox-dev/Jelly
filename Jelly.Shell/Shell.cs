@@ -78,7 +78,10 @@ public class Shell
 
     void PrintResult(Value result)
     {
-        _writer.WriteLine(result.ToString());
+        if (result != Value.Empty)
+        {
+            _writer.WriteLine(result.ToString());
+        }
     }
 
     void PrintError(Error error)
@@ -88,13 +91,20 @@ public class Shell
 
     public static void Main(string[] args)
     {
+        var writer = new ConsoleWriter();
+        var reader = new ReadLineReader();
+        
         new Shell(
-            new ReadLineReader(), 
-            new ConsoleWriter(),
+            reader,
+            writer,
             new Scope(),
             new ScriptParser(),
             new Evaluator(),
-            new ILibrary[] { new Jelly.Library.CoreLibrary() },
+            new ILibrary[] { 
+                new Jelly.Experimental.CoreLibrary(),
+                new Jelly.Library.CoreLibrary(),
+                new Jelly.Shell.Library.CoreIoLibrary(reader, writer)
+            },
             new ShellConfig()).Repl();
     }
 }

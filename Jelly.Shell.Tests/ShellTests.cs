@@ -5,7 +5,7 @@ using Jelly.Evaluator;
 using Jelly.Library;
 using Jelly.Parser;
 using Jelly.Values;
-using Jelly.Shell.Io;
+using Jelly.Shell.Tests.Helpers;
 
 [TestFixture]
 public class ShellTests
@@ -117,6 +117,16 @@ public class ShellTests
     }
 
     [Test]
+    public void IfTheResultIsAnEmptyStringTheResultIsNotPrinted()
+    {
+        _fakeReaderWriter.EnqueueInput("noop");
+
+        _shell.Repl();
+
+        _fakeReaderWriter.VerifyIoOpsDoesNotContain(new WriteLineOp(""));
+    }
+
+    [Test]
     public void TheReplRunsInALoopUntilInterrupetedByAFatalError()
     {
         _fakeReaderWriter.EnqueueInput("print hello, world");
@@ -151,57 +161,12 @@ public class ShellTests
 
         _mockParser.Setup(m => m.Parse("print hello, world", ref It.Ref<int>.IsAny, It.IsAny<DefaultParserConfig>()))
             .Returns(_expectedParsedScript);
+        _mockParser.Setup(m => m.Parse("noop", ref It.Ref<int>.IsAny, It.IsAny<DefaultParserConfig>()))
+            .Returns(new DictionaryValue());
 
         _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, _expectedParsedScript)).Returns("the result!".ToValue());
+        _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, new DictionaryValue())).Returns(Value.Empty);
 
         _shell = new Shell(_fakeReaderWriter, _fakeReaderWriter, _mockScope.Object, _mockParser.Object, _mockEvaluator.Object, new ILibrary[] { _mockLibrary.Object, _mockLibrary.Object }, _config);
     }
-
-    public class FakeReaderWriter : IReader, IWriter
-    {
-        readonly Queue<string> _queuedLines = new();
-
-        public IList<IoOp> IoOps { get; set; } = new List<IoOp>();
-
-        public void EnqueueInput(string line) => _queuedLines.Enqueue(line);
-
-        public string ReadLine()
-        {
-            var line = _queuedLines.Dequeue();
-            
-            IoOps.Add(new ReadLineOp(line));
-            
-            return line;
-        }
-
-        public void WriteLine(string output) => IoOps.Add(new WriteLineOp(output));
-        
-        public void Write(string output) => IoOps.Add(new WriteOp(output));
-
-        public bool IoOpsContains(params IoOp[] expected)
-        {
-            if (IoOps.Count >= expected.Length)
-            {
-                for (var i = 0; i < IoOps.Count - expected.Length + 1; ++i)
-                {
-                    if (IoOps.Skip(i).Take(expected.Length).SequenceEqual(expected))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public void VerifyIoOpsContains(params IoOp[] expected) => 
-            IoOpsContains(expected).Should().BeTrue();
-    }
-
-    public abstract record class IoOp(string Data) {}
-
-    public record class ReadLineOp(string Data) : IoOp(Data) {} 
-
-    public record class WriteLineOp(string Data) : IoOp(Data) {} 
-
-    public record class WriteOp(string Data) : IoOp(Data) {} 
 }
