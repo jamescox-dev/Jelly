@@ -7,10 +7,9 @@ public class CommentParserTests
     public void NoNodeIsEverReturnedByTheParser()
     {
         var parser = new CommentParser();
-        var source = "#comment";
-        var position = 0;
+        var scanner = new Scanner("#comment");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().BeNull();
     }
@@ -20,22 +19,21 @@ public class CommentParserTests
     public void IfACommentCharacterIsEncounteredThePositionIsAdvancedToTheNextCommandSeparatorOrEndOfInput(string source, int expectedPosition)
     {
         var parser = new CommentParser();
-        var position = 0;
+        var scanner = new Scanner(source);
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(expectedPosition);
+        scanner.Position.Should().Be(expectedPosition);
     }
 
     [Test]
     public void IfACommentCharacterIsNotAtTheCurrentPositionThePositionIsNotAltered()
     {
         var parser = new CommentParser();
-        var source = "not a comment";
-        var position = 0;
+        var scanner = new Scanner("not a comment");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(position);
+        scanner.Position.Should().Be(0);
     }
 }

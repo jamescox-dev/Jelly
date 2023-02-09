@@ -10,12 +10,11 @@ public class QuotedWordParserTests
     public void IfTheSourceDoesNotStartWithAQuoteNoNodeIsParsed()
     {
         var parser = new QuotedWordParser();
-        var source = "hi";
-        var position = 0;
+        var scanner = new Scanner("hi");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(0);
+        scanner.Position.Should().Be(0);
         node.Should().BeNull();
     }
 
@@ -23,12 +22,11 @@ public class QuotedWordParserTests
     public void IfTheSourceStartsWithAQuoteACompositeIsParsedUntilTheNextQuote()
     {
         var parser = new QuotedWordParser();
-        var source = "'hi'";
-        var position = 0;
+        var scanner = new Scanner("'hi'");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(4);
+        scanner.Position.Should().Be(4);
         node.Should().Be(Node.Composite(Node.Literal("hi".ToValue())));
     }
 
@@ -36,12 +34,11 @@ public class QuotedWordParserTests
     public void IfACharacterIsProceededWithAEscapeCharacterTheCharacterIsIncludedInTheValueButNotTheEscapeCharacter()
     {
         var parser = new QuotedWordParser();
-        var source = @"'\\\''";
-        var position = 0;
+        var scanner = new Scanner(@"'\\\''");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(6);
+        scanner.Position.Should().Be(6);
         node.Should().Be(Node.Composite(Node.Literal(@"\'".ToValue())));
     }
 
@@ -49,10 +46,9 @@ public class QuotedWordParserTests
     public void IfAEscapeCharacterIsFoundAtTheEndOfTheSourceAnErrorIsThrown()
     {
         var parser = new QuotedWordParser();
-        var source = @"'\";
-        var position = 0;
+        var scanner = new Scanner(@"'\");
 
-        parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
     }
 
@@ -60,10 +56,9 @@ public class QuotedWordParserTests
     public void IfNoClosingQuoteIsFoundBeforeTheEndOfTheSourceAnErrorIsThrown()
     {
         var parser = new QuotedWordParser();
-        var source = @"'this never ends!";
-        var position = 0;
+        var scanner = new Scanner(@"'this never ends!");
 
-        parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input in quoted-word.");
     }
 
@@ -71,10 +66,9 @@ public class QuotedWordParserTests
     public void IfAVariableIsEncounteredInTheQuotedWordItIsNotIncludedInTheCompositeReturned()
     {
         var parser = new QuotedWordParser();
-        var source = @"'hello, $name how do you do'";
-        var position = 0;
+        var scanner = new Scanner(@"'hello, $name how do you do'");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Composite(
             Node.Literal("hello, $name how do you do".ToValue())));
@@ -84,10 +78,9 @@ public class QuotedWordParserTests
     public void IfAScriptIsEncounteredInTheQuotedWordItIsIncludedInTheCompositeReturned()
     {
         var parser = new QuotedWordParser();
-        var source = @"'hello, {whoami} how do you do'";
-        var position = 0;
+        var scanner = new Scanner(@"'hello, {whoami} how do you do'");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Composite(
             Node.Literal("hello, ".ToValue()),
@@ -99,10 +92,9 @@ public class QuotedWordParserTests
     public void AQuoteFollowedByAQuoteReturnsAnEmptyComposite()
     {
         var parser = new QuotedWordParser();
-        var source = "''";
-        var position = 0;
+        var scanner = new Scanner("''");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Composite());
     }
@@ -111,12 +103,11 @@ public class QuotedWordParserTests
     public void AQuotesWordMustBeginAndEndWithTheSameQuote()
     {
         var parser = new QuotedWordParser();
-        var source = "'hello\" world' not parsed!";
-        var position = 0;
+        var scanner = new Scanner("'hello\" world' not parsed!");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(14);
+        scanner.Position.Should().Be(14);
         node.Should().Be(Node.Composite(Node.Literal("hello\" world".ToValue())));
     }
 }

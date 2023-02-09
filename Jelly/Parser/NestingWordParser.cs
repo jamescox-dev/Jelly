@@ -5,18 +5,18 @@ namespace Jelly.Parser;
 
 public class NestingWordParser : IParser
 {
-    public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        if (position < source.Length && config.IsNestingQuote(source[position]))
+        if (scanner.Position < scanner.Source.Length && config.IsNestingQuote(scanner.Source[scanner.Position]))
         {
-            ++position;
+            scanner.Advance();
             
             var depth = 1;
-            var start = position;
+            var start = scanner.Position;
             var escapeRun = 0;
-            while (position < source.Length)
+            while (scanner.Position < scanner.Source.Length)
             {
-                var ch = source[position];
+                var ch = scanner.Source[scanner.Position];
                 if (config.IsNestingQuote(ch) && (escapeRun % 2) == 0)
                 {
                     ++depth;
@@ -26,8 +26,8 @@ public class NestingWordParser : IParser
                     --depth;
                     if (depth == 0)
                     {
-                        ++position;
-                        return Node.Literal(source[start .. (position - 1)].ToValue());
+                        scanner.Advance();
+                        return Node.Literal(scanner.Source[start .. (scanner.Position - 1)].ToValue());
                     }
                 }
                 if (config.IsEscapeCharacter(ch))
@@ -38,7 +38,7 @@ public class NestingWordParser : IParser
                 {
                     escapeRun = 0;
                 }
-                ++position;
+                scanner.Advance();
             }
 
             throw new ParseError("Unexpected end-of-input in nesting-word.");

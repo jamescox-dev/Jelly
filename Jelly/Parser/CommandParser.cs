@@ -9,18 +9,18 @@ public class CommandParser : IParser
 {
     readonly WordParser _wordParser = new();
 
-    public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
         var words = new List<DictionaryValue>();
 
-        while (position < source.Length && !config.IsCommandSeparator(source[position]))
+        while (scanner.Position < scanner.Source.Length && !config.IsCommandSeparator(scanner.Source[scanner.Position]))
         {
-            while (position < source.Length && config.IsWordSeparator(source[position]))
+            while (scanner.Position < scanner.Source.Length && config.IsWordSeparator(scanner.Source[scanner.Position]))
             {
-                ++position;
+                scanner.Advance();
             }
 
-            var word = _wordParser.Parse(source, ref position, config);
+            var word = _wordParser.Parse(scanner, config);
             if (word is not null)
             {
                 words.Add(word);

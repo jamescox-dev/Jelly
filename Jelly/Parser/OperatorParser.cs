@@ -4,12 +4,12 @@ namespace Jelly.Parser;
 
 public class OperatorParser : IParser
 {
-    public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        var op = config.GetOperatorAt(source, position);
+        var op = config.GetOperatorAt(scanner.Source, scanner.Position);
         if (op is not null)
         {
-            position += op.Length;
+            scanner.Advance(op.Length);
             return Node.Literal(op.ToValue());
         }
         return null;

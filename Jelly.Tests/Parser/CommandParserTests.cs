@@ -11,10 +11,9 @@ public class CommandParserTests
     public void ACommandIsParsedFromSourceWhenItContainsOnlyOneWords()
     {
         var parser = new CommandParser();
-        var source = "go";
-        var position = 0;
+        var scanner = new Scanner("go");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Command(
             Node.Literal("go".ToValue()), 
@@ -25,10 +24,9 @@ public class CommandParserTests
     public void TheParserSkipsWordSeparatorsAndIncludeExtraWordsAsArguments()
     {
         var parser = new CommandParser();
-        var source = "print hello, world";
-        var position = 0;
+        var scanner = new Scanner("print hello, world");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Command(
             Node.Literal("print".ToValue()), 
@@ -41,10 +39,9 @@ public class CommandParserTests
     public void ACommandIsNotParsedWhenTheSourceContainsNoWords()
     {
         var parser = new CommandParser();
-        var source = "  ";
-        var position = 0;
+        var scanner = new Scanner("  ");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().BeNull();
     }
@@ -53,10 +50,9 @@ public class CommandParserTests
     public void WhenTheCommandNameIsAVariableNodeAndTheFirstArgumentIsAnEqualsOperatorAnAssignmentNodeIsReturned()
     {
         var parser = new CommandParser();
-        var source = "$name =";
-        var position = 0;
+        var scanner = new Scanner("$name =");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Assignment(
             "name", Node.Literal(Value.Empty)));
@@ -66,10 +62,9 @@ public class CommandParserTests
     public void WhenTheCommandIsParsedAsAnAssignmentTheValueIsTheFirstNode()
     {
         var parser = new CommandParser();
-        var source = "$name = Vic";
-        var position = 0;
+        var scanner = new Scanner("$name = Vic");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Assignment(
             "name", Node.Literal("Vic".ToValue())));
@@ -79,10 +74,9 @@ public class CommandParserTests
     public void WhenAnAssignmentHasMoreThanOneAParseErrorIsThrown()
     {
         var parser = new CommandParser();
-        var source = "$name = Vic & Bob";
-        var position = 0;
+        var scanner = new Scanner("$name = Vic & Bob");
         
-        parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("Unexpected literal after assignment value.");
     }
 
@@ -90,10 +84,9 @@ public class CommandParserTests
     public void WhenTheCommandIsJustOneSingleVariableNodeThatIsReturned()
     {
         var parser = new CommandParser();
-        var source = "$name";
-        var position = 0;
+        var scanner = new Scanner("$name");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Variable("name"));
     }

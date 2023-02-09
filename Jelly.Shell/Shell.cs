@@ -67,8 +67,7 @@ public class Shell
 
     Value Evaluate(string source)
     {
-        var position = 0;
-        var script = _parser.Parse(source, ref position, new DefaultParserConfig());
+        var script = _parser.Parse(new Scanner(source), new DefaultParserConfig());
         if (script is not null)
         {
             return _evaluator.Evaluate(_globalScope, script);

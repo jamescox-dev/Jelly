@@ -14,16 +14,16 @@ public class ScriptParser : IParser
         _subscriptParser = subscriptParser;
     }
 
-    public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
         var commands = new List<DictionaryValue>();
         var success = true;
 
         if (_subscriptParser)
         {
-            if (position < source.Length && config.IsScriptCharacter(source[position]))
+            if (scanner.Position < scanner.Source.Length && config.IsScriptCharacter(scanner.Source[scanner.Position]))
             {
-                ++position;
+                scanner.Advance();
                 success = false;
             }
             else
@@ -32,38 +32,38 @@ public class ScriptParser : IParser
             }
         }
 
-        while (position < source.Length)
+        while (scanner.Position < scanner.Source.Length)
         {
-            while (position < source.Length && (config.IsCommandSeparator(source[position]) || config.IsWordSeparator(source[position])))
+            while (scanner.Position < scanner.Source.Length && (config.IsCommandSeparator(scanner.Source[scanner.Position]) || config.IsWordSeparator(scanner.Source[scanner.Position])))
             {
-                ++position;
+                scanner.Advance();
             }
 
-            if (position < source.Length)
+            if (scanner.Position < scanner.Source.Length)
             {
-                if (config.IsScriptEndCharacter(source[position]))
+                if (config.IsScriptEndCharacter(scanner.Source[scanner.Position]))
                 {
                     if (_subscriptParser)
                     {
-                        ++position;
+                        scanner.Advance();
                         success = true;
                         break;
                     }
                     else
                     {
-                        throw new ParseError($"Unexpected input '{source[position]}'.");
+                        throw new ParseError($"Unexpected input '{scanner.Source[scanner.Position]}'.");
                     }
                 }
                 
-                var startPosition = position;
-                var command = CommandParser.Parse(source, ref position, config);
+                var startPosition = scanner.Position;
+                var command = CommandParser.Parse(scanner, config);
                 if (command is not null)
                 {
                     commands.Add(command);
                 }
-                else if (position == startPosition)
+                else if (scanner.Position == startPosition)
                 {
-                    throw new ParseError($"Unexpected input '{source[position]}'.");
+                    throw new ParseError($"Unexpected input '{scanner.Source[scanner.Position]}'.");
                 }
             }
         }

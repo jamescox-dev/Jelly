@@ -59,7 +59,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _mockParser.Verify(m => m.Parse("print hello, world", ref It.Ref<int>.IsAny, It.IsAny<DefaultParserConfig>()), Times.Once);
+        _mockParser.Verify(m => m.Parse(new Scanner("print hello, world"), It.IsAny<DefaultParserConfig>()), Times.Once);
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class ShellTests
     public void IfParsingTheInputThrowsAnErrorTheErrorIsWritten()
     {
         _fakeReaderWriter.EnqueueInput("this throws an error");
-        _mockParser.Setup(m => m.Parse("this throws an error", ref It.Ref<int>.IsAny, It.IsAny<IParserConfig>()))
+        _mockParser.Setup(m => m.Parse(new Scanner("this throws an error"), It.IsAny<IParserConfig>()))
             .Throws(Error.Parse("Bad input!"));
 
         _shell.Repl();
@@ -159,9 +159,9 @@ public class ShellTests
                 Node.Literal("hello,".ToValue()), Node.Literal("world".ToValue())
             )));
 
-        _mockParser.Setup(m => m.Parse("print hello, world", ref It.Ref<int>.IsAny, It.IsAny<DefaultParserConfig>()))
+        _mockParser.Setup(m => m.Parse(new Scanner("print hello, world"), It.IsAny<DefaultParserConfig>()))
             .Returns(_expectedParsedScript);
-        _mockParser.Setup(m => m.Parse("noop", ref It.Ref<int>.IsAny, It.IsAny<DefaultParserConfig>()))
+        _mockParser.Setup(m => m.Parse(new Scanner("noop"), It.IsAny<DefaultParserConfig>()))
             .Returns(new DictionaryValue());
 
         _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, _expectedParsedScript)).Returns("the result!".ToValue());

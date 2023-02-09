@@ -6,25 +6,26 @@ namespace Jelly.Parser;
 
 public class EscapeCharacterParser
 {
-    public string? Parse(string source, ref int position, IParserConfig config)
+    public string? Parse(Scanner scanner, IParserConfig config)
     {
-        if (position < source.Length && config.IsEscapeCharacter(source[position]))
+        if (scanner.Position < scanner.Source.Length && config.IsEscapeCharacter(scanner.Source[scanner.Position]))
         {
-            ++position;
-            if (position < source.Length)
+            scanner.Advance();
+            if (scanner.Position < scanner.Source.Length)
             {
-                var ch = source[position++];
+                var ch = scanner.Source[scanner.Position];
+                scanner.Advance();
                 if (config.IsEscape8bit(ch))
                 {
-                    return ParseHexCode(source, ref position, 2);
+                    return ParseHexCode(scanner, 2);
                 }
                 else if (config.IsEscape16bit(ch))
                 {
-                    return ParseHexCode(source, ref position, 4);
+                    return ParseHexCode(scanner, 4);
                 }
                 else if (config.IsEscape24bit(ch))
                 {
-                    return ParseHexCode(source, ref position, 6);
+                    return ParseHexCode(scanner, 6);
                 }
                 else if (config.EscapeCharacterSubstitutions.ContainsKey(ch))
                 {
@@ -37,13 +38,13 @@ public class EscapeCharacterParser
         return null;
     }
 
-    static string ParseHexCode(string source, ref int position, int length)
+    static string ParseHexCode(Scanner scanner, int length)
     {
-        if (position + length - 1 < source.Length)
+        if (scanner.Position + length - 1 < scanner.Source.Length)
         {
-            if (int.TryParse(source[position..(position + length)], NumberStyles.HexNumber, CultureInfo.InvariantCulture.NumberFormat, out var code))
+            if (int.TryParse(scanner.Source[scanner.Position..(scanner.Position + length)], NumberStyles.HexNumber, CultureInfo.InvariantCulture.NumberFormat, out var code))
             {
-                position += length;
+                scanner.Advance(length);
                 return char.ConvertFromUtf32(code);
             }
             else

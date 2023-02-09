@@ -4,13 +4,13 @@ namespace Jelly.Parser;
 
 public class CommentParser : IParser
 {
-    public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        if (position < source.Length && config.IsCommentCharacter(source[position]))
+        if (scanner.Position < scanner.Source.Length && config.IsCommentCharacter(scanner.Source[scanner.Position]))
         {
-            while (position < source.Length && !config.IsCommandSeparator(source[position]))
+            while (scanner.Position < scanner.Source.Length && !config.IsCommandSeparator(scanner.Source[scanner.Position]))
             {
-                ++position;
+                scanner.Advance();
             }
         }
         return null;

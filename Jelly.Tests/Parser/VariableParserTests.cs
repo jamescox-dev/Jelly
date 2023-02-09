@@ -9,10 +9,9 @@ public class VariableParserTests
     public void WhenTheCharacterAtTheCurrentPositionIsNotAVariableCharacterNotVariableNodeIsParsed()
     {
         var parser = new VariableParser();
-        var source = "pi";
-        var position = 0;
+        var scanner = new Scanner("pi");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().BeNull();
     }
@@ -21,10 +20,9 @@ public class VariableParserTests
     public void AVariableNodeIsParsedWhenTheCurrentCharacterIsAVariableCharacter()
     {
         var parser = new VariableParser();
-        var source = "$pi";
-        var position = 0;
+        var scanner = new Scanner("$pi");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().NotBeNull();
     }
@@ -33,10 +31,9 @@ public class VariableParserTests
     public void TheNameOfTheVariableIsAllTheCharactersFollowingTheVariableCharacterUntilASpecialCharacterIsEncountered()
     {
         var parser = new VariableParser();
-        var source = "$pi ";
-        var position = 0;
+        var scanner = new Scanner("$pi ");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Variable("pi"));
     }
@@ -45,10 +42,9 @@ public class VariableParserTests
     public void IfANameOfZeroCharactersInLengthIsEncounteredAnErrorIsThrown()
     {
         var parser = new VariableParser();
-        var source = "$$";
-        var position = 0;
+        var scanner = new Scanner("$$");
 
-        parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("A variable must have a name.");
     }
 
@@ -56,12 +52,11 @@ public class VariableParserTests
     public void IfAfterTheVariableCharacterAVariableDelimiterCharacterIsFoundTheVariableNameIsParsedUntilAVariableEndDelimiter()
     {
         var parser = new VariableParser();
-        var source = "$[pi]";
-        var position = 0;
+        var scanner = new Scanner("$[pi]");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(5);
+        scanner.Position.Should().Be(5);
         node.Should().Be(Node.Variable("pi"));
     }
 
@@ -69,12 +64,11 @@ public class VariableParserTests
     public void IfAOperatorIsEncounteredTheVariableEnds()
     {
         var parser = new VariableParser();
-        var source = "$E=mc2";
-        var position = 0;
+        var scanner = new Scanner("$E=mc2");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Variable("E"));
-        position.Should().Be(2);
+        scanner.Position.Should().Be(2);
     }
 }

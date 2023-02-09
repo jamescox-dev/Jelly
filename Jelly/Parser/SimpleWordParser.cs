@@ -8,30 +8,30 @@ public class SimpleWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
 
-    public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        var start = position;
+        var start = scanner.Position;
         var value = new StringBuilder();
 
-        while (position < source.Length)
+        while (scanner.Position < scanner.Source.Length)
         {
-            var ch = source[position];
-            var escapedCh = EscapeCharacterParser.Parse(source, ref position, config);
+            var ch = scanner.Source[scanner.Position];
+            var escapedCh = EscapeCharacterParser.Parse(scanner, config);
             if (escapedCh is not null)
             {
                 value.Append(escapedCh);
             }
-            else if (config.IsSpecialCharacter(ch) || config.GetOperatorAt(source, position) is not null)
+            else if (config.IsSpecialCharacter(ch) || config.GetOperatorAt(scanner.Source, scanner.Position) is not null)
             {
                 break;
             }
             else
             {
                 value.Append(ch);
-                ++position;
+                scanner.Advance();
             }
         }
 
-        return start == position ? null : Node.Literal(value.ToString().ToValue());
+        return start == scanner.Position ? null : Node.Literal(value.ToString().ToValue());
     }
 }

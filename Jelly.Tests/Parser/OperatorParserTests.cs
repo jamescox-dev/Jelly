@@ -9,12 +9,11 @@ public class OperatorParserTests
     public void IfThereIsAnOperatorAtTheCurrentPositionALiteralNodeIsParsed()
     {
         var parser = new OperatorParser();
-        var source = "=";
-        var position = 0;
+        var scanner = new Scanner("=");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(1);
+        scanner.Position.Should().Be(1);
         node.Should().Be(Node.Literal("=".ToValue()));
     }
 
@@ -22,12 +21,11 @@ public class OperatorParserTests
     public void IfTheSourceAtTheCurrentPositionIsNotAOperatorNullIsReturned()
     {
         var parser = new OperatorParser();
-        var source = "equals";
-        var position = 0;
+        var scanner = new Scanner("equals");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(0);
+        scanner.Position.Should().Be(0);
         node.Should().BeNull();
     }
 }

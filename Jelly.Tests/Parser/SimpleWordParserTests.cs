@@ -10,10 +10,9 @@ public class SimpleWordParserTests
     public void ALiteralNodeIsParsedFromSource()
     {
         var parser = new SimpleWordParser();
-        var source = "hello";
-        var position = 0;
+        var scanner = new Scanner("hello");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal("hello".ToValue()));
     }
@@ -22,60 +21,55 @@ public class SimpleWordParserTests
     public void ALiteralNodeIsParsedFromSourceFromAGivenPosition()
     {
         var parser = new SimpleWordParser();
-        var source = "hello, goodbye";
-        var position = 7;
+        var scanner = new Scanner("hello, goodbye", 7);
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal("goodbye".ToValue()));
     }
 
     [Test]
-    public void ThePositionOfIsAdvanceToTheEndOfTheParsedWord()
+    public void ThePositionIsAdvanceToTheEndOfTheParsedWord()
     {
         var parser = new SimpleWordParser();
-        var source = "hello, goodbye";
-        var position = 7;
+        var scanner = new Scanner("hello, goodbye", 7);
         
-        parser.Parse(source, ref position, TestParserConfig.Shared);
+        parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(14);
+        scanner.Position.Should().Be(14);
     }
 
     [Test]
     public void TheParsingOfAWordEndsAtAWordSeparator()
     {
         var parser = new SimpleWordParser();
-        var source = "hello, goodbye";
-        var position = 0;
+        var scanner = new Scanner("hello, goodbye");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal("hello,".ToValue()));
-        position.Should().Be(6);
+        scanner.Position.Should().Be(6);
     }
 
     [Test]
     public void IfTheSourceContainsNoWordCharactersNoLiteralNodeIsReturnedAndThePositionIsNotAdvanced()
     {
         var parser = new SimpleWordParser();
-        var source = "    ";
-        var position = 2;
+        var scanner = new Scanner("    ", 2);
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().BeNull();
-        position.Should().Be(2);
+        scanner.Position.Should().Be(2);
     }
 
     [Test]
     public void SpecialCharacterThatWouldNormalStopWordParsingAreIncludedInTheWordIfProceededWithAEscapeCharacter()
     {
         var parser = new SimpleWordParser();
-        var source = @"\ \\";
-        var position = 0;
+        var scanner = new Scanner(@"\ \\");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal(@" \".ToValue()));
     }
@@ -84,10 +78,9 @@ public class SimpleWordParserTests
     public void IfAEscapeCharacterIsAtTheEndOfTheSourceAParseErrorIsThrown()
     {
         var parser = new SimpleWordParser();
-        var source = @"hi\";
-        var position = 0;
+        var scanner = new Scanner(@"hi\");
         
-        parser.Invoking(p => p.Parse(source, ref position, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
     }
 
@@ -95,12 +88,11 @@ public class SimpleWordParserTests
     public void IfAOperatorIsEncounteredTheSimpleWordEnds()
     {
         var parser = new SimpleWordParser();
-        var source = "E=mc2";
-        var position = 0;
+        var scanner = new Scanner("E=mc2");
         
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal("E".ToValue()));
-        position.Should().Be(1);
+        scanner.Position.Should().Be(1);
     }
 }

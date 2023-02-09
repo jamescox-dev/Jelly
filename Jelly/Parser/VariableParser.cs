@@ -5,33 +5,33 @@ using Jelly.Values;
 
 public class VariableParser : IParser
 {
-    public DictionaryValue? Parse(string source, ref int position, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        if (position < source.Length && config.IsVariableCharacter(source[position]))
+        if (scanner.Position < scanner.Source.Length && config.IsVariableCharacter(scanner.Source[scanner.Position]))
         {
-            ++position;
+            scanner.Advance();
             int start;
-            if (position < source.Length && config.IsVariableDelimiter(source[position]))
+            if (scanner.Position < scanner.Source.Length && config.IsVariableDelimiter(scanner.Source[scanner.Position]))
             {
-                ++position;
-                start = position;
-                while (position < source.Length && !config.IsVariableEndDelimiter(source[position]))
+                scanner.Advance();
+                start = scanner.Position;
+                while (scanner.Position < scanner.Source.Length && !config.IsVariableEndDelimiter(scanner.Source[scanner.Position]))
                 {
-                    ++position;
+                    scanner.Advance();
                 }
-                ++position;
-                return Node.Variable(source[start..(position - 1)]);
+                scanner.Advance();
+                return Node.Variable(scanner.Source[start..(scanner.Position - 1)]);
             }
             else
             {
-                start = position;
-                while (position < source.Length && !(config.IsSpecialCharacter(source[position]) || config.GetOperatorAt(source, position) is not null))
+                start = scanner.Position;
+                while (scanner.Position < scanner.Source.Length && !(config.IsSpecialCharacter(scanner.Source[scanner.Position]) || config.GetOperatorAt(scanner.Source, scanner.Position) is not null))
                 {
-                    ++position;
+                    scanner.Advance();
                 }
-                if (position > start)
+                if (scanner.Position > start)
                 {
-                    return Node.Variable(source[start..position]);
+                    return Node.Variable(scanner.Source[start..scanner.Position]);
                 }
                 else
                 {

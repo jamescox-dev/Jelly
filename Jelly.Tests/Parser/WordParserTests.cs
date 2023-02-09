@@ -10,10 +10,9 @@ public class WordParserTests
     public void ASimpleWordCanBeParsed()
     {
         var parser = new WordParser();
-        var source = "jelly";
-        var position = 0;
-
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var scanner = new Scanner("jelly");
+    
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal("jelly".ToValue()));
     }
@@ -22,10 +21,9 @@ public class WordParserTests
     public void AOperatorCanBeParsed()
     {
         var parser = new WordParser();
-        var source = "=";
-        var position = 0;
+        var scanner = new Scanner("=");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal("=".ToValue()));
     }
@@ -34,10 +32,9 @@ public class WordParserTests
     public void AVariableCanBeParsed()
     {
         var parser = new WordParser();
-        var source = "$jelly";
-        var position = 0;
-
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var scanner = new Scanner("$jelly");
+        
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Variable("jelly"));
     }
@@ -46,10 +43,9 @@ public class WordParserTests
     public void AScriptCanBeParsed()
     {
         var parser = new WordParser();
-        var source = "{add 1 2}";
-        var position = 0;
-
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var scanner = new Scanner("{add 1 2}");
+        
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Script(
             Node.Command(Node.Literal("add".ToValue()),
@@ -64,12 +60,11 @@ public class WordParserTests
     public void ACommentCanBeParsed()
     {
         var parser = new WordParser();
-        var source = "#comment";
-        var position = 0;
+        var scanner = new Scanner("#comment");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        position.Should().Be(8);
+        scanner.Position.Should().Be(8);
         node.Should().BeNull();
     }
 
@@ -77,10 +72,9 @@ public class WordParserTests
     public void AQuotedWordCanBeParsed()
     {
         var parser = new WordParser();
-        var source = "'jelly'";
-        var position = 0;
+        var scanner = new Scanner("'jelly'");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Composite(Node.Literal("jelly".ToValue())));
     }
@@ -89,10 +83,9 @@ public class WordParserTests
     public void ANestingWordCanBeParsed()
     {
         var parser = new WordParser();
-        var source = "[jelly]";
-        var position = 0;
+        var scanner = new Scanner("[jelly]");
 
-        var node = parser.Parse(source, ref position, TestParserConfig.Shared);
+        var node = parser.Parse(scanner, TestParserConfig.Shared);
 
         node.Should().Be(Node.Literal("jelly".ToValue()));
     }
