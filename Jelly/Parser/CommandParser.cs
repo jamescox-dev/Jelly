@@ -11,7 +11,7 @@ public class CommandParser : IParser
 {
     readonly WordParser _wordParser = new();
 
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         var words = new List<DictionaryValue>();
 
@@ -19,7 +19,7 @@ public class CommandParser : IParser
         {
             scanner.AdvanceWhile(s => s.IsWordSeparator);
 
-            var word = _wordParser.Parse(scanner, config);
+            var word = _wordParser.Parse(scanner);
             if (word is not null)
             {
                 words.Add(word);

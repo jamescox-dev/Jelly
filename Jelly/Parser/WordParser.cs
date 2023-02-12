@@ -17,11 +17,11 @@ public class WordParser : IParser
         new NestingWordParser(),
     };
     
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         foreach (var parser in Parsers)
         {
-            var node = parser.Parse(scanner, config);
+            var node = parser.Parse(scanner);
             if (node is not null)
             {
                 return node;

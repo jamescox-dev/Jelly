@@ -15,7 +15,7 @@ public class CommandParserTests
         var parser = new CommandParser();
         var scanner = new Scanner("go");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Command(
             Node.Literal("go".ToValue()), 
@@ -28,7 +28,7 @@ public class CommandParserTests
         var parser = new CommandParser();
         var scanner = new Scanner("print hello, world");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Command(
             Node.Literal("print".ToValue()), 
@@ -43,7 +43,7 @@ public class CommandParserTests
         var parser = new CommandParser();
         var scanner = new Scanner("  ");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().BeNull();
     }
@@ -54,7 +54,7 @@ public class CommandParserTests
         var parser = new CommandParser();
         var scanner = new Scanner("$name =");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Assignment(
             "name", Node.Literal(Value.Empty)));
@@ -66,7 +66,7 @@ public class CommandParserTests
         var parser = new CommandParser();
         var scanner = new Scanner("$name = Vic");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Assignment(
             "name", Node.Literal("Vic".ToValue())));
@@ -78,7 +78,7 @@ public class CommandParserTests
         var parser = new CommandParser();
         var scanner = new Scanner("$name = Vic & Bob");
         
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected literal after assignment value.");
     }
 
@@ -88,7 +88,7 @@ public class CommandParserTests
         var parser = new CommandParser();
         var scanner = new Scanner("$name");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Variable("name"));
     }

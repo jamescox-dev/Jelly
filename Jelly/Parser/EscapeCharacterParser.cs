@@ -7,7 +7,7 @@ namespace Jelly.Parser;
 
 public class EscapeCharacterParser
 {
-    public string? Parse(Scanner scanner, IParserConfig config)
+    public string? Parse(Scanner scanner)
     {
         if (scanner.AdvanceIf(s => s.IsEscapeCharacter))
         {

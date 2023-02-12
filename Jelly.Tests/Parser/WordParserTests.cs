@@ -14,7 +14,7 @@ public class WordParserTests
         var parser = new WordParser();
         var scanner = new Scanner("jelly");
     
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal("jelly".ToValue()));
     }
@@ -25,7 +25,7 @@ public class WordParserTests
         var parser = new WordParser();
         var scanner = new Scanner("=");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal("=".ToValue()));
     }
@@ -36,7 +36,7 @@ public class WordParserTests
         var parser = new WordParser();
         var scanner = new Scanner("$jelly");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Variable("jelly"));
     }
@@ -47,7 +47,7 @@ public class WordParserTests
         var parser = new WordParser();
         var scanner = new Scanner("{add 1 2}");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(
             Node.Command(Node.Literal("add".ToValue()),
@@ -64,7 +64,7 @@ public class WordParserTests
         var parser = new WordParser();
         var scanner = new Scanner("#comment");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(8);
         node.Should().BeNull();
@@ -76,7 +76,7 @@ public class WordParserTests
         var parser = new WordParser();
         var scanner = new Scanner("'jelly'");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Composite(Node.Literal("jelly".ToValue())));
     }
@@ -87,7 +87,7 @@ public class WordParserTests
         var parser = new WordParser();
         var scanner = new Scanner("[jelly]");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal("jelly".ToValue()));
     }

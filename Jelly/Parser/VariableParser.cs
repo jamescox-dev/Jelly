@@ -7,7 +7,7 @@ using Jelly.Values;
 
 public class VariableParser : IParser
 {
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         if (scanner.AdvanceIf(s => s.IsVariableMarker))
         {

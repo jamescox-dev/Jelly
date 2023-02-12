@@ -10,14 +10,14 @@ public class SimpleWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
 
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         var start = scanner.Position;
         var value = new StringBuilder();
 
         while (!scanner.IsEof)
         {
-            var escapedCh = EscapeCharacterParser.Parse(scanner, config);
+            var escapedCh = EscapeCharacterParser.Parse(scanner);
             if (escapedCh is not null)
             {
                 value.Append(escapedCh);

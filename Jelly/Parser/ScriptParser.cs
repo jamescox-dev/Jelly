@@ -16,7 +16,7 @@ public class ScriptParser : IParser
         _subscriptParser = subscriptParser;
     }
 
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         var commands = new List<DictionaryValue>();
         var success = true;
@@ -54,7 +54,7 @@ public class ScriptParser : IParser
                 }
                 
                 var startPosition = scanner.Position;
-                var command = CommandParser.Parse(scanner, config);
+                var command = CommandParser.Parse(scanner);
                 if (command is not null)
                 {
                     commands.Add(command);

@@ -12,7 +12,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner("hello");
         
-        var result = parser.Parse(scanner, TestParserConfig.Shared);
+        var result = parser.Parse(scanner);
 
         scanner.Position.Should().Be(0);
         result.Should().BeNull();
@@ -24,7 +24,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\\");
 
-        var result = parser.Parse(scanner, TestParserConfig.Shared);
+        var result = parser.Parse(scanner);
 
         scanner.Position.Should().Be(2);
         result.Should().Be(@"\");
@@ -36,7 +36,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
     }
 
@@ -46,7 +46,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\x4C");
 
-        var result = parser.Parse(scanner, TestParserConfig.Shared);
+        var result = parser.Parse(scanner);
 
         scanner.Position.Should().Be(4);
         result.Should().Be("L");
@@ -59,7 +59,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(source);
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after 8bit escape-character.");
     }
 
@@ -69,7 +69,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\xhi");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Invalid 8bit escape-character.");
     }
 
@@ -79,7 +79,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\u013f");
 
-        var result = parser.Parse(scanner, TestParserConfig.Shared);
+        var result = parser.Parse(scanner);
 
         scanner.Position.Should().Be(6);
         result.Should().Be("Ŀ");
@@ -94,7 +94,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(source);
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after 16bit escape-character.");
     }
 
@@ -104,7 +104,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\uhelo");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Invalid 16bit escape-character.");
     }
 
@@ -114,7 +114,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\p01d473");
 
-        var result = parser.Parse(scanner, TestParserConfig.Shared);
+        var result = parser.Parse(scanner);
 
         scanner.Position.Should().Be(8);
         result.Should().Be("𝑳");
@@ -131,7 +131,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(source);
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after 24bit escape-character.");
     }
 
@@ -141,7 +141,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\phello!");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Invalid 24bit escape-character.");
     }
 
@@ -151,7 +151,7 @@ public class EscapeCharacterParserTests
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\n");
 
-        var result = parser.Parse(scanner, TestParserConfig.Shared);
+        var result = parser.Parse(scanner);
 
         scanner.Position.Should().Be(2);
         result.Should().Be("\n");

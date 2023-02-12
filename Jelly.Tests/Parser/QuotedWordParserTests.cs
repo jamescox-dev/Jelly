@@ -14,7 +14,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner("hi");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(0);
         node.Should().BeNull();
@@ -26,7 +26,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner("'hi'");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(4);
         node.Should().Be(Node.Composite(Node.Literal("hi".ToValue())));
@@ -38,7 +38,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner(@"'\\\''");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(6);
         node.Should().Be(Node.Composite(Node.Literal(@"\'".ToValue())));
@@ -50,7 +50,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner(@"'\");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
     }
 
@@ -60,7 +60,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner(@"'this never ends!");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input in quoted-word.");
     }
 
@@ -70,7 +70,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner(@"'hello, $name how do you do'");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Composite(
             Node.Literal("hello, $name how do you do".ToValue())));
@@ -82,7 +82,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner(@"'hello, {whoami} how do you do'");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Composite(
             Node.Literal("hello, ".ToValue()),
@@ -96,7 +96,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner("''");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Composite());
     }
@@ -107,7 +107,7 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner("'hello\" world' not parsed!");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(14);
         node.Should().Be(Node.Composite(Node.Literal("hello\" world".ToValue())));

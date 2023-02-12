@@ -1,4 +1,4 @@
-namespace Jelly.Parser.Tests;
+namespace Jelly.Ast.Tests;
 
 using Jelly.Ast;
 using Jelly.Values;

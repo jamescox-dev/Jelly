@@ -4,6 +4,7 @@ using Jelly.Errors;
 using Jelly.Evaluator;
 using Jelly.Library;
 using Jelly.Parser;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 using Jelly.Shell.Tests.Helpers;
 using Jelly.Ast;
@@ -60,7 +61,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _mockParser.Verify(m => m.Parse(new Scanner("print hello, world"), It.IsAny<DefaultParserConfig>()), Times.Once);
+        _mockParser.Verify(m => m.Parse(new Scanner("print hello, world")), Times.Once);
     }
 
     [Test]
@@ -77,7 +78,7 @@ public class ShellTests
     public void IfParsingTheInputThrowsAnErrorTheErrorIsWritten()
     {
         _fakeReaderWriter.EnqueueInput("this throws an error");
-        _mockParser.Setup(m => m.Parse(new Scanner("this throws an error"), It.IsAny<IParserConfig>()))
+        _mockParser.Setup(m => m.Parse(new Scanner("this throws an error")))
             .Throws(Error.Parse("Bad input!"));
 
         _shell.Repl();
@@ -160,9 +161,9 @@ public class ShellTests
                 Node.Literal("hello,".ToValue()), Node.Literal("world".ToValue())
             )));
 
-        _mockParser.Setup(m => m.Parse(new Scanner("print hello, world"), It.IsAny<DefaultParserConfig>()))
+        _mockParser.Setup(m => m.Parse(new Scanner("print hello, world")))
             .Returns(_expectedParsedScript);
-        _mockParser.Setup(m => m.Parse(new Scanner("noop"), It.IsAny<DefaultParserConfig>()))
+        _mockParser.Setup(m => m.Parse(new Scanner("noop")))
             .Returns(new DictionaryValue());
 
         _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, _expectedParsedScript)).Returns("the result!".ToValue());

@@ -12,7 +12,7 @@ public class QuotedWordParser : IParser
     static readonly VariableParser VariableParser = new();
     static readonly ScriptParser ScriptParser = new(true);
 
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         var parts = new List<DictionaryValue>();
         var literal = new StringBuilder();
@@ -23,7 +23,7 @@ public class QuotedWordParser : IParser
             scanner.Advance();
             while (!scanner.IsEof)
             {
-                var escapedCh = EscapeCharacterParser.Parse(scanner, config);
+                var escapedCh = EscapeCharacterParser.Parse(scanner);
                 if (escapedCh is not null)
                 {
                     literal.Append(escapedCh);
@@ -31,7 +31,7 @@ public class QuotedWordParser : IParser
                 else if (scanner.IsScriptBegin)
                 {
                     FlushCurrentLitral();
-                    var script = ScriptParser.Parse(scanner, config);
+                    var script = ScriptParser.Parse(scanner);
                     if (script is not null)
                     {
                         parts.Add(script);

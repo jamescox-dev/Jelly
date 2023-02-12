@@ -13,7 +13,7 @@ public class VariableParserTests
         var parser = new VariableParser();
         var scanner = new Scanner("pi");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().BeNull();
     }
@@ -24,7 +24,7 @@ public class VariableParserTests
         var parser = new VariableParser();
         var scanner = new Scanner("$pi");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().NotBeNull();
     }
@@ -35,7 +35,7 @@ public class VariableParserTests
         var parser = new VariableParser();
         var scanner = new Scanner("$pi ");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Variable("pi"));
     }
@@ -46,7 +46,7 @@ public class VariableParserTests
         var parser = new VariableParser();
         var scanner = new Scanner("$$");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("A variable must have a name.");
     }
 
@@ -56,7 +56,7 @@ public class VariableParserTests
         var parser = new VariableParser();
         var scanner = new Scanner("${pi}");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(5);
         node.Should().Be(Node.Variable("pi"));
@@ -68,7 +68,7 @@ public class VariableParserTests
         var parser = new VariableParser();
         var scanner = new Scanner("$E=mc2");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Variable("E"));
         scanner.Position.Should().Be(2);

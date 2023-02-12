@@ -14,7 +14,7 @@ public class NestingWordParserTests
         var parser = new NestingWordParser();
         var scanner = new Scanner("hello");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(0);
         node.Should().BeNull();
@@ -26,7 +26,7 @@ public class NestingWordParserTests
         var parser = new NestingWordParser();
         var scanner = new Scanner("[]");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(2);
         node.Should().Be(Node.Literal(Value.Empty));
@@ -38,7 +38,7 @@ public class NestingWordParserTests
         var parser = new NestingWordParser();
         var scanner = new Scanner("[{hello}, $world!]");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(18);
         node.Should().Be(Node.Literal("{hello}, $world!".ToValue()));
@@ -50,7 +50,7 @@ public class NestingWordParserTests
         var parser = new NestingWordParser();
         var scanner = new Scanner("[open [ close ] close] not this ]");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(22);
         node.Should().Be(Node.Literal("open [ close ] close".ToValue()));
@@ -62,7 +62,7 @@ public class NestingWordParserTests
         var parser = new NestingWordParser();
         var scanner = new Scanner("[this [never [ends]]...");
         
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input in nesting-word.");
     }
 
@@ -72,7 +72,7 @@ public class NestingWordParserTests
         var parser = new NestingWordParser();
         var scanner = new Scanner(@"[ \[ \\\[ \\[ \\\\\] ]]");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(23);
         node.Should().Be(Node.Literal(@" \[ \\\[ \\[ \\\\\] ]".ToValue()));

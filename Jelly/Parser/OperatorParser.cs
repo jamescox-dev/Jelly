@@ -6,7 +6,7 @@ namespace Jelly.Parser;
 
 public class OperatorParser : IParser
 {
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         if (scanner.TryGetOperator(out var op))
         {

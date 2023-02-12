@@ -14,7 +14,7 @@ public class ScriptParserTests
         var parser = new ScriptParser();
         var scanner = new Scanner("print jello, world");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(18);
         node.Should().Be(Node.Script(
@@ -32,7 +32,7 @@ public class ScriptParserTests
         var parser = new ScriptParser();
         var scanner = new Scanner(" ; ; ;  print jello, world");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(
             Node.Command(Node.Literal("print".ToValue()),
@@ -52,7 +52,7 @@ public class ScriptParserTests
         var parser = new ScriptParser();
         var scanner = new Scanner(source);
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script());
     }
@@ -63,7 +63,7 @@ public class ScriptParserTests
         var parser = new ScriptParser();
         var scanner = new Scanner("print one;print two ;; print three");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(
             Node.Command(Node.Literal("print".ToValue()),
@@ -87,7 +87,7 @@ public class ScriptParserTests
         var parser = new ScriptParser(true);
         var scanner = new Scanner("{say hi}");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(8);
         node.Should().Be(Node.Script(
@@ -104,7 +104,7 @@ public class ScriptParserTests
         var parser = new ScriptParser(true);
         var scanner = new Scanner("say hi!}");
 
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().BeNull();
     }
@@ -115,7 +115,7 @@ public class ScriptParserTests
         var parser = new ScriptParser();
         var scanner = new Scanner("say hi!}");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected input '}'.");
     }
 
@@ -125,7 +125,7 @@ public class ScriptParserTests
         var parser = new ScriptParser(true);
         var scanner = new Scanner("{say hi!");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-file.");
     }
 
@@ -135,7 +135,7 @@ public class ScriptParserTests
         var parser = new ScriptParser();
         var scanner = new Scanner("]");
 
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected input ']'.");
     }
 }

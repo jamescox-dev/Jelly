@@ -14,7 +14,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner("hello");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal("hello".ToValue()));
     }
@@ -25,7 +25,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner("hello, goodbye", 7);
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal("goodbye".ToValue()));
     }
@@ -36,7 +36,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner("hello, goodbye", 7);
         
-        parser.Parse(scanner, TestParserConfig.Shared);
+        parser.Parse(scanner);
 
         scanner.Position.Should().Be(14);
     }
@@ -47,7 +47,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner("hello, goodbye");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal("hello,".ToValue()));
         scanner.Position.Should().Be(6);
@@ -59,7 +59,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner("    ", 2);
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().BeNull();
         scanner.Position.Should().Be(2);
@@ -71,7 +71,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner(@"\ \\");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal(@" \".ToValue()));
     }
@@ -82,7 +82,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner(@"hi\");
         
-        parser.Invoking(p => p.Parse(scanner, TestParserConfig.Shared)).Should()
+        parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
     }
 
@@ -92,7 +92,7 @@ public class SimpleWordParserTests
         var parser = new SimpleWordParser();
         var scanner = new Scanner("E=mc2");
         
-        var node = parser.Parse(scanner, TestParserConfig.Shared);
+        var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Literal("E".ToValue()));
         scanner.Position.Should().Be(1);

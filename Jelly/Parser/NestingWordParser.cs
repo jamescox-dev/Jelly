@@ -7,7 +7,7 @@ namespace Jelly.Parser;
 
 public class NestingWordParser : IParser
 {
-    public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
+    public DictionaryValue? Parse(Scanner scanner)
     {
         if (scanner.AdvanceIf(s => s.IsNestingQuoteBegin))
         {   

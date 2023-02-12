@@ -4,6 +4,7 @@ using Jelly.Errors;
 using Jelly.Evaluator;
 using Jelly.Library;
 using Jelly.Parser;
+using Jelly.Parser.Scanning;
 using Jelly.Shell.Io;
 using Jelly.Values;
 
@@ -67,7 +68,7 @@ public class Shell
 
     Value Evaluate(string source)
     {
-        var script = _parser.Parse(new Scanner(source), new DefaultParserConfig());
+        var script = _parser.Parse(new Scanner(source));
         if (script is not null)
         {
             return _evaluator.Evaluate(_globalScope, script);
