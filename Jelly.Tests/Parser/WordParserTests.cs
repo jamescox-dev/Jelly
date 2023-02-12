@@ -91,4 +91,15 @@ public class WordParserTests
 
         node.Should().Be(Node.Literal("jelly".ToValue()));
     }
+
+    [Test]
+    public void AExpressionCanBeParsed()
+    {
+        var parser = new WordParser();
+        var scanner = new Scanner("(wobble)");
+
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Expression(Node.Literal("wobble".ToValue())));
+    }
 }

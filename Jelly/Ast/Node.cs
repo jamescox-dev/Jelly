@@ -1,5 +1,6 @@
 namespace Jelly.Ast;
 
+using System;
 using Jelly.Values;
 
 public static class Node
@@ -16,6 +17,8 @@ public static class Node
     static readonly StringValue CompositeKeyword = new StringValue("composite");
     static readonly StringValue PartsKeyword = new StringValue("parts");
     static readonly StringValue AssignmentKeyword = new StringValue("assignment");
+    static readonly StringValue ExpressionKeyword = new StringValue("expression");
+    static readonly StringValue WordsKeywords = new StringValue("words");
 
     public static DictionaryValue Literal(Value value) =>
         new DictionaryValue(TypeKeyword, LiteralKeyword, ValueKeyword, value);
@@ -35,6 +38,9 @@ public static class Node
     public static DictionaryValue Assignment(string name, DictionaryValue value) =>
         new DictionaryValue(TypeKeyword, AssignmentKeyword, NameKeyword, name.ToValue(), ValueKeyword, value);
 
+    public static DictionaryValue Expression(params DictionaryValue[] words) =>
+        new DictionaryValue(TypeKeyword, ExpressionKeyword, WordsKeywords, words.ToValue());
+
     public static bool IsLiteral(DictionaryValue node) => IsType(node, LiteralKeyword);
 
     public static bool IsVariable(DictionaryValue node) => IsType(node, VariableKeyword);
@@ -46,6 +52,8 @@ public static class Node
     public static bool IsComposite(DictionaryValue node) => IsType(node, CompositeKeyword);
 
     public static bool IsAssignment(DictionaryValue node) => IsType(node, AssignmentKeyword);
+
+    public static bool IsExprssion(DictionaryValue node) => IsType(node, ExpressionKeyword);
 
     static bool IsType(DictionaryValue node, StringValue type) =>
         node.TryGetValue(TypeKeyword, out var typeValue) && typeValue == type;

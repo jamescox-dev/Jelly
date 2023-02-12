@@ -15,6 +15,7 @@ public class WordParser : IParser
         new CommentParser(),
         new OperatorParser(),
         new NestingWordParser(),
+        new ExpressionParser(),
     };
     
     public DictionaryValue? Parse(Scanner scanner)

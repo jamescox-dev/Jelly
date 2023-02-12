@@ -92,4 +92,18 @@ public class CommandParserTests
 
         node.Should().Be(Node.Variable("name"));
     }
+
+    [Test]
+    public void WhenTheCommandIsJustOneExpressionNodeThatIsReturned()
+    {
+        var parser = new CommandParser();
+        var scanner = new Scanner("(a + b)");
+        
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Expression(
+            Node.Literal("a".ToValue()), 
+            Node.Literal("+".ToValue()), 
+            Node.Literal("b".ToValue())));
+    }
 }

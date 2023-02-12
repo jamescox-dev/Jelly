@@ -81,6 +81,19 @@ public class NodeTests
     }
 
     [Test]
+    public void AnExpressionNodeCanBeCreatedWithTheCorrectAttributes()
+    {
+        var node = Node.Expression(Node.Literal("a".ToValue()), Node.Literal("+".ToValue()), Node.Literal("b".ToValue()));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "expression".ToValue(),
+            "words".ToValue(), new ListValue(
+                Node.Literal("a".ToValue()), Node.Literal("+".ToValue()), Node.Literal("b".ToValue())
+            )
+        ));
+    }
+
+    [Test]
     public void TheTypeOfANodeCanBeChecked()
     {
         var literal = Node.Literal("test".ToValue());
@@ -89,6 +102,7 @@ public class NodeTests
         var script = Node.Script();
         var composite = Node.Composite();
         var assignment = Node.Assignment("test", literal);
+        var expression = Node.Expression(literal);
         
         var isLiteral = Node.IsLiteral(literal);
         var isVariable = Node.IsVariable(variable);
@@ -96,6 +110,7 @@ public class NodeTests
         var isScript = Node.IsScript(script);
         var isComposite = Node.IsComposite(composite);
         var isAssignment = Node.IsAssignment(assignment);
+        var isExpression = Node.IsExprssion(expression);
 
         isLiteral.Should().BeTrue();
         isVariable.Should().BeTrue();
@@ -103,5 +118,6 @@ public class NodeTests
         isScript.Should().BeTrue();
         isComposite.Should().BeTrue();
         isAssignment.Should().BeTrue();
+        isExpression.Should().BeTrue();
     }
 }

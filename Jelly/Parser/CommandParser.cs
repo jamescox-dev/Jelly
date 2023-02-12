@@ -9,7 +9,7 @@ using Jelly.Values;
 
 public class CommandParser : IParser
 {
-    readonly WordParser _wordParser = new();
+    static readonly WordParser _wordParser = new();
 
     public DictionaryValue? Parse(Scanner scanner)
     {
@@ -32,7 +32,7 @@ public class CommandParser : IParser
         
         if (words.Count == 1)
         {
-            if (Node.IsVariable(words[0]))
+            if (Node.IsVariable(words[0]) || Node.IsExprssion(words[0]))
             {
                 return words[0];
             }
