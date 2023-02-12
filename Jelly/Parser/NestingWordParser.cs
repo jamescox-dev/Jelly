@@ -1,5 +1,7 @@
 using Jelly.Values;
 using Jelly.Errors;
+using Jelly.Ast;
+using Jelly.Parser.Scanning;
 
 namespace Jelly.Parser;
 
@@ -7,21 +9,19 @@ public class NestingWordParser : IParser
 {
     public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        if (scanner.Position < scanner.Source.Length && config.IsNestingQuote(scanner.Source[scanner.Position]))
-        {
-            scanner.Advance();
-            
+        if (scanner.AdvanceIf(s => s.IsNestingQuoteBegin))
+        {   
             var depth = 1;
             var start = scanner.Position;
             var escapeRun = 0;
             while (scanner.Position < scanner.Source.Length)
             {
                 var ch = scanner.Source[scanner.Position];
-                if (config.IsNestingQuote(ch) && (escapeRun % 2) == 0)
+                if (scanner.IsNestingQuoteBegin && (escapeRun % 2) == 0)
                 {
                     ++depth;
                 }
-                else if (config.IsNestingEndQuote(ch) && (escapeRun % 2) == 0)
+                else if (scanner.IsNestingQuoteEnd && (escapeRun % 2) == 0)
                 {
                     --depth;
                     if (depth == 0)
@@ -30,7 +30,7 @@ public class NestingWordParser : IParser
                         return Node.Literal(scanner.Source[start .. (scanner.Position - 1)].ToValue());
                     }
                 }
-                if (config.IsEscapeCharacter(ch))
+                if (scanner.IsEscapeCharacter)
                 {
                     ++escapeRun;
                 }

@@ -1,6 +1,6 @@
-using Jelly.Values;
+namespace Jelly.Ast;
 
-namespace Jelly.Parser;
+using Jelly.Values;
 
 public static class Node
 {
@@ -16,13 +16,13 @@ public static class Node
     static readonly StringValue CompositeKeyword = new StringValue("composite");
     static readonly StringValue PartsKeyword = new StringValue("parts");
     static readonly StringValue AssignmentKeyword = new StringValue("assignment");
-    
+
     public static DictionaryValue Literal(Value value) =>
         new DictionaryValue(TypeKeyword, LiteralKeyword, ValueKeyword, value);
 
-    public static DictionaryValue Variable(string name) => 
+    public static DictionaryValue Variable(string name) =>
         new DictionaryValue(TypeKeyword, VariableKeyword, NameKeyword, name.ToValue());
-    
+
     public static DictionaryValue Command(DictionaryValue name, ListValue args) =>
         new DictionaryValue(TypeKeyword, CommandKeyword, NameKeyword, name, ArgsKeyword, args);
 
@@ -40,13 +40,13 @@ public static class Node
     public static bool IsVariable(DictionaryValue node) => IsType(node, VariableKeyword);
 
     public static bool IsCommand(DictionaryValue node) => IsType(node, CommandKeyword);
-    
+
     public static bool IsScript(DictionaryValue node) => IsType(node, ScriptKeyword);
-    
+
     public static bool IsComposite(DictionaryValue node) => IsType(node, CompositeKeyword);
-    
+
     public static bool IsAssignment(DictionaryValue node) => IsType(node, AssignmentKeyword);
 
-    static bool IsType(DictionaryValue node, StringValue type) => 
+    static bool IsType(DictionaryValue node, StringValue type) =>
         node.TryGetValue(TypeKeyword, out var typeValue) && typeValue == type;
 }

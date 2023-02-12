@@ -1,6 +1,7 @@
 namespace Jelly.Parser;
 
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 public class WordParser : IParser

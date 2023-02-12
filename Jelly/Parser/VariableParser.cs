@@ -1,34 +1,28 @@
 namespace Jelly.Parser;
 
+using Jelly.Ast;
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 public class VariableParser : IParser
 {
     public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        if (scanner.Position < scanner.Source.Length && config.IsVariableCharacter(scanner.Source[scanner.Position]))
+        if (scanner.AdvanceIf(s => s.IsVariableMarker))
         {
-            scanner.Advance();
             int start;
-            if (scanner.Position < scanner.Source.Length && config.IsVariableDelimiter(scanner.Source[scanner.Position]))
+            if (scanner.AdvanceIf(s => s.IsVariableBegin))
             {
-                scanner.Advance();
                 start = scanner.Position;
-                while (scanner.Position < scanner.Source.Length && !config.IsVariableEndDelimiter(scanner.Source[scanner.Position]))
-                {
-                    scanner.Advance();
-                }
+                scanner.AdvanceWhile(s => !s.IsVariableEnd);
                 scanner.Advance();
                 return Node.Variable(scanner.Source[start..(scanner.Position - 1)]);
             }
             else
             {
                 start = scanner.Position;
-                while (scanner.Position < scanner.Source.Length && !(config.IsSpecialCharacter(scanner.Source[scanner.Position]) || config.GetOperatorAt(scanner.Source, scanner.Position) is not null))
-                {
-                    scanner.Advance();
-                }
+                scanner.AdvanceWhile(s => !s.IsSpecialCharacter);
                 if (scanner.Position > start)
                 {
                     return Node.Variable(scanner.Source[start..scanner.Position]);

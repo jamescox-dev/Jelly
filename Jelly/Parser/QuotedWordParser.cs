@@ -1,7 +1,9 @@
 namespace Jelly.Parser;
 
 using System.Text;
+using Jelly.Ast;
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 public class QuotedWordParser : IParser
@@ -15,25 +17,20 @@ public class QuotedWordParser : IParser
         var parts = new List<DictionaryValue>();
         var literal = new StringBuilder();
 
-        if (scanner.Position < scanner.Source.Length && config.IsQuote(scanner.Source[scanner.Position]))
+        if (scanner.IsQuote)
         {
-            var openingQuote = scanner.Source[scanner.Position];
+            var openingQuote = (char)scanner.CurrentCharacter!;
             scanner.Advance();
-            while (scanner.Position < scanner.Source.Length)
+            while (!scanner.IsEof)
             {
-                var ch = scanner.Source[scanner.Position];
                 var escapedCh = EscapeCharacterParser.Parse(scanner, config);
                 if (escapedCh is not null)
                 {
                     literal.Append(escapedCh);
                 }
-                else if (config.IsScriptCharacter(ch))
+                else if (scanner.IsScriptBegin)
                 {
-                    if (literal.Length != 0)
-                    {
-                        parts.Add(Node.Literal(literal.ToString().ToValue()));
-                        literal.Clear();
-                    }
+                    FlushCurrentLitral();
                     var script = ScriptParser.Parse(scanner, config);
                     if (script is not null)
                     {
@@ -42,19 +39,14 @@ public class QuotedWordParser : IParser
                     }
                     throw new NotImplementedException(); // This should not happen.
                 }
-                else if (ch == openingQuote)
+                else if (scanner.AdvanceIf(s => s.CurrentCharacter == openingQuote))
                 {
-                    scanner.Advance();
-                    if (literal.Length != 0)
-                    {
-                        parts.Add(Node.Literal(literal.ToString().ToValue()));
-                        literal.Clear();
-                    }
+                    FlushCurrentLitral();
                     return Node.Composite(parts.ToArray());
                 }
                 else
                 {
-                    literal.Append(ch);
+                    literal.Append(scanner.CurrentCharacter);
                     scanner.Advance();
                 }
             }
@@ -62,5 +54,14 @@ public class QuotedWordParser : IParser
         }
 
         return null;
+
+        void FlushCurrentLitral()
+        {
+            if (literal.Length != 0)
+            {
+                parts.Add(Node.Literal(literal.ToString().ToValue()));
+                literal.Clear();
+            }
+        }
     }
 }

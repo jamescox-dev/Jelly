@@ -1,8 +1,8 @@
 namespace Jelly.Library.Tests;
 
+using Jelly.Ast;
 using Jelly.Commands;
 using Jelly.Errors;
-using Jelly.Parser;
 using Jelly.Values;
 
 public class CoreLibraryTests

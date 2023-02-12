@@ -1,6 +1,8 @@
 namespace Jelly.Parser;
 
+using Jelly.Ast;
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 // TODO:  Special form for commands that is just one expression node ().
@@ -13,12 +15,9 @@ public class CommandParser : IParser
     {
         var words = new List<DictionaryValue>();
 
-        while (scanner.Position < scanner.Source.Length && !config.IsCommandSeparator(scanner.Source[scanner.Position]))
+        while (!scanner.IsCommandSeparator)
         {
-            while (scanner.Position < scanner.Source.Length && config.IsWordSeparator(scanner.Source[scanner.Position]))
-            {
-                scanner.Advance();
-            }
+            scanner.AdvanceWhile(s => s.IsWordSeparator);
 
             var word = _wordParser.Parse(scanner, config);
             if (word is not null)

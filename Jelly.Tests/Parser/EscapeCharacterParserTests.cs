@@ -1,4 +1,5 @@
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 
 namespace Jelly.Parser.Tests;
 

@@ -1,3 +1,4 @@
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 namespace Jelly.Parser;
@@ -6,12 +7,9 @@ public class CommentParser : IParser
 {
     public DictionaryValue? Parse(Scanner scanner, IParserConfig config)
     {
-        if (scanner.Position < scanner.Source.Length && config.IsCommentCharacter(scanner.Source[scanner.Position]))
+        if (scanner.AdvanceIf(s => s.IsCommentBegin))
         {
-            while (scanner.Position < scanner.Source.Length && !config.IsCommandSeparator(scanner.Source[scanner.Position]))
-            {
-                scanner.Advance();
-            }
+            scanner.AdvanceWhile(s => !s.IsCommentEnd);
         }
         return null;
     }

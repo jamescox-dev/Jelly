@@ -1,5 +1,7 @@
 namespace Jelly.Parser.Tests;
 
+using Jelly.Ast;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 [TestFixture]

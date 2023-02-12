@@ -1,6 +1,8 @@
 namespace Jelly.Parser.Tests;
 
+using Jelly.Ast;
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 [TestFixture]
@@ -83,15 +85,15 @@ public class ScriptParserTests
     public void WhenConfiguredAsASubscriptParserTheScriptMustBeSurroundedByScriptAndScriptEndCharacters()
     {
         var parser = new ScriptParser(true);
-        var scanner = new Scanner("{say hi!}");
+        var scanner = new Scanner("{say hi}");
 
         var node = parser.Parse(scanner, TestParserConfig.Shared);
 
-        scanner.Position.Should().Be(9);
+        scanner.Position.Should().Be(8);
         node.Should().Be(Node.Script(
             Node.Command(Node.Literal("say".ToValue()),
             new ListValue(
-                Node.Literal("hi!".ToValue())
+                Node.Literal("hi".ToValue())
             ))
         ));
     }

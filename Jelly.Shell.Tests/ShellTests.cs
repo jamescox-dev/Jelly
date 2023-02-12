@@ -6,6 +6,7 @@ using Jelly.Library;
 using Jelly.Parser;
 using Jelly.Values;
 using Jelly.Shell.Tests.Helpers;
+using Jelly.Ast;
 
 [TestFixture]
 public class ShellTests

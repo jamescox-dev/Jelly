@@ -1,6 +1,8 @@
 namespace Jelly.Parser.Tests;
 
+using Jelly.Ast;
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 
 [TestFixture]
 public class VariableParserTests
@@ -52,7 +54,7 @@ public class VariableParserTests
     public void IfAfterTheVariableCharacterAVariableDelimiterCharacterIsFoundTheVariableNameIsParsedUntilAVariableEndDelimiter()
     {
         var parser = new VariableParser();
-        var scanner = new Scanner("$[pi]");
+        var scanner = new Scanner("${pi}");
 
         var node = parser.Parse(scanner, TestParserConfig.Shared);
 

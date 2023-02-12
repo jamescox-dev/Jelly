@@ -1,6 +1,8 @@
 namespace Jelly.Parser;
 
+using Jelly.Ast;
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 public class ScriptParser : IParser
@@ -21,9 +23,8 @@ public class ScriptParser : IParser
 
         if (_subscriptParser)
         {
-            if (scanner.Position < scanner.Source.Length && config.IsScriptCharacter(scanner.Source[scanner.Position]))
+            if (scanner.AdvanceIf(s => s.IsScriptBegin))
             {
-                scanner.Advance();
                 success = false;
             }
             else
@@ -32,16 +33,13 @@ public class ScriptParser : IParser
             }
         }
 
-        while (scanner.Position < scanner.Source.Length)
+        while (!scanner.IsEof)
         {
-            while (scanner.Position < scanner.Source.Length && (config.IsCommandSeparator(scanner.Source[scanner.Position]) || config.IsWordSeparator(scanner.Source[scanner.Position])))
-            {
-                scanner.Advance();
-            }
+            scanner.AdvanceWhile(s => s.IsCommandSeparator || s.IsWordSeparator);
 
-            if (scanner.Position < scanner.Source.Length)
+            if (!scanner.IsEof)
             {
-                if (config.IsScriptEndCharacter(scanner.Source[scanner.Position]))
+                if (scanner.IsScriptEnd)
                 {
                     if (_subscriptParser)
                     {

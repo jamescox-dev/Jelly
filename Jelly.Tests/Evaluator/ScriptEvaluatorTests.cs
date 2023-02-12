@@ -1,7 +1,7 @@
 namespace Jelly.Evaluator.Tests;
 
+using Jelly.Ast;
 using Jelly.Commands;
-using Jelly.Parser;
 using Jelly.Values;
 
 public class ScriptEvaluatorTests

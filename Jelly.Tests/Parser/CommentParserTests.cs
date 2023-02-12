@@ -1,3 +1,5 @@
+using Jelly.Parser.Scanning;
+
 namespace Jelly.Parser.Tests;
 
 [TestFixture]
@@ -15,8 +17,8 @@ public class CommentParserTests
     }
 
     [TestCase("#comment", 8)]
-    [TestCase("#another comment; then something else", 16)]
-    public void IfACommentCharacterIsEncounteredThePositionIsAdvancedToTheNextCommandSeparatorOrEndOfInput(string source, int expectedPosition)
+    [TestCase("#another comment\n then something else", 16)]
+    public void IfACommentBeginCharacterIsEncounteredThePositionIsAdvancedToTheNextCommentEndOrEndOfInput(string source, int expectedPosition)
     {
         var parser = new CommentParser();
         var scanner = new Scanner(source);
@@ -27,7 +29,7 @@ public class CommentParserTests
     }
 
     [Test]
-    public void IfACommentCharacterIsNotAtTheCurrentPositionThePositionIsNotAltered()
+    public void IfACommentBeginCharacterIsNotAtTheCurrentPositionThePositionIsNotAltered()
     {
         var parser = new CommentParser();
         var scanner = new Scanner("not a comment");

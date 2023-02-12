@@ -1,6 +1,8 @@
 namespace Jelly.Parser;
 
+using Jelly.Ast;
 using Jelly.Errors;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 using System.Text;
 
@@ -13,21 +15,20 @@ public class SimpleWordParser : IParser
         var start = scanner.Position;
         var value = new StringBuilder();
 
-        while (scanner.Position < scanner.Source.Length)
+        while (!scanner.IsEof)
         {
-            var ch = scanner.Source[scanner.Position];
             var escapedCh = EscapeCharacterParser.Parse(scanner, config);
             if (escapedCh is not null)
             {
                 value.Append(escapedCh);
             }
-            else if (config.IsSpecialCharacter(ch) || config.GetOperatorAt(scanner.Source, scanner.Position) is not null)
+            else if (scanner.IsSpecialCharacter)
             {
                 break;
             }
             else
             {
-                value.Append(ch);
+                value.Append(scanner.CurrentCharacter);
                 scanner.Advance();
             }
         }
