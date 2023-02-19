@@ -89,7 +89,7 @@ public class CoreIoLibraryTest
         var result = input.Invoke(_scope, new ListValue());
 
         result.Should().Be("Bob".ToValue());
-        _fakeReaderWriter.IoOpsContains(new ReadLineOp("Bob"));
+        _fakeReaderWriter.IoOps.Single().Should().Be(new ReadLineOp("Bob"));
     }
 
     [Test]
