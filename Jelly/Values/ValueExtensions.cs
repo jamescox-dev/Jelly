@@ -5,6 +5,9 @@ public static class ValueExtensions
     public static StringValue ToValue(this string str) => 
         new StringValue(str);
 
+    public static NumberValue ToValue(this double dbl) => 
+        new NumberValue(dbl);
+
     public static ListValue ToValue(this IEnumerable<Value> list) => 
         new ListValue(list);
 

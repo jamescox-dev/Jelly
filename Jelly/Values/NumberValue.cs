@@ -9,25 +9,29 @@ public class NumberValue : Value
     static readonly BigInteger DoubleMaxValueAsBigInt = new BigInteger(double.MaxValue);
     static readonly Regex NumberPattern = new Regex(@"
         ^\s*
-        [+-]?
         (
+            [+-]?
             (
-                ([0-9]|[0-9][0-9_]*?[0-9])
                 (
-                    \.
-                |
-                    \.([0-9]|[0-9][0-9_]*?[0-9])
-                )?
+                    ([0-9]|[0-9][0-9_]*?[0-9])
+                    (
+                        \.
+                    |
+                        \.([0-9]|[0-9][0-9_]*?[0-9])
+                    )?
+                )
+                (e[+-]?([0-9]|[0-9][0-9_]*?[0-9]))?
+            |
+                (0x([0-9a-f]|[0-9a-f][0-9a-f_]*?[0-9a-f]))
+            |
+                (0o([0-7]|[0-7][0-7_]*?[0-7]))
+            |
+                (0b([01]|[01][01_]*?[01]))
+            |
+                inf
             )
-            (e[+-]?([0-9]|[0-9][0-9_]*?[0-9]))?
         |
-            (0x([0-9a-f]|[0-9a-f][0-9a-f_]*?[0-9a-f]))
-        |
-            (0o([0-7]|[0-7][0-7_]*?[0-7]))
-        |
-            (0b([01]|[01][01_]*?[01]))
-        |
-            (inf|nan|true|false)
+            true|false
         )
         \s*$
     ", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.CultureInvariant);

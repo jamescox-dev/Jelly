@@ -19,9 +19,20 @@ public static class Node
     static readonly StringValue AssignmentKeyword = new StringValue("assignment");
     static readonly StringValue ExpressionKeyword = new StringValue("expression");
     static readonly StringValue RootKeyword = new StringValue("root");
-
+    static readonly StringValue BinOpKeyword = new StringValue("binop");
+    static readonly StringValue OpKeyword = new StringValue("op");
+    static readonly StringValue AKeyword = new StringValue("a");
+    static readonly StringValue BKeyword = new StringValue("b");
+    static readonly StringValue UniOpKeyword = new StringValue("uniop");
+    
     public static DictionaryValue Literal(Value value) =>
         new DictionaryValue(TypeKeyword, LiteralKeyword, ValueKeyword, value);
+
+    public static DictionaryValue Literal(double value) =>
+        new DictionaryValue(TypeKeyword, LiteralKeyword, ValueKeyword, value.ToValue());
+
+    public static DictionaryValue Literal(string value) =>
+        new DictionaryValue(TypeKeyword, LiteralKeyword, ValueKeyword, value.ToValue());
 
     public static DictionaryValue Variable(string name) =>
         new DictionaryValue(TypeKeyword, VariableKeyword, NameKeyword, name.ToValue());
@@ -40,6 +51,12 @@ public static class Node
 
     public static DictionaryValue Expression(DictionaryValue root) =>
         new DictionaryValue(TypeKeyword, ExpressionKeyword, RootKeyword, root);
+
+    public static DictionaryValue BinOp(string op, DictionaryValue a, DictionaryValue b) =>
+        new DictionaryValue(TypeKeyword, BinOpKeyword, OpKeyword, op.ToValue(), AKeyword, a, BKeyword, b);
+
+    public static DictionaryValue UniOp(string op, DictionaryValue a) =>
+        new DictionaryValue(TypeKeyword, UniOpKeyword, OpKeyword, op.ToValue(), AKeyword, a);
 
     public static bool IsLiteral(DictionaryValue node) => IsType(node, LiteralKeyword);
 

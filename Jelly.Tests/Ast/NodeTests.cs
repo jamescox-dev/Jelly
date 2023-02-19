@@ -92,6 +92,31 @@ public class NodeTests
             )
         ));
     }
+    
+    [Test]
+    public void ABinaryOperatorCanBeCreatedWithTheCorrectAttributes()
+    {
+        var node = Node.BinOp("add", Node.Variable("a"), Node.Variable("b"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "binop".ToValue(),
+            "op".ToValue(), "add".ToValue(),
+            "a".ToValue(), Node.Variable("a"),
+            "b".ToValue(), Node.Variable("b")
+        ));
+    }
+
+    [Test]
+    public void AUnaryOperatorCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.UniOp("neg", Node.Variable("a"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "uniop".ToValue(),
+            "op".ToValue(), "neg".ToValue(),
+            "a".ToValue(), Node.Variable("a")
+        ));
+    }
 
     [Test]
     public void TheTypeOfANodeCanBeChecked()
