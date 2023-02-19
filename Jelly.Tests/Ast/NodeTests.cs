@@ -83,12 +83,12 @@ public class NodeTests
     [Test]
     public void AnExpressionNodeCanBeCreatedWithTheCorrectAttributes()
     {
-        var node = Node.Expression(Node.Literal("a".ToValue()), Node.Literal("+".ToValue()), Node.Literal("b".ToValue()));
+        var node = Node.Expression(Node.Literal("a".ToValue()));
 
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "expression".ToValue(),
-            "words".ToValue(), new ListValue(
-                Node.Literal("a".ToValue()), Node.Literal("+".ToValue()), Node.Literal("b".ToValue())
+            "root".ToValue(), new ListValue(
+                Node.Literal("a".ToValue())
             )
         ));
     }

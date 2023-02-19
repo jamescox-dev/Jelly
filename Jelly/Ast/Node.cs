@@ -18,7 +18,7 @@ public static class Node
     static readonly StringValue PartsKeyword = new StringValue("parts");
     static readonly StringValue AssignmentKeyword = new StringValue("assignment");
     static readonly StringValue ExpressionKeyword = new StringValue("expression");
-    static readonly StringValue WordsKeywords = new StringValue("words");
+    static readonly StringValue RootKeyword = new StringValue("root");
 
     public static DictionaryValue Literal(Value value) =>
         new DictionaryValue(TypeKeyword, LiteralKeyword, ValueKeyword, value);
@@ -38,8 +38,8 @@ public static class Node
     public static DictionaryValue Assignment(string name, DictionaryValue value) =>
         new DictionaryValue(TypeKeyword, AssignmentKeyword, NameKeyword, name.ToValue(), ValueKeyword, value);
 
-    public static DictionaryValue Expression(params DictionaryValue[] words) =>
-        new DictionaryValue(TypeKeyword, ExpressionKeyword, WordsKeywords, words.ToValue());
+    public static DictionaryValue Expression(DictionaryValue root) =>
+        new DictionaryValue(TypeKeyword, ExpressionKeyword, RootKeyword, root);
 
     public static bool IsLiteral(DictionaryValue node) => IsType(node, LiteralKeyword);
 
