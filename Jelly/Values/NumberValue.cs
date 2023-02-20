@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 
 public class NumberValue : Value
 {
+    public static readonly NumberValue One = new NumberValue(1.0);
+
     static readonly BigInteger DoubleMaxValueAsBigInt = new BigInteger(double.MaxValue);
     static readonly Regex NumberPattern = new Regex(@"
         ^\s*
@@ -42,7 +44,7 @@ public class NumberValue : Value
     };
 
     readonly double _value;
-
+    
     public NumberValue(double value)
     {
         _value = value;

@@ -26,8 +26,8 @@ public class ScriptScannerConfig : IScannerConfig
 
     static readonly HashSet<char> _quotes = new() { '\'', '"' };
 
-    static readonly List<string> _operators = new()
-    { 
+    static readonly List<string> _scriptOperators = new()
+    {
         "<=", ">=", "!=", "==", "<>", 
         "&&", "||",
         "++", "**", 
@@ -74,5 +74,5 @@ public class ScriptScannerConfig : IScannerConfig
 
     public char NestingQuoteEnd => ']';
 
-    public IReadOnlyList<string> Operators => _operators;
+    public IReadOnlyList<string> Operators => _scriptOperators;
 }

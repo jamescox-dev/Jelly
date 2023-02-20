@@ -20,11 +20,7 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
 
     public virtual double ToDouble()
     {
-        if (double.TryParse(ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedDouble))
-        {
-            return parsedDouble;
-        }
-        return double.NaN;
+        return NumberValue.ParseNumber(ToString());
     }
 
     public int CompareTo(Value? other)
