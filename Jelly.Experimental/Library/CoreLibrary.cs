@@ -9,13 +9,10 @@ public class CoreLibrary : ILibrary
 {
     public void LoadIntoScope(IScope scope)
     {
-        // TODO:  ++ / cat
-        // TODO:  add sum +
+        scope.DefineCommand("cat", new SimpleCommand(CmdCat)); 
+
         // TODO:  inc
         // TODO:  dec
-        // TODO:  -
-        // TODO:  mul product *
-        // TODO:  /
         // TODO:  //
         // TODO:  %
         // TODO:  %%
@@ -47,5 +44,10 @@ public class CoreLibrary : ILibrary
         // TODO:  or / ||
         // TODO:  orelse
         // TODO:  not / !
+    }
+
+    public Value CmdCat(IScope scope, ListValue args)
+    {
+        return string.Join("", args).ToValue();
     }
 }
