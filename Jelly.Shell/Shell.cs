@@ -17,8 +17,9 @@ public class Shell
     readonly IEvaluator _evaluator;
     readonly IEnumerable<ILibrary> _libraries;
     readonly ShellConfig _config;
+    readonly IHistoryManager _historyManager;
     
-    public Shell(IReader reader, IWriter writer, IScope globalScope, IParser parser, IEvaluator evaluator, IEnumerable<ILibrary> libraries, ShellConfig config)
+    public Shell(IReader reader, IWriter writer, IScope globalScope, IParser parser, IEvaluator evaluator, IEnumerable<ILibrary> libraries, ShellConfig config, IHistoryManager historyManager)
     {
         _reader = reader;
         _writer = writer;
@@ -27,18 +28,22 @@ public class Shell
         _evaluator = evaluator;
         _libraries = libraries;
         _config = config;
+        _historyManager = historyManager;
     }
 
     public void Repl()
     {
+        _historyManager.LoadHistory();
+
         SetupGlobalScope();
 
         for (;;)
         {
             try
             {
-                var input = Read();
-                PrintResult(Evaluate(input));
+                var command = Read();
+                AddHistory(command);
+                PrintResult(Evaluate(command));
             }
             catch (Error error)
             {
@@ -49,6 +54,8 @@ public class Shell
                 break;
             }
         }
+
+        _historyManager.SaveHistory();
     }
 
     void SetupGlobalScope()
@@ -57,6 +64,11 @@ public class Shell
         {
             library.LoadIntoScope(_globalScope);
         }
+    }
+
+    void AddHistory(string command)
+    {
+        _historyManager.AddHistory(command);
     }
 
     string Read()

@@ -146,6 +146,32 @@ public class ShellTests
         );
     }
 
+    [Test]
+    public void WhenACommandIsEnteredItIsAddedToTheHistroyManager()
+    {
+        _fakeReaderWriter.EnqueueInput("print hello, world");
+
+        _shell.Repl();
+
+        _fakeReaderWriter.RecordedHistory.Should().BeEquivalentTo("print hello, world");
+    }
+
+    [Test]
+    public void HistoryIsLoadedBeforeInputIsRead()
+    {
+        _shell.Repl();
+
+        _fakeReaderWriter.IoOps.Should().StartWith(new LoadHistoryOp());
+    }
+
+    [Test]
+    public void HistoryIsSavedAfterTheReplExists()
+    {
+        _shell.Repl();
+
+        _fakeReaderWriter.IoOps.Should().EndWith(new SaveHistoryOp());
+    }
+
     [SetUp]
     public void Setup()
     {
@@ -169,6 +195,6 @@ public class ShellTests
         _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, _expectedParsedScript)).Returns("the result!".ToValue());
         _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, new DictionaryValue())).Returns(Value.Empty);
 
-        _shell = new Shell(_fakeReaderWriter, _fakeReaderWriter, _mockScope.Object, _mockParser.Object, _mockEvaluator.Object, new ILibrary[] { _mockLibrary.Object, _mockLibrary.Object }, _config);
+        _shell = new Shell(_fakeReaderWriter, _fakeReaderWriter, _mockScope.Object, _mockParser.Object, _mockEvaluator.Object, new ILibrary[] { _mockLibrary.Object, _mockLibrary.Object }, _config, _fakeReaderWriter);
     }
 }
