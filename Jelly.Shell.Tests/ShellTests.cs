@@ -157,6 +157,16 @@ public class ShellTests
     }
 
     [Test]
+    public void IfTheCommandIsJustWhitespaceItIsNotAddedToTheHistroyManager()
+    {
+        _fakeReaderWriter.EnqueueInput("  \n\t  ");
+
+        _shell.Repl();
+
+        _fakeReaderWriter.RecordedHistory.Should().NotContain("  \n\t  ");
+    }
+
+    [Test]
     public void HistoryIsLoadedBeforeInputIsRead()
     {
         _shell.Repl();
@@ -170,6 +180,23 @@ public class ShellTests
         _shell.Repl();
 
         _fakeReaderWriter.IoOps.Should().EndWith(new SaveHistoryOp());
+    }
+
+    [Test]
+    public void IfTheInputThrowsAnMissingEndTokenErrorTheContinuationPromptIsUsedToAddAnotherLineToTheInput()
+    {
+        _fakeReaderWriter.EnqueueInput("print 'jello,");
+        _fakeReaderWriter.EnqueueInput("world'");
+        
+        _shell.Repl();
+
+        _fakeReaderWriter.VerifyIoOpsContains(
+            new WriteOp("> "), 
+            new ReadLineOp("print 'jello,"),
+            new WriteOp(". "), 
+            new ReadLineOp("world'"),
+            new WriteLineOp("the result!")
+        );
     }
 
     [SetUp]
@@ -189,6 +216,13 @@ public class ShellTests
 
         _mockParser.Setup(m => m.Parse(new Scanner("print hello, world")))
             .Returns(_expectedParsedScript);
+
+        _mockParser.Setup(m => m.Parse(new Scanner("print 'jello,\nworld'")))
+            .Returns(_expectedParsedScript);
+
+        _mockParser.Setup(m => m.Parse(new Scanner("print 'jello,")))
+            .Throws(new MissingEndTokenError("Oh!  No!"));
+
         _mockParser.Setup(m => m.Parse(new Scanner("noop")))
             .Returns(new DictionaryValue());
 

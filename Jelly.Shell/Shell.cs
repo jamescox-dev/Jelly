@@ -1,5 +1,6 @@
 ﻿namespace Jelly.Shell;
 
+using Jelly.Ast;
 using Jelly.Errors;
 using Jelly.Evaluator;
 using Jelly.Library;
@@ -42,7 +43,6 @@ public class Shell
             try
             {
                 var command = Read();
-                AddHistory(command);
                 PrintResult(Evaluate(command));
             }
             catch (Error error)
@@ -66,26 +66,45 @@ public class Shell
         }
     }
 
+    DictionaryValue Read()
+    {
+        var script = Node.Script();
+
+        var input = "";
+        var prompt = _config.Prompt;
+
+        for (;;)
+        {
+            _writer.Write(prompt);
+            var line = _reader.ReadLine();
+            input += (input.Length > 0 ? "\n" : "") + line;
+            try
+            {
+                script = _parser.Parse(new Scanner(input));
+                if (script is not null)
+                {
+                    AddHistory(input);
+                    return script;
+                }
+            }
+            catch (MissingEndTokenError)
+            {
+                prompt = _config.ContinuationPrompt;
+            }
+        }
+    }
+
     void AddHistory(string command)
     {
-        _historyManager.AddHistory(command);
-    }
-
-    string Read()
-    {
-        _writer.Write(_config.Prompt);
-        var input = _reader.ReadLine();
-        return input;
-    }
-
-    Value Evaluate(string source)
-    {
-        var script = _parser.Parse(new Scanner(source));
-        if (script is not null)
+        if (command.Trim().Length > 0)
         {
-            return _evaluator.Evaluate(_globalScope, script);
+            _historyManager.AddHistory(command);
         }
-        return Value.Empty;
+    }
+
+    Value Evaluate(DictionaryValue script)
+    {
+        return _evaluator.Evaluate(_globalScope, script);
     }
 
     void PrintResult(Value result)

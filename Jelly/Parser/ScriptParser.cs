@@ -68,7 +68,7 @@ public class ScriptParser : IParser
 
         if (!success)
         {
-            throw new ParseError("Unexpected end-of-file.");
+            throw Error.MissingEndToken("Unexpected end-of-file.");
         }
 
         return Node.Script(commands.ToArray());

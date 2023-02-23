@@ -13,6 +13,8 @@ public abstract class Error : Exception
 
     public static Error Parse(string message) => new ParseError(message);
 
+    public static Error MissingEndToken(string message) => new MissingEndTokenError(message);
+
     public static Error Name(string message) => new NameError(message);
 }
 
@@ -29,6 +31,11 @@ internal class EvalError : Error
 internal class ParseError : Error
 {
     public ParseError(string message) : base("/error/parse", message) {}
+}
+
+public class MissingEndTokenError : Error
+{
+    public MissingEndTokenError(string message) : base("/error/parse/missing/end_token", message) {}
 }
 
 internal class NameError : Error
