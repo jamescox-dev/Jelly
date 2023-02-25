@@ -5,6 +5,8 @@ using Jelly.Values;
 
 public interface IScope
 {
+    Scope? OuterScope { get; }
+
     void DefineVariable(string name, Value initialValue);
     
     Value GetVariable(string name);

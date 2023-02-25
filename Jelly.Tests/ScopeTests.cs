@@ -159,4 +159,77 @@ public class ScopeTests
         scope.Invoking(s => s.SetHiddenValue(404, "This won't work!".ToValue())).Should()
             .Throw<NameError>().WithMessage("Hidden value:  404 not defined.");
     }
+
+    [Test]
+    public void AScopeCanBeDefinedWithAnOuterScope()
+    {
+        var outer = new Scope();
+        
+        var scope = new Scope(outer);
+
+        scope.OuterScope.Should().Be(outer);
+    }
+
+    [Test]
+    public void IfAVariableDoesNotExistInTheScopeItIsRetrivedFromTheOuterScope()
+    {
+        var outer = new Scope();
+        outer.DefineVariable("name", "Homer".ToValue());
+        var scope = new Scope(outer);
+
+        var value = scope.GetVariable("name");
+
+        value.Should().Be("Homer".ToValue());
+    }
+
+    [Test]
+    public void IfAVariableDoesNotExistInTheScopeItIsSetInTheOuterScope()
+    {
+        var outer = new Scope();
+        outer.DefineVariable("name", "Homer".ToValue());
+        var scope = new Scope(outer);
+
+        scope.SetVariable("name", "Bart".ToValue());
+
+        var value = outer.GetVariable("name");
+        value.Should().Be("Bart".ToValue());
+    }
+
+    [Test]
+    public void IfACommandDoesNotExistInTheScopeItIsRetreivedFromTheOuterScope()
+    {
+        var outer = new Scope();
+        var testCommand = new Mock<ICommand>();
+        outer.DefineCommand("test", testCommand.Object);
+        var scope = new Scope(outer);
+
+        var command = scope.GetCommand("test");
+
+        command.Should().Be(testCommand.Object);
+    }
+
+    [Test]
+    public void IfAHiddenValueDoesNotExistInTheScopeItIsRetrievedFromTheOuterScope()
+    {
+        var outer = new Scope();
+        outer.DefineHiddenValue(100, "Secret".ToValue());
+        var scope = new Scope(outer);
+
+        var value = scope.GetHiddenValue(100);
+
+        value.Should().Be("Secret".ToValue());
+    }
+
+    [Test]
+    public void IfAHiddenValueDoesNotExistInTheScopeItIsSetInTheOuterScope()
+    {
+        var outer = new Scope();
+        outer.DefineHiddenValue(42, "Marge".ToValue());
+        var scope = new Scope(outer);
+
+        scope.SetHiddenValue(42, "Lisa".ToValue());
+
+        var value = outer.GetHiddenValue(42);
+        value.Should().Be("Lisa".ToValue());
+    }
 }

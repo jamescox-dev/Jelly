@@ -11,6 +11,13 @@ public class Scope : IScope
     readonly Dictionary<string, ICommand> _commands = new(StringComparer.InvariantCultureIgnoreCase);
     readonly Dictionary<int, Value> _hiddenValues = new();
 
+    public Scope? OuterScope { get; private set; }
+
+    public Scope(Scope? outer=null)
+    {
+        OuterScope = outer;
+    }
+
     public void DefineVariable(string name, Value initialValue)
     {
         _variables[name] = initialValue;
@@ -22,6 +29,10 @@ public class Scope : IScope
         {
             return value;
         }
+        else if (OuterScope is not null)
+        {
+            return OuterScope.GetVariable(name);
+        }
         throw new NameError($"Variable '{name}' not defined.");
     }
 
@@ -30,6 +41,10 @@ public class Scope : IScope
         if (_variables.ContainsKey(name))
         {
             _variables[name] = value;
+        }
+        else if (OuterScope is not null)
+        {
+            OuterScope.SetVariable(name, value);
         }
         else
         {
@@ -48,6 +63,10 @@ public class Scope : IScope
         {
             return command;
         }
+        else if (OuterScope is not null)
+        {
+            return OuterScope.GetCommand(name);
+        }
         throw new NameError($"Unknown command '{name}'.");
     }
 
@@ -62,6 +81,10 @@ public class Scope : IScope
         {
             return value;
         }
+        else if (OuterScope is not null)
+        {
+            return OuterScope.GetHiddenValue(id);
+        }
         throw new NameError($"Hidden value:  {id} not defined.");
     }
 
@@ -70,6 +93,10 @@ public class Scope : IScope
         if (_hiddenValues.ContainsKey(id))
         {
             _hiddenValues[id] = value;
+        }
+        else if (OuterScope is not null)
+        {
+            OuterScope.SetHiddenValue(id, value);
         }
         else
         {
