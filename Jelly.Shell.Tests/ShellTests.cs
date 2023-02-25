@@ -8,6 +8,7 @@ using Jelly.Parser.Scanning;
 using Jelly.Values;
 using Jelly.Shell.Tests.Helpers;
 using Jelly.Ast;
+using System.Reflection;
 
 [TestFixture]
 public class ShellTests
@@ -32,9 +33,17 @@ public class ShellTests
     }
 
     [Test]
+    public void BeforeEnteringTheReplTheConfiguredWelcomeMessageIsDisplayed()
+    {
+        _shell.Repl();
+
+        _fakeReaderWriter.IoOps.First().Should().Be(new WriteLineOp($"Jelly {JellyInfo.VersionString}\n"));
+    }
+
+    [Test]
     public void TheConfiguredPromptIsDisplayed()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
 
         _shell.Repl();
 
@@ -44,24 +53,24 @@ public class ShellTests
     [Test]
     public void ALineOfUsersInputIsRead()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
 
         _shell.Repl();
 
         _fakeReaderWriter.VerifyIoOpsContains(
             new WriteOp("> "), 
-            new ReadLineOp("print hello, world")
+            new ReadLineOp("print jello, world")
         );
     }
 
     [Test]
     public void TheInputIsParsed()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
 
         _shell.Repl();
 
-        _mockParser.Verify(m => m.Parse(new Scanner("print hello, world")), Times.Once);
+        _mockParser.Verify(m => m.Parse(new Scanner("print jello, world")), Times.Once);
     }
 
     [Test]
@@ -89,7 +98,7 @@ public class ShellTests
     [Test]
     public void TheInputIsEvaluated()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
 
         _shell.Repl();
 
@@ -99,7 +108,7 @@ public class ShellTests
     [Test]
     public void IfEvaluatingTheInputThrowsAnErrorTheErrorIsWritten()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
         _mockEvaluator.Setup(m => m.Evaluate(It.IsAny<IScope>(), It.IsAny<DictionaryValue>()))
             .Throws(Error.Name("Unknown variable!"));
 
@@ -111,7 +120,7 @@ public class ShellTests
     [Test]
     public void TheResultIsPrintedToTheScreen()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
 
         _shell.Repl();
 
@@ -131,17 +140,17 @@ public class ShellTests
     [Test]
     public void TheReplRunsInALoopUntilInterrupetedByAFatalError()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
 
         _shell.Repl();
 
         _fakeReaderWriter.VerifyIoOpsContains(
             new WriteOp("> "), 
-            new ReadLineOp("print hello, world"),
+            new ReadLineOp("print jello, world"),
             new WriteLineOp("the result!"),
             new WriteOp("> "), 
-            new ReadLineOp("print hello, world"),
+            new ReadLineOp("print jello, world"),
             new WriteLineOp("the result!")
         );
     }
@@ -149,11 +158,11 @@ public class ShellTests
     [Test]
     public void WhenACommandIsEnteredItIsAddedToTheHistroyManager()
     {
-        _fakeReaderWriter.EnqueueInput("print hello, world");
+        _fakeReaderWriter.EnqueueInput("print jello, world");
 
         _shell.Repl();
 
-        _fakeReaderWriter.RecordedHistory.Should().BeEquivalentTo("print hello, world");
+        _fakeReaderWriter.RecordedHistory.Should().BeEquivalentTo("print jello, world");
     }
 
     [Test]
@@ -163,7 +172,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _fakeReaderWriter.RecordedHistory.Should().NotContain("  \n\t  ");
+        _fakeReaderWriter.RecordedHistory.Should().BeEmpty();
     }
 
     [Test]
@@ -171,7 +180,7 @@ public class ShellTests
     {
         _shell.Repl();
 
-        _fakeReaderWriter.IoOps.Should().StartWith(new LoadHistoryOp());
+        _fakeReaderWriter.IoOps.Skip(1).Should().StartWith(new LoadHistoryOp());
     }
 
     [Test]
@@ -199,6 +208,50 @@ public class ShellTests
         );
     }
 
+    [Test]
+    public void BeforeRunningAScriptTheLibrariesAreEachLoadedIntoTheGlobalScope()
+    {
+        _shell.RunScript("print jello, world");
+
+        _mockLibrary.Verify(m => m.LoadIntoScope(_mockScope.Object), Times.Exactly(2));
+    }
+
+    [Test]
+    public void RunningAScriptReturnsZeroOnSuccess()
+    {
+        var result = _shell.RunScript("print jello, world");
+
+        result.Should().Be(0);
+    }
+
+    [Test]
+    public void RunningAScriptFirstParseTheSource()
+    {
+        _shell.RunScript("print jello, world");
+
+        _mockParser.Verify(m => m.Parse(new Scanner("print jello, world")), Times.Once);
+    }
+
+    [Test]
+    public void RunningAScriptEvaluesTheParsedSource()
+    {
+        _shell.RunScript("print jello, world");
+
+        _mockEvaluator.Verify(m => m.Evaluate(_mockScope.Object, It.IsAny<DictionaryValue>()), Times.Once);
+    }
+
+    [Test]
+    public void IfAErrorIsThrownItIsDisplayedToTheUserAndAnErrorCodeIsReturned()
+    {
+        _mockEvaluator.Setup(m => m.Evaluate(It.IsAny<IScope>(), It.IsAny<DictionaryValue>()))
+            .Throws(Error.Name("Unknown variable!"));
+        
+        var result = _shell.RunScript("print jello, world");
+
+        result.Should().Be(-1);
+        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/name:  Unknown variable!"));
+    }
+
     [SetUp]
     public void Setup()
     {
@@ -211,10 +264,10 @@ public class ShellTests
         _mockLibrary = new Mock<ILibrary>();
 
         _expectedParsedScript = Node.Script(Node.Command(Node.Literal("print".ToValue()), new ListValue(
-                Node.Literal("hello,".ToValue()), Node.Literal("world".ToValue())
+                Node.Literal("jello,".ToValue()), Node.Literal("world".ToValue())
             )));
 
-        _mockParser.Setup(m => m.Parse(new Scanner("print hello, world")))
+        _mockParser.Setup(m => m.Parse(new Scanner("print jello, world")))
             .Returns(_expectedParsedScript);
 
         _mockParser.Setup(m => m.Parse(new Scanner("print 'jello,\nworld'")))

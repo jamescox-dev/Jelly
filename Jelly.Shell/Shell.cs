@@ -34,9 +34,11 @@ public class Shell
 
     public void Repl()
     {
+        WriteWelcomeMessage();
+
         _historyManager.LoadHistory();
 
-        SetupGlobalScope();
+        LoadLibraries();
 
         for (;;)
         {
@@ -58,7 +60,12 @@ public class Shell
         _historyManager.SaveHistory();
     }
 
-    void SetupGlobalScope()
+    private void WriteWelcomeMessage()
+    {
+        _writer.WriteLine(string.Format(_config.WelcomeMessage, JellyInfo.VersionString));
+    }
+
+    void LoadLibraries()
     {
         foreach (var library in _libraries)
         {
@@ -96,7 +103,7 @@ public class Shell
 
     void AddHistory(string command)
     {
-        if (command.Trim().Length > 0)
+        if (!string.IsNullOrWhiteSpace(command))
         {
             _historyManager.AddHistory(command);
         }
@@ -118,5 +125,22 @@ public class Shell
     void PrintError(Error error)
     {
         _writer.WriteLine($"ERROR:  {error.Type}:  {error.Message}");
+    }
+
+    public int RunScript(string source)
+    {
+        LoadLibraries();
+
+        try
+        {
+            var script = _parser.Parse(new Scanner(source))!;
+            _evaluator.Evaluate(_globalScope, script);
+            return 0;
+        }
+        catch (Error error)
+        {
+            PrintError(error);
+            return -1;
+        }
     }
 }
