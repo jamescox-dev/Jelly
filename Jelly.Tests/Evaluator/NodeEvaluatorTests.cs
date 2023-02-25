@@ -46,7 +46,7 @@ public class NodeEvaluatorTests
 
         evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
             .Should().Throw<Error>().WithMessage("Can not evaluate node, not type specified.")
-            .Where(e => e.Type == "/error/eval");
+            .Where(e => e.Type == "/error/eval/");
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class NodeEvaluatorTests
 
         evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
             .Should().Throw<Error>().WithMessage("Can not evaluate node of type: 'invalid'.")
-            .Where(e => e.Type == "/error/eval");
+            .Where(e => e.Type == "/error/eval/");
     }
 
     public class TestEvaluator : IEvaluator

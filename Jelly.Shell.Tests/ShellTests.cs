@@ -92,7 +92,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/parse:  Bad input!"));
+        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/parse/:  Bad input!"));
     }
 
     [Test]
@@ -114,7 +114,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/name:  Unknown variable!"));
+        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/name/:  Unknown variable!"));
     }
 
     [Test]
@@ -249,7 +249,7 @@ public class ShellTests
         var result = _shell.RunScript("print jello, world");
 
         result.Should().Be(-1);
-        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/name:  Unknown variable!"));
+        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/name/:  Unknown variable!"));
     }
 
     [SetUp]
@@ -274,7 +274,7 @@ public class ShellTests
             .Returns(_expectedParsedScript);
 
         _mockParser.Setup(m => m.Parse(new Scanner("print 'jello,")))
-            .Throws(new MissingEndTokenError("Oh!  No!"));
+            .Throws(Error.MissingEndToken("Oh!  No!"));
 
         _mockParser.Setup(m => m.Parse(new Scanner("noop")))
             .Returns(new DictionaryValue());

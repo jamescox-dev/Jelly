@@ -1,46 +1,75 @@
 namespace Jelly.Errors;
 
-public abstract class Error : Exception
+public class Error : Exception
 {
+    static readonly SortedDictionary<string, Func<string, Error>> ErrorConstructors = new(StringComparer.InvariantCultureIgnoreCase)
+    {
+        { "/error/arg/", Arg },
+        { "/error/eval/", Eval },
+        { "/error/name/", Name },
+        { "/error/parse/", Parse },
+        { "/error/parse/missing/end_token/", MissingEndToken }, 
+    };
+
     public string Type { get; private set; }
 
-    protected Error(string type, string message) : base(message)
+    public static string NormalizeType(string original)
+    {
+        var slashRunsRemoved = string.Join("/", original.Split('/', StringSplitOptions.RemoveEmptyEntries));
+        return string.IsNullOrEmpty(slashRunsRemoved) ? "/" : $"/{slashRunsRemoved}/";
+    }
+
+    internal protected Error(string type, string message) : base(message)
     {
         Type = type;
     }
 
+    public bool IsType(string type) => Type.StartsWith(NormalizeType(type), StringComparison.InvariantCultureIgnoreCase);
+
+    public static Error Create(string type, string message)
+    {
+        if (ErrorConstructors.TryGetValue(NormalizeType(type), out var constructor))
+        {
+            return constructor(message);
+        }
+        return new Error(type, message);
+    }
+
     public static Error Arg(string message) => new ArgError(message);
+
+    public static Error Eval(string message) => new EvalError(message);
+
+    public static Error Name(string message) => new NameError(message);
 
     public static Error Parse(string message) => new ParseError(message);
 
     public static Error MissingEndToken(string message) => new MissingEndTokenError(message);
-
-    public static Error Name(string message) => new NameError(message);
 }
 
-internal class ArgError : Error
+public class ArgError : Error
 {
-    public ArgError(string message) : base("/error/arg", message) {}
+    internal ArgError(string message) : base("/error/arg/", message) {}
 }
 
-internal class EvalError : Error
+public class EvalError : Error
 {
-    public EvalError(string message) : base("/error/eval", message) {}
+    internal EvalError(string message) : base("/error/eval/", message) {}
 }
 
-internal class ParseError : Error
+public class ParseError : Error
 {
-    public ParseError(string message) : base("/error/parse", message) {}
+    internal ParseError(string message) : base("/error/parse/", message) {}
+    internal ParseError(string type, string message) : base(type, message) {}
 }
 
-public class MissingEndTokenError : Error
+public class MissingEndTokenError : ParseError
 {
-    public MissingEndTokenError(string message) : base("/error/parse/missing/end_token", message) {}
+    internal MissingEndTokenError(string message) : base("/error/parse/missing/end_token/", message) {}
 }
 
-internal class NameError : Error
+public class NameError : Error
 {
-    public NameError(string message) : base("/error/name", message) {}
+    internal NameError(string message) : base("/error/name/", message) {}
 }
 
 // TODO:  Break and Continue.

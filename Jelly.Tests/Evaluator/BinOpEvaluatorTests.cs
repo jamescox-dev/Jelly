@@ -53,6 +53,8 @@ public class BinOpEvaluatorTests
 
     // TODO:  Implement more operators.
 
+    // TODO:  Test for unknown binary-operators.
+
     [TestCase(1.0, 0.0, 1)]
     [TestCase(-1.0, 0.0, -1)]
     [TestCase(1.0, -0.0, -1)]
