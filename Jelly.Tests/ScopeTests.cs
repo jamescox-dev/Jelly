@@ -232,4 +232,19 @@ public class ScopeTests
         var value = outer.GetHiddenValue(42);
         value.Should().Be("Lisa".ToValue());
     }
+
+    [Test]
+    public void EachGeneratedIdIsIncreasedByOne()
+    {
+        var id1 = Scope.GenerateId();
+        var id2 = Scope.GenerateId();
+        var id3 = Scope.GenerateId();
+        var id4 = Scope.GenerateId();
+        var id5 = Scope.GenerateId();
+
+        id2.Should().Be(id1 + 1);
+        id3.Should().Be(id2 + 1);
+        id4.Should().Be(id3 + 1);
+        id5.Should().Be(id4 + 1);
+    }
 }

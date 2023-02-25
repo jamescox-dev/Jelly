@@ -7,11 +7,18 @@ using Jelly.Values;
 
 public class Scope : IScope
 {
+    static int _nextId = 0;
+
     readonly Dictionary<string, Value> _variables = new(StringComparer.InvariantCultureIgnoreCase);
     readonly Dictionary<string, ICommand> _commands = new(StringComparer.InvariantCultureIgnoreCase);
     readonly Dictionary<int, Value> _hiddenValues = new();
 
     public Scope? OuterScope { get; private set; }
+
+    public static int GenerateId()
+    {
+        return _nextId++;
+    }
 
     public Scope(Scope? outer=null)
     {
