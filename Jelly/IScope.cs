@@ -14,4 +14,10 @@ public interface IScope
     void DefineCommand(string name, ICommand command);
 
     ICommand GetCommand(string name);
+
+    void DefineHiddenValue(int id, Value initialValue);
+
+    Value GetHiddenValue(int id);
+
+    void SetHiddenValue(int id, Value value);
 }

@@ -118,4 +118,45 @@ public class ScopeTests
         scope.Invoking(s => s.GetCommand("test")).Should()
             .Throw<NameError>().WithMessage("Unknown command 'test'.");
     }
+
+    [Test]
+    public void AHiddenValueCanBeDefinedInAScopeAndThenRetrieved()
+    {
+        var scope = new Scope();
+
+        scope.DefineHiddenValue(0, "Secret".ToValue());
+        var value = scope.GetHiddenValue(0);
+
+        value.Should().Be("Secret".ToValue());
+    }
+
+    [Test]
+    public void RetrivingAHiddenValueThatHasNotBeenDefinedResultsInAnError()
+    {
+        var scope = new Scope();
+
+        scope.Invoking(s => s.GetHiddenValue(404)).Should()
+            .Throw<NameError>().WithMessage("Hidden value:  404 not defined.");
+    }
+
+    [Test]
+    public void AHiddenValueCanBeSetInAScope()
+    {
+        IScope scope = new Scope();
+        scope.DefineHiddenValue(0, "One".ToValue());
+
+        scope.SetHiddenValue(0, "Two".ToValue());
+        var value = scope.GetHiddenValue(0);
+
+        value.Should().Be("Two".ToValue());
+    }
+
+    [Test]
+    public void SettingAHiddenValueThatIsNotDefinedInAScopeThrowsAnError()
+    {
+        var scope = new Scope();
+
+        scope.Invoking(s => s.SetHiddenValue(404, "This won't work!".ToValue())).Should()
+            .Throw<NameError>().WithMessage("Hidden value:  404 not defined.");
+    }
 }

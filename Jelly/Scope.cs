@@ -9,6 +9,7 @@ public class Scope : IScope
 {
     readonly Dictionary<string, Value> _variables = new(StringComparer.InvariantCultureIgnoreCase);
     readonly Dictionary<string, ICommand> _commands = new(StringComparer.InvariantCultureIgnoreCase);
+    readonly Dictionary<int, Value> _hiddenValues = new();
 
     public void DefineVariable(string name, Value initialValue)
     {
@@ -48,5 +49,31 @@ public class Scope : IScope
             return command;
         }
         throw new NameError($"Unknown command '{name}'.");
+    }
+
+    public void DefineHiddenValue(int id, Value initialValue)
+    {
+        _hiddenValues[id] = initialValue;
+    }
+
+    public Value GetHiddenValue(int id)
+    {
+        if (_hiddenValues.TryGetValue(id, out var value))
+        {
+            return value;
+        }
+        throw new NameError($"Hidden value:  {id} not defined.");
+    }
+
+    public void SetHiddenValue(int id, Value value)
+    {
+        if (_hiddenValues.ContainsKey(id))
+        {
+            _hiddenValues[id] = value;
+        }
+        else
+        {
+            throw new NameError($"Hidden value:  {id} not defined.");
+        }
     }
 }
