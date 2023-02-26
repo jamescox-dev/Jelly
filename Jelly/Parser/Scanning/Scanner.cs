@@ -10,14 +10,14 @@ public class Scanner
 
     public Scanner(string source)
     {
-        Config = new ScriptScannerConfig();
+        Config = ScannerConfig.Default;
         Source = source;
         Position = 0;
     }
 
     public Scanner(string source, int position)
     {
-        Config = new ScriptScannerConfig();
+        Config = ScannerConfig.Default;
         Source = source;
         Position = position;
     }
