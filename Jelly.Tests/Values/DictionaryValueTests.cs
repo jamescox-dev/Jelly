@@ -16,7 +16,7 @@ public class DictionaryValueTests
     }
     
     [Test]
-    public void ADictionaryValuesStringRepresentationContainsTheStringRepresentationOfEachOfItsKeysAndAssociatedValueInAlphabeticalOrderByKeySeparatedBySpaces()
+    public void ADictionaryValuesStringRepresentationContainsTheStringRepresentationOfEachOfItsKeysAndAssociatedValueSeparatedBySpacesInAlphabeticalOrderByWithEachPairSeparatedByNewlines()
     {
         var dict = new DictionaryValue(
             "zProp".ToValue(), "26".ToValue(),
@@ -24,7 +24,18 @@ public class DictionaryValueTests
 
         var str = dict.ToString();
 
-        str.Should().Be("aProp 1 zProp 26");
+        str.Should().Be("aProp 1\nzProp 26");
+    }
+
+    [Test]
+    public void EachKeyAndValueIsEscapedInTheDictionariesStringRepresentation()
+    {
+        var dict = new DictionaryValue(
+            "friendly greeting".ToValue(), "jello, world".ToValue());
+
+        var str = dict.ToString();
+
+        str.Should().Be("'friendly greeting' 'jello, world'");
     }
 
     [Test]

@@ -87,10 +87,7 @@ public class NodeTests
 
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "expression".ToValue(),
-            "root".ToValue(), new ListValue(
-                Node.Literal("a".ToValue())
-            )
-        ));
+            "root".ToValue(), Node.Literal("a".ToValue())));
     }
     
     [Test]

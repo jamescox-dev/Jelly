@@ -70,15 +70,15 @@ public class DictionaryValue : Value
         {
             if (!first)
             {
-                str.Append(" ");
+                str.Append("\n");
             }
             else
             {
                 first = false;
             }
-            str.Append(name);
+            str.Append(name.Escape());
             str.Append(" ");
-            str.Append(value);
+            str.Append(value.Escape());
         }
 
         return str.ToString();

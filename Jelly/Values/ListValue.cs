@@ -42,13 +42,13 @@ public class ListValue : Value, IEnumerable<Value>
         {
             if (!first)
             {
-                str.Append(" ");
+                str.Append("\n");
             }
             else
             {
                 first = false;
             }
-            str.Append(value);
+            str.Append(value.Escape());
         }
 
         return str.ToString();

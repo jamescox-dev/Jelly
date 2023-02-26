@@ -16,7 +16,7 @@ public class ListValueTests
     }
 
     [Test]
-    public void AListValuesStringRepresentationContainsTheStringRepresentationOfEachOfItemsInOrderSeparatedBySpaces()
+    public void AListValuesStringRepresentationContainsTheStringRepresentationOfEachOfItemsInOrderSeparatedByNewLines()
     {
         var list = new ListValue(new Value[]
         {
@@ -26,7 +26,20 @@ public class ListValueTests
 
         var str = list.ToString();
 
-        str.Should().Be("Stan Ollie");
+        str.Should().Be("Stan\nOllie");
+    }
+
+    [Test]
+    public void EachItemInTheListValuesStringRepresentationIsEscaped()
+    {
+        var list = new ListValue(new Value[]
+        {
+            "jello, world".ToValue(),
+        });
+
+        var str = list.ToString();
+
+        str.Should().Be("'jello, world'");
     }
 
     [Test]
