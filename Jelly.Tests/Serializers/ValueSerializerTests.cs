@@ -13,6 +13,7 @@ public class ValueSerializerTests
         var escapedValue = ValueSerializer.Escape(string.Empty);
 
         escapedValue.Should().Be("''");
+        escapedValue.Should().NotBe("\0\0");
     }
 
     [TestCase("a")]
@@ -28,11 +29,16 @@ public class ValueSerializerTests
     [TestCase(@"a>=b")]
     [TestCase(@"[]")]
     [TestCase(@"[\[]")]
+    [TestCase(@"[\\[]")]
+    [TestCase(@"[\\\[]")]
     [TestCase(@"\[[]")]
     [TestCase(@"[\]]")]
+    [TestCase(@"[\\]]")]
+    [TestCase(@"[\\\]]")]
     [TestCase(@"[]\]")]
     [TestCase(@"[[]")]
     [TestCase(@"[[]]]")]
+    [TestCase(@"\'\\'\\\'\\\\'")]
     public void ValuesCanBeEscapedSoThatTheirValueCanBeReiterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
         var parser = new WordParser();
@@ -76,7 +82,18 @@ public class ValueSerializerTests
 
     [TestCase("jello, world", "'jello, world'")]
     [TestCase("jello, 'world'", "\"jello, 'world'\"")]
+    [TestCase("[\"jello\", 'world'", "'[\"jello\", \\\'world\\\''")]
     public void CharactersShouldNotBeEscapedIfTheyContainNoSpecialMeaningInAQuotedWordCharacters(string stringValue, string expectedEscape)
+    {
+        var escapedValue = ValueSerializer.Escape(stringValue);
+
+        escapedValue.Should().Be(expectedEscape);
+    }
+
+    [TestCase("'jello,' [\"world\"]", "['jello,' [\"world\"]]")]
+    [TestCase("['jello,' \"world\"]", "[['jello,' \"world\"]]")]
+    [TestCase("['jello,'] \"world\"", "[['jello,'] \"world\"]")]
+    public void NestingQuotesShouldBeFavouredIfTheStringContainsBalancedNestingQuotesAndAllTypesOfRegularQuotes(string stringValue, string expectedEscape)
     {
         var escapedValue = ValueSerializer.Escape(stringValue);
 

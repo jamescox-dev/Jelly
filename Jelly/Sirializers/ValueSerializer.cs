@@ -33,6 +33,10 @@ public static class ValueSerializer
             {
                 --quoteBalance;
             }
+            if (scanner.IsSpecialCharacter)
+            {
+                specialCharacterPositions[scanner.Position] = (char)scanner.CurrentCharacter!;
+            }
             if (scanner.IsEscapeCharacter)
             {
                 ++escapeCharRun;
@@ -40,10 +44,6 @@ public static class ValueSerializer
             else
             {
                 escapeCharRun = 0;
-            }
-            if (scanner.IsSpecialCharacter)
-            {
-                specialCharacterPositions[scanner.Position] = (char)scanner.CurrentCharacter!;
             }
             scanner.Advance();
         }
@@ -69,7 +69,7 @@ public static class ValueSerializer
             }
         }
 
-        return QuoteEscape(scanner.Source, specialCharacterPositions, ScannerConfig.Default.Quotes.Last());
+        return QuoteEscape(scanner.Source, specialCharacterPositions, ScannerConfig.Default.Quotes.First());
     }
 
     static string SimpleEscape(string str, IReadOnlyDictionary<int, char> specialCharacterPositions)

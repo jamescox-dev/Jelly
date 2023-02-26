@@ -50,11 +50,6 @@ public class NumberValue : Value
         _value = value;
     }
 
-    public NumberValue(string value)
-    {
-        _value = double.Parse(value, NumberStyles.AllowLeadingWhite, CultureInfo.InvariantCulture);
-    }
-
     public override ListValue ToListValue() => new ListValue(this);
 
     public override DictionaryValue ToDictionaryValue() => new DictionaryValue(this);
@@ -123,11 +118,11 @@ public class NumberValue : Value
 
     static bool TryParseHexademimal(string number, out double value)
     {
-        var sign = 1;
+        var negative = false;
         if (number.StartsWith('-'))
         {
             number = number.Substring(1);
-            sign = -1;
+            negative = true;
         }
         if (number.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
         {
@@ -136,11 +131,11 @@ public class NumberValue : Value
             {
                 if (parsedBigInt > DoubleMaxValueAsBigInt)
                 {
-                    value = double.PositiveInfinity * sign;     
+                    value = negative ? double.NegativeInfinity : double.PositiveInfinity;     
                 }
                 else
                 {
-                    value = ((double)parsedBigInt) * sign;
+                    value = negative ? -((double)parsedBigInt) : ((double)parsedBigInt);
                 }
                 return true;
             }
@@ -152,78 +147,47 @@ public class NumberValue : Value
 
     static bool TryParseBinary(string number, out double value)
     {
-        var sign = 1;
-        if (number.StartsWith('-'))
-        {
-            number = number.Substring(1);
-            sign = -1;
-        }
-        if (number.StartsWith("0b", StringComparison.CurrentCultureIgnoreCase))
-        {
-            number = number.Substring(2);
-            var parsedBigInt = BigInteger.Zero;
-            var postionValue = BigInteger.One;
-            foreach (var ch in number.Reverse())
-            {
-                if (ch == '1')
-                {
-                    parsedBigInt += postionValue;
-                }
-                else if (ch != '0')
-                {
-                    value = 0.0;
-                    return false;
-                }
-                postionValue <<= 1;
-            }
-            if (parsedBigInt > DoubleMaxValueAsBigInt)
-            {
-                value = double.PositiveInfinity * sign;     
-            }
-            else
-            {
-                value = ((double)parsedBigInt) * sign;
-            }
-            return true;
-        }
-
-        value = 0.0;
-        return false;
+        return TryParseBase(number, 'b', '0', '1', out value);
     }
 
     static bool TryParseOctal(string number, out double value)
     {
-        var sign = 1;
+        return TryParseBase(number, 'o', '0', '7', out value);
+    }
+
+    static bool TryParseBase(string number, char prefix, char zero, char max, out double value)
+    {
+        var negative = false;
         if (number.StartsWith('-'))
         {
             number = number.Substring(1);
-            sign = -1;
+            negative = true;
         }
-        if (number.StartsWith("0o", StringComparison.CurrentCultureIgnoreCase))
+        if (number.StartsWith($"0{prefix}", StringComparison.CurrentCultureIgnoreCase))
         {
             number = number.Substring(2);
             var parsedBigInt = BigInteger.Zero;
             var postionValue = BigInteger.One;
             foreach (var ch in number.Reverse())
             {
-                if (ch >= '0' && ch <= '7')
+                if (ch >= zero && ch <= max)
                 {
-                    parsedBigInt += postionValue * (ch - '0');
+                    parsedBigInt += postionValue * (ch - zero);
                 }
                 else
                 {
                     value = 0.0;
                     return false;
                 }
-                postionValue <<= 3;
+                postionValue *= (max - zero) + 1;
             }
             if (parsedBigInt > DoubleMaxValueAsBigInt)
             {
-                value = double.PositiveInfinity * sign;     
+                value = negative ? double.NegativeInfinity : double.PositiveInfinity;     
             }
             else
             {
-                value = ((double)parsedBigInt) * sign;
+                value = negative ? -((double)parsedBigInt) : ((double)parsedBigInt);
             }
             return true;
         }
