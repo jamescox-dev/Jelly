@@ -10,38 +10,15 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
 
     public string Escape() => ValueSerializer.Escape(ToString());
 
-    public virtual ListValue ToListValue()
-    {
-        var listParser = new ListParser();
-        try
-        {
-            return listParser.Parse(new Scanner(ToString()));
-        }
-        catch (ParseError)
-        {
-            throw new TypeError("Value is not a list.");
-        }
-    }
+    public abstract ListValue ToListValue();
 
-    public virtual DictionaryValue ToDictionaryValue()
-    {
-        var listParser = new ListParser();
-        try
-        {
-            return new DictionaryValue((IEnumerable<Value>)listParser.Parse(new Scanner(ToString())));
-        }
-        catch (ParseError)
-        {
-            throw new TypeError("Value is not a dictionary.");
-        }
-    }
+    public abstract DictionaryValue ToDictionaryValue();
 
     public abstract override string ToString();
 
-    public virtual double ToDouble()
-    {
-        return NumberValue.ParseNumber(ToString());
-    }
+    public abstract bool ToBool();
+
+    public abstract double ToDouble();
 
     public int CompareTo(Value? other)
     {

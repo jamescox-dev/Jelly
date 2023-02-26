@@ -61,5 +61,16 @@ public class ListValue : Value, IEnumerable<Value>
         return str.ToString();
     }
 
+    public override bool ToBool() => _items.Count != 1 || (_items.Count == 1 && _items[0].ToBool());
+
+    public override double ToDouble()
+    {
+        if (_items.Count == 1)
+        {
+            return _items[0].ToDouble();
+        }
+        return double.NaN;
+    }
+
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Value>)this).GetEnumerator();
 }

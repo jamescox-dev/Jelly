@@ -160,4 +160,40 @@ public class NumberValueTests
 
         number.Should().Be(expected);
     }
+
+    [TestCase(double.NaN, true)]
+    [TestCase(3.142, true)]
+    [TestCase(double.PositiveInfinity, true)]
+    [TestCase(double.NegativeInfinity, true)]
+    [TestCase(1.0, true)]
+    [TestCase(-1.0, true)]
+    [TestCase(0.0, false)]
+    public void ANumberCanBeConvertedToABool(double d, bool expected)
+    {
+        var number = new NumberValue(d);
+
+        var b = number.ToBool();
+
+        b.Should().Be(expected);
+    }
+    
+    [Test]
+    public void ANumberConvertsToAListWithTheNumberAsItsOnlyItem()
+    {
+        var num = new NumberValue(42);
+
+        var list = num.ToListValue();
+
+        list.Single().Should().Be(num);
+    }
+
+    [Test]
+    public void ANumberIsConvertedToADictionaryWithItsFirstItemWithTheNumberAsItsKeyAndAnEmptyValue()
+    {
+        var num = new NumberValue(42);
+
+        var dict = num.ToDictionaryValue();
+
+        dict.Should().Be(new DictionaryValue(num, Value.Empty));
+    }
 }

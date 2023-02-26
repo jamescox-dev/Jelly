@@ -5,6 +5,8 @@ public static class ValueExtensions
     public static StringValue ToValue(this string str) => 
         new StringValue(str);
 
+    public static BooleanValue ToValue(this bool b) => b ? BooleanValue.True : BooleanValue.False;
+
     public static NumberValue ToValue(this double dbl) => 
         new NumberValue(dbl);
 

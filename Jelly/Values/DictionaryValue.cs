@@ -1,5 +1,6 @@
 namespace Jelly.Values;
 
+using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -101,4 +102,8 @@ public class DictionaryValue : Value
 
         return str.ToString();
     }
+
+    public override bool ToBool() => true;
+
+    public override double ToDouble() => double.NaN;
 }

@@ -110,4 +110,28 @@ public class DictionaryValueTests
 
         ((Value)list).Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), Value.Empty));
     }
+
+    [Test]
+    public void ADictionaryDoesNotConvertToANumber()
+    {
+        var dict1 = new DictionaryValue();
+        var dict2 = new DictionaryValue(Value.Empty);
+        var dict3 = new DictionaryValue(new NumberValue(1.0), " ".ToValue());
+        
+        double.IsNaN(dict1.ToDouble()).Should().BeTrue();
+        double.IsNaN(dict2.ToDouble()).Should().BeTrue();
+        double.IsNaN(dict3.ToDouble()).Should().BeTrue();
+    }
+
+    [Test]
+    public void ADictionaryAlwaysConvertsToATureBool()
+    {
+        var dict1 = new DictionaryValue();
+        var dict2 = new DictionaryValue(Value.Empty);
+        var dict3 = new DictionaryValue(new NumberValue(1.0), " ".ToValue());
+        
+        dict1.ToBool().Should().BeTrue();
+        dict2.ToBool().Should().BeTrue();
+        dict3.ToBool().Should().BeTrue();
+    }
 }

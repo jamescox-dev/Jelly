@@ -36,7 +36,7 @@ public class NumberValue : Value
             true|false
         )
         \s*$
-    ", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.CultureInvariant);
+    ", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
     static readonly Dictionary<string, double> SpecialWords = new(StringComparer.InvariantCultureIgnoreCase)
     {
@@ -54,6 +54,12 @@ public class NumberValue : Value
     {
         _value = double.Parse(value, NumberStyles.AllowLeadingWhite, CultureInfo.InvariantCulture);
     }
+
+    public override ListValue ToListValue() => new ListValue(this);
+
+    public override DictionaryValue ToDictionaryValue() => new DictionaryValue(this);
+
+    public override bool ToBool() => double.IsNaN(_value) || _value != 0.0;
 
     public override double ToDouble() => _value;
 
