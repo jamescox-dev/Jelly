@@ -91,6 +91,17 @@ public class QuotedWordParserTests
     }
 
     [Test]
+    public void IfAScriptIsEncounteredAndSubstitutionsAreNotEnabledItIsIncludedAsIsAndALiteralReturened()
+    {
+        var parser = new QuotedWordParser(false);
+        var scanner = new Scanner(@"'hello, {whoami} how do you do'");
+
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Literal("hello, {whoami} how do you do".ToValue()));
+    }
+
+    [Test]
     public void AQuoteFollowedByAQuoteReturnsAnEmptyComposite()
     {
         var parser = new QuotedWordParser();

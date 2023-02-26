@@ -34,12 +34,30 @@ public class DictionaryValue : Value
             }
         }
 
+        if (key is not null)
+        {
+            items.Add(key, Value.Empty);
+        }
+
         _items = items.ToImmutable();
     }
 
     public DictionaryValue(IEnumerable<KeyValuePair<Value, Value>> items)
     {
         _items = ImmutableSortedDictionary.CreateRange(items);
+    }
+
+    public override ListValue ToListValue()
+    {
+        var items = ImmutableList.CreateBuilder<Value>();
+
+        foreach (var kvPair in _items)
+        {
+            items.Add(kvPair.Key);
+            items.Add(kvPair.Value);
+        }
+
+        return new ListValue(items);
     }
 
     public override DictionaryValue ToDictionaryValue() => this;

@@ -7,6 +7,12 @@ public static class ValueSerializer
 {
     public static string Escape(string str)
     {
+        if (string.IsNullOrEmpty(str))
+        {
+            var quote = ScannerConfig.Default.Quotes.First();
+            return $"{quote}{quote}";
+        }
+        
         var scanner = new Scanner(str);
         var specialCharacterPositions = new SortedDictionary<int, char>();
         var quotesInString = new HashSet<char>();

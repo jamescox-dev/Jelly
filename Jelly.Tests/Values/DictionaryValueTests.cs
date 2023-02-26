@@ -100,4 +100,14 @@ public class DictionaryValueTests
         
         exists.Should().Be(expected);
     }
+
+    [Test]
+    public void DictionaryValuesCanBeConvertedToListValues()
+    {
+        var value = new DictionaryValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+
+        var list = value.ToListValue();
+
+        ((Value)list).Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), Value.Empty));
+    }
 }

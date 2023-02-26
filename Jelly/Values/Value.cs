@@ -1,6 +1,8 @@
 namespace Jelly.Values;
 
-using Jelly.Serializers;
+using Jelly.Errors;
+using Jelly.Parser;
+using Jelly.Parser.Scanning;
 
 public abstract class Value : IEquatable<Value>, IComparable<Value>
 {
@@ -10,12 +12,28 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
 
     public virtual ListValue ToListValue()
     {
-        throw new NotImplementedException();
+        var listParser = new ListParser();
+        try
+        {
+            return listParser.Parse(new Scanner(ToString()));
+        }
+        catch (ParseError)
+        {
+            throw new TypeError("Value is not a list.");
+        }
     }
 
     public virtual DictionaryValue ToDictionaryValue()
     {
-        throw new NotImplementedException();
+        var listParser = new ListParser();
+        try
+        {
+            return new DictionaryValue((IEnumerable<Value>)listParser.Parse(new Scanner(ToString())));
+        }
+        catch (ParseError)
+        {
+            throw new TypeError("Value is not a dictionary.");
+        }
     }
 
     public abstract override string ToString();

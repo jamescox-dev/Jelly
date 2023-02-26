@@ -7,6 +7,14 @@ using Jelly.Values;
 
 public class ValueSerializerTests
 {
+    [Test]
+    public void AnEmptyValueIsReturnedQuoted()
+    {
+        var escapedValue = ValueSerializer.Escape(string.Empty);
+
+        escapedValue.Should().Be("''");
+    }
+
     [TestCase("a")]
     [TestCase("a b")]
     [TestCase("a\nb")]

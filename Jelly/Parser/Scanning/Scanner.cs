@@ -80,6 +80,8 @@ public class Scanner
         ? Config.EscapeCharacterSubstitutions.GetValueOrDefault((char)CurrentCharacter!, (char)CurrentCharacter!)
         : null;
 
+    public bool IsListItemSeparator => Config.ListItemSeparators.Contains(CurrentCharacter ?? '\0');
+
     public bool IsCommandSeparator => Config.CommandSeparators.Contains(CurrentCharacter ?? '\0');
 
     public bool IsWordSeparator => Config.WordSeparators.Contains(CurrentCharacter ?? '\0');

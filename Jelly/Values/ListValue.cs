@@ -22,6 +22,11 @@ public class ListValue : Value, IEnumerable<Value>
         _items = ImmutableList.CreateRange(values);
     }
 
+    public ListValue(ImmutableList<Value> values)
+    {
+        _items = values;
+    }
+
     public Value this[int index]
     {
         get => _items[index];
@@ -30,6 +35,8 @@ public class ListValue : Value, IEnumerable<Value>
     public int Count => _items.Count;
 
     public override ListValue ToListValue() => this;
+
+    public override DictionaryValue ToDictionaryValue() => new DictionaryValue((IEnumerable<Value>)this);
 
     public IEnumerator<Value> GetEnumerator() => _items.GetEnumerator();
 

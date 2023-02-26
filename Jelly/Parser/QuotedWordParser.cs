@@ -11,6 +11,13 @@ public class QuotedWordParser : IParser
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
     static readonly VariableParser VariableParser = new();
     static readonly ScriptParser ScriptParser = new(true);
+    
+    readonly bool _allowSubstitutions;
+
+    public QuotedWordParser(bool allowSubstitutions=true)
+    {
+        _allowSubstitutions = allowSubstitutions;
+    }
 
     public DictionaryValue? Parse(Scanner scanner)
     {
@@ -28,7 +35,7 @@ public class QuotedWordParser : IParser
                 {
                     literal.Append(escapedCh);
                 }
-                else if (scanner.IsScriptBegin)
+                else if (scanner.IsScriptBegin && _allowSubstitutions)
                 {
                     FlushCurrentLitral();
                     var script = ScriptParser.Parse(scanner);
@@ -42,7 +49,9 @@ public class QuotedWordParser : IParser
                 else if (scanner.AdvanceIf(s => s.CurrentCharacter == openingQuote))
                 {
                     FlushCurrentLitral();
-                    return Node.Composite(parts.ToArray());
+                    return _allowSubstitutions 
+                        ? Node.Composite(parts.ToArray())
+                        : parts[0];
                 }
                 else
                 {

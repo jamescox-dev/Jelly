@@ -1,9 +1,8 @@
+namespace Jelly.Parser;
+
 using System.Globalization;
 using Jelly.Errors;
 using Jelly.Parser.Scanning;
-
-namespace Jelly.Parser;
-
 
 public class EscapeCharacterParser
 {

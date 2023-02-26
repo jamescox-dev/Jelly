@@ -71,4 +71,14 @@ public class ListValueTests
 
         count.Should().Be(3);
     }
+
+    [Test]
+    public void ListValuesCanBeConvertedToDictionaryValues()
+    {
+        var value = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue());
+
+        var dict = value.ToDictionaryValue();
+
+        ((Value)dict).Should().Be(new DictionaryValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
+    }
 }

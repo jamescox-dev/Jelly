@@ -33,6 +33,7 @@ public class ErrorTests
     [TestCase("/error/name/", typeof(NameError))]
     [TestCase("/error/parse/", typeof(ParseError))]
     [TestCase("/error/parse/missing/end_token/", typeof(MissingEndTokenError))]
+    [TestCase("/error/type/", typeof(TypeError))]
     public void TheCorrectSubclassCanBeCreatedBySpecifiyingTheErrorType(string type, Type expectedType)
     {
         var error = Error.Create(type, "A test error message.");

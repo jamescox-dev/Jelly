@@ -1,5 +1,6 @@
 namespace Jelly.Values.Tests;
 
+using Jelly.Errors;
 using Jelly.Evaluator;
 using Jelly.Parser;
 using Jelly.Parser.Scanning;
@@ -134,5 +135,51 @@ public class ValueTests
         var escapedValue = value.Escape();
         
         evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!, evaluator).Should().Be(value, $"escapedValue = {escapedValue}");
+    }
+
+    [Test]
+    public void ValuesCanBeConvertedToListValues()
+    {
+        var value = new StringValue("a b c");
+
+        var list = value.ToListValue();
+
+        ((Value)list).Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue()));
+    }
+
+    [Test]
+    public void IfTheValueCanNotBeParsedIntoAListValueAnTypeErrorIsThrown()
+    {
+        var value = new StringValue("}");
+
+        value.Invoking(v => v.ToListValue()).Should().Throw<TypeError>().WithMessage("Value is not a list.");
+    }
+
+    [Test]
+    public void ValuesCanBeConvertedToDictionaryValues()
+    {
+        var value = new StringValue("a b c d");
+
+        var dict = value.ToDictionaryValue();
+
+        ((Value)dict).Should().Be(new DictionaryValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
+    }
+
+    [Test]
+    public void ValuesCanBeConvertedToDictionaryValueIfTheLastValueIsMissingItIsLeftEmpty()
+    {
+        var value = new StringValue("a b c");
+
+        var dict = value.ToDictionaryValue();
+
+        ((Value)dict).Should().Be(new DictionaryValue("a".ToValue(), "b".ToValue(), "c".ToValue(), Value.Empty));
+    }
+
+    [Test]
+    public void IfTheValueCanNotBeParsedIntoADictionaryValueAnTypeErrorIsThrown()
+    {
+        var value = new StringValue("}");
+
+        value.Invoking(v => v.ToDictionaryValue()).Should().Throw<TypeError>().WithMessage("Value is not a dictionary.");
     }
 }

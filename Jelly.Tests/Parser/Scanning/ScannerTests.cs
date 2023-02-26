@@ -211,6 +211,18 @@ public class ScannerTests
         scanner.IsWordSeparator.Should().Be(expected);
     }
 
+    [TestCase(" ", true)]
+    [TestCase("\t", true)]
+    [TestCase("\n", true)]
+    [TestCase("\r", true)]
+    [TestCase("boo", false)]
+    public void AListItemSeparatorIsReportedWhenTheCurrentCharacterMatchesTheConfiguredListItemSeparator(string source, bool expected)
+    {
+        var scanner = new Scanner(source);
+
+        scanner.IsListItemSeparator.Should().Be(expected);
+    }
+
     [TestCase("#", true)]
     [TestCase("boo", false)]
     public void ACommentBeginIsReportedWhenTheCurrentCharacterMatchesTheConfiguredCommentBegin(string source, bool expected)
