@@ -1,7 +1,9 @@
 namespace Jelly.Parser.Scanning;
 
-public class ScriptScannerConfig : IScannerConfig
+public class ScannerConfig : IScannerConfig
 {
+    public static readonly IScannerConfig Default = new ScannerConfig();
+
     static readonly HashSet<char> _escapeCharacters8Bit = new() { 'x', 'X' };
 
     static readonly HashSet<char> _escapeCharacters16Bit = new() { 'u', 'U' };
@@ -19,6 +21,8 @@ public class ScriptScannerConfig : IScannerConfig
         { 't', '\t' }, { 'T', '\t' },
         { 'v', '\v' }, { 'V', '\v' },
     };
+    
+    static readonly HashSet<char> _listItemSeparators = new() { ' ', '\t', '\n', '\r' }; 
 
     static readonly HashSet<char> _commandSeparators = new() { '\n', ';' }; 
 
@@ -35,6 +39,8 @@ public class ScriptScannerConfig : IScannerConfig
         "+", "-", "*", "/", "%", 
         "!", "&", "|", "^" 
     };
+
+    public IReadOnlySet<char> ListItemSeparators => _listItemSeparators;
 
     public IReadOnlySet<char> WordSeparators => _wordSeparators;
 

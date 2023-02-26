@@ -1,24 +1,77 @@
 namespace Jelly.Serializers.Tests;
 
-using Jelly.Serializers;
+using Jelly.Evaluator;
+using Jelly.Parser;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
-[TestFixture]
 public class ValueSerializerTests
 {
-    [Test]
-    public void AnEmptyValueIsSerializedAsTwoSingleQuotes()
+    [TestCase("a")]
+    [TestCase("a b")]
+    [TestCase("a\nb")]
+    [TestCase(@"a\b")]
+    [TestCase(@"a;b")]
+    [TestCase(@"a$b")]
+    [TestCase(@"a{b")]
+    [TestCase(@"a(b")]
+    [TestCase(@"a)b")]
+    [TestCase(@"a}b")]
+    [TestCase(@"a>=b")]
+    [TestCase(@"[]")]
+    [TestCase(@"[\[]")]
+    [TestCase(@"\[[]")]
+    [TestCase(@"[\]]")]
+    [TestCase(@"[]\]")]
+    [TestCase(@"[[]")]
+    [TestCase(@"[[]]]")]
+    public void ValuesCanBeEscapedSoThatTheirValueCanBeReiterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
-        var str = ValueSerializer.Serialize(Value.Empty);
+        var parser = new WordParser();
+        var evaluator = new Evaluator();
 
-        str.Should().Be("''");
+        var escapedValue = ValueSerializer.Escape(stringValue);
+        
+        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!, evaluator).ToString().Should().Be(stringValue, $"escapedValue = {escapedValue}");
     }
 
-    [Test]
-    public void AValueThatDoesNotContainSpecialCharactersIsReturnedAsIs()
+    [TestCase("a$b", @"a\$b", true)]
+    [TestCase(@"a\b", @"a\\b", true)]
+    [TestCase("a}b", @"a\}b", true)]
+    [TestCase("a{b}", @"a\{b\}", false)]
+    [TestCase("a b", @"a\ b", false)]
+    public void ValuesShouldBeEsscapedWithBackSlashIfTheyOnlyContainOneNonWhitespaceSpecialCharacter(string stringValue, string expectedEscape, bool shouldMatch)
     {
-        var str = ValueSerializer.Serialize("hello".ToValue());
+        var escapedValue = ValueSerializer.Escape(stringValue);
+        
+        if (shouldMatch)
+        {
+            escapedValue.Should().Be(expectedEscape);
+        }
+        else
+        {
+            escapedValue.Should().NotBe(expectedEscape);
+        }
+    }
 
-        str.Should().Be("hello");
+    [TestCase("Homer")]
+    [TestCase("Marge")]
+    [TestCase("Bart")]
+    [TestCase("Lisa")]
+    [TestCase("Maggie")]
+    public void ValuesShouldNotBeEscapedIfTheyContainNoSpecialCharacters(string stringValue)
+    {
+        var escapedValue = ValueSerializer.Escape(stringValue);
+
+        escapedValue.Should().Be(stringValue);
+    }
+
+    [TestCase("jello, world", "'jello, world'")]
+    [TestCase("jello, 'world'", "\"jello, 'world'\"")]
+    public void CharactersShouldNotBeEscapedIfTheyContainNoSpecialMeaningInAQuotedWordCharacters(string stringValue, string expectedEscape)
+    {
+        var escapedValue = ValueSerializer.Escape(stringValue);
+
+        escapedValue.Should().Be(expectedEscape);
     }
 }

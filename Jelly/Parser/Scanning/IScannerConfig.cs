@@ -2,6 +2,8 @@ namespace Jelly.Parser.Scanning;
 
 public interface IScannerConfig
 {
+    IReadOnlySet<char> ListItemSeparators { get; }
+
     IReadOnlySet<char> WordSeparators { get; }
 
     IReadOnlySet<char> CommandSeparators { get; }

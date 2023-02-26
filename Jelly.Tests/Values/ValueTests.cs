@@ -1,5 +1,8 @@
 namespace Jelly.Values.Tests;
 
+using Jelly.Evaluator;
+using Jelly.Parser;
+using Jelly.Parser.Scanning;
 using Jelly.Values;
 
 public class ValueTests
@@ -117,4 +120,19 @@ public class ValueTests
         }
     }
     
+    [TestCase(@"Jelly")]
+    [TestCase(@"jello, world")]
+    [TestCase(@"'hi'")]
+    [TestCase("\"bye\"")]
+    [TestCase("['single' \"double\"]")]
+    public void ValuesCanBeEscapedSoThatTheirValueCanBeReiterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
+    {
+        var parser = new WordParser();
+        var evaluator = new Evaluator();
+        var value = stringValue.ToValue();
+
+        var escapedValue = value.Escape();
+        
+        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!, evaluator).Should().Be(value, $"escapedValue = {escapedValue}");
+    }
 }
