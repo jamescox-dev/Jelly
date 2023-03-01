@@ -116,8 +116,7 @@ public class Scanner
         || IsExpressionBegin || IsExpressionEnd
         || IsScriptBegin || IsScriptEnd
         || IsNestingQuoteBegin || IsNestingQuoteEnd
-        || IsQuote || IsCommentBegin
-        || TryGetOperator(out var _);
+        || IsQuote || IsCommentBegin;
 
     public bool TryGetOperator(out string op)
     {

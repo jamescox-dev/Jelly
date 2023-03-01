@@ -85,16 +85,4 @@ public class SimpleWordParserTests
         parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
     }
-
-    [Test]
-    public void IfAOperatorIsEncounteredTheSimpleWordEnds()
-    {
-        var parser = new SimpleWordParser();
-        var scanner = new Scanner("E=mc2");
-        
-        var node = parser.Parse(scanner);
-
-        node.Should().Be(Node.Literal("E".ToValue()));
-        scanner.Position.Should().Be(1);
-    }
 }

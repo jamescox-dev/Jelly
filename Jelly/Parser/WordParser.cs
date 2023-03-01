@@ -13,7 +13,6 @@ public class WordParser : IParser
         new VariableParser(),
         new ScriptParser(true),
         new CommentParser(),
-        new OperatorParser(),
         new NestingWordParser(),
         // TODO:  new ExpressionParser(),
     };

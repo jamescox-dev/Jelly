@@ -12,7 +12,6 @@ public class ListItemParser
     {
         new SimpleWordParser(),
         new QuotedWordParser(false),
-        new OperatorParser(),
         new NestingWordParser(),
     };
     
