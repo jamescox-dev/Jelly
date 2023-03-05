@@ -93,15 +93,14 @@ public class CommandParserTests
         node.Should().Be(Node.Variable("name"));
     }
 
-    // TODO:  Reinstate this test.
-    // [Test]
-    // public void WhenTheCommandIsJustOneExpressionNodeThatIsReturned()
-    // {
-    //     var parser = new CommandParser();
-    //     var scanner = new Scanner("(a + b)");
+    [Test]
+    public void WhenTheCommandIsJustOneExpressionNodeThatIsReturned()
+    {
+        var parser = new CommandParser();
+        var scanner = new Scanner("($a + $b)");
         
-    //     var node = parser.Parse(scanner);
+        var node = parser.Parse(scanner);
 
-    //     node.Should().Be(Node.Expression(Node.OpAdd(Node.Variable("a"), Node.Variable("b"))));
-    // }
+        node.Should().Be(Node.Expression(Node.BinOp("add", Node.Variable("a"), Node.Variable("b"))));
+    }
 }

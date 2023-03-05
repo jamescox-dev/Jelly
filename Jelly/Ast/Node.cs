@@ -74,4 +74,9 @@ public static class Node
 
     static bool IsType(DictionaryValue node, StringValue type) =>
         node.TryGetValue(TypeKeyword, out var typeValue) && typeValue == type;
+
+    public static Value GetLiteralValue(DictionaryValue literal)
+    {
+        return literal[ValueKeyword];
+    }
 }

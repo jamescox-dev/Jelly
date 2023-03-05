@@ -4,6 +4,8 @@ public interface IScannerConfig
 {
     IReadOnlySet<char> ListItemSeparators { get; }
 
+    IReadOnlySet<char> ExpressionWordSeparators { get; }
+
     IReadOnlySet<char> WordSeparators { get; }
 
     IReadOnlySet<char> CommandSeparators { get; }
@@ -42,5 +44,5 @@ public interface IScannerConfig
 
     char NestingQuoteEnd { get; }
 
-    IReadOnlyList<string> Operators { get; }
+    IReadOnlyDictionary<string, Operator> OperatorNames { get; }
 }

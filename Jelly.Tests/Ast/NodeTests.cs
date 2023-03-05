@@ -142,4 +142,14 @@ public class NodeTests
         isAssignment.Should().BeTrue();
         isExpression.Should().BeTrue();
     }
+
+    [Test]
+    public void ALiteralsValueCanBeExtracted()
+    {
+        var literal = Node.Literal("value".ToValue());
+
+        var value = Node.GetLiteralValue(literal);
+
+        value.Should().Be("value".ToValue());
+    }
 }

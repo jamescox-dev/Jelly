@@ -223,6 +223,18 @@ public class ScannerTests
         scanner.IsListItemSeparator.Should().Be(expected);
     }
 
+    [TestCase(" ", true)]
+    [TestCase("\t", true)]
+    [TestCase("\n", true)]
+    [TestCase("\r", true)]
+    [TestCase("boo", false)]
+    public void AExpressionWordSeparatorIsReportedWhenTheCurrentCharacterMatchesTheConfiguredExpressionWordSeparator(string source, bool expected)
+    {
+        var scanner = new Scanner(source);
+
+        scanner.IsExpressionWordSeparator.Should().Be(expected);
+    }
+
     [TestCase("#", true)]
     [TestCase("boo", false)]
     public void ACommentBeginIsReportedWhenTheCurrentCharacterMatchesTheConfiguredCommentBegin(string source, bool expected)
@@ -257,27 +269,6 @@ public class ScannerTests
         var scanner = new Scanner(source);
 
         scanner.IsNestingQuoteEnd.Should().Be(expected);
-    }
-
-    [TestCase("=", true)]
-    [TestCase("!=", true)]
-    [TestCase(">=", true)]
-    [TestCase("+", true)]
-    [TestCase("boo", false)]
-    public void AOperatorIsReportedWhenTheCurrentCharacterMatchesOneOfTheConfiguredOperators(string source, bool expected)
-    {
-        var scanner = new Scanner(source);
-
-        scanner.TryGetOperator(out var op).Should().Be(expected);
-
-        if (expected)
-        {
-            op.Should().NotBeEmpty();
-        }
-        else
-        {
-            op.Should().BeEmpty();
-        }
     }
 
     [TestCase("'", true)]

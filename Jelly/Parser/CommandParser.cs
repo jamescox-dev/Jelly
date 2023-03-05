@@ -32,7 +32,7 @@ public class CommandParser : IParser
         
         if (words.Count == 1)
         {
-            if (Node.IsVariable(words[0]) /* TODO:  || Node.IsExprssion(words[0]) */)
+            if (Node.IsVariable(words[0]) || Node.IsExprssion(words[0]))
             {
                 return words[0];
             }

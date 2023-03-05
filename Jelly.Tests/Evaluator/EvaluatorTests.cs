@@ -86,4 +86,28 @@ public class EvaluatorTests
         scope.Verify(s => s.SetVariable("answer", "42".ToValue()), Times.Once);
         result.Should().Be("42".ToValue());
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAExpressionNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.Expression(Node.Literal(8));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        result.Should().Be(8.0.ToValue());
+    }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateABinOpNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.BinOp("add", Node.Literal(1), Node.Literal(2));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        result.Should().Be(3.0.ToValue());
+    }
 }

@@ -30,17 +30,24 @@ public class ScannerConfig : IScannerConfig
 
     static readonly HashSet<char> _quotes = new() { '\'', '"' };
 
-    static readonly List<string> _scriptOperators = new()
+    static readonly Dictionary<string, Operator> _operators = new(StringComparer.InvariantCultureIgnoreCase)
     {
-        "<=", ">=", "!=", "==", "<>", 
-        "&&", "||",
-        "++", "**", 
-        "<", ">", "=", 
-        "+", "-", "*", "/", "%", 
-        "!", "&", "|", "^" 
+        { "or", Operator.Or }, { "orelse", Operator.OrElse }, { "and", Operator.And }, { "andthen", Operator.AndThen }, { "not", Operator.Not },
+        { "<", Operator.LessThan }, { "<=", Operator.LessThanOrEqual }, 
+        { "=", Operator.Equal }, 
+        { ">=", Operator.GreaterThanOrEqual }, { ">", Operator.GreaterThan }, 
+        { "<>", Operator.NotEqual },
+        { "|", Operator.BitwiseOr }, { "^", Operator.BitwiseXor }, { "&", Operator.BitwiseAnd },
+        { "<<", Operator.BitshiftLeft }, { ">>", Operator.BitshiftRight },
+        { "+", Operator.Add }, { "-", Operator.Subtract }, { "++", Operator.Concatinate }, 
+        { "*", Operator.Multiply }, {"/", Operator.Divide }, {"//", Operator.FloorDivide }, {"%", Operator.Modulo }, {"%%", Operator.FloorModulo },
+        { "~", Operator.BitwiseNot },
+        { "**", Operator.Exponent },
     };
 
     public IReadOnlySet<char> ListItemSeparators => _listItemSeparators;
+
+    public IReadOnlySet<char> ExpressionWordSeparators => _listItemSeparators;
 
     public IReadOnlySet<char> WordSeparators => _wordSeparators;
 
@@ -80,5 +87,5 @@ public class ScannerConfig : IScannerConfig
 
     public char NestingQuoteEnd => ']';
 
-    public IReadOnlyList<string> Operators => _scriptOperators;
+    public IReadOnlyDictionary<string, Operator> OperatorNames => _operators;
 }

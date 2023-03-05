@@ -82,6 +82,8 @@ public class Scanner
 
     public bool IsListItemSeparator => Config.ListItemSeparators.Contains(CurrentCharacter ?? '\0');
 
+    public bool IsExpressionWordSeparator => Config.ExpressionWordSeparators.Contains(CurrentCharacter ?? '\0');
+
     public bool IsCommandSeparator => Config.CommandSeparators.Contains(CurrentCharacter ?? '\0');
 
     public bool IsWordSeparator => Config.WordSeparators.Contains(CurrentCharacter ?? '\0');
@@ -117,20 +119,6 @@ public class Scanner
         || IsScriptBegin || IsScriptEnd
         || IsNestingQuoteBegin || IsNestingQuoteEnd
         || IsQuote || IsCommentBegin;
-
-    public bool TryGetOperator(out string op)
-    {
-        foreach (var candidate in Config.Operators)
-        {
-            if (Substring(candidate.Length) == candidate)
-            {
-                op = candidate;
-                return true;
-            }
-        }
-        op = string.Empty;
-        return false;
-    }
 
     public override bool Equals(object? obj)
     {

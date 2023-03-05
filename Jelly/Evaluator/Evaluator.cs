@@ -17,6 +17,8 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator("script", new ScriptEvaluator());
         _evaluator.AddEvaluator("assignment", new AssignmentEvaluator());
         _evaluator.AddEvaluator("composite", new CompositeEvaluator());
+        _evaluator.AddEvaluator("expression", new ExpressionEvaluator());
+        _evaluator.AddEvaluator("binop", new BinOpEvaluator());
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
