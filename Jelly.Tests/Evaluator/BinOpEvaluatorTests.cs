@@ -51,6 +51,16 @@ public class BinOpEvaluatorTests
         result.Should().Be(5.0.ToValue());
     }
 
+    [Test]
+    public void LessThanCanBeEvaluated()
+    {
+        var binOp = Node.BinOp("lt", Node.Literal(2), Node.Literal(10));
+
+        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+
+        result.Should().Be(true.ToValue());
+    }
+
     // TODO:  Implement more operators.
 
     // TODO:  Test for unknown binary-operators.

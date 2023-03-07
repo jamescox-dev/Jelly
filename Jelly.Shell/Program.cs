@@ -11,7 +11,7 @@ public class Program
     {
         var historyFile = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "jelly", "history.json");
         var writer = new ConsoleWriter();
-        var reader = new ReadLineReader();
+        IReader reader = Console.IsInputRedirected ? new ConsoleReader() : new ReadLineReader();
         var historyManager = new ReadLineHistoryManager(historyFile);
         var shell = new Shell(
                 reader,
