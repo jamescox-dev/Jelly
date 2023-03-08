@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Shell.Tests", "Jelly.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Experimental", "Jelly.Experimental\Jelly.Experimental.csproj", "{18A212B9-0140-4D00-A569-43622A27E0B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Examples.Tests", "Jelly.Examples.Tests\Jelly.Examples.Tests.csproj", "{A10E978A-BEC7-4547-9955-631E4AB195AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{18A212B9-0140-4D00-A569-43622A27E0B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18A212B9-0140-4D00-A569-43622A27E0B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18A212B9-0140-4D00-A569-43622A27E0B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A10E978A-BEC7-4547-9955-631E4AB195AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A10E978A-BEC7-4547-9955-631E4AB195AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A10E978A-BEC7-4547-9955-631E4AB195AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A10E978A-BEC7-4547-9955-631E4AB195AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
