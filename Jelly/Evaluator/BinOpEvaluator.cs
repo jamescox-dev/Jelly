@@ -17,7 +17,13 @@ internal class BinOpEvaluator : IEvaluator
         _arithmaticOpFuncs.Add("sub", Sub);
         _arithmaticOpFuncs.Add("mul", Mul);
         _arithmaticOpFuncs.Add("div", Div);
+        _arithmaticOpFuncs.Add("floordiv", FloorDiv);
+        _arithmaticOpFuncs.Add("mod", Mod);
+        _arithmaticOpFuncs.Add("floormod", FloorMod);
+        _arithmaticOpFuncs.Add("exp", Exp);
+        
         _numericComparisonOpFuncs.Add("lt", Lt);
+        _numericComparisonOpFuncs.Add("gt", Gt);
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
@@ -44,7 +50,17 @@ internal class BinOpEvaluator : IEvaluator
 
     static double Div(double a, double b) => a / b;
 
+    static double FloorDiv(double a, double b) => Math.Floor(a / b);
+
+    static double Mod(double a, double b) => ((a % b) + b) % b;
+
+    static double FloorMod(double a, double b) => Math.Floor(Mod(a, b));
+
+    static double Exp(double a, double b) => Math.Pow(a, b);
+
     static bool Lt(double a, double b) => a < b;
+
+    static bool Gt(double a, double b) => a > b;
 
     static void EvaluateOperandsAsNumbers(IScope scope, DictionaryValue node, IEvaluator rootEvaluator, out double a, out double b)
     {

@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Jelly.Shell\Jelly.Shell.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Watch Include="..\Jelly.Examples\**\*.jly;..\Jelly.Examples\**\out.txt;..\Jelly.Examples\**\in.txt" />
+  </ItemGroup>
+
 </Project>
