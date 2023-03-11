@@ -34,6 +34,7 @@ public class ErrorTests
     [TestCase("/error/parse/", typeof(ParseError))]
     [TestCase("/error/parse/missing/end_token/", typeof(MissingEndTokenError))]
     [TestCase("/error/type/", typeof(TypeError))]
+    [TestCase("/error/value/", typeof(ValueError))]
     public void TheCorrectSubclassCanBeCreatedBySpecifiyingTheErrorType(string type, Type expectedType)
     {
         var error = Error.Create(type, "A test error message.");

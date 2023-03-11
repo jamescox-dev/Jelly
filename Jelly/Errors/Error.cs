@@ -10,6 +10,7 @@ public class Error : Exception
         { "/error/parse/", Parse },
         { "/error/parse/missing/end_token/", MissingEndToken }, 
         { "/error/type/", BuildType },
+        { "/error/value/", Value },
     };
 
     public string Type { get; private set; }
@@ -46,6 +47,8 @@ public class Error : Exception
 
     public static Error MissingEndToken(string message) => new MissingEndTokenError(message);
 
+    public static Error Value(string message) => new ValueError(message);
+
     public static Error BuildType(string message) => new TypeError(message);
 }
 
@@ -78,6 +81,11 @@ public class NameError : Error
 public class TypeError : Error
 {
     internal TypeError(string message) : base("/error/type/", message) {}
+}
+
+public class ValueError : Error
+{
+    internal ValueError(string message) : base("/error/value/", message) {}
 }
 
 // TODO:  Break and Continue.
