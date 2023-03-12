@@ -1,4 +1,6 @@
-print (3 * 4 + 2)
-print (3 + 4 * 2)
+# Evaluate multiple expressions.
+print (3 * 4 + 5)
+print (3 + 4 * 5)
+print ((3 + 4) * 5)
 print (5 < 10)
 print (5 > 10)
