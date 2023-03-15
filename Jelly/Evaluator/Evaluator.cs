@@ -19,6 +19,7 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator("composite", new CompositeEvaluator());
         _evaluator.AddEvaluator("expression", new ExpressionEvaluator());
         _evaluator.AddEvaluator("binop", new BinOpEvaluator());
+        _evaluator.AddEvaluator("uniop", new UnaryOpEvaluator());
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)

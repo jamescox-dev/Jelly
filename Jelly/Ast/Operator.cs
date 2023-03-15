@@ -105,4 +105,12 @@ public static class OperatorExtentions
         Operator.Exponent => 12,
         _ => 0,
     };
+
+    public static bool IsBinaryOperator(this Operator op)
+    {
+        return op switch {
+            Operator.BitwiseNot or Operator.Not or Operator.Positive or Operator.Negative => false,
+            _ => true
+        };
+    }
 }

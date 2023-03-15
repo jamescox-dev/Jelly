@@ -110,4 +110,16 @@ public class EvaluatorTests
 
         result.Should().Be(3.0.ToValue());
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAUniOpNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.UniOp("not", Node.Literal(false.ToValue()));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        result.Should().Be(true.ToValue());
+    }
 }

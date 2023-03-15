@@ -21,28 +21,51 @@ public class ExpressionParser : IParser
 
         if (scanner.AdvanceIf(s => s.IsExpressionBegin))
         {
+            var prevWasOperator = true;
             foreach (var word in ParseWords(scanner))
             {
-                if (IsOperator(word))
+                var isOperator = IsOperator(word);
+                if (isOperator)
                 {
                     var op = GetOperatorFromLiteral(word);
+                    if (prevWasOperator)
+                    {
+                        if (op == Operator.Add)
+                        {
+                            op = Operator.Positive;
+                        }
+                        else if (op == Operator.Subtract)
+                        {
+                            op = Operator.Negative;
+                        }
+                        if (op.IsBinaryOperator())
+                        {
+                            throw Error.Parse("Invalid expression.");
+                        }
+                    }
+                    
                     while (op.GetPrecedence() < operators.Peek().GetPrecedence())
                     {
-                        PopBinaryOperator();
+                        PopOperator();
                     }
                     operators.Push(op);
                 }
                 else
                 {
+                    if (!prevWasOperator)
+                    {
+                        throw Error.Parse("Invalid expression.");
+                    }
                     operands.Push(word);
                 }
 
                 words.Add(word);
+                prevWasOperator = isOperator;
             }
 
             while (operators.Count > 1)
             {
-                PopBinaryOperator();
+                PopOperator();
             }
 
             if (operands.Count == 0)
@@ -57,12 +80,32 @@ public class ExpressionParser : IParser
 
         return null;
 
+        void PopOperator()
+        {
+            var op = operators.Peek();
+            if (op.IsBinaryOperator())
+            {
+                PopBinaryOperator();
+            }
+            else
+            {
+                PopUnaryOperator();
+            }
+        }
+
+        void PopUnaryOperator()
+        {
+            var op = operators.Pop();
+            var a = operands.Pop();
+            operands.Push(Node.UniOp(op.GetName(), a));
+        }
+
         void PopBinaryOperator()
         {
-            var top = operators.Pop();
+            var op = operators.Pop();
             var b = operands.Pop();
             var a = operands.Pop();
-            operands.Push(Node.BinOp(top.GetName(), a, b));
+            operands.Push(Node.BinOp(op.GetName(), a, b));
         }
     }
 

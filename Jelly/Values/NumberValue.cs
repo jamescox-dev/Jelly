@@ -60,7 +60,9 @@ public class NumberValue : Value
 
     public override string ToString()
     {
-        return _value.ToString("G17");
+        return double.IsFinite(_value) 
+            ? _value.ToString("G17").ToLowerInvariant()
+            : (_value > 0 ? "inf" : "-inf");
     }
 
     public static double ParseNumber(string number)

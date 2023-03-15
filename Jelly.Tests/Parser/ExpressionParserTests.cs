@@ -10,12 +10,6 @@ public class ExpressionParserTests
 {
     ExpressionParser _parser = null!;
 
-    // TODO:  Test to validate expression, and throw errors when invalid.
-
-    // TODO:  Add support for right-associative operators (exp).
-
-    // TODO:  Add support for unary-operators and resolving ambigutity between + -
-
     // TODO:  Add operator parser to allow this "a+1".
 
     // TODO:  Add function calls.
@@ -55,11 +49,11 @@ public class ExpressionParserTests
     [Test]
     public void LiteralWordsThatCanBeParsedAsNumbersAreReturnedNumbers()
     {
-        var scanner = new Scanner("(-56.5)");
+        var scanner = new Scanner("(56.5)");
 
         var expr = _parser.Parse(scanner);
     
-        expr.Should().Be(Node.Expression(Node.Literal((-56.5).ToValue())));
+        expr.Should().Be(Node.Expression(Node.Literal(56.5.ToValue())));
     }
 
     [Test]
@@ -87,6 +81,33 @@ public class ExpressionParserTests
                     expectedOp,
                     Node.Literal(1.0.ToValue()),
                     Node.Literal(2.0.ToValue()))));
+    }
+
+    [TestCase("~", "bitnot")]
+    [TestCase("not", "not")]
+    [TestCase("+", "pos")]
+    [TestCase("-", "neg")]
+    public void LiteralWordsThatCanBeInterpretedAsUnaryOperatorsReturnTheCorrectorOperator(string op, string expectedOp)
+    {
+        var scanner = new Scanner($"({op} 1)");
+
+        var expr = _parser.Parse(scanner);
+
+        expr.Should().Be(
+            Node.Expression(
+                Node.UniOp(
+                    expectedOp,
+                    Node.Literal(1.0.ToValue()))));
+    }
+
+    [TestCase("(* 1)")]
+    [TestCase("(1 * * 1)")]
+    [TestCase("(1 1)")]
+    public void InvalidExpressionsThrowParseErrors(string expression)
+    {
+        var scanner = new Scanner(expression);
+
+        _parser.Invoking(p => p.Parse(scanner)).Should().Throw<ParseError>("Invalid expression.");
     }
 
     [Test]

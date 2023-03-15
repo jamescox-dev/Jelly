@@ -8,14 +8,27 @@ public class NumberValueTests
     [TestCase(0.0)]
     [TestCase(0.84551240822557006)]
     [TestCase(Math.PI)]
+    [TestCase(double.PositiveInfinity)]
+    [TestCase(double.NegativeInfinity)]
     public void ANumberValuesStringRepresentationCanBeUsedToConstructAnIdenticalNumberValue(double number)
     {
         var num = new NumberValue(number);
 
         var str = num.ToString();
-
-        double.Parse(str).Should().Be(number);
+        
+        str.ToValue().ToDouble().Should().Be(number);
     }
+
+    [TestCase(double.NaN)]
+    public void ANumbersStringRepresentationShouldBeInLowerCase(double value)
+    {
+        var num = new NumberValue(value);
+
+        var str = num.ToString();
+
+        str.Should().Be(str.ToLowerInvariant());
+    }
+    
 
     [TestCase("this is not a number")]
     [TestCase("_0")]
