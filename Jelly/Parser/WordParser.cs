@@ -16,7 +16,7 @@ public class WordParser : IParser
         new NestingWordParser(),
         new ExpressionParser(),
     };
-    
+
     public DictionaryValue? Parse(Scanner scanner)
     {
         foreach (var parser in Parsers)

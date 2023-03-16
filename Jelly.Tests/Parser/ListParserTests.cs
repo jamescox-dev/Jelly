@@ -37,8 +37,8 @@ public class ListParserTests
         ((Value)list).Should().Be(new ListValue("a".ToValue()));
     }
 
-    [TestCase("]")]
-    [TestCase("}")]
+    [TestCase("[")]
+    [TestCase("{")]
     public void IfAItemCanNotBeParsedAErrorIsThrown(string listString)
     {
         parser.Invoking(p => p.Parse(new Scanner(listString))).Should().Throw<ParseError>();

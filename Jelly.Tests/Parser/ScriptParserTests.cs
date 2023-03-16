@@ -110,13 +110,19 @@ public class ScriptParserTests
     }
 
     [Test]
-    public void WhenNotConfiguredAsASubscriptParserIfAScriptEndCharacterIsEncounteredAnErrorIsThrown()
+    public void WhenNotConfiguredAsASubscriptParserIfAScriptEndCharacterIsEncounteredItIsTreatedAsARegularCharacter()
     {
         var parser = new ScriptParser();
         var scanner = new Scanner("say hi!}");
 
-        parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected input '}'.");
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Script(
+            Node.Command(Node.Literal("say".ToValue()),
+            new ListValue(
+                Node.Literal("hi!}".ToValue())
+            ))
+        ));
     }
 
     [Test]
@@ -127,15 +133,5 @@ public class ScriptParserTests
 
         parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-file.");
-    }
-
-    [Test]
-    public void IfAWordParserCanNotBeParsedAErrorIsThrown()
-    {
-        var parser = new ScriptParser();
-        var scanner = new Scanner("]");
-
-        parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected input ']'.");
     }
 }

@@ -8,7 +8,7 @@ using Jelly.Values;
 public class ScriptParser : IParser
 {
     static readonly CommandParser CommandParser = new();
-    
+
     readonly bool _subscriptParser;
 
     public ScriptParser(bool subscriptParser=false)
@@ -47,12 +47,8 @@ public class ScriptParser : IParser
                         success = true;
                         break;
                     }
-                    else
-                    {
-                        throw new ParseError($"Unexpected input '{scanner.Source[scanner.Position]}'.");
-                    }
                 }
-                
+
                 var startPosition = scanner.Position;
                 var command = CommandParser.Parse(scanner);
                 if (command is not null)

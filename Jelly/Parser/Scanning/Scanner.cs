@@ -115,9 +115,9 @@ public class Scanner
     public bool IsSpecialCharacter =>
         IsEscapeCharacter || IsVariableMarker 
         || IsCommandSeparator || IsWordSeparator
-        || IsExpressionBegin || IsExpressionEnd
-        || IsScriptBegin || IsScriptEnd
-        || IsNestingQuoteBegin || IsNestingQuoteEnd
+        || IsExpressionBegin //|| IsExpressionEnd
+        || IsScriptBegin //|| IsScriptEnd
+        || IsNestingQuoteBegin //|| IsNestingQuoteEnd
         || IsQuote || IsCommentBegin;
 
     public override bool Equals(object? obj)

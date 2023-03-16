@@ -5,8 +5,6 @@ using Jelly.Errors;
 using Jelly.Parser.Scanning;
 using Jelly.Values;
 
-// TODO:  Special form for commands that is just one expression node ().
-
 public class CommandParser : IParser
 {
     static readonly WordParser _wordParser = new();

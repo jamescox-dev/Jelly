@@ -150,7 +150,7 @@ public class ValueTests
     [Test]
     public void IfTheValueCanNotBeParsedIntoAListValueAnTypeErrorIsThrown()
     {
-        var value = new StringValue("}");
+        var value = new StringValue("{");
 
         value.Invoking(v => v.ToListValue()).Should().Throw<TypeError>().WithMessage("Value is not a list.");
     }
@@ -178,7 +178,7 @@ public class ValueTests
     [Test]
     public void IfTheValueCanNotBeParsedIntoADictionaryValueAnTypeErrorIsThrown()
     {
-        var value = new StringValue("}");
+        var value = new StringValue("{");
 
         value.Invoking(v => v.ToDictionaryValue()).Should().Throw<TypeError>().WithMessage("Value is not a dictionary.");
     }

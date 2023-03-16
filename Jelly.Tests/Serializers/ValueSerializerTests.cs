@@ -51,8 +51,8 @@ public class ValueSerializerTests
 
     [TestCase("a$b", @"a\$b", true)]
     [TestCase(@"a\b", @"a\\b", true)]
-    [TestCase("a}b", @"a\}b", true)]
-    [TestCase("a{b}", @"a\{b\}", false)]
+    [TestCase("a}b", @"a}b", true)]
+    [TestCase("a{b{", @"a\{b\{", false)]
     [TestCase("a b", @"a\ b", false)]
     public void ValuesShouldBeEsscapedWithBackSlashIfTheyOnlyContainOneNonWhitespaceSpecialCharacter(string stringValue, string expectedEscape, bool shouldMatch)
     {
