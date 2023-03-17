@@ -19,6 +19,17 @@ public class VariableParserTests
     }
 
     [Test]
+    public void AVariableParserCanHaveAnOptionalTerminatingCharacter()
+    {
+        var parser = new VariableParser('>');
+        var scanner = new Scanner("$pi>are>squared");
+
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Variable("pi"));
+    }
+
+    [Test]
     public void AVariableNodeIsParsedWhenTheCurrentCharacterIsAVariableCharacter()
     {
         var parser = new VariableParser();

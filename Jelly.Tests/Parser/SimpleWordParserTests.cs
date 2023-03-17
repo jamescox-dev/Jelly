@@ -20,6 +20,17 @@ public class SimpleWordParserTests
     }
 
     [Test]
+    public void ASimpleWordParserCanHaveAnOptionalTerminatingCharacter()
+    {
+        var parser = new SimpleWordParser('>');
+        var scanner = new Scanner("hello>world");
+        
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Literal("hello".ToValue()));
+    }
+
+    [Test]
     public void ALiteralNodeIsParsedFromSourceFromAGivenPosition()
     {
         var parser = new SimpleWordParser();

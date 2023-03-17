@@ -9,6 +9,13 @@ using System.Text;
 public class SimpleWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
+    
+    readonly char? _terminatingChar;
+
+    public SimpleWordParser(char? terminatingChar = null)
+    {
+        _terminatingChar = terminatingChar;
+    }
 
     public DictionaryValue? Parse(Scanner scanner)
     {
@@ -22,7 +29,7 @@ public class SimpleWordParser : IParser
             {
                 value.Append(escapedCh);
             }
-            else if (scanner.IsSpecialCharacter)
+            else if (scanner.IsSpecialCharacter || IsTerminatingChar(scanner))
             {
                 break;
             }
@@ -35,4 +42,6 @@ public class SimpleWordParser : IParser
 
         return start == scanner.Position ? null : Node.Literal(value.ToString().ToValue());
     }
+
+    public bool IsTerminatingChar(Scanner scanner) => scanner.CurrentCharacter == _terminatingChar;
 }

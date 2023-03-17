@@ -9,7 +9,12 @@ public class ExpressionParser : IParser
 {
     static readonly StringValue ValueKeyword = new StringValue("value");
 
-    static readonly WordParser _wordParser = new();
+    readonly WordParser _wordParser;
+
+    public ExpressionParser(ScriptParser? subscriptParser = null)
+    {
+        _wordParser = new(ScannerConfig.Default.ExpressionEnd, subscriptParser, this);
+    }
 
     public DictionaryValue? Parse(Scanner scanner)
     {
@@ -109,7 +114,7 @@ public class ExpressionParser : IParser
         }
     }
 
-    static IEnumerable<DictionaryValue> ParseWords(Scanner scanner)
+    IEnumerable<DictionaryValue> ParseWords(Scanner scanner)
     {
         var endFound = false;
         while (!scanner.IsEof)

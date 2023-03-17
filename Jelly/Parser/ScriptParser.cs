@@ -7,13 +7,25 @@ using Jelly.Values;
 
 public class ScriptParser : IParser
 {
-    static readonly CommandParser CommandParser = new();
+    static CommandParser? TopLevelCommandParser;
+    static CommandParser? SubscriptCommandParser;
+    
+    readonly CommandParser _commandParser;
 
     readonly bool _subscriptParser;
 
     public ScriptParser(bool subscriptParser=false)
     {
         _subscriptParser = subscriptParser;
+        if (subscriptParser)
+        {
+            TopLevelCommandParser = TopLevelCommandParser ?? new(ScannerConfig.Default.ScriptEnd, this);
+        }
+        else
+        {
+            SubscriptCommandParser = SubscriptCommandParser ?? new();
+        }
+        _commandParser = (_subscriptParser ? TopLevelCommandParser : SubscriptCommandParser)!;
     }
 
     public DictionaryValue? Parse(Scanner scanner)
@@ -50,7 +62,7 @@ public class ScriptParser : IParser
                 }
 
                 var startPosition = scanner.Position;
-                var command = CommandParser.Parse(scanner);
+                var command = _commandParser.Parse(scanner);
                 if (command is not null)
                 {
                     commands.Add(command);

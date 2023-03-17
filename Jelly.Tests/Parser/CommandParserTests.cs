@@ -23,6 +23,19 @@ public class CommandParserTests
     }
 
     [Test]
+    public void ACommandCanHaveOptionalTerminatingCharacter()
+    {
+        var parser = new CommandParser('>');
+        var scanner = new Scanner("go>stop");
+        
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Command(
+            Node.Literal("go".ToValue()), 
+            new ListValue()));
+    }
+
+    [Test]
     public void TheParserSkipsWordSeparatorsAndIncludeExtraWordsAsArguments()
     {
         var parser = new CommandParser();

@@ -20,6 +20,17 @@ public class WordParserTests
     }
 
     [Test]
+    public void AWordCanHaveAnOptionalTerminatingCharacter()
+    {
+        var parser = new WordParser('>');
+        var scanner = new Scanner("jelly>wobble");
+    
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Literal("jelly".ToValue()));
+    }
+
+    [Test]
     public void AOperatorCanBeParsed()
     {
         var parser = new WordParser();

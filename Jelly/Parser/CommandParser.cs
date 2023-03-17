@@ -7,7 +7,12 @@ using Jelly.Values;
 
 public class CommandParser : IParser
 {
-    static readonly WordParser _wordParser = new();
+    readonly WordParser _wordParser;
+
+    public CommandParser(char? terminatingChar = null, ScriptParser? subscriptParser = null)
+    {
+        _wordParser = new(terminatingChar, subscriptParser);
+    }
 
     public DictionaryValue? Parse(Scanner scanner)
     {

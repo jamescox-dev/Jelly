@@ -7,6 +7,13 @@ using Jelly.Values;
 
 public class VariableParser : IParser
 {
+    readonly char? _terminatingChar;
+
+    public VariableParser(char? terminatingChar = null)
+    {
+        _terminatingChar = terminatingChar;
+    }
+
     public DictionaryValue? Parse(Scanner scanner)
     {
         if (scanner.AdvanceIf(s => s.IsVariableMarker))
@@ -22,7 +29,7 @@ public class VariableParser : IParser
             else
             {
                 start = scanner.Position;
-                scanner.AdvanceWhile(s => !s.IsSpecialCharacter);
+                scanner.AdvanceWhile(s => !(s.IsSpecialCharacter || IsTerminatingChar(s)));
                 if (scanner.Position > start)
                 {
                     return Node.Variable(scanner.Source[start..scanner.Position]);
@@ -35,4 +42,6 @@ public class VariableParser : IParser
         }
         return null;
     }
+
+    public bool IsTerminatingChar(Scanner scanner) => scanner.CurrentCharacter == _terminatingChar;
 }
