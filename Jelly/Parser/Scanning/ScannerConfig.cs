@@ -1,5 +1,7 @@
 namespace Jelly.Parser.Scanning;
 
+using Jelly.Ast;
+
 public class ScannerConfig : IScannerConfig
 {
     public static readonly IScannerConfig Default = new ScannerConfig();

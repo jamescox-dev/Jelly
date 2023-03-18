@@ -1,5 +1,7 @@
 namespace Jelly.Parser.Scanning;
 
+using Jelly.Ast;
+
 public interface IScannerConfig
 {
     IReadOnlySet<char> ListItemSeparators { get; }

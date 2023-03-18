@@ -1,3 +1,5 @@
+namespace Jelly.Ast;
+
 public enum Operator
 {
     None,
