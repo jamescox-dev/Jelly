@@ -346,11 +346,8 @@ public class ScannerTests
 
     [TestCase("$", true)]
     [TestCase("{", true)]
-    //[TestCase("}", true)]
     [TestCase("(", true)]
-    //[TestCase(")", true)]
     [TestCase("[", true)]
-    //[TestCase("]", true)]
     [TestCase("\\", true)]
     [TestCase(" ", true)]
     [TestCase(";", true)]
@@ -389,5 +386,26 @@ public class ScannerTests
         var hashCode = scanner1.GetHashCode();
 
         hashCode.Should().NotBe(scanner2.GetHashCode());
+    }
+
+    [TestCase("=", true)]
+    [TestCase("<>", true)]
+    [TestCase(">=", true)]
+    [TestCase("+", true)]
+    [TestCase("and", false)]
+    public void AOperatorIsReportedWhenTheCurrentCharacterMatchesOneOfTheConfiguredOperators(string source, bool expected)
+    {
+        var scanner = new Scanner(source);
+
+        scanner.TryGetOperatorSymbol(out var op).Should().Be(expected);
+
+        if (expected)
+        {
+            op.Should().NotBeEmpty();
+        }
+        else
+        {
+            op.Should().BeEmpty();
+        }
     }
 }
