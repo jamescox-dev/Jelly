@@ -113,17 +113,17 @@ public class BinOpEvaluatorTests
     }
 
     [TestCase("lt", 1.0, 2.0, true)]
-    [TestCase("lt", 3.0, 2.0, false)]
+    [TestCase("lt", 2.0, 2.0, false)]
     [TestCase("lte", 1.0, 2.0, true)]
     [TestCase("lte", 2.0, 2.0, true)]
     [TestCase("lte", 3.0, 2.0, false)]
     [TestCase("eq", 1.0, 1.0, true)]
     [TestCase("eq", 1.0, 0.0, false)]
     [TestCase("gte", 0.0, 1.0, false)]
-    [TestCase("gte", 1.0, 0.0, true)]
+    [TestCase("gte", 1.0, 1.0, true)]
     [TestCase("gte", 2.0, 1.0, true)]
     [TestCase("gt", 2.0, 1.0, true)]
-    [TestCase("gt", 1.0, 2.0, false)]
+    [TestCase("gt", 1.0, 1.0, false)]
     [TestCase("ne", 1.0, 1.0, false)]
     [TestCase("ne", 0.0, 1.0, true)]
     public void ComparisonsCanBeEvaluated(string op, double a, double b, bool expected)

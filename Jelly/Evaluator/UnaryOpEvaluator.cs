@@ -34,5 +34,5 @@ internal class UnaryOpEvaluator : IEvaluator
         throw Error.Value("Invalid unary operator.");
     }
 
-    static int ToInt32(double d) => double.IsNaN(d) || double.IsInfinity(d) ? 0 : (int) (uint) d;
+    static int ToInt32(double d) => (int) (uint) d;
 }

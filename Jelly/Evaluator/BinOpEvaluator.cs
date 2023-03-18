@@ -160,8 +160,8 @@ internal class BinOpEvaluator : IEvaluator
     static void EvaluateOperandsAsInt32s(IScope scope, DictionaryValue node, IEvaluator rootEvaluator, out int a, out int b)
     {
         EvaluateOperandsAsNumbers(scope, node, rootEvaluator, out var aDbl, out var bDbl);
-        a = double.IsNaN(aDbl) || double.IsInfinity(aDbl) ? 0 : (int) (uint) aDbl;
-        b = double.IsNaN(bDbl) || double.IsInfinity(bDbl) ? 0 : (int) (uint) bDbl;
+        a = (int) (uint) aDbl;
+        b = (int) (uint) bDbl;
     }
 
     static void EvaluateOperandsAsBooleans(IScope scope, DictionaryValue node, IEvaluator rootEvaluator, out bool a, out bool b)
