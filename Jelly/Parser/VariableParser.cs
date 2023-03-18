@@ -8,10 +8,12 @@ using Jelly.Values;
 public class VariableParser : IParser
 {
     readonly char? _terminatingChar;
+    readonly bool _terminateAtOperator;
 
-    public VariableParser(char? terminatingChar = null)
+    public VariableParser(char? terminatingChar = null, bool terminateAtOperator = false)
     {
         _terminatingChar = terminatingChar;
+        _terminateAtOperator = terminateAtOperator;
     }
 
     public DictionaryValue? Parse(Scanner scanner)
@@ -43,5 +45,7 @@ public class VariableParser : IParser
         return null;
     }
 
-    public bool IsTerminatingChar(Scanner scanner) => scanner.CurrentCharacter == _terminatingChar;
+    public bool IsTerminatingChar(Scanner scanner) => 
+        scanner.CurrentCharacter == _terminatingChar 
+        || (_terminateAtOperator && scanner.TryGetOperatorSymbol(out var _));
 }

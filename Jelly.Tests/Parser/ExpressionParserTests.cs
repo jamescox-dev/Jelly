@@ -10,8 +10,6 @@ public class ExpressionParserTests
 {
     ExpressionParser _parser = null!;
 
-    // TODO:  Add operator parser to allow this "a+1".
-
     // TODO:  Add function calls.
 
     [Test]
@@ -147,6 +145,24 @@ public class ExpressionParserTests
     public void OperandsCanBeVariables()
     {
         var scanner = new Scanner("($a + $b)");
+
+        var expr = _parser.Parse(scanner);
+
+        expr.Should().Be(
+            Node.Expression(
+                Node.BinOp(
+                    "add",
+                    Node.Variable("a"),
+                    Node.Variable("b")
+                )
+            )
+        );
+    }
+
+    [Test]
+    public void OperandsDoNotHaveToBeSeparatedBySapces()
+    {
+        var scanner = new Scanner("($a+$b)");
 
         var expr = _parser.Parse(scanner);
 

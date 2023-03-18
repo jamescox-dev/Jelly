@@ -11,10 +11,12 @@ public class SimpleWordParser : IParser
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
     
     readonly char? _terminatingChar;
+    readonly bool _terminateAtOperator;
 
-    public SimpleWordParser(char? terminatingChar = null)
+    public SimpleWordParser(char? terminatingChar = null, bool terminateAtOperator = false)
     {
         _terminatingChar = terminatingChar;
+        _terminateAtOperator = terminateAtOperator;
     }
 
     public DictionaryValue? Parse(Scanner scanner)
@@ -43,5 +45,7 @@ public class SimpleWordParser : IParser
         return start == scanner.Position ? null : Node.Literal(value.ToString().ToValue());
     }
 
-    public bool IsTerminatingChar(Scanner scanner) => scanner.CurrentCharacter == _terminatingChar;
+    public bool IsTerminatingChar(Scanner scanner) => 
+        scanner.CurrentCharacter == _terminatingChar 
+        || (_terminateAtOperator && scanner.TryGetOperatorSymbol(out var _));
 }

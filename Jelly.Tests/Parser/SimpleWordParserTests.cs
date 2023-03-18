@@ -31,6 +31,17 @@ public class SimpleWordParserTests
     }
 
     [Test]
+    public void ASimpleWordParserCanBeConfiguredToTerminateAtAOperator()
+    {
+        var parser = new SimpleWordParser(terminateAtOperator: true);
+        var scanner = new Scanner("hello++world");
+        
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Literal("hello".ToValue()));
+    }
+
+    [Test]
     public void ALiteralNodeIsParsedFromSourceFromAGivenPosition()
     {
         var parser = new SimpleWordParser();

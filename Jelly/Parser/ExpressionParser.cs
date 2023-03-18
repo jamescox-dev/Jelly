@@ -7,13 +7,11 @@ namespace Jelly.Parser;
 
 public class ExpressionParser : IParser
 {
-    static readonly StringValue ValueKeyword = new StringValue("value");
-
     readonly WordParser _wordParser;
 
     public ExpressionParser(ScriptParser? subscriptParser = null)
     {
-        _wordParser = new(ScannerConfig.Default.ExpressionEnd, subscriptParser, this);
+        _wordParser = new(ScannerConfig.Default.ExpressionEnd, subscriptParser, this, true);
     }
 
     public DictionaryValue? Parse(Scanner scanner)

@@ -6,20 +6,27 @@ using Jelly.Values;
 
 public class WordParser : IParser
 {
-    readonly IParser[] _parsers;
+    readonly IEnumerable<IParser> _parsers;
 
-    public WordParser(char? terminatingChar = null, ScriptParser? subscriptParser = null, ExpressionParser? expressionParser = null)
+    public WordParser(char? terminatingChar = null, ScriptParser? subscriptParser = null, ExpressionParser? expressionParser = null, bool terminateAtOperator = false)
     {
-        _parsers = new IParser[] 
+        subscriptParser = subscriptParser ?? new ScriptParser(true);
+        expressionParser = expressionParser ?? new ExpressionParser(subscriptParser);
+        var parsers = new List<IParser>
         {
-            new SimpleWordParser(terminatingChar),
+            new SimpleWordParser(terminatingChar, terminateAtOperator),
             new QuotedWordParser(),
-            new VariableParser(terminatingChar),
-            subscriptParser ?? new ScriptParser(true),
+            new VariableParser(terminatingChar, terminateAtOperator),
+            subscriptParser,
             new CommentParser(),
             new NestingWordParser(),
-            expressionParser ?? new ExpressionParser(subscriptParser),
+            expressionParser,
         };
+        if (terminateAtOperator)
+        {
+            parsers.Add(new OperatorParser());
+        }
+        _parsers = parsers;
     }
 
     public DictionaryValue? Parse(Scanner scanner)
