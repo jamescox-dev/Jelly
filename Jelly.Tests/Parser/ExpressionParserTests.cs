@@ -10,17 +10,15 @@ public class ExpressionParserTests
 {
     ExpressionParser _parser = null!;
 
-    // TODO:  Add function calls.
-
     [Test]
-    public void AnEmptyExpressionEvaluatesToEmptyLiteral()
+    public void AnEmptyExpressionHasNoSubexpressions()
     {
         var scanner = new Scanner("()");
 
         var expr = _parser.Parse(scanner);
     
         scanner.Position.Should().Be(2);
-        expr.Should().Be(Node.Expression(Node.Literal(Value.Empty)));
+        expr.Should().Be(Node.Expression());
     }
 
     [Test]
@@ -224,6 +222,43 @@ public class ExpressionParserTests
                 )
             )
         );
+    }
+
+    [Test]
+    public void AFunctionCanBeParsedAndResultsInACommandBeingPutInItsPlace()
+    {
+        var scanner = new Scanner("(max($a, $b))");
+
+        var expr = _parser.Parse(scanner);
+
+        expr.Should().Be(Node.Expression(
+            Node.Command(
+                Node.Literal("max"), 
+                new ListValue(
+                    Node.Variable("a"), 
+                    Node.Variable("b")))));
+    }
+
+    [TestCase("(max)")]
+    [TestCase("(max 1)")]
+    public void IfTheFunctionNameIsNotFollowedByItsArgumentsAnErrorIsThrown(string expression)
+    {
+        var scanner = new Scanner(expression);
+
+        _parser.Invoking(p => p.Parse(scanner)).Should().Throw<ParseError>("Invalid expression.");
+    }
+
+    [Test]
+    public void IfTheFunctionTakesNoArgumentsNoArgumentsArePassedToTheGeneratedCommand()
+    {
+        var scanner = new Scanner("(max())");
+
+        var expr = _parser.Parse(scanner);
+
+        expr.Should().Be(Node.Expression(
+            Node.Command(
+                Node.Literal("max"), 
+                new ListValue())));
     }
 
     [SetUp]

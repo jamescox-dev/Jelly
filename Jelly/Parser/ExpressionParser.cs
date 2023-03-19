@@ -7,6 +7,8 @@ namespace Jelly.Parser;
 
 public class ExpressionParser : IParser
 {
+    public static readonly Value SubexpressionsKeyword = new StringValue("subexpressions");
+
     readonly WordParser _wordParser;
 
     public ExpressionParser(ScriptParser? subscriptParser = null)
@@ -16,6 +18,7 @@ public class ExpressionParser : IParser
 
     public DictionaryValue? Parse(Scanner scanner)
     {
+        DictionaryValue? functionName = null;
         var subexpressions = new List<DictionaryValue>();
         var operators = new Stack<Operator>();
         var operands = new Stack<DictionaryValue>();
@@ -49,7 +52,7 @@ public class ExpressionParser : IParser
 
                     if (op == Operator.SubexpressionSeparator)
                     {
-                        BuildSubexpression();
+                        BuildSubexpression(true);
                     }
                     else
                     {
@@ -64,9 +67,27 @@ public class ExpressionParser : IParser
                 {
                     if (!prevWasOperator)
                     {
-                        throw Error.Parse("Invalid expression.");
+                        if (functionName is not null && Node.IsExprssion(word))
+                        {
+                            operands.Push(Node.Command(functionName, word[SubexpressionsKeyword].ToListValue()));
+                            functionName = null;
+                        }
+                        else
+                        {
+                            throw Error.Parse("Invalid expression.");
+                        }
                     }
-                    operands.Push(word);
+                    else
+                    {
+                        if (functionName is null && Node.IsLiteral(word) && double.IsNaN(Node.GetLiteralValue(word).ToDouble()))
+                        {
+                            functionName = word;
+                        }
+                        else
+                        {
+                            operands.Push(word);
+                        }
+                    }
                 }
 
                 prevWasOperator = isOperator;
@@ -79,19 +100,19 @@ public class ExpressionParser : IParser
 
         return null;
 
-        void BuildSubexpression()
+        void BuildSubexpression(bool includeEmpty=false)
         {
-            if (prevWasOperator && operators.Count > 1)
+            if ((prevWasOperator && operators.Count > 1) || functionName is not null)
             {
                 throw Error.Parse("Invalid expression.");
             }
             PopRemainingOperators();
 
-            if (operands.Count == 0)
+            if (operands.Count == 0 && (subexpressions.Count > 0 || includeEmpty))
             {
                 subexpressions.Add(Node.Literal(Value.Empty));
             }
-            else
+            else if (operands.Count > 0)
             {
                 subexpressions.Add(operands.Pop());
             }

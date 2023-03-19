@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 public class NumberValue : Value
 {
+    public static readonly NumberValue Zero = new NumberValue(0.0);
     public static readonly NumberValue One = new NumberValue(1.0);
 
     static readonly BigInteger DoubleMaxValueAsBigInt = new BigInteger(double.MaxValue);
