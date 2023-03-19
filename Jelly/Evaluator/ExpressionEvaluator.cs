@@ -4,10 +4,15 @@ namespace Jelly.Evaluator;
 
 public class ExpressionEvaluator : IEvaluator
 {
-    static readonly StringValue RootKeyword = new StringValue("root");
+    static readonly StringValue SubexpressionsKeyword = new StringValue("subexpressions");
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
-        return rootEvaluator.Evaluate(scope, node[RootKeyword].ToDictionaryValue(), rootEvaluator);
+        var result = Value.Empty;
+        foreach (var subexpression in node[SubexpressionsKeyword].ToListValue())
+        {
+            result = rootEvaluator.Evaluate(scope, subexpression.ToDictionaryValue(), rootEvaluator);
+        }
+        return result;
     }
 }

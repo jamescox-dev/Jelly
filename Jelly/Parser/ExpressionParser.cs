@@ -16,15 +16,15 @@ public class ExpressionParser : IParser
 
     public DictionaryValue? Parse(Scanner scanner)
     {
-        var words = new List<DictionaryValue>();
+        var subexpressions = new List<DictionaryValue>();
         var operators = new Stack<Operator>();
         var operands = new Stack<DictionaryValue>();
 
         operators.Push(Operator.None);
 
+        var prevWasOperator = true;
         if (scanner.AdvanceIf(s => s.IsExpressionBegin))
         {
-            var prevWasOperator = true;
             foreach (var word in ParseWords(scanner))
             {
                 var isOperator = IsOperator(word);
@@ -41,17 +41,24 @@ public class ExpressionParser : IParser
                         {
                             op = Operator.Negative;
                         }
-                        if (op.IsBinaryOperator())
+                        if (op.IsBinaryOperator() && op != Operator.SubexpressionSeparator)
                         {
                             throw Error.Parse("Invalid expression.");
                         }
                     }
-                    
-                    while (op.GetPrecedence() < operators.Peek().GetPrecedence())
+
+                    if (op == Operator.SubexpressionSeparator)
                     {
-                        PopOperator();
+                        BuildSubexpression();
                     }
-                    operators.Push(op);
+                    else
+                    {
+                        while (op.GetPrecedence() < operators.Peek().GetPrecedence())
+                        {
+                            PopOperator();
+                        }
+                        operators.Push(op);
+                    }
                 }
                 else
                 {
@@ -62,26 +69,41 @@ public class ExpressionParser : IParser
                     operands.Push(word);
                 }
 
-                words.Add(word);
                 prevWasOperator = isOperator;
             }
 
+            BuildSubexpression();
+
+            return Node.Expression(subexpressions.ToArray());
+        }
+
+        return null;
+
+        void BuildSubexpression()
+        {
+            if (prevWasOperator && operators.Count > 1)
+            {
+                throw Error.Parse("Invalid expression.");
+            }
+            PopRemainingOperators();
+
+            if (operands.Count == 0)
+            {
+                subexpressions.Add(Node.Literal(Value.Empty));
+            }
+            else
+            {
+                subexpressions.Add(operands.Pop());
+            }
+        }
+
+        void PopRemainingOperators()
+        {
             while (operators.Count > 1)
             {
                 PopOperator();
             }
-
-            if (operands.Count == 0)
-            {
-                return Node.Expression(Node.Literal(Value.Empty));
-            }
-            else
-            {
-                return Node.Expression(operands.Pop());
-            }
         }
-
-        return null;
 
         void PopOperator()
         {

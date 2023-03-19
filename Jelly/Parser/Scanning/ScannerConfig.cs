@@ -45,6 +45,7 @@ public class ScannerConfig : IScannerConfig
         { "*", Operator.Multiply }, {"/", Operator.Divide }, {"//", Operator.FloorDivide }, {"%", Operator.Modulo }, {"%%", Operator.FloorModulo },
         { "~", Operator.BitwiseNot },
         { "**", Operator.Exponent },
+        { ",", Operator.SubexpressionSeparator },
     };
 
     public IReadOnlySet<char> ListItemSeparators => _listItemSeparators;

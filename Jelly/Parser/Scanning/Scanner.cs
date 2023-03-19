@@ -122,7 +122,7 @@ public class Scanner
 
     public bool TryGetOperatorSymbol(out string op)
     {
-        foreach (var candidate in Config.OperatorNames.Keys.Where(n => n.All(char.IsSymbol)).OrderBy(n => n.Length))
+        foreach (var candidate in Config.OperatorNames.Keys.Where(n => n.All(c => !char.IsLetter(c))).OrderBy(n => n.Length))
         {
             if (Substring(candidate.Length) == candidate)
             {

@@ -24,6 +24,17 @@ public class ExpressionParserTests
     }
 
     [Test]
+    public void ACommaIntroducesANewSubexpression()
+    {
+        var scanner = new Scanner("(,)");
+
+        var expr = _parser.Parse(scanner);
+    
+        scanner.Position.Should().Be(3);
+        expr.Should().Be(Node.Expression(Node.Literal(Value.Empty), Node.Literal(Value.Empty)));
+    }
+
+    [Test]
     public void IfNoOpeningBracketStartsTheExpressionNotExpressionIsParsed()
     {
         var scanner = new Scanner("noway!");
@@ -101,6 +112,7 @@ public class ExpressionParserTests
     [TestCase("(* 1)")]
     [TestCase("(1 * * 1)")]
     [TestCase("(1 1)")]
+    [TestCase("(1 *)")]
     public void InvalidExpressionsThrowParseErrors(string expression)
     {
         var scanner = new Scanner(expression);

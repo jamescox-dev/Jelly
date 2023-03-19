@@ -41,6 +41,7 @@ public class OperatorTests
     [TestCase(Operator.Negative, "neg")]
     [TestCase(Operator.BitwiseNot, "bitnot")]
     [TestCase(Operator.Exponent, "exp")]
+    [TestCase(Operator.SubexpressionSeparator, "sep")]
     public void TheCorrectNameOfAnOperatorIsReturned(Operator op, string expectedName)
     {
         var name = op.GetName();

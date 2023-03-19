@@ -1,6 +1,7 @@
 namespace Jelly.Evaluator.Tests;
 
 using Jelly.Ast;
+using Jelly.Commands;
 using Jelly.Values;
 
 [TestFixture]
@@ -12,14 +13,21 @@ public class ExpressionEvaluatorTests
     Scope _scope = null!;
 
     [Test]
-    public void AnExpressionEvaluatesItsRootNode()
+    public void AnExpressionEvaluatesEachOfItsSubExpressionsNode()
     {
-        var expr = Node.Expression(Node.Literal("42".ToValue()));
+        var invokations = 0;
+        var testCommand = new SimpleCommand((_, _) => { ++invokations; return invokations.ToValue(); });
+        _scope.DefineCommand("test", testCommand);
+        var expr = Node.Expression
+        (Node.Command(Node.Literal("test"), new ListValue()), 
+            Node.Command(Node.Literal("test"), new ListValue()));
 
         var result = _evaluator.Evaluate(_scope, expr, _rootEvaluator);
 
-        result.Should().Be("42".ToValue());
+        invokations.Should().Be(2);
+        result.Should().Be(2.0.ToValue());
     }
+
 
     [SetUp]
     public void Setup()

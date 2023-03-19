@@ -39,6 +39,8 @@ public enum Operator
     BitwiseNot,
 
     Exponent,
+
+    SubexpressionSeparator,
 }
 
 public static class OperatorExtentions
@@ -72,6 +74,7 @@ public static class OperatorExtentions
         Operator.Negative => "neg",
         Operator.BitwiseNot => "bitnot",
         Operator.Exponent => "exp",
+        Operator.SubexpressionSeparator => "sep",
         _ => "",
     };
 
@@ -105,6 +108,7 @@ public static class OperatorExtentions
         Operator.Negative => 11,
         Operator.BitwiseNot => 11,
         Operator.Exponent => 12,
+        Operator.SubexpressionSeparator => int.MaxValue,
         _ => 0,
     };
 

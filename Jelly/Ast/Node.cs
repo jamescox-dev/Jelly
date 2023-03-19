@@ -18,7 +18,7 @@ public static class Node
     static readonly StringValue PartsKeyword = new StringValue("parts");
     static readonly StringValue AssignmentKeyword = new StringValue("assignment");
     static readonly StringValue ExpressionKeyword = new StringValue("expression");
-    static readonly StringValue RootKeyword = new StringValue("root");
+    static readonly StringValue SubexpresionsKeyword = new StringValue("subexpressions");
     static readonly StringValue BinOpKeyword = new StringValue("binop");
     static readonly StringValue OpKeyword = new StringValue("op");
     static readonly StringValue AKeyword = new StringValue("a");
@@ -49,8 +49,8 @@ public static class Node
     public static DictionaryValue Assignment(string name, DictionaryValue value) =>
         new DictionaryValue(TypeKeyword, AssignmentKeyword, NameKeyword, name.ToValue(), ValueKeyword, value);
 
-    public static DictionaryValue Expression(DictionaryValue root) =>
-        new DictionaryValue(TypeKeyword, ExpressionKeyword, RootKeyword, root);
+    public static DictionaryValue Expression(params DictionaryValue[] subexpressions) =>
+        new DictionaryValue(TypeKeyword, ExpressionKeyword, SubexpresionsKeyword, new ListValue(subexpressions));
 
     public static DictionaryValue BinOp(string op, DictionaryValue a, DictionaryValue b) =>
         new DictionaryValue(TypeKeyword, BinOpKeyword, OpKeyword, op.ToValue(), AKeyword, a, BKeyword, b);
