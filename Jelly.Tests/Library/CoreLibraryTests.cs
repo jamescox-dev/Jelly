@@ -41,7 +41,7 @@ public class CoreLibraryTests
         var scope = new Scope();
         lib.LoadIntoScope(scope);
         var varCmd = scope.GetCommand("var");
-        var args = new ListValue(Node.Variable("pi"), Node.Literal("for all!".ToValue()));
+        var args = new ListValue(Node.Variable("pi"), Node.Literal("for all!"));
 
         varCmd.Invoking(c => c.Invoke(scope, args)).Should()
             .Throw<ArgError>().WithMessage("Expected keyword '=', but found 'for all!'.");
@@ -56,16 +56,16 @@ public class CoreLibraryTests
         var varCmd = scope.GetCommand("var");
         var args = new ListValue(
             Node.Variable("pi"), 
-            Node.Literal("=".ToValue()), 
-            Node.Literal("3.14159".ToValue()), 
-            Node.Literal("What am I doing here?".ToValue()));
+            Node.Literal("="), 
+            Node.Literal("3.14159"), 
+            Node.Literal("What am I doing here?"));
 
         varCmd.Invoking(c => c.Invoke(scope, args)).Should()
             .Throw<ArgError>().WithMessage("Unexpected value 'What am I doing here?'.");
     }
 
     [Test]
-    public void TheCorrectVariableIsDefinedInTheScopeAnTheNewValueOfTheVariableIsReturned()
+    public void ADefineVariableIsReturnedWithTheCorrectDetails()
     {
         var lib = new CoreLibrary();
         var scope = new Scope();
@@ -73,14 +73,13 @@ public class CoreLibraryTests
         var varCmd = scope.GetCommand("var");
         var testScope = new Mock<IScope>();
         var args = new ListValue(
-            Node.Literal("pi".ToValue()), 
-            Node.Literal("=".ToValue()), 
-            Node.Literal("3.14159".ToValue()));
+            Node.Literal("pi"), 
+            Node.Literal("="), 
+            Node.Literal("3.14159"));
 
         var result = varCmd.Invoke(testScope.Object, args);
 
-        testScope.Verify(m => m.DefineVariable("pi", "3.14159".ToValue()), Times.Once);
-        result.Should().Be("3.14159".ToValue());
+        result.Should().Be(Node.DefineVariable("pi", Node.Literal("3.14159")));
     }
 
     [Test]
@@ -97,8 +96,7 @@ public class CoreLibraryTests
 
         var result = varCmd.Invoke(testScope.Object, args);
 
-        testScope.Verify(m => m.DefineVariable("pi", Value.Empty), Times.Once);
-        result.Should().Be(Value.Empty);
+        result.Should().Be(Node.DefineVariable("pi", Node.Literal(Value.Empty)));
     }
 
     [Test]
@@ -114,8 +112,7 @@ public class CoreLibraryTests
 
         var result = varCmd.Invoke(testScope.Object, args);
 
-        testScope.Verify(m => m.DefineVariable("pi", Value.Empty), Times.Once);
-        result.Should().Be(Value.Empty);
+        result.Should().Be(Node.DefineVariable("pi", Node.Literal(Value.Empty)));
     }
 
     [Test]
@@ -133,8 +130,7 @@ public class CoreLibraryTests
 
         var result = varCmd.Invoke(testScope.Object, args);
 
-        testScope.Verify(m => m.DefineVariable("pi", "3.14159".ToValue()), Times.Once);
-        result.Should().Be("3.14159".ToValue());
+        result.Should().Be(Node.DefineVariable("pi", Node.Literal("3.14159")));
     }
 
     #endregion

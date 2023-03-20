@@ -15,6 +15,10 @@ internal class CommandEvaluator : IEvaluator
             ? node[ArgsKey].ToListValue()
             : node[ArgsKey].ToListValue().Select(arg => rootEvaluator.Evaluate(scope, arg.ToDictionaryValue(), rootEvaluator)).ToValue();
         
-        return command.Invoke(scope, args);
+        var result = command.Invoke(scope, args);
+
+        return command.IsMacro 
+            ? rootEvaluator.Evaluate(scope, result.ToDictionaryValue(), rootEvaluator) 
+            : result;
     }
 }

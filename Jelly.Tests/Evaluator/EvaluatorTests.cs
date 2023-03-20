@@ -75,7 +75,7 @@ public class EvaluatorTests
     }
 
     [Test]
-    public void TheEvaluatorCanEvaluateAAssignmentNode()
+    public void TheEvaluatorCanEvaluateAnAssignmentNode()
     {
         IEvaluator evaluator = new Evaluator();
         var scope = new Mock<IScope>();
@@ -84,6 +84,19 @@ public class EvaluatorTests
         var result = evaluator.Evaluate(scope.Object, node, evaluator);
 
         scope.Verify(s => s.SetVariable("answer", "42".ToValue()), Times.Once);
+        result.Should().Be("42".ToValue());
+    }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateADefineVariableNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.DefineVariable("answer", Node.Literal("42".ToValue()));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        scope.Verify(s => s.DefineVariable("answer", "42".ToValue()), Times.Once);
         result.Should().Be("42".ToValue());
     }
 

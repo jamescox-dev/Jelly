@@ -1,5 +1,6 @@
 namespace Jelly.Library;
 
+using Jelly.Ast;
 using Jelly.Errors;
 using Jelly.Evaluator;
 using Jelly.Commands;
@@ -7,10 +8,6 @@ using Jelly.Values;
 
 public class CoreLibrary : ILibrary
 {
-    static readonly StringValue TypeKeyword = new StringValue("type");
-    static readonly StringValue VariableKeyword = new StringValue("variable");
-    static readonly StringValue NameKeyword = new StringValue("name");
-
     public void LoadIntoScope(IScope scope)
     {
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
@@ -38,13 +35,10 @@ public class CoreLibrary : ILibrary
         }
 
         var varnameNode = args[0].ToDictionaryValue();
-        var isVariable = varnameNode.ContainsKey(TypeKeyword) && varnameNode[TypeKeyword].Equals(VariableKeyword);
-        var varname = isVariable ? varnameNode[NameKeyword].ToString() : Evaluator.Shared.Evaluate(scope, varnameNode).ToString();
-        var value = args.Count == 3 ? Evaluator.Shared.Evaluate(scope, args[2].ToDictionaryValue()) : Value.Empty;
+        var isVariable = varnameNode.ContainsKey(Keywords.Type) && varnameNode[Keywords.Type].Equals(Keywords.Variable);
+        var varname = isVariable ? varnameNode[Keywords.Name].ToString() : Evaluator.Shared.Evaluate(scope, varnameNode).ToString();
 
-        scope.DefineVariable(varname, value);
-
-        return value;
+        return Node.DefineVariable(varname, args.Count == 3 ? args[2].ToDictionaryValue() : Node.Literal(Value.Empty));
     }
 
     Value WhileMacro(IScope scope, ListValue args)

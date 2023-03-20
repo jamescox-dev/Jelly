@@ -69,12 +69,24 @@ public class NodeTests
     }
 
     [Test]
-    public void AAssignmentNodeCanBeCreatedWithTheCorrectAttributes()
+    public void AnAssignmentNodeCanBeCreatedWithTheCorrectAttributes()
     {
         var node = Node.Assignment("username", Node.Literal("Bob".ToValue()));
 
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "assignment".ToValue(),
+            "name".ToValue(), "username".ToValue(),
+            "value".ToValue(), Node.Literal("Bob".ToValue())
+        ));
+    }
+
+    [Test]
+    public void ADefineVariableCanBeCreatedWithTheCorrectAttributes()
+    {
+        var node = Node.DefineVariable("username", Node.Literal("Bob".ToValue()));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "defvariable".ToValue(),
             "name".ToValue(), "username".ToValue(),
             "value".ToValue(), Node.Literal("Bob".ToValue())
         ));

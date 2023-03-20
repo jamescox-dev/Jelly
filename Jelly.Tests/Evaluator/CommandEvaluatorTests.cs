@@ -43,7 +43,7 @@ public class CommandEvaluatorTests
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
-        var command = new TestCommand() { IsMacro = true };
+        var command = new TestCommand() { IsMacro = true, ReturnValue = Node.Literal(Value.Empty) };
         scope.DefineCommand("greet", command);
         var args = new ListValue(Node.Literal("Vic".ToValue()), Node.Literal("Bob".ToValue()));
         var commandNode = Node.Command(Node.Literal("greet".ToValue()), args);
@@ -52,6 +52,22 @@ public class CommandEvaluatorTests
         commandEvaluator.Evaluate(scope, commandNode, evaluator);
 
         ((IComparable<Value>?)command.ArgsPassedToInvoke).Should().Be(args);
+    }
+
+    [Test]
+    public void TheReturnValueOfTheCommandIsEvaluatedAndReturnedWhenTheCommandIsAMacro()
+    {
+        var evaluator = new Evaluator();
+        var scope = new Scope();
+        var command = new TestCommand() { IsMacro = true, ReturnValue = Node.Variable("test") };
+        scope.DefineCommand("macro", command);
+        scope.DefineVariable("test", "1 2 3".ToValue());
+        var commandNode = Node.Command(Node.Literal("macro"), new ListValue());
+        var commandEvaluator = new CommandEvaluator();
+
+        var result = commandEvaluator.Evaluate(scope, commandNode, evaluator);
+
+        result.Should().Be("1 2 3".ToValue());
     }
 
     [Test]
@@ -72,6 +88,7 @@ public class CommandEvaluatorTests
     public class TestCommand : ICommand
     {
         public bool IsMacro { get; set; }
+        public Value ReturnValue { get; set; } = "42".ToValue();
         public IScope? ScopePassedToInvoke { get; private set; }
         public ListValue? ArgsPassedToInvoke { get; private set; }
 
@@ -79,7 +96,7 @@ public class CommandEvaluatorTests
         {
             ScopePassedToInvoke = scope;
             ArgsPassedToInvoke = args;
-            return "42".ToValue();
+            return ReturnValue;
         }
     }
 }
