@@ -29,7 +29,7 @@ internal class NodeEvaluator : IEvaluator
         }
         else
         {
-            throw new EvalError("Can not evaluate node, not type specified.");
+            throw new EvalError("Can not evaluate node, no type specified.");
         }
     }
 }

@@ -135,4 +135,16 @@ public class EvaluatorTests
 
         result.Should().Be(true.ToValue());
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAnIfNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.If(Node.Literal(false), Node.Literal("yes"), Node.Literal("no"));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        result.Should().Be("no".ToValue());
+    }
 }

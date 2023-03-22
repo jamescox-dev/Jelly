@@ -14,7 +14,7 @@ public class MathLibrary : ILibrary
     {
         scope.DefineCommand("min", new SimpleCommand(MinCmd));
         scope.DefineCommand("max", new SimpleCommand(MaxCmd));
-        scope.DefineCommand("inc", new SimpleCommand(IncMacro));
+        scope.DefineCommand("inc", new SimpleMacro(IncMacro));
     }
 
     public Value MinCmd(IScope scope, ListValue args)
@@ -53,6 +53,6 @@ public class MathLibrary : ILibrary
 
         var name = Evaluator.Shared.Evaluate(scope, nameNode).ToString();
 
-        return Node.Assignment(name, Node.Expression(Node.BinOp("add", Node.Variable(name), amount));
+        return Node.Assignment(name, Node.BinOp("add", Node.Variable(name), amount));
     }
 }

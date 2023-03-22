@@ -45,7 +45,7 @@ public class NodeEvaluatorTests
         var invalidNode = new DictionaryValue();
 
         evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
-            .Should().Throw<Error>().WithMessage("Can not evaluate node, not type specified.")
+            .Should().Throw<Error>().WithMessage("Can not evaluate node, no type specified.")
             .Where(e => e.Type == "/error/eval/");
     }
 

@@ -22,6 +22,7 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator(Keywords.BinOp.ToString(), new BinOpEvaluator());
         _evaluator.AddEvaluator(Keywords.UniOp.ToString(), new UnaryOpEvaluator());
         _evaluator.AddEvaluator(Keywords.DefineVariable.ToString(), new DefineVariableEvaluator());
+        _evaluator.AddEvaluator(Keywords.If.ToString(), new IfEvaluator());
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
