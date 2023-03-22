@@ -14,37 +14,6 @@ public class CoreLibrary : ILibrary
 
         // TODO:  inc
         // TODO:  dec
-        // TODO:  //
-        // TODO:  %
-        // TODO:  %%
-        // TODO:  **
-        // TODO:  ~
-        // TODO:  &
-        // TODO:  |
-        // TODO:  ^
-        // TODO:  <
-        // TODO:  <=
-        // TODO:  = / ==
-        // TODO:  != / <>
-        // TODO:  >=
-        // TODO:  >
-        // TODO:  lt
-        // TODO:  lte
-        // TODO:  eq
-        // TODO:  neq
-        // TODO:  gt
-        // TODO:  gte
-        // TODO:  ilt
-        // TODO:  ilte
-        // TODO:  ieq
-        // TODO:  ineq
-        // TODO:  igt
-        // TODO:  igte
-        // TODO:  and / &&
-        // TODO:  andthen
-        // TODO:  or / ||
-        // TODO:  orelse
-        // TODO:  not / !
     }
 
     public Value CmdCat(IScope scope, ListValue args)

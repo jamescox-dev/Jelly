@@ -14,6 +14,9 @@ public static class Node
     public static DictionaryValue Literal(string value) =>
         new DictionaryValue(Keywords.Type, Keywords.Literal, Keywords.Value, value.ToValue());
 
+    public static DictionaryValue Literal(bool value) =>
+        new DictionaryValue(Keywords.Type, Keywords.Literal, Keywords.Value, value.ToValue());
+
     public static DictionaryValue Variable(string name) =>
         new DictionaryValue(Keywords.Type, Keywords.Variable, Keywords.Name, name.ToValue());
 
@@ -40,6 +43,12 @@ public static class Node
 
     public static DictionaryValue DefineVariable(string name, DictionaryValue value) =>
         new DictionaryValue(Keywords.Type, Keywords.DefineVariable, Keywords.Name, name.ToValue(), Keywords.Value, value);
+
+    public static DictionaryValue If(DictionaryValue condition, DictionaryValue thenBody, DictionaryValue elseBody) =>
+        new DictionaryValue(Keywords.Type, Keywords.If, Keywords.Condition, condition, Keywords.Then, thenBody, Keywords.Else, elseBody);
+
+    public static DictionaryValue If(DictionaryValue condition, DictionaryValue thenBody) =>
+        new DictionaryValue(Keywords.Type, Keywords.If, Keywords.Condition, condition, Keywords.Then, thenBody);
 
     public static bool IsLiteral(DictionaryValue node) => IsType(node, Keywords.Literal);
 

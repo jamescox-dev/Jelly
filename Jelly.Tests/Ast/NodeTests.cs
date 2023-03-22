@@ -128,6 +128,37 @@ public class NodeTests
     }
 
     [Test]
+    public void AIfCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.If(Node.Literal(true), Node.Variable("thenbody"), Node.Variable("elsebody"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "if".ToValue(),
+            "condition".ToValue(), Node.Literal(true),
+            "then".ToValue(), Node.Variable("thenbody"),
+            "else".ToValue(), Node.Variable("elsebody")
+        ));
+    }
+
+    [Test]
+    public void AIfCanBeCreateWithoutAnElseBody()
+    {
+        var node = Node.If(Node.Literal(true), Node.Variable("thenbody"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "if".ToValue(),
+            "condition".ToValue(), Node.Literal(true),
+            "then".ToValue(), Node.Variable("thenbody")
+        ));
+    }
+
+    [Test]
+    public void AWhileCanBeCreateWithTheCorrectAttributes()
+    {
+        // TODO:  Add while node construction.
+    }
+
+    [Test]
     public void TheTypeOfANodeCanBeChecked()
     {
         var literal = Node.Literal("test".ToValue());

@@ -10,8 +10,111 @@ public class CoreLibrary : ILibrary
 {
     public void LoadIntoScope(IScope scope)
     {
+        scope.DefineCommand("if", new SimpleMacro(IfMacro));
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
+    }
+
+    Value IfMacro(IScope scope, ListValue args)
+    {
+        if (args.Count == 0)
+        {
+            throw Error.Arg("Expected 'condition'.");
+        }
+        if (args.Count == 1)
+        {
+            throw Error.Arg("Expected 'then_body'.");
+        }
+
+        var conditoins = new List<DictionaryValue> { args[0].ToDictionaryValue() };
+        var thenBodies = new List<DictionaryValue> { args[1].ToDictionaryValue() };
+        DictionaryValue? elseBody = null;
+
+        var expectElse = false;
+        var i = 2;
+        while (i < args.Count)
+        {
+            var arg = args[i].ToDictionaryValue();
+
+            if (i % 3 == 0)
+            {
+                if (!expectElse)
+                {
+                    conditoins.Add(arg);
+                }
+                else
+                {
+                    elseBody = arg;
+                }
+            }
+            else if (i % 3 == 1)
+            {
+                if (expectElse)
+                {
+                    throw Error.Arg("Unexpected arguments after 'else_body'.");
+                }
+                thenBodies.Add(arg);
+            }
+            else if (i % 3 == 2)
+            {
+                if (IsKeyword(arg, "else"))
+                {
+                    expectElse = true;
+                }
+                else if (IsKeyword(arg, "elif"))
+                {
+                    if (i + 1 >= args.Count)
+                    {
+                        throw Error.Arg("Expected 'condition'.");
+                    }
+                    else if (i + 2 >= args.Count)
+                    {
+                        throw Error.Arg("Expected 'then_body'.");
+                    }
+                }
+                else
+                {
+                    throw Error.Arg("Expected 'elif', or 'else' keyword.");
+                }
+            }
+
+            ++i;
+        }
+
+        if (expectElse && elseBody is null)
+        {
+            throw Error.Arg("Expected 'else_body'.");
+        }
+
+        DictionaryValue? ifNode = null;
+
+        foreach ((var condition, var thenBody) in conditoins.Zip(thenBodies).Reverse())
+        {
+            if (ifNode is null)
+            {
+                if (elseBody is null)
+                {
+                    ifNode = Node.If(condition, thenBody);
+                }
+                else
+                {
+                    ifNode = Node.If(condition, thenBody, elseBody);
+                }
+            }
+            else
+            {
+                ifNode = Node.If(condition, thenBody, ifNode);
+            }
+        }
+
+        return ifNode!;
+    }
+
+    private static bool IsKeyword(DictionaryValue word, string keyword)
+    {
+        return Node.IsLiteral(word) 
+            && Node.GetLiteralValue(word).ToString()
+                .Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
     }
 
     Value VarMacro(IScope scope, ListValue args)
