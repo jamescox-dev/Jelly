@@ -11,9 +11,6 @@ public class CoreLibrary : ILibrary
     {
         scope.DefineCommand("cat", new SimpleCommand(CmdCat)); 
         scope.DefineCommand("escape", new SimpleCommand(CmdEscape)); 
-
-        // TODO:  inc
-        // TODO:  dec
     }
 
     public Value CmdCat(IScope scope, ListValue args)
