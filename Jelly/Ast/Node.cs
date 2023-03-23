@@ -50,6 +50,9 @@ public static class Node
     public static DictionaryValue If(DictionaryValue condition, DictionaryValue thenBody) =>
         new DictionaryValue(Keywords.Type, Keywords.If, Keywords.Condition, condition, Keywords.Then, thenBody);
 
+    public static DictionaryValue While(DictionaryValue condition, DictionaryValue body) =>
+        new DictionaryValue(Keywords.Type, Keywords.While, Keywords.Condition, condition, Keywords.Body, body);
+
     public static bool IsLiteral(DictionaryValue node) => IsType(node, Keywords.Literal);
 
     public static bool IsVariable(DictionaryValue node) => IsType(node, Keywords.Variable);

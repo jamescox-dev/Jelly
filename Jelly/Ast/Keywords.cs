@@ -9,6 +9,7 @@ public static class Keywords
     public static readonly StringValue Assignment = new StringValue("assignment");
     public static readonly StringValue B = new StringValue("b");
     public static readonly StringValue BinOp = new StringValue("binop");
+    public static readonly StringValue Body = new StringValue("body");
     public static readonly StringValue Command = new StringValue("command");
     public static readonly StringValue Commands = new StringValue("commands");
     public static readonly StringValue Composite = new StringValue("composite");
@@ -28,4 +29,5 @@ public static class Keywords
     public static readonly StringValue UniOp = new StringValue("uniop");
     public static readonly StringValue Value = new StringValue("value");
     public static readonly StringValue Variable = new StringValue("variable");
+    public static readonly StringValue While = new StringValue("while");
 }

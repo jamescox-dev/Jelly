@@ -155,7 +155,13 @@ public class NodeTests
     [Test]
     public void AWhileCanBeCreateWithTheCorrectAttributes()
     {
-        // TODO:  Add while node construction.
+        var node = Node.While(Node.Literal(true), Node.Variable("dothis"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "while".ToValue(),
+            "condition".ToValue(), Node.Literal(true),
+            "body".ToValue(), Node.Variable("dothis")
+        ));
     }
 
     [Test]

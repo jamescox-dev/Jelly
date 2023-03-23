@@ -147,4 +147,16 @@ public class EvaluatorTests
 
         result.Should().Be("no".ToValue());
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAWhileNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.While(Node.Literal(false), Node.Literal("I never run!"));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        result.Should().Be(Value.Empty);
+    }
 }

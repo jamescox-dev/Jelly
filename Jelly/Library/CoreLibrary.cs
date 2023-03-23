@@ -160,13 +160,6 @@ public class CoreLibrary : ILibrary
             throw new ArgError($"Unexpected value '{unexpected}'.");
         }
 
-        var value = Value.Empty;
-
-        while (Evaluator.Shared.Evaluate(scope, args[0].ToDictionaryValue()).ToDouble() != 0)
-        {
-            value = Evaluator.Shared.Evaluate(scope, args[1].ToDictionaryValue());
-        }
-
-        return value;
+        return Node.While(args[0].ToDictionaryValue(), args[1].ToDictionaryValue());
     }
 }

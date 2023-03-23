@@ -23,6 +23,7 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator(Keywords.UniOp.ToString(), new UnaryOpEvaluator());
         _evaluator.AddEvaluator(Keywords.DefineVariable.ToString(), new DefineVariableEvaluator());
         _evaluator.AddEvaluator(Keywords.If.ToString(), new IfEvaluator());
+        _evaluator.AddEvaluator(Keywords.While.ToString(), new WhileEvaluator());
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)

@@ -310,7 +310,6 @@ public class CoreLibraryTests
 
     #region while
 
-    // TODO:  Change while macro to return new while node.
     [TestFixture]
     public class WhileCommand : CoreLibraryTests
     {
@@ -350,40 +349,21 @@ public class CoreLibraryTests
         }
 
         [Test]
-        public void TheWhileCommandEvaluatesTheBodyWhileEvaluatingTheConditionIsNotZeroTheResultIsTheResultOfTheLastCommandEvaluatedInTheBody()
+        public void TheCorrectWhileNodeIsReturned()
         {
-            var condCmd = new CounterCommand { Count = 4, Increment = -1};
-            var bodyCmd = new CounterCommand();
-            _scope.DefineCommand("cond", condCmd);
-            _scope.DefineCommand("body", bodyCmd);
             var whileCmd = _scope.GetCommand("while");
             var args = new ListValue(
-                Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())), 
-                Node.Script(Node.Command(Node.Literal("body".ToValue()), new ListValue())));
+                Node.Literal("0"), 
+                Node.Script(
+                    Node.Command(Node.Literal("print"), 
+                    new ListValue())));
             
             var result = whileCmd.Invoke(_scope, args);
 
-            bodyCmd.CallCount.Should().Be(3);
-            result.Should().Be("3".ToValue());
-        }
-
-        [Test]
-        public void TheWhileCommandReturnsAnEmptyValueIfTheBodyNeverRuns()
-        {
-    
-            var condCmd = new CounterCommand { Count = 1, Increment = -1};
-            var bodyCmd = new CounterCommand();
-            _scope.DefineCommand("cond", condCmd);
-            _scope.DefineCommand("body", bodyCmd);
-            var whileCmd = _scope.GetCommand("while");
-            var args = new ListValue(
-                Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())), 
-                Node.Script(Node.Command(Node.Literal("body".ToValue()), new ListValue())));
-            
-            var result = whileCmd.Invoke(_scope, args);
-
-            bodyCmd.CallCount.Should().Be(0);
-            result.Should().Be(Value.Empty);
+            result.Should().Be(Node.While(Node.Literal("0"), 
+                Node.Script(
+                    Node.Command(Node.Literal("print"), 
+                    new ListValue()))));
         }
     }
     #endregion
