@@ -1,6 +1,7 @@
-using Jelly.Values;
-
 namespace Jelly.Evaluator;
+
+using Jelly.Commands;
+using Jelly.Values;
 
 internal class CommandEvaluator : IEvaluator
 {
@@ -11,13 +12,13 @@ internal class CommandEvaluator : IEvaluator
     {
         var name = rootEvaluator.Evaluate(scope, node[NameKey].ToDictionaryValue(), rootEvaluator).ToString();
         var command = scope.GetCommand(name);
-        var args = command.IsMacro 
-            ? node[ArgsKey].ToListValue()
-            : node[ArgsKey].ToListValue().Select(arg => rootEvaluator.Evaluate(scope, arg.ToDictionaryValue(), rootEvaluator)).ToValue();
+        var args = (command.EvaluationFlags & EvaluationFlags.Arguments) != 0
+            ? node[ArgsKey].ToListValue().Select(arg => rootEvaluator.Evaluate(scope, arg.ToDictionaryValue(), rootEvaluator)).ToValue()
+            : node[ArgsKey].ToListValue();
         
         var result = command.Invoke(scope, args);
 
-        return command.IsMacro 
+        return (command.EvaluationFlags & EvaluationFlags.RetrunValue) != 0 
             ? rootEvaluator.Evaluate(scope, result.ToDictionaryValue(), rootEvaluator) 
             : result;
     }

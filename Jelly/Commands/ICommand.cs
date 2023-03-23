@@ -4,7 +4,7 @@ using Jelly.Values;
 
 public interface ICommand
 {
-    bool IsMacro { get; }
+    EvaluationFlags EvaluationFlags { get; }
 
     Value Invoke(IScope scope, ListValue args);
 }

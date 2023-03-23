@@ -22,7 +22,7 @@ public class CommandEvaluatorTests
     }
 
     [Test]
-    public void EachArgumentIsEvaluatedAndPassedToTheCommandAlongWithTheScope()
+    public void EachArgumentIsEvaluatedAndPassedToTheCommandAlongWithTheScopeWhenFlaggedAsSuch()
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
@@ -39,11 +39,11 @@ public class CommandEvaluatorTests
     }
 
     [Test]
-    public void ArgumentNodesArePassedUnevaluatedWhenTheCommandIsAMacro()
+    public void ArgumentNodesArePassedUnevaluatedWhenTheCommandIsFlaggedAsSuch()
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
-        var command = new TestCommand() { IsMacro = true, ReturnValue = Node.Literal(Value.Empty) };
+        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.RetrunValue, ReturnValue = Node.Literal(Value.Empty) };
         scope.DefineCommand("greet", command);
         var args = new ListValue(Node.Literal("Vic".ToValue()), Node.Literal("Bob".ToValue()));
         var commandNode = Node.Command(Node.Literal("greet".ToValue()), args);
@@ -55,11 +55,11 @@ public class CommandEvaluatorTests
     }
 
     [Test]
-    public void TheReturnValueOfTheCommandIsEvaluatedAndReturnedWhenTheCommandIsAMacro()
+    public void TheReturnValueOfTheCommandIsEvaluatedAndReturnedWhenTheCommandIsFlaggedAsSuch()
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
-        var command = new TestCommand() { IsMacro = true, ReturnValue = Node.Variable("test") };
+        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.RetrunValue, ReturnValue = Node.Variable("test") };
         scope.DefineCommand("macro", command);
         scope.DefineVariable("test", "1 2 3".ToValue());
         var commandNode = Node.Command(Node.Literal("macro"), new ListValue());

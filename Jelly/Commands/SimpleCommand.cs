@@ -6,7 +6,7 @@ public class SimpleCommand : ICommand
 {
     public delegate Value CommandDelegate(IScope scope, ListValue args);
 
-    public bool IsMacro => false;
+    public EvaluationFlags EvaluationFlags => EvaluationFlags.Arguments;
 
     readonly CommandDelegate _command;
 

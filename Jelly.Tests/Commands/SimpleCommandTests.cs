@@ -28,10 +28,10 @@ public class SimpleCommandTests
     }
 
     [Test]
-    public void TheCommandIsNotFlaggedAsAMacro()
+    public void TheCommandShouldBeFlaggedToHaveItsArgumentsEvaluatedButNotItsReturnValue()
     {
         var command = new SimpleCommand((s, a) => Value.Empty);
 
-        command.IsMacro.Should().BeFalse();
+        command.EvaluationFlags.Should().Be(EvaluationFlags.Arguments);
     }
 }

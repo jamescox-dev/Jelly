@@ -5,7 +5,7 @@ using Jelly.Values;
 
 public class TestCommand : ICommand
 {
-    public bool IsMacro { get; set; }
+    public EvaluationFlags EvaluationFlags { get; set; } = EvaluationFlags.Arguments;
     public Value ReturnValue { get; set; } = "42".ToValue();
     public IScope? ScopePassedToInvoke { get; private set; }
     public ListValue? ArgsPassedToInvoke { get; private set; }

@@ -37,7 +37,7 @@ public class WhileEvaluatorTests
     }
 
     [Test]
-    public void TheWhileCommandReturnsAnEmptyValueIfTheBodyNeverRuns()
+    public void TheWhileNodeEvaluatesTpAnEmptyValueIfTheBodyNeverRuns()
     {
         var condCmd = new CounterCommand { Count = 1, Increment = -1};
         var bodyCmd = new CounterCommand();

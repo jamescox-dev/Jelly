@@ -48,6 +48,7 @@ public class EvaluatorTests
         IEvaluator evaluator = new Evaluator();
         Mock<IScope> scope = new Mock<IScope>();
         Mock<ICommand> command = new Mock<ICommand>();
+        command.SetupGet(m => m.EvaluationFlags).Returns(EvaluationFlags.Arguments);
         scope.Setup(m => m.GetCommand("Foo")).Returns(command.Object);
         var node = Node.Command(Node.Literal("Foo".ToValue()), new ListValue());
         
@@ -62,6 +63,7 @@ public class EvaluatorTests
         IEvaluator evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         var command = new Mock<ICommand>();
+        command.SetupGet(m => m.EvaluationFlags).Returns(EvaluationFlags.Arguments);
         command.Setup(m => m.Invoke(scope.Object, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => args[0]);
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue(Node.Literal("1".ToValue())));
         var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue(Node.Literal("2".ToValue())));

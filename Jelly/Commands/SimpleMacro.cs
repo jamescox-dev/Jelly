@@ -6,7 +6,7 @@ public class SimpleMacro : ICommand
 {
     public delegate Value MacroDelegate(IScope scope, ListValue args);
 
-    public bool IsMacro => true;
+    public EvaluationFlags EvaluationFlags => EvaluationFlags.RetrunValue;
 
     readonly MacroDelegate _macro;
 

@@ -14,6 +14,7 @@ public class ScriptEvaluatorTests
         var scope = new Mock<IScope>();
         var output = new List<string>();
         var command = new Mock<ICommand>();
+        command.SetupGet(m => m.EvaluationFlags).Returns(EvaluationFlags.Arguments);
         command.Setup(m => m.Invoke(scope.Object, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => { output.Add(args[0].ToString()); return args[0]; });
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue(Node.Literal("1".ToValue())));
         var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue(Node.Literal("2".ToValue())));
@@ -33,6 +34,7 @@ public class ScriptEvaluatorTests
         var evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         var command = new Mock<ICommand>();
+        command.SetupGet(m => m.EvaluationFlags).Returns(EvaluationFlags.Arguments);
         command.Setup(m => m.Invoke(scope.Object, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => args[0]);
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue(Node.Literal("1".ToValue())));
         var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue(Node.Literal("2".ToValue())));

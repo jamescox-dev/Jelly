@@ -28,10 +28,10 @@ public class SimpleMacroTests
     }
 
     [Test]
-    public void TheMacroIsFlaggedAsAMacro()
+    public void TheMacroIsFlaggedToNotHaveItArgumentEvaluatedButItReturnValueEvaluated()
     {
         var macro = new SimpleMacro((s, a) => Value.Empty);
 
-        macro.IsMacro.Should().BeTrue();
+        macro.EvaluationFlags.Should().Be(EvaluationFlags.RetrunValue);
     }
 }
