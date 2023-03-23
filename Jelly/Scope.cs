@@ -59,6 +59,18 @@ public class Scope : IScope
         }
     }
 
+    public IEnumerable<string> GetCommands(bool localOnly = false)
+    {
+        if (localOnly || OuterScope is null)
+        {
+            return _commands.Keys;
+        }
+        else
+        {
+            return _commands.Keys.Concat(OuterScope.GetCommands()).Distinct();
+        }
+    }
+
     public void DefineCommand(string name, ICommand command)
     {
         _commands[name] = command;

@@ -120,6 +120,33 @@ public class ScopeTests
     }
 
     [Test]
+    public void AListOfLocallyDefinedCommandsCanBeReturned()
+    {
+        var scope = new Scope();
+        scope.DefineCommand("test1", new Mock<ICommand>().Object);
+
+        var commands = scope.GetCommands(true);
+
+        commands.Should().BeEquivalentTo(new[] { "test1" });
+    }
+
+    [Test]
+    public void AListOfAllDefinedCommandsFromTheCurrentScopeAndOuterScopesCanBeReturned()
+    {
+        var outerScope = new Scope();
+        outerScope.DefineCommand("test1", new Mock<ICommand>().Object);
+        outerScope.DefineCommand("test2", new Mock<ICommand>().Object);
+
+        var scope = new Scope(outerScope);
+        scope.DefineCommand("test2", new Mock<ICommand>().Object);
+        scope.DefineCommand("test3", new Mock<ICommand>().Object);
+
+        var commands = scope.GetCommands(false);
+
+        commands.Should().BeEquivalentTo(new[] { "test1", "test2", "test3" });
+    }
+
+    [Test]
     public void AHiddenValueCanBeDefinedInAScopeAndThenRetrieved()
     {
         var scope = new Scope();

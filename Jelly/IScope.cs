@@ -13,6 +13,8 @@ public interface IScope
 
     void SetVariable(string name, Value value);
 
+    IEnumerable<string> GetCommands(bool localOnly = false);
+
     void DefineCommand(string name, ICommand command);
 
     ICommand GetCommand(string name);

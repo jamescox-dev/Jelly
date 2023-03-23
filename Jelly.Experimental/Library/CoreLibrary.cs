@@ -11,6 +11,12 @@ public class CoreLibrary : ILibrary
     {
         scope.DefineCommand("cat", new SimpleCommand(CmdCat)); 
         scope.DefineCommand("escape", new SimpleCommand(CmdEscape)); 
+        scope.DefineCommand("lsdef", new SimpleCommand(CmdLsDef));
+    }
+
+    public Value CmdLsDef(IScope scope, ListValue args)
+    {
+        return scope.GetCommands().Select(n => n.ToValue()).ToValue();
     }
 
     public Value CmdCat(IScope scope, ListValue args)
