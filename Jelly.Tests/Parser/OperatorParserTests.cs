@@ -11,12 +11,12 @@ public class OperatorParserTests
     public void IfThereIsAnOperatorAtTheCurrentPositionALiteralNodeIsParsed()
     {
         var parser = new OperatorParser();
-        var scanner = new Scanner("=");
+        var scanner = new Scanner("<=");
 
         var node = parser.Parse(scanner);
 
-        scanner.Position.Should().Be(1);
-        node.Should().Be(Node.Literal("=".ToValue()));
+        scanner.Position.Should().Be(2);
+        node.Should().Be(Node.Literal("<=".ToValue()));
     }
 
     [Test]

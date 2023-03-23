@@ -34,7 +34,7 @@ public class SimpleWordParserTests
     public void ASimpleWordParserCanBeConfiguredToTerminateAtAOperator()
     {
         var parser = new SimpleWordParser(terminateAtOperator: true);
-        var scanner = new Scanner("hello++world");
+        var scanner = new Scanner("hello<=world");
         
         var node = parser.Parse(scanner);
 

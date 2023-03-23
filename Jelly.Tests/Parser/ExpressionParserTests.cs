@@ -76,6 +76,8 @@ public class ExpressionParserTests
 
     [TestCase("+", "add")]
     [TestCase("*", "mul")]
+    [TestCase("<", "lt")]
+    [TestCase("<=", "lte")]
     public void LiteralWordsThatCanBeInterpretedAsBinaryOperatorsReturnTheCorrectorOperator(string op, string expectedOp)
     {
         var scanner = new Scanner($"(1 {op} 2)");

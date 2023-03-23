@@ -391,6 +391,7 @@ public class ScannerTests
     [TestCase("=", true)]
     [TestCase("<>", true)]
     [TestCase(">=", true)]
+    [TestCase("<=", true)]
     [TestCase("+", true)]
     [TestCase("and", false)]
     public void AOperatorIsReportedWhenTheCurrentCharacterMatchesOneOfTheConfiguredOperators(string source, bool expected)
