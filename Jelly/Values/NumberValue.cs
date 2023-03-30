@@ -61,9 +61,11 @@ public class NumberValue : Value
 
     public override string ToString()
     {
-        return double.IsFinite(_value) 
-            ? _value.ToString("G17").ToLowerInvariant()
-            : (_value > 0 ? "inf" : "-inf");
+        return !double.IsNaN(_value) 
+            ? double.IsFinite(_value) 
+                ? _value.ToString("G17").ToLowerInvariant()
+                : (_value > 0 ? "inf" : "-inf")
+            : "nan";
     }
 
     public static double ParseNumber(string number)
