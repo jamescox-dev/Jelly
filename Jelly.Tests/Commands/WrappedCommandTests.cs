@@ -130,6 +130,17 @@ public class WrappedCommandTests
         _passedParams.SequenceEqual(new[] {"a", "b", "c"}).Should().BeTrue();
     }
 
+    [Test]
+    public void WhenTheWrappedDelegateHasAParamsArgumentAndTheCommandRecivesMoreTheRequiredAndOptionalArgumentsTheParamsArgumentIsAnEmptyArray()
+    {
+        var command = new WrappedCommand(FuncWithParams, _mockTypeMarshaller.Object);
+        var args = new ListValue("42".ToValue(), "jelly".ToValue());
+        _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(string))).Returns<Value, Type>((v, _) => v.ToString());
+
+        command.Invoke(_scope, args);
+        _passedParams.SequenceEqual(Array.Empty<string>()).Should().BeTrue();
+    }
+
     void FuncWithParams(string a, string b = "jelly", params string[] c) 
     {  
         _passedParams = c;

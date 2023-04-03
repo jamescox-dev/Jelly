@@ -45,8 +45,8 @@ public class WrappedCommand : ICommand
                 else
                 {
                     ++maxArgumentCount;
+                    ++requiredArgumentCount;
                 }
-                ++requiredArgumentCount;
             }
         }
         _argumentTypes = argumentTypes.ToArray();

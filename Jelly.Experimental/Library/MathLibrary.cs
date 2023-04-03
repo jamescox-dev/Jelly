@@ -12,19 +12,29 @@ public class MathLibrary : ILibrary
 {
     public void LoadIntoScope(IScope scope)
     {
-        scope.DefineCommand("min", new SimpleCommand(MinCmd));
-        scope.DefineCommand("max", new SimpleCommand(MaxCmd));
+        var typeMarshaller = new TypeMarshaller();
+
+        scope.DefineCommand("min", new WrappedCommand(MinCmd, typeMarshaller));
+        scope.DefineCommand("max", new WrappedCommand(MaxCmd, typeMarshaller));
         scope.DefineCommand("inc", new SimpleMacro(IncMacro));
     }
 
-    public Value MinCmd(IScope scope, ListValue args)
+    public double MinCmd(params double[] numbers)
     {
-        return args.Count == 0 ? NumberValue.Zero : args.Select(n => n.ToDouble()).Min().ToValue();
+        if (numbers.Length == 0)
+        {
+            return 0.0;
+        }
+        return numbers.Min();
     }
-    
-    public Value MaxCmd(IScope scope, ListValue args)
+
+    public double MaxCmd(params double[] numbers)
     {
-        return args.Count == 0 ? NumberValue.Zero : args.Select(n => n.ToDouble()).Max().ToValue();
+        if (numbers.Length == 0)
+        {
+            return 0.0;
+        }
+        return numbers.Max();
     }
 
     public Value IncMacro(IScope scope, ListValue args)
