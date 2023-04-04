@@ -24,6 +24,7 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator(Keywords.DefineVariable.ToString(), new DefineVariableEvaluator());
         _evaluator.AddEvaluator(Keywords.If.ToString(), new IfEvaluator());
         _evaluator.AddEvaluator(Keywords.While.ToString(), new WhileEvaluator());
+        _evaluator.AddEvaluator(Keywords.Scope.ToString(), new ScopeEvaluator());
     }
 
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)

@@ -22,6 +22,7 @@ public static class Keywords
     public static readonly StringValue Name = new StringValue("name");
     public static readonly StringValue Op = new StringValue("op");
     public static readonly StringValue Parts = new StringValue("parts");
+    public static readonly StringValue Scope = new StringValue("scope");
     public static readonly StringValue Script = new StringValue("script");
     public static readonly StringValue Subexpresions = new StringValue("subexpressions");
     public static readonly StringValue Then = new StringValue("then");

@@ -13,14 +13,14 @@ public class Scope : IScope
     readonly Dictionary<string, ICommand> _commands = new(StringComparer.InvariantCultureIgnoreCase);
     readonly Dictionary<int, Value> _hiddenValues = new();
 
-    public Scope? OuterScope { get; private set; }
+    public IScope? OuterScope { get; private set; }
 
     public static int GenerateId()
     {
         return _nextId++;
     }
 
-    public Scope(Scope? outer=null)
+    public Scope(IScope? outer=null)
     {
         OuterScope = outer;
     }

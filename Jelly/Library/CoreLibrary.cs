@@ -94,16 +94,16 @@ public class CoreLibrary : ILibrary
             {
                 if (elseBody is null)
                 {
-                    ifNode = Node.If(condition, thenBody);
+                    ifNode = Node.If(condition, Node.Scope(thenBody));
                 }
                 else
                 {
-                    ifNode = Node.If(condition, thenBody, elseBody);
+                    ifNode = Node.If(condition, Node.Scope(thenBody), Node.Scope(elseBody));
                 }
             }
             else
             {
-                ifNode = Node.If(condition, thenBody, ifNode);
+                ifNode = Node.If(condition, Node.Scope(thenBody), ifNode);
             }
         }
 
@@ -160,6 +160,6 @@ public class CoreLibrary : ILibrary
             throw new ArgError($"Unexpected value '{unexpected}'.");
         }
 
-        return Node.While(args[0].ToDictionaryValue(), args[1].ToDictionaryValue());
+        return Node.While(args[0].ToDictionaryValue(), Node.Scope(args[1].ToDictionaryValue()));
     }
 }

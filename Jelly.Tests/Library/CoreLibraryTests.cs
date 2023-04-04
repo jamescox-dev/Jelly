@@ -70,7 +70,7 @@ public class CoreLibraryTests
             result.Should().Be(
                 Node.If(
                     Node.Literal(true), 
-                    Node.Command(Node.Literal("print"), new ListValue(Node.Literal("jello, world")))));
+                    Node.Scope(Node.Command(Node.Literal("print"), new ListValue(Node.Literal("jello, world"))))));
         }
 
         [Test]
@@ -92,13 +92,13 @@ public class CoreLibraryTests
             result.Should().Be(
                 Node.If(
                     Node.Literal(false),
-                    Node.Literal(1),
+                    Node.Scope(Node.Literal(1)),
                     Node.If(
                         Node.Literal(false),
-                        Node.Literal(2),
+                        Node.Scope(Node.Literal(2)),
                         Node.If(
                             Node.Literal(true),
-                            Node.Literal(3)))));
+                            Node.Scope(Node.Literal(3))))));
         }
 
         [Test]
@@ -116,8 +116,8 @@ public class CoreLibraryTests
             result.Should().Be(
                 Node.If(
                     Node.Literal(false),
-                    Node.Literal(1),
-                    Node.Literal(0)));
+                    Node.Scope(Node.Literal(1)),
+                    Node.Scope(Node.Literal(0))));
         }
 
         [TestCase("else", false)]
@@ -361,9 +361,9 @@ public class CoreLibraryTests
             var result = whileCmd.Invoke(_scope, args);
 
             result.Should().Be(Node.While(Node.Literal("0"), 
-                Node.Script(
+                Node.Scope(Node.Script(
                     Node.Command(Node.Literal("print"), 
-                    new ListValue()))));
+                    new ListValue())))));
         }
     }
     #endregion

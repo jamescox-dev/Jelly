@@ -5,7 +5,7 @@ using Jelly.Values;
 
 public interface IScope
 {
-    Scope? OuterScope { get; }
+    IScope? OuterScope { get; }
 
     void DefineVariable(string name, Value initialValue);
     

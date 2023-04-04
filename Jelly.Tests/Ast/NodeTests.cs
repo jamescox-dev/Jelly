@@ -165,6 +165,17 @@ public class NodeTests
     }
 
     [Test]
+    public void AScopeCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.Scope(Node.Literal("body"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "scope".ToValue(),
+            "body".ToValue(), Node.Literal("body")
+        ));
+    }
+
+    [Test]
     public void TheTypeOfANodeCanBeChecked()
     {
         var literal = Node.Literal("test".ToValue());

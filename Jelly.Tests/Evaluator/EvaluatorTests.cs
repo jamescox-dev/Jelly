@@ -161,4 +161,16 @@ public class EvaluatorTests
 
         result.Should().Be(Value.Empty);
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAScopeNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.Scope(Node.Literal("boo"));
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        result.Should().Be("boo".ToValue());
+    }
 }
