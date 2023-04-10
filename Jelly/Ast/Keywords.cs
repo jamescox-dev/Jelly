@@ -16,12 +16,15 @@ public static class Keywords
     public static readonly StringValue Condition = new StringValue("condition");
     public static readonly StringValue DefineVariable = new StringValue("defvariable");
     public static readonly StringValue Else = new StringValue("else");
+    public static readonly StringValue ErrorType = new StringValue("errortype");
     public static readonly StringValue Expression = new StringValue("expression");
     public static readonly StringValue If = new StringValue("if");
     public static readonly StringValue Literal = new StringValue("literal");
+    public static readonly StringValue Message = new StringValue("message");
     public static readonly StringValue Name = new StringValue("name");
     public static readonly StringValue Op = new StringValue("op");
     public static readonly StringValue Parts = new StringValue("parts");
+    public static readonly StringValue Raise = new StringValue("raise");
     public static readonly StringValue Scope = new StringValue("scope");
     public static readonly StringValue Script = new StringValue("script");
     public static readonly StringValue Subexpresions = new StringValue("subexpressions");

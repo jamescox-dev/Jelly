@@ -78,7 +78,7 @@ internal class BinOpEvaluator : IEvaluator
             return OrElse(scope, node, rootEvaluator);
         }
 
-        throw Error.Value("Invalid binary operator.");
+        throw Error.BuildValue("Invalid binary operator.");
     }
 
     static double Add(double a, double b) => a + b;

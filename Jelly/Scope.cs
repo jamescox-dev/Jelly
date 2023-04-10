@@ -25,6 +25,18 @@ public class Scope : IScope
         OuterScope = outer;
     }
 
+    public IEnumerable<string> GetVariableNames(bool localOnly = false)
+    {
+        if (localOnly || OuterScope is null)
+        {
+            return _variables.Keys;
+        }
+        else
+        {
+            return _variables.Keys.Concat(OuterScope.GetVariableNames()).Distinct();
+        }
+    }
+
     public void DefineVariable(string name, Value initialValue)
     {
         _variables[name] = initialValue;
@@ -59,7 +71,7 @@ public class Scope : IScope
         }
     }
 
-    public IEnumerable<string> GetCommands(bool localOnly = false)
+    public IEnumerable<string> GetCommandNames(bool localOnly = false)
     {
         if (localOnly || OuterScope is null)
         {
@@ -67,7 +79,7 @@ public class Scope : IScope
         }
         else
         {
-            return _commands.Keys.Concat(OuterScope.GetCommands()).Distinct();
+            return _commands.Keys.Concat(OuterScope.GetCommandNames()).Distinct();
         }
     }
 

@@ -1,5 +1,7 @@
 namespace Jelly.Errors.Test;
 
+using Jelly.Values;
+
 [TestFixture]
 public class ErrorTests
 {
@@ -42,6 +44,17 @@ public class ErrorTests
         error.Type.Should().Be(Error.NormalizeType(type).ToLowerInvariant());
         error.Message.Should().Be("A test error message.");
         error.GetType().Should().Be(expectedType);
+    }
+
+    [Test]
+    public void AReturnCanBeCreated()
+    {
+        var error = Error.Create("/return", string.Empty, "test".ToValue());
+
+        error.Type.Should().Be(Error.NormalizeType("/return").ToLowerInvariant());
+        error.Message.Should().Be("Unexpected 'return' outside of def.");
+        error.Value.Should().Be("test".ToValue());
+        error.GetType().Should().Be(typeof(Return));
     }
 
     [TestCase("/error/", "/error/", true)]

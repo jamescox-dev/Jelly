@@ -31,7 +31,7 @@ internal class UnaryOpEvaluator : IEvaluator
             return (~ToInt32(a.ToDouble())).ToValue();
         }
 
-        throw Error.Value("Invalid unary operator.");
+        throw Error.BuildValue("Invalid unary operator.");
     }
 
     static int ToInt32(double d) => (int) (uint) d;

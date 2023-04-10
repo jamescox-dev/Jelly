@@ -56,6 +56,9 @@ public static class Node
     public static DictionaryValue Scope(DictionaryValue body) =>
         new DictionaryValue(Keywords.Type, Keywords.Scope, Keywords.Body, body);
 
+    public static DictionaryValue Raise(DictionaryValue type, DictionaryValue message, DictionaryValue value) =>
+        new DictionaryValue(Keywords.Type, Keywords.Raise, Keywords.ErrorType, type, Keywords.Message, message, Keywords.Value, value);
+
     public static bool IsLiteral(DictionaryValue node) => IsType(node, Keywords.Literal);
 
     public static bool IsVariable(DictionaryValue node) => IsType(node, Keywords.Variable);

@@ -176,6 +176,19 @@ public class NodeTests
     }
 
     [Test]
+    public void ARaiseNodeCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.Raise(Node.Literal("/return"), Node.Literal("Unexpected return"), Node.Literal("returnValue"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "raise".ToValue(),
+            "errortype".ToValue(), Node.Literal("/return"),
+            "message".ToValue(), Node.Literal("Unexpected return"),
+            "value".ToValue(), Node.Literal("returnValue")
+        ));
+    }
+
+    [Test]
     public void TheTypeOfANodeCanBeChecked()
     {
         var literal = Node.Literal("test".ToValue());

@@ -2,6 +2,7 @@ namespace Jelly.Evaluator.Tests;
 
 using Jelly.Ast;
 using Jelly.Commands;
+using Jelly.Errors;
 using Jelly.Values;
 
 [TestFixture]
@@ -172,5 +173,16 @@ public class EvaluatorTests
         var result = evaluator.Evaluate(scope.Object, node, evaluator);
 
         result.Should().Be("boo".ToValue());
+    }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateARaiseNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.Raise(Node.Literal("/error/test"), Node.Literal("Test message."), Node.Literal("testvalue"));
+
+        evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, node, evaluator)).Should()
+            .Throw<Error>().WithMessage("Test message.").Where(e => e.Value.Equals("testvalue".ToValue()));
     }
 }

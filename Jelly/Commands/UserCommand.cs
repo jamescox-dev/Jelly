@@ -51,6 +51,13 @@ public class UserCommand : ICommand
             }
         }
 
-        return Evaluator.Shared.Evaluate(commandScope, _body);
+        try
+        {
+            return Evaluator.Shared.Evaluate(commandScope, _body);
+        }
+        catch (Return @return)
+        {
+            return @return.Value;
+        }
     }
 }

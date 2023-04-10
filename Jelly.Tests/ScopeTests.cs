@@ -71,6 +71,33 @@ public class ScopeTests
         scope.Invoking(s => s.SetVariable("unknown", Value.Empty)).Should()
             .Throw<NameError>().WithMessage("Variable 'unknown' not defined.");
     }
+
+    [Test]
+    public void AListOfLocallyDefinedVariablesCanBeReturned()
+    {
+        var scope = new Scope();
+        scope.DefineVariable("test1", Value.Empty);
+
+        var commands = scope.GetVariableNames(true);
+
+        commands.Should().BeEquivalentTo(new[] { "test1" });
+    }
+
+    [Test]
+    public void AListOfAllDefinedVariablesFromTheCurrentScopeAndOuterScopesCanBeReturned()
+    {
+        var outerScope = new Scope();
+        outerScope.DefineVariable("test1", Value.Empty);
+        outerScope.DefineVariable("test2", Value.Empty);
+
+        var scope = new Scope(outerScope);
+        scope.DefineVariable("test2", Value.Empty);
+        scope.DefineVariable("test3", Value.Empty);
+
+        var commands = scope.GetVariableNames(false);
+
+        commands.Should().BeEquivalentTo(new[] { "test1", "test2", "test3" });
+    }
     
     [Test]
     public void ACommandCanBeDefinedInAScopeAndRetrievedByItsName()
@@ -125,7 +152,7 @@ public class ScopeTests
         var scope = new Scope();
         scope.DefineCommand("test1", new Mock<ICommand>().Object);
 
-        var commands = scope.GetCommands(true);
+        var commands = scope.GetCommandNames(true);
 
         commands.Should().BeEquivalentTo(new[] { "test1" });
     }
@@ -141,7 +168,7 @@ public class ScopeTests
         scope.DefineCommand("test2", new Mock<ICommand>().Object);
         scope.DefineCommand("test3", new Mock<ICommand>().Object);
 
-        var commands = scope.GetCommands(false);
+        var commands = scope.GetCommandNames(false);
 
         commands.Should().BeEquivalentTo(new[] { "test1", "test2", "test3" });
     }

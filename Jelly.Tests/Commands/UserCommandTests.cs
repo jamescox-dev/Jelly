@@ -12,6 +12,7 @@ public class UserCommandTests
     ICommand _userCommand2Args = null!;
     ICommand _userCommand2To4Args = null!;
     ICommand _userCommandVarArgs = null!;
+    ICommand _userCommandWithReturn = null!;
 
     IEvaluator _rootEvaluator = null!;
 
@@ -77,6 +78,14 @@ public class UserCommandTests
         _passedScope!.GetVariable("d").Should().Be(4.ToValue());
     }
 
+    [Test]
+    public void IfTheUserCommandThrowsAReturnTheReturnsValueIsReturned()
+    {
+        var result = _userCommandWithReturn.Invoke(_scope, new ListValue());
+        
+        result.Should().Be("retrunedValue".ToValue());
+    }
+
     [SetUp]
     public void Setup()
     {
@@ -109,5 +118,9 @@ public class UserCommandTests
             new (string, Value)[] { ("c", 3.ToValue()), ("d", 4.ToValue()) }, 
             "e", 
             _userCommandBody);
+        
+        _userCommandWithReturn = new UserCommand(
+            Array.Empty<string>(), Array.Empty<(string, Value)>(), null, 
+            Node.Raise(Node.Literal("/return"), Node.Literal(Value.Empty), Node.Literal("retrunedValue")));
     }
 }

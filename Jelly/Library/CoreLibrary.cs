@@ -10,8 +10,16 @@ public class CoreLibrary : ILibrary
 {
     public void LoadIntoScope(IScope scope)
     {
+        // TODO:  break
+        // TODO:  continue
+        // TODO:  def name $arg1 $arg2 $optarg1=default $optarg2=default $params... { body } 
+        // TODO:  for i = 1 to 10 {}, for i = 1 to 10 step 2 {}, for v in list {}, for i v in list, for v of dict {}, for k v of dict {}
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
         scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, new TypeMarshaller()));
+        scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, new TypeMarshaller()));
+        // TODO:  raise type message?
+        scope.DefineCommand("return", new SimpleMacro(ReturnMacro));
+        // TODO:  try
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
     }
@@ -120,8 +128,33 @@ public class CoreLibrary : ILibrary
 
     string[] LsDefCmd(IScope scope, bool localOnly = false)
     {
-        var commands = scope.GetCommands(localOnly);
+        var commands = scope.GetCommandNames(localOnly);
         return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
+    }
+
+    string[] LsVarCmd(IScope scope, bool localOnly = false)
+    {
+        var commands = scope.GetVariableNames(localOnly);
+        return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
+    }
+
+    Value ReturnMacro(IScope scope, ListValue args)
+    {
+        var value = Node.Literal(Value.Empty);
+
+        if (args.Count == 1)
+        {
+            value = args[0].ToDictionaryValue();
+        }
+        else if (args.Count > 1)
+        {
+            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[1].ToDictionaryValue())}'.");
+        }
+
+        return Node.Raise(
+            Node.Literal("/return/"),
+            Node.Literal(Value.Empty),
+            value);
     }
 
     Value VarMacro(IScope scope, ListValue args)

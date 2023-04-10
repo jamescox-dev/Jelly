@@ -28,6 +28,8 @@ public class CoreLibraryTests
         {
             _scope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsdef")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("lsvar")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("return")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("var")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("while")).Should().NotThrow();
         }
@@ -218,7 +220,7 @@ public class CoreLibraryTests
         [Test]
         public void ReturnsAListOfEachCommandDefinedInTheCurrentScopeAnSurroundingScope()
         {
-            var lsDefsCmd = _scope.GetCommand("lsdef");
+            var lsDefCmd = _scope.GetCommand("lsdef");
             var outerScope = new Scope();
             outerScope.DefineCommand("d", new SimpleCommand((_, _) => Value.Empty));
             outerScope.DefineCommand("b", new SimpleCommand((_, _) => Value.Empty));
@@ -226,7 +228,7 @@ public class CoreLibraryTests
             scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
             scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
             
-            var result = lsDefsCmd.Invoke(scope, new ListValue());
+            var result = lsDefCmd.Invoke(scope, new ListValue());
 
             result.Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
         }
@@ -234,7 +236,7 @@ public class CoreLibraryTests
         [Test]
         public void ReturnsAListOfEachCommandDefinedInTheCurrentScopeOnlyWhenSpecified()
         {
-            var lsDefsCmd = _scope.GetCommand("lsdef");
+            var lsDefCmd = _scope.GetCommand("lsdef");
             var outerScope = new Scope();
             outerScope.DefineCommand("d", new SimpleCommand((_, _) => Value.Empty));
             outerScope.DefineCommand("b", new SimpleCommand((_, _) => Value.Empty));
@@ -242,9 +244,100 @@ public class CoreLibraryTests
             scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
             scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
             
-            var result = lsDefsCmd.Invoke(scope, new ListValue(true.ToValue()));
+            var result = lsDefCmd.Invoke(scope, new ListValue(true.ToValue()));
 
             result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
+        }
+    }
+
+    #endregion
+
+    #region lsvar
+
+    [TestFixture]
+    public class LsVarTests : CoreLibraryTests
+    {
+        [Test]
+        public void ReturnsAListOfEachVariableDefinedInTheCurrentScopeAnSurroundingScope()
+        {
+            var lsVarCmd = _scope.GetCommand("lsvar");
+            var outerScope = new Scope();
+            outerScope.DefineVariable("d", Value.Empty);
+            outerScope.DefineVariable("b", Value.Empty);
+            var scope = new Scope(outerScope);
+            scope.DefineVariable("c", Value.Empty);
+            scope.DefineVariable("a", Value.Empty);
+            
+            var result = lsVarCmd.Invoke(scope, new ListValue());
+
+            result.Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
+        }
+
+        [Test]
+        public void ReturnsAListOfEachVariableDefinedInTheCurrentScopeOnlyWhenSpecified()
+        {
+            var lsVarCmd = _scope.GetCommand("lsvar");
+            var outerScope = new Scope();
+            outerScope.DefineVariable("d", Value.Empty);
+            outerScope.DefineVariable("b", Value.Empty);
+            var scope = new Scope(outerScope);
+            scope.DefineVariable("c", Value.Empty);
+            scope.DefineVariable("a", Value.Empty);
+            
+            var result = lsVarCmd.Invoke(scope, new ListValue(true.ToValue()));
+
+            result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
+        }
+    }
+
+    #endregion
+
+    #region return
+
+    [TestFixture]
+    public class ReturnTests : CoreLibraryTests
+    {
+        [Test]
+        public void WithoutArgumentsARaiseNodeWithAnEmptyValueIsReturned()
+        {
+            var returnCmd = _scope.GetCommand("return");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue();
+
+            var result = returnCmd.Invoke(testScope.Object, args);
+
+            result.Should().Be(
+                Node.Raise(
+                    Node.Literal("/return/"), 
+                    Node.Literal(Value.Empty), 
+                    Node.Literal(Value.Empty)));
+        }
+
+        [Test]
+        public void WithOneArgumentARaiseNodeIsReturnedWithTheCorrectReturnValue()
+        {
+            var returnCmd = _scope.GetCommand("return");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue(Node.Variable("name"));
+
+            var result = returnCmd.Invoke(testScope.Object, args);
+
+            result.Should().Be(
+                Node.Raise(
+                    Node.Literal("/return/"), 
+                    Node.Literal(Value.Empty), 
+                    Node.Variable("name")));
+        }
+
+        [Test]
+        public void WithMoreThanOneArgumentAnErrorIsThrown()
+        {
+            var returnCmd = _scope.GetCommand("return");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue(Node.Variable("name"), Node.Literal("boo"));
+
+            returnCmd.Invoking(c => c.Invoke(testScope.Object, args)).Should()
+                .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
         }
     }
 
