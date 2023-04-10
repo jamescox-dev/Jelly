@@ -9,7 +9,7 @@ internal class RaiseEvaluator : IEvaluator
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         throw Error.Create(
-            rootEvaluator.Evaluate(scope, node[Keywords.ErrorType].ToDictionaryValue()).ToString(),
+            Error.NormalizeType(rootEvaluator.Evaluate(scope, node[Keywords.ErrorType].ToDictionaryValue()).ToString()),
             rootEvaluator.Evaluate(scope, node[Keywords.Message].ToDictionaryValue()).ToString(),
             rootEvaluator.Evaluate(scope, node[Keywords.Value].ToDictionaryValue()));
     }

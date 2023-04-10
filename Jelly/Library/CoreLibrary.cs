@@ -17,7 +17,7 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
         scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, new TypeMarshaller()));
         scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, new TypeMarshaller()));
-        // TODO:  raise type message?
+        scope.DefineCommand("raise", new SimpleMacro(RaiseMacro));
         scope.DefineCommand("return", new SimpleMacro(ReturnMacro));
         // TODO:  try
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
@@ -136,6 +136,24 @@ public class CoreLibrary : ILibrary
     {
         var commands = scope.GetVariableNames(localOnly);
         return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
+    }
+
+    Value RaiseMacro(IScope scope, ListValue args)
+    {
+        if (args.Count == 0)
+        {
+            throw Error.Arg("Expected 'type' argument.");
+        }
+        if (args.Count > 3)
+        {
+            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[3].ToDictionaryValue())}'.");
+        }
+
+        var type = args[0].ToDictionaryValue();
+        var message = args.Count > 1 ? args[1].ToDictionaryValue() : Node.Literal(Value.Empty);
+        var value = args.Count > 2 ? args[2].ToDictionaryValue() : Node.Literal(Value.Empty);
+        
+        return Node.Raise(type, message, value);
     }
 
     Value ReturnMacro(IScope scope, ListValue args)

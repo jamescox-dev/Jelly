@@ -29,6 +29,7 @@ public class CoreLibraryTests
             _scope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsdef")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsvar")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("raise")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("return")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("var")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("while")).Should().NotThrow();
@@ -287,6 +288,81 @@ public class CoreLibraryTests
             var result = lsVarCmd.Invoke(scope, new ListValue(true.ToValue()));
 
             result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
+        }
+    }
+
+    #endregion
+
+    #region raise
+
+    [TestFixture]
+    public class RaiseTests : CoreLibraryTests
+    {
+        [Test]
+        public void WithNoArgumentsAnArgErrorIsThrow()
+        {
+            var raiseCmd = _scope.GetCommand("raise");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue();
+
+            raiseCmd.Invoking(c => c.Invoke(testScope.Object, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'type' argument.");
+        }
+
+        [Test]
+        public void WithOneArgumentsARaiseNodeIsReturnedWithTheCorrectType()
+        {
+            var raiseCmd = _scope.GetCommand("raise");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue(Node.Literal("/error/type"));
+
+            var result = raiseCmd.Invoke(testScope.Object, args);
+
+            result.Should().Be(Node.Raise(
+                Node.Literal("/error/type"), 
+                Node.Literal(Value.Empty), 
+                Node.Literal(Value.Empty)));
+        }
+
+        [Test]
+        public void WithTwoArgumentsARaiseNodeIsReturnedWithTheCorrectTypeAndMessage()
+        {
+            var raiseCmd = _scope.GetCommand("raise");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."));
+
+            var result = raiseCmd.Invoke(testScope.Object, args);
+
+            result.Should().Be(Node.Raise(
+                Node.Literal("/error/type"), 
+                Node.Literal("Test message."), 
+                Node.Literal(Value.Empty)));
+        }
+
+        [Test]
+        public void WithThreeArgumentsARaiseNodeIsReturnedWithTheCorrectTypeMessageAndValue()
+        {
+            var raiseCmd = _scope.GetCommand("raise");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."), Node.Literal("value"));
+
+            var result = raiseCmd.Invoke(testScope.Object, args);
+
+            result.Should().Be(Node.Raise(
+                Node.Literal("/error/type"), 
+                Node.Literal("Test message."), 
+                Node.Literal("value")));
+        }
+
+        [Test]
+        public void WithMoreThanThreeArgumentsAnArgErrorIsThrow()
+        {
+            var raiseCmd = _scope.GetCommand("raise");
+            var testScope = new Mock<IScope>();
+            var args = new ListValue(Value.Empty, Value.Empty, Value.Empty, Node.Literal("boo"));
+
+            raiseCmd.Invoking(c => c.Invoke(testScope.Object, args)).Should()
+                .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
         }
     }
 
