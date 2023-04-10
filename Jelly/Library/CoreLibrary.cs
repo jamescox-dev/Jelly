@@ -10,18 +10,46 @@ public class CoreLibrary : ILibrary
 {
     public void LoadIntoScope(IScope scope)
     {
-        // TODO:  break
-        // TODO:  continue
+        scope.DefineCommand("break", new SimpleMacro(BreakMacro));
+        scope.DefineCommand("continue", new SimpleMacro(ContinueMacro));
         // TODO:  def name $arg1 $arg2 $optarg1=default $optarg2=default $params... { body } 
         // TODO:  for i = 1 to 10 {}, for i = 1 to 10 step 2 {}, for v in list {}, for i v in list, for v of dict {}, for k v of dict {}
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
-        scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, new TypeMarshaller()));
-        scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, new TypeMarshaller()));
+        scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, TypeMarshaller.Shared));
+        scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, TypeMarshaller.Shared));
         scope.DefineCommand("raise", new SimpleMacro(RaiseMacro));
         scope.DefineCommand("return", new SimpleMacro(ReturnMacro));
         // TODO:  try
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
+    }
+
+    Value BreakMacro(IScope scope, ListValue args)
+    {
+        if (args.Count != 0)
+        {
+            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[0].ToDictionaryValue())}'.");
+        }
+
+        return Node.Raise(
+            Node.Literal("/break/"),
+            Node.Literal(Value.Empty),
+            Node.Literal(Value.Empty)
+        );
+    }
+
+    Value ContinueMacro(IScope scope, ListValue args)
+    {
+        if (args.Count != 0)
+        {
+            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[0].ToDictionaryValue())}'.");
+        }
+
+        return Node.Raise(
+            Node.Literal("/continue/"),
+            Node.Literal(Value.Empty),
+            Node.Literal(Value.Empty)
+        );
     }
 
     Value IfMacro(IScope scope, ListValue args)

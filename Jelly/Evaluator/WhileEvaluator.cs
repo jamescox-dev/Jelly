@@ -1,6 +1,7 @@
 namespace Jelly.Evaluator;
 
 using Jelly.Ast;
+using Jelly.Errors;
 using Jelly.Values;
 
 internal class WhileEvaluator : IEvaluator
@@ -11,7 +12,19 @@ internal class WhileEvaluator : IEvaluator
         
         while (EvaluateComdition(scope, node, rootEvaluator))
         {
-            result = EvaluateBody(scope, node, rootEvaluator);
+            try
+            {
+                result = EvaluateBody(scope, node, rootEvaluator);
+            }
+            catch (Break)
+            {
+                result = Value.Empty;
+                break;
+            }
+            catch (Continue)
+            {
+                continue;
+            }
         }
 
         return result;

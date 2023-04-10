@@ -5,6 +5,8 @@ using System.Collections;
 
 public class TypeMarshaller : ITypeMarshaller
 {
+    public static readonly ITypeMarshaller Shared = new TypeMarshaller();
+
     public Value Marshal(object? clrValue)
     {
         if (clrValue is null)

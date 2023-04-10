@@ -47,6 +47,28 @@ public class ErrorTests
     }
 
     [Test]
+    public void ABreakCanBeCreated()
+    {
+        var error = Error.Create("/break", string.Empty, "test".ToValue());
+
+        error.Type.Should().Be(Error.NormalizeType("/break").ToLowerInvariant());
+        error.Message.Should().Be("Unexpected 'break' outside of loop.");
+        error.Value.Should().Be(Value.Empty);
+        error.GetType().Should().Be(typeof(Break));
+    }
+
+    [Test]
+    public void AContinueCanBeCreated()
+    {
+         var error = Error.Create("/continue", string.Empty, "test".ToValue());
+
+        error.Type.Should().Be(Error.NormalizeType("/continue").ToLowerInvariant());
+        error.Message.Should().Be("Unexpected 'continue' outside of loop.");
+        error.Value.Should().Be(Value.Empty);
+        error.GetType().Should().Be(typeof(Continue));
+    }
+
+    [Test]
     public void AReturnCanBeCreated()
     {
         var error = Error.Create("/return", string.Empty, "test".ToValue());

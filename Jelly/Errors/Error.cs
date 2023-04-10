@@ -6,6 +6,8 @@ public class Error : Exception
 {
     static readonly SortedDictionary<string, Func<string, Value, Error>> ErrorConstructors = new(StringComparer.InvariantCultureIgnoreCase)
     {
+        { "/break/", Break },
+        { "/continue/", Continue },
         { "/error/arg/", Arg },
         { "/error/eval/", Eval },
         { "/error/name/", Name },
@@ -53,6 +55,14 @@ public class Error : Exception
         }
         return new Error(type, message, value);
     }
+
+    public static Error Break() => new Break();
+
+    public static Error Break(string _, Value __) => Break();
+    
+    public static Error Continue() => new Continue();
+
+    public static Error Continue(string _, Value __) => Continue();
 
     public static Error Arg(string message) => new ArgError(message);
 
@@ -130,15 +140,12 @@ public class ValueError : Error
     internal ValueError(string message) : base("/error/value/", message) {}
 }
 
+public class Break : Error
+{
+    public Break() : base("/break/", "Unexpected 'break' outside of loop.") {}
+}
 
-
-// TODO:  Break and Continue.
-// interface class Break : Error
-// {
-//     public Break() : base("/break", "Unexpected 'break' outside of loop.") {}
-// }
-
-// interface class Continue : Error
-// {
-//     public Break() : base("/continue", "Unexpected 'continue' outside of loop.") {}
-// }
+public class Continue : Error
+{
+    public Continue() : base("/continue/", "Unexpected 'continue' outside of loop.") {}
+}

@@ -26,6 +26,8 @@ public class CoreLibraryTests
         [Test]
         public void TheScopeHasTheCorrectCommandsDefined()
         {
+            _scope.Invoking(s => s.GetCommand("break")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("continue")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsdef")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsvar")).Should().NotThrow();
@@ -35,6 +37,68 @@ public class CoreLibraryTests
             _scope.Invoking(s => s.GetCommand("while")).Should().NotThrow();
         }
     }
+
+    #region break
+
+    [TestFixture]
+    public class BreakTests : CoreLibraryTests
+    {
+        [Test]
+        public void ARaiseNodeOfTypeBreakIsReturned()
+        {
+            var breakCmd = _scope.GetCommand("break");
+            var args = new ListValue();
+            
+            var result = breakCmd.Invoke(_scope, args);
+
+            result.Should().Be(Node.Raise(
+                Node.Literal("/break/"), Node.Literal(Value.Empty), Node.Literal(Value.Empty)
+            ));
+        }
+
+        [Test]
+        public void AnArgErrorInThrownWhenArgumentsArePassedToBreak()
+        {
+            var breakCmd = _scope.GetCommand("break");
+            var args = new ListValue(Node.Literal("boo"));
+
+            breakCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
+        }
+    }
+
+    #endregion
+
+    #region continue
+
+    [TestFixture]
+    public class ContinueTests : CoreLibraryTests
+    {
+        [Test]
+        public void ARaiseNodeOfTypeContinueIsReturned()
+        {
+            var continueCmd = _scope.GetCommand("continue");
+            var args = new ListValue();
+            
+            var result = continueCmd.Invoke(_scope, args);
+
+            result.Should().Be(Node.Raise(
+                Node.Literal("/continue/"), Node.Literal(Value.Empty), Node.Literal(Value.Empty)
+            ));
+        }
+
+        [Test]
+        public void AnArgErrorInThrownWhenArgumentsArePassedToContinue()
+        {
+            var continueCmd = _scope.GetCommand("continue");
+            var args = new ListValue(Node.Literal("boo"));
+
+            continueCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
+        }
+    }
+
+    #endregion
 
     #region if
 
