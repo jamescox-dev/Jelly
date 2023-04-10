@@ -409,4 +409,13 @@ public class ScannerTests
             op.Should().BeEmpty();
         }
     }
+
+    [TestCase("=", true)]
+    [TestCase("boo", false)]
+    public void AnAssignmentOperatorIsReportedWhenTheCurrentCharacterMatchesTheConfiguredCharacter(string source, bool expected)
+    {
+        var scanner = new Scanner(source);
+
+        scanner.IsAssignmentOperator.Should().Be(expected);
+    }
 }

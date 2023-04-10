@@ -111,13 +111,16 @@ public class Scanner
     public bool IsVariableBegin => CurrentCharacter == Config.VariableBegin;
     
     public bool IsVariableEnd => CurrentCharacter == Config.VariableEnd;
-    
+
+    public bool IsAssignmentOperator => CurrentCharacter == Config.AssignmentOperator;
+
     public bool IsSpecialCharacter =>
         IsEscapeCharacter || IsVariableMarker 
         || IsCommandSeparator || IsWordSeparator
         || IsExpressionBegin
         || IsScriptBegin
         || IsNestingQuoteBegin
+        || IsAssignmentOperator
         || IsQuote || IsCommentBegin;
 
     public bool TryGetOperatorSymbol(out string op)

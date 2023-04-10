@@ -26,6 +26,8 @@ public interface IScannerConfig
 
     IReadOnlyDictionary<char, char> EscapeCharacterSubstitutions { get; }
 
+    char AssignmentOperator { get; }
+
     char VariableMarker { get; }
 
     char VariableBegin { get; }

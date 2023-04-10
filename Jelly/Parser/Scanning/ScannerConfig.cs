@@ -70,6 +70,8 @@ public class ScannerConfig : IScannerConfig
 
     public IReadOnlyDictionary<char, char> EscapeCharacterSubstitutions => _escapeCharacterSubstitutions;
 
+    public char AssignmentOperator => '=';
+
     public char VariableMarker => '$';
 
     public char VariableBegin => '{';

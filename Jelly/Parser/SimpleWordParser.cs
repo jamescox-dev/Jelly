@@ -24,6 +24,11 @@ public class SimpleWordParser : IParser
         var start = scanner.Position;
         var value = new StringBuilder();
 
+        if (scanner.AdvanceIf(s => s.IsAssignmentOperator))
+        {
+            return Node.Literal("=");
+        }
+
         while (!scanner.IsEof)
         {
             var escapedCh = EscapeCharacterParser.Parse(scanner);
