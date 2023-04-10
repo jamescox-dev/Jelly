@@ -27,6 +27,7 @@ public class CoreLibraryTests
         public void TheScopeHasTheCorrectCommandsDefined()
         {
             _scope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("lsdef")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("var")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("while")).Should().NotThrow();
         }
@@ -206,6 +207,46 @@ public class CoreLibraryTests
                 .Throw<ArgError>().WithMessage("Expected 'then_body'.");
         }
     } 
+
+    #endregion
+
+    #region lsdef
+
+    [TestFixture]
+    public class LsDefTests : CoreLibraryTests
+    {
+        [Test]
+        public void ReturnsAListOfEachCommandDefinedInTheCurrentScopeAnSurroundingScope()
+        {
+            var lsDefsCmd = _scope.GetCommand("lsdef");
+            var outerScope = new Scope();
+            outerScope.DefineCommand("d", new SimpleCommand((_, _) => Value.Empty));
+            outerScope.DefineCommand("b", new SimpleCommand((_, _) => Value.Empty));
+            var scope = new Scope(outerScope);
+            scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
+            scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
+            
+            var result = lsDefsCmd.Invoke(scope, new ListValue());
+
+            result.Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
+        }
+
+        [Test]
+        public void ReturnsAListOfEachCommandDefinedInTheCurrentScopeOnlyWhenSpecified()
+        {
+            var lsDefsCmd = _scope.GetCommand("lsdef");
+            var outerScope = new Scope();
+            outerScope.DefineCommand("d", new SimpleCommand((_, _) => Value.Empty));
+            outerScope.DefineCommand("b", new SimpleCommand((_, _) => Value.Empty));
+            var scope = new Scope(outerScope);
+            scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
+            scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
+            
+            var result = lsDefsCmd.Invoke(scope, new ListValue(true.ToValue()));
+
+            result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
+        }
+    }
 
     #endregion
 

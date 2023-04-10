@@ -11,6 +11,7 @@ public class CoreLibrary : ILibrary
     public void LoadIntoScope(IScope scope)
     {
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
+        scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, new TypeMarshaller()));
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
     }
@@ -110,11 +111,17 @@ public class CoreLibrary : ILibrary
         return ifNode!;
     }
 
-    private static bool IsKeyword(DictionaryValue word, string keyword)
+    static bool IsKeyword(DictionaryValue word, string keyword)
     {
         return Node.IsLiteral(word) 
             && Node.GetLiteralValue(word).ToString()
                 .Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    string[] LsDefCmd(IScope scope, bool localOnly = false)
+    {
+        var commands = scope.GetCommands(localOnly);
+        return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
     }
 
     Value VarMacro(IScope scope, ListValue args)

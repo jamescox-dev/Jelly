@@ -141,6 +141,19 @@ public class WrappedCommandTests
         _passedParams.SequenceEqual(Array.Empty<string>()).Should().BeTrue();
     }
 
+    [Test]
+    public void WhenTheFirstArgumentIsAIScopeTheScopeGetsPassedToTheWrappedCommand()
+    {
+        IScope? passedScope = null;
+        var func = (IScope scope) => { passedScope = scope; };
+        var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
+
+        command.Invoke(_scope, new ListValue());
+
+        passedScope.Should().Be(_scope);
+    }
+
+
     void FuncWithParams(string a, string b = "jelly", params string[] c) 
     {  
         _passedParams = c;

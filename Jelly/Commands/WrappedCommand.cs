@@ -13,6 +13,7 @@ public class WrappedCommand : ICommand
     readonly int _requiredArgumentCount;
     readonly int _maxArgumentCount;
     readonly Type? _paramsType;
+    readonly bool _hasScopeArgument;
 
     public EvaluationFlags EvaluationFlags => EvaluationFlags.Arguments;
 
@@ -27,27 +28,37 @@ public class WrappedCommand : ICommand
         var requiredArgumentCount = 0;
         var maxArgumentCount = 0;
         Type? paramsType = null;
+        var hasScopeArgument = false;
+        var firstArgument = true;
         foreach (var param in _wrappedDelegate.Method.GetParameters())
         {
-            argumentTypes.Add(param.ParameterType);
-            argumentNames.Add(param.Name ?? "");
-            if (param.IsOptional)
+            if (firstArgument && param.ParameterType == typeof(IScope))
             {
-                optionalArgumentDefaultValues.Add(param.DefaultValue);
-                ++maxArgumentCount;
+                hasScopeArgument = true;
             }
             else
             {
-                if (Attribute.IsDefined(param, typeof(ParamArrayAttribute)))
+                argumentTypes.Add(param.ParameterType);
+                argumentNames.Add(param.Name ?? "");
+                if (param.IsOptional)
                 {
-                    paramsType = param.ParameterType.GetElementType();
+                    optionalArgumentDefaultValues.Add(param.DefaultValue);
+                    ++maxArgumentCount;
                 }
                 else
                 {
-                    ++maxArgumentCount;
-                    ++requiredArgumentCount;
+                    if (Attribute.IsDefined(param, typeof(ParamArrayAttribute)))
+                    {
+                        paramsType = param.ParameterType.GetElementType();
+                    }
+                    else
+                    {
+                        ++maxArgumentCount;
+                        ++requiredArgumentCount;
+                    }
                 }
             }
+            firstArgument = false;
         }
         _argumentTypes = argumentTypes.ToArray();
         _argumentNames = argumentNames.ToArray();
@@ -55,6 +66,7 @@ public class WrappedCommand : ICommand
         _requiredArgumentCount = requiredArgumentCount;
         _maxArgumentCount = maxArgumentCount;
         _paramsType = paramsType;
+        _hasScopeArgument = hasScopeArgument;
     }
 
     public Value Invoke(IScope scope, ListValue args)
@@ -68,16 +80,21 @@ public class WrappedCommand : ICommand
             throw Error.Arg($"Expected '{_argumentNames[args.Count]}' argument.");
         }
 
-        var clrArgs = new object?[_maxArgumentCount + (_paramsType is not null ? 1 : 0)];
-        var i = 0;
+        var scopeOffset = _hasScopeArgument ? 1 : 0;
+        var clrArgs = new object?[_maxArgumentCount + (_paramsType is not null ? 1 : 0) + scopeOffset];
+        var i = scopeOffset;
+        if (_hasScopeArgument)
+        {
+            clrArgs[0] = scope;
+        }
         foreach (var arg in args.Take(_maxArgumentCount))
         {
-            clrArgs[i] = _typeMashaller.Marshal(arg, _argumentTypes[i]);
+            clrArgs[i] = _typeMashaller.Marshal(arg, _argumentTypes[i - scopeOffset]);
             ++i;
         }
         while (i < _maxArgumentCount)
         {
-            clrArgs[i] = _optionalArgumentDefaultValues[i - _requiredArgumentCount];
+            clrArgs[i] = _optionalArgumentDefaultValues[i - _requiredArgumentCount - scopeOffset];
             ++i;
         }
         if (_paramsType is not null)
