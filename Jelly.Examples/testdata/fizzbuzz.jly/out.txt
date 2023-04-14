@@ -1,3 +1,4 @@
+Enter count: 20
 1
 2
 Fizz
