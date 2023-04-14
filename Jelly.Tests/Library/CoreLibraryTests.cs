@@ -506,7 +506,7 @@ public class CoreLibraryTests
             var result = tryCmd.Invoke(_scope, new ListValue(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))));
 
             result.Should().Be(Node.Try(
-                Node.Script(Node.Command(Node.Literal("print"), new ListValue())), 
+                Node.Scope(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))), 
                 null
             ));
         }
@@ -524,8 +524,8 @@ public class CoreLibraryTests
                 body, Node.Literal("finally".ToValue()), finallyBody));
 
             result.Should().Be(Node.Try(
-                body, 
-                finallyBody
+                Node.Scope(body), 
+                Node.Scope(finallyBody)
             ));
         }
 
@@ -577,9 +577,9 @@ public class CoreLibraryTests
                 body, Node.Literal(exceptKeyword), Node.Literal("/error/"), excepetBody));
             
             result.Should().Be(Node.Try(
-                body,
+                Node.Scope(body),
                 null,
-                (Node.Literal("/error/"), excepetBody)
+                (Node.Literal("/error/"), Node.Scope(excepetBody))
             ));
         }
 
@@ -596,10 +596,10 @@ public class CoreLibraryTests
                 Node.Literal("except"), Node.Literal("/error/type"), excepetBody));
             
             result.Should().Be(Node.Try(
-                body,
+                Node.Scope(body),
                 null,
-                (Node.Literal("/error/arg"), excepetBody),
-                (Node.Literal("/error/type"), excepetBody)
+                (Node.Literal("/error/arg"), Node.Scope(excepetBody)),
+                (Node.Literal("/error/type"), Node.Scope(excepetBody))
             ));
         }
 
@@ -617,9 +617,9 @@ public class CoreLibraryTests
                 Node.Literal("finally"), finallyBody));
             
             result.Should().Be(Node.Try(
-                body,
-                finallyBody,
-                (Node.Literal("/error/arg"), excepetBody)
+                Node.Scope(body),
+                Node.Scope(finallyBody),
+                (Node.Literal("/error/arg"), Node.Scope(excepetBody))
             ));
         }
 

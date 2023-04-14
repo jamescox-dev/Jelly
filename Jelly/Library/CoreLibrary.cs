@@ -210,7 +210,7 @@ public class CoreLibrary : ILibrary
             throw Error.Arg("Expected 'body' argument.");
         }
 
-        var body = args[0].ToDictionaryValue();
+        var body = Node.Scope(args[0].ToDictionaryValue());
         var errorHandlers = new List<(DictionaryValue, DictionaryValue)>();
         DictionaryValue? finallyBody = null;
         for (var i = 1; i < args.Count;)
@@ -231,7 +231,7 @@ public class CoreLibrary : ILibrary
                 {
                     throw Error.Arg("Expected 'except_body' argument.");
                 }
-                errorHandlers.Add((args[i + 1].ToDictionaryValue(), args[i + 2].ToDictionaryValue()));
+                errorHandlers.Add((args[i + 1].ToDictionaryValue(), Node.Scope(args[i + 2].ToDictionaryValue())));
                 i += 3;
             }
             else if (IsKeyword(arg, "finally"))
@@ -244,7 +244,7 @@ public class CoreLibrary : ILibrary
                 {
                     throw Error.Arg("Expected 'finally_body' argument.");
                 }
-                finallyBody = args[i + 1].ToDictionaryValue();
+                finallyBody = Node.Scope(args[i + 1].ToDictionaryValue());
                 i += 2;
             }
             else
