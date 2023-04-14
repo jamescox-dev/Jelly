@@ -185,4 +185,16 @@ public class EvaluatorTests
         evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, node, evaluator)).Should()
             .Throw<Error>().WithMessage("Test message.").Where(e => e.Value.Equals("testvalue".ToValue()));
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateATryNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.Try(Node.Literal("hello"), null);
+
+        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+
+        result.Should().Be("hello".ToValue());
+    }
 }
