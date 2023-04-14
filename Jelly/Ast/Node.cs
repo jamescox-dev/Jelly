@@ -59,6 +59,20 @@ public static class Node
     public static DictionaryValue Raise(DictionaryValue type, DictionaryValue message, DictionaryValue value) =>
         new DictionaryValue(Keywords.Type, Keywords.Raise, Keywords.ErrorType, type, Keywords.Message, message, Keywords.Value, value);
 
+    public static DictionaryValue Try(DictionaryValue body, DictionaryValue? finallyBody, params (DictionaryValue, DictionaryValue)[] errorHandlers) =>
+        finallyBody is null 
+            ? new DictionaryValue(
+                Keywords.Type, Keywords.Try, 
+                Keywords.Body, body,
+                Keywords.ErrorHandlers, errorHandlers.Select((errorHandler) =>
+                    new ListValue(errorHandler.Item1, errorHandler.Item2)).ToValue())
+            : new DictionaryValue(
+                Keywords.Type, Keywords.Try, 
+                Keywords.Body, body,
+                Keywords.Finally, finallyBody, 
+                Keywords.ErrorHandlers, errorHandlers.Select((errorHandler) =>
+                    new ListValue(errorHandler.Item1, errorHandler.Item2)).ToValue());
+
     public static bool IsLiteral(DictionaryValue node) => IsType(node, Keywords.Literal);
 
     public static bool IsVariable(DictionaryValue node) => IsType(node, Keywords.Variable);

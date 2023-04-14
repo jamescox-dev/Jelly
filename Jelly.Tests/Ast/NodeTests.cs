@@ -189,6 +189,45 @@ public class NodeTests
     }
 
     [Test]
+    public void ATryNodeCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.Try(
+            Node.Literal("body"), 
+            Node.Literal("finallyBody"), 
+            (Node.Literal("/error1"), Node.Literal("errorBody1")),
+            (Node.Literal("/error2"), Node.Literal("errorBody2")));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "try".ToValue(),
+            "body".ToValue(), Node.Literal("body"),
+            "error_handlers".ToValue(), new ListValue(
+                new ListValue(Node.Literal("/error1"), Node.Literal("errorBody1")),
+                new ListValue(Node.Literal("/error2"), Node.Literal("errorBody2"))
+            ),
+            "finally".ToValue(), Node.Literal("finallyBody")
+        ));
+    }
+
+    [Test]
+    public void ATryNodeCanBeCreateWithOutAFinallyBody()
+    {
+        var node = Node.Try(
+            Node.Literal("body"), 
+            null, 
+            (Node.Literal("/error1"), Node.Literal("errorBody1")),
+            (Node.Literal("/error2"), Node.Literal("errorBody2")));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "try".ToValue(),
+            "body".ToValue(), Node.Literal("body"),
+            "error_handlers".ToValue(), new ListValue(
+                new ListValue(Node.Literal("/error1"), Node.Literal("errorBody1")),
+                new ListValue(Node.Literal("/error2"), Node.Literal("errorBody2"))
+            )
+        ));
+    }
+
+    [Test]
     public void TheTypeOfANodeCanBeChecked()
     {
         var literal = Node.Literal("test".ToValue());

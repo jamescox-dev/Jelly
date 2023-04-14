@@ -18,6 +18,8 @@ public static class Keywords
     public static readonly StringValue Else = new StringValue("else");
     public static readonly StringValue ErrorType = new StringValue("errortype");
     public static readonly StringValue Expression = new StringValue("expression");
+    public static readonly StringValue ErrorHandlers = new StringValue("error_handlers");
+    public static readonly StringValue Finally = new StringValue("finally");
     public static readonly StringValue If = new StringValue("if");
     public static readonly StringValue Literal = new StringValue("literal");
     public static readonly StringValue Message = new StringValue("message");
@@ -29,6 +31,7 @@ public static class Keywords
     public static readonly StringValue Script = new StringValue("script");
     public static readonly StringValue Subexpresions = new StringValue("subexpressions");
     public static readonly StringValue Then = new StringValue("then");
+    public static readonly StringValue Try = new StringValue("try");
     public static readonly StringValue Type = new StringValue("type");
     public static readonly StringValue UniOp = new StringValue("uniop");
     public static readonly StringValue Value = new StringValue("value");

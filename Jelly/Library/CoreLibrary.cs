@@ -19,7 +19,7 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, TypeMarshaller.Shared));
         scope.DefineCommand("raise", new SimpleMacro(RaiseMacro));
         scope.DefineCommand("return", new SimpleMacro(ReturnMacro));
-        // TODO:  try
+        scope.DefineCommand("try", new SimpleMacro(TryMacro));
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
     }
@@ -201,6 +201,63 @@ public class CoreLibrary : ILibrary
             Node.Literal("/return/"),
             Node.Literal(Value.Empty),
             value);
+    }
+
+    Value TryMacro(IScope scope, ListValue args)
+    {
+        if (args.Count == 0)
+        {
+            throw Error.Arg("Expected 'body' argument.");
+        }
+
+        var body = args[0].ToDictionaryValue();
+        var errorHandlers = new List<(DictionaryValue, DictionaryValue)>();
+        DictionaryValue? finallyBody = null;
+        for (var i = 1; i < args.Count;)
+        {
+            var arg = args[i].ToDictionaryValue();
+
+            if (IsKeyword(arg, "except"))
+            {
+                if (finallyBody is not null)
+                {
+                    throw Error.Arg("Unexpected 'except' argument after 'finally'.");
+                }
+                if (args.Count <= i + 1)
+                {
+                    throw Error.Arg("Expected 'error_details' argument.");
+                }
+                if (args.Count <= i + 2)
+                {
+                    throw Error.Arg("Expected 'except_body' argument.");
+                }
+                errorHandlers.Add((args[i + 1].ToDictionaryValue(), args[i + 2].ToDictionaryValue()));
+                i += 3;
+            }
+            else if (IsKeyword(arg, "finally"))
+            {
+                if (finallyBody is not null)
+                {
+                    throw Error.Arg("Unexpected duplicate 'finally' argument.");
+                }
+                if (args.Count <= i + 1)
+                {
+                    throw Error.Arg("Expected 'finally_body' argument.");
+                }
+                finallyBody = args[i + 1].ToDictionaryValue();
+                i += 2;
+            }
+            else
+            {
+                throw Error.Arg($"Unexpected '{Evaluator.Shared.Evaluate(scope, arg)}' argument.");
+            }
+        }
+
+        return Node.Try(
+            body,
+            finallyBody,
+            errorHandlers.ToArray()
+        );
     }
 
     Value VarMacro(IScope scope, ListValue args)

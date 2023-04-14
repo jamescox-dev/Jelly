@@ -33,6 +33,7 @@ public class CoreLibraryTests
             _scope.Invoking(s => s.GetCommand("lsvar")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("raise")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("return")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("try")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("var")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("while")).Should().NotThrow();
         }
@@ -478,6 +479,188 @@ public class CoreLibraryTests
 
             returnCmd.Invoking(c => c.Invoke(testScope.Object, args)).Should()
                 .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
+        }
+    }
+
+    #endregion
+
+    #region try
+
+    [TestFixture]
+    public class TryTests : CoreLibraryTests
+    {
+        [Test]
+        public void WhenNoArgumentsArePassedAnArgErrorIsThrown()
+        {
+            var tryCmd = _scope.GetCommand("try");
+
+            tryCmd.Invoking(c => c.Invoke(_scope, new ListValue())).Should()
+                .Throw<ArgError>().WithMessage("Expected 'body' argument.");
+        }
+
+        [Test]
+        public void WhenOnlyOneArgumentIsPassedAnSimpleTryNodeReturned()
+        {
+            var tryCmd = _scope.GetCommand("try");
+
+            var result = tryCmd.Invoke(_scope, new ListValue(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))));
+
+            result.Should().Be(Node.Try(
+                Node.Script(Node.Command(Node.Literal("print"), new ListValue())), 
+                null
+            ));
+        }
+
+        [TestCase("finally")]
+        [TestCase("Finally")]
+        [TestCase("FINALLY")]
+        public void WhenTheSecondToLastArgumentIsTheFinallyKeywordTheFinalArgumentIsIncludedAsTheFinallyBody(string finallyKeyword)
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue(finallyKeyword.ToValue())));
+
+            var result = tryCmd.Invoke(_scope, new ListValue(
+                body, Node.Literal("finally".ToValue()), finallyBody));
+
+            result.Should().Be(Node.Try(
+                body, 
+                finallyBody
+            ));
+        }
+
+        [TestCase("FinNaLY")]
+        [TestCase("finalLY")]
+        [TestCase("FInalLY")]
+        public void WhenTheLastArgumentIsTheFinallyKeywordAnErrorIsThrown(string finallyKeyword)
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue(finallyKeyword.ToValue())));
+
+            tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(
+                body, Node.Literal("finally".ToValue())))).Should()
+                .Throw<ArgError>("Expected 'finally_body' argument.");
+        }
+
+        [TestCase("except")]
+        [TestCase("ExCepT")]
+        public void WhenTheThirdArgumentBeginsWithTheExceptKeywordButIsNotFollowedByAnyOtherArgumentsAnErrorIsThrows(string exceptKeyword)
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            
+            tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(body, Node.Literal(exceptKeyword)))).Should()
+                .Throw<ArgError>().WithMessage("Expected 'error_details' argument.");
+        }
+
+        [TestCase("EXCEPT")]
+        [TestCase("excepT")]
+        public void WhenTheThirdArgumentBeginsWithTheExceptKeywordAndIsFollowedByErrorDetailsButIsNotFollowedByAnyOtherArgumentsAnErrorIsThrows(string exceptKeyword)
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            
+            tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(body, Node.Literal(exceptKeyword), Node.Literal("/error/")))).Should()
+                .Throw<ArgError>().WithMessage("Expected 'except_body' argument.");
+        }
+
+        [TestCase("EXcept")]
+        [TestCase("excePT")]
+        public void WhenTheThirdArgumentBeginsWithTheExceptKeywordAndIsFollowedByErrorDetailsExceptBodyTheCorrectTryNodeIsReturned(string exceptKeyword)
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
+
+            var result = tryCmd.Invoke(_scope, new ListValue(
+                body, Node.Literal(exceptKeyword), Node.Literal("/error/"), excepetBody));
+            
+            result.Should().Be(Node.Try(
+                body,
+                null,
+                (Node.Literal("/error/"), excepetBody)
+            ));
+        }
+
+        [Test]
+        public void MultipleExceptClausesCanBeParesed()
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
+
+            var result = tryCmd.Invoke(_scope, new ListValue(
+                body, 
+                Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
+                Node.Literal("except"), Node.Literal("/error/type"), excepetBody));
+            
+            result.Should().Be(Node.Try(
+                body,
+                null,
+                (Node.Literal("/error/arg"), excepetBody),
+                (Node.Literal("/error/type"), excepetBody)
+            ));
+        }
+
+        [Test]
+        public void ExceptClausesCanBeFollowedByAFinallyClause()
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
+            var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
+
+            var result = tryCmd.Invoke(_scope, new ListValue(
+                body, 
+                Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
+                Node.Literal("finally"), finallyBody));
+            
+            result.Should().Be(Node.Try(
+                body,
+                finallyBody,
+                (Node.Literal("/error/arg"), excepetBody)
+            ));
+        }
+
+        [Test]
+        public void AnErrorIsThrownIfAnotherValueOtherThanTheExcpetOrFinallyKeywordsAreFoundWhenOneOfTheKeywordWouldHaveBeenExpected()
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            
+            tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(body, Node.Literal("nonsense")))).Should()
+                .Throw<ArgError>().WithMessage("Unexpected 'nonsense' argument.");
+        }
+
+        [Test]
+        public void ACatchClauseCanNotComeAfterAFinallyClause()
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
+            var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
+
+            tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(
+                body, 
+                Node.Literal("finally"), finallyBody,
+                Node.Literal("except"), Node.Literal("/error/arg"), excepetBody))).Should()
+                    .Throw<ArgError>("Unexpected 'except' argument after 'finally'.");
+        }
+
+        [Test]
+        public void ATryCanOnlyHaveOneFinallyClause()
+        {
+            var tryCmd = _scope.GetCommand("try");
+            var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
+            var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
+            var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
+
+            tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(
+                body, 
+                Node.Literal("finally"), finallyBody,
+                Node.Literal("finally"), finallyBody))).Should()
+                    .Throw<ArgError>("Unexpected duplicate 'finally' argument.");
         }
     }
 
