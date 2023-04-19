@@ -12,7 +12,7 @@ public class CoreLibraryTests
     Scope _scope = null!;
 
     [SetUp]
-    public void Setup()
+    public virtual void Setup()
     {
         _lib = new CoreLibrary();
         _scope = new Scope();
@@ -28,6 +28,7 @@ public class CoreLibraryTests
         {
             _scope.Invoking(s => s.GetCommand("break")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("continue")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("def")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsdef")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsvar")).Should().NotThrow();
@@ -96,6 +97,122 @@ public class CoreLibraryTests
 
             continueCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
+        }
+    }
+
+    #endregion
+
+    #region def
+
+    [TestFixture]
+    public class DefTests : CoreLibraryTests
+    {
+        ICommand _defCommand = null!;
+
+        [Test]
+        public void WhenCalledWithNoArgumentsAnArgErrorIsThrown()
+        {
+            _defCommand.Invoking(c => c.Invoke(_scope, new ListValue()))
+                .Should().Throw<ArgError>().WithMessage("Expected 'name'.");
+        }
+
+        [Test]
+        public void WhenCalledWithOneArgumentsAnArgErrorIsThrown()
+        {
+            _defCommand.Invoking(c => c.Invoke(_scope, new ListValue(Node.Literal("test"))))
+                .Should().Throw<ArgError>().WithMessage("Expected 'body'.");
+        }
+
+        [Test]
+        public void WhenCalledWithANameAndABodyACommandDefinitionNodeIsReturned()
+        {
+            var result = _defCommand.Invoke(_scope, new ListValue(Node.Literal("test"), Node.Literal("body")));
+
+            result.Should().Be(Node.DefineCommand(
+                Node.Literal("test"), Node.Literal("body"), new ListValue(), new ListValue()));
+        }
+
+        [Test]
+        public void WhenCalledWithANameASingleArgumentNameAndABodyACommandDefinitionNodeIsReturned()
+        {
+            var result = _defCommand.Invoke(_scope, new ListValue(Node.Literal("test"), Node.Literal("name"), Node.Literal("body")));
+
+            result.Should().Be(Node.DefineCommand(
+                Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("name")), new ListValue()));
+        }
+
+        [Test]
+        public void WhenCalledWithANameASingleVariableArgumentNameAndABodyACommandDefinitionNodeWithTheVariableAsALiteralIsReturned()
+        {
+            var result = _defCommand.Invoke(_scope, new ListValue(Node.Literal("test"), Node.Variable("name"), Node.Literal("body")));
+
+            result.Should().Be(Node.DefineCommand(
+                Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("name")), new ListValue()));
+        }
+
+        [Test]
+        public void WhenCalledWithANameMultipleArgumentNamesAndABodyACommandDefinitionNodeIsReturned()
+        {
+            var result = _defCommand.Invoke(_scope, new ListValue(Node.Literal("test"), Node.Literal("a"), Node.Variable("b"), Node.Literal("body")));
+
+            result.Should().Be(Node.DefineCommand(
+                Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue()));
+        }
+
+        [Test]
+        public void WhenAnArgumentNameIsFollowedByAnEqualsKeyWordTheFollowingArgumentIsConsideredItsDefaultValueCommandDefinitionNodeIsReturned()
+        {
+            var result = _defCommand.Invoke(_scope, new ListValue(Node.Literal("test"), Node.Literal("name"), Node.Literal("="), Node.Literal("world"), Node.Literal("body")));
+
+            result.Should().Be(Node.DefineCommand(
+                Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("name")), new ListValue(Node.Literal("world"))));
+        }
+
+        [Test]
+        public void WhenTheLastArgumentNameIsFollowedByAnEqualsThenTheFunctionBodyTheLastArgumentBecomesTheRestArgument()
+        {
+            var result = _defCommand.Invoke(_scope, new ListValue(
+                Node.Literal("test"), 
+                Node.Literal("name"), Node.Literal("="), Node.Literal("world"), 
+                Node.Literal("rest"), Node.Literal("="), Node.Literal("body")));
+
+            result.Should().Be(Node.DefineCommand(
+                Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("name")), new ListValue(Node.Literal("world")), Node.Literal("rest")));
+        }
+
+        [Test]
+        public void BugThreeEqualsSignsShouldNotThrowNotThrow()
+        {
+            var result = _defCommand.Invoke(_scope, new ListValue(
+                Node.Literal("test"), 
+                Node.Literal("="), Node.Literal("="), Node.Literal("="), Node.Script()));
+
+            result.Should().Be(Node.DefineCommand(
+                Node.Literal("test"), Node.Script(), new ListValue(Node.Literal("=")), new ListValue(Node.Literal("="))));
+        }
+
+        [Test]
+        public void ARequiredArgumentCanNotFollowAOptionalArgument()
+        {
+            _defCommand.Invoking(c => c.Invoke(_scope, new ListValue(
+                Node.Literal("test"), 
+                Node.Literal("a"), Node.Literal("="), Node.Literal("1"), Node.Literal("b"), Node.Literal("c"), Node.Script()))).Should()
+                    .Throw<ArgError>().WithMessage("Argument 'b' must have a default value.");
+        }
+
+        [Test]
+        public void ARequiredArgumentCanNotBeTheLastArgumentFollowingAnOptionalArgument()
+        {
+            _defCommand.Invoking(c => c.Invoke(_scope, new ListValue(
+                Node.Literal("test"), 
+                Node.Literal("a"), Node.Literal("="), Node.Literal("1"), Node.Literal("b"), Node.Script()))).Should()
+                    .Throw<ArgError>().WithMessage("Argument 'b' must have a default value.");
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
+            _defCommand = _scope.GetCommand("def");
         }
     }
 

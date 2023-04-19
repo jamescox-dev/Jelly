@@ -200,7 +200,7 @@ public class NodeTests
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "try".ToValue(),
             "body".ToValue(), Node.Literal("body"),
-            "error_handlers".ToValue(), new ListValue(
+            "errorhandlers".ToValue(), new ListValue(
                 new ListValue(Node.Literal("/error1"), Node.Literal("errorBody1")),
                 new ListValue(Node.Literal("/error2"), Node.Literal("errorBody2"))
             ),
@@ -220,10 +220,45 @@ public class NodeTests
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "try".ToValue(),
             "body".ToValue(), Node.Literal("body"),
-            "error_handlers".ToValue(), new ListValue(
+            "errorhandlers".ToValue(), new ListValue(
                 new ListValue(Node.Literal("/error1"), Node.Literal("errorBody1")),
                 new ListValue(Node.Literal("/error2"), Node.Literal("errorBody2"))
             )
+        ));
+    }
+
+    [Test]
+    public void ADefineCommandNodeCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.DefineCommand(
+            Node.Literal("greet"), 
+            Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
+            new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue(Node.Literal(1)), Node.Literal("c"));
+        
+        node.Should().Be(new DictionaryValue(
+            Keywords.Type, Keywords.DefineCommand,
+            Keywords.Name, Node.Literal("greet"),
+            Keywords.Body, Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
+            Keywords.ArgNames, new ListValue(Node.Literal("a"), Node.Literal("b")),
+            Keywords.ArgDefaults, new ListValue(Node.Literal(1)),
+            Keywords.RestArgName, Node.Literal("c")
+        ));
+    }
+
+    [Test]
+    public void ADefineCommandNodeCanBeCreateWithoutARestParamName()
+    {
+        var node = Node.DefineCommand(
+            Node.Literal("greet"), 
+            Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
+            new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue(Node.Literal(1)));
+        
+        node.Should().Be(new DictionaryValue(
+            Keywords.Type, Keywords.DefineCommand,
+            Keywords.Name, Node.Literal("greet"),
+            Keywords.Body, Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
+            Keywords.ArgNames, new ListValue(Node.Literal("a"), Node.Literal("b")),
+            Keywords.ArgDefaults, new ListValue(Node.Literal(1))
         ));
     }
 

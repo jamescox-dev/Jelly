@@ -8,6 +8,16 @@ public class UserCommand : ICommand
 {
     public EvaluationFlags EvaluationFlags => Commands.EvaluationFlags.Arguments;
 
+    public DictionaryValue Body => _body;
+
+    public IReadOnlyCollection<string> RequiredArgumentNames => _requiredArguments;
+
+    public IReadOnlyCollection<string> OptionalArgumentNames => _optionalArguments.Select(arg => arg.Item1).ToArray();
+
+    public IReadOnlyCollection<Value> OptionalArgumentDefaultValues => _optionalArguments.Select(arg => arg.Item2).ToArray();
+
+    public string? RestArgumentName => _restArgument;
+
     readonly string[] _requiredArguments;
     readonly (string, Value)[] _optionalArguments;
     readonly string? _restArgument;
@@ -34,21 +44,18 @@ public class UserCommand : ICommand
             throw Error.Arg($"Unexpected argument '{args[_requiredArguments.Length + _optionalArguments.Length]}'.");
         }
 
-        if (args.Count > 0)
+        var i = 0;
+        foreach (var arg in _requiredArguments)
         {
-            var i = 0;
-            foreach (var arg in _requiredArguments)
-            {
-                commandScope.DefineVariable(arg, args[i++]);
-            }
-            foreach (var (arg, defaultValue) in _optionalArguments)
-            {
-                commandScope.DefineVariable(arg, i < args.Count ? args[i++] : defaultValue);
-            }
-            if (_restArgument is not null)
-            {
-                commandScope.DefineVariable(_restArgument!, new ListValue(args.Skip(i)));
-            }
+            commandScope.DefineVariable(arg, args[i++]);
+        }
+        foreach (var (arg, defaultValue) in _optionalArguments)
+        {
+            commandScope.DefineVariable(arg, i < args.Count ? args[i++] : defaultValue);
+        }
+        if (_restArgument is not null)
+        {
+            commandScope.DefineVariable(_restArgument!, new ListValue(args.Skip(i)));
         }
 
         try

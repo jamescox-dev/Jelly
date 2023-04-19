@@ -6,6 +6,8 @@ public static class Keywords
 {
     public static readonly StringValue A = new StringValue("a");
     public static readonly StringValue Args = new StringValue("args");
+    public static readonly StringValue ArgNames = new StringValue("argnames");
+    public static readonly StringValue ArgDefaults = new StringValue("argdefaults");
     public static readonly StringValue Assignment = new StringValue("assignment");
     public static readonly StringValue B = new StringValue("b");
     public static readonly StringValue BinOp = new StringValue("binop");
@@ -15,10 +17,11 @@ public static class Keywords
     public static readonly StringValue Composite = new StringValue("composite");
     public static readonly StringValue Condition = new StringValue("condition");
     public static readonly StringValue DefineVariable = new StringValue("defvariable");
+    public static readonly StringValue DefineCommand = new StringValue("defcommand");
     public static readonly StringValue Else = new StringValue("else");
     public static readonly StringValue ErrorType = new StringValue("errortype");
     public static readonly StringValue Expression = new StringValue("expression");
-    public static readonly StringValue ErrorHandlers = new StringValue("error_handlers");
+    public static readonly StringValue ErrorHandlers = new StringValue("errorhandlers");
     public static readonly StringValue Finally = new StringValue("finally");
     public static readonly StringValue If = new StringValue("if");
     public static readonly StringValue Literal = new StringValue("literal");
@@ -27,6 +30,7 @@ public static class Keywords
     public static readonly StringValue Op = new StringValue("op");
     public static readonly StringValue Parts = new StringValue("parts");
     public static readonly StringValue Raise = new StringValue("raise");
+    public static readonly StringValue RestArgName = new StringValue("restargname");
     public static readonly StringValue Scope = new StringValue("scope");
     public static readonly StringValue Script = new StringValue("script");
     public static readonly StringValue Subexpresions = new StringValue("subexpressions");

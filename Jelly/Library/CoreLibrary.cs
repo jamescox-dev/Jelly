@@ -5,6 +5,7 @@ using Jelly.Errors;
 using Jelly.Evaluator;
 using Jelly.Commands;
 using Jelly.Values;
+using System.Collections.Immutable;
 
 public class CoreLibrary : ILibrary
 {
@@ -12,7 +13,7 @@ public class CoreLibrary : ILibrary
     {
         scope.DefineCommand("break", new SimpleMacro(BreakMacro));
         scope.DefineCommand("continue", new SimpleMacro(ContinueMacro));
-        // TODO:  def name $arg1 $arg2 $optarg1=default $optarg2=default $params... { body } 
+        scope.DefineCommand("def", new SimpleMacro(DefMacro));
         // TODO:  for i = 1 to 10 {}, for i = 1 to 10 step 2 {}, for v in list {}, for i v in list, for v of dict {}, for k v of dict {}
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
         scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, TypeMarshaller.Shared));
@@ -50,6 +51,76 @@ public class CoreLibrary : ILibrary
             Node.Literal(Value.Empty),
             Node.Literal(Value.Empty)
         );
+    }
+
+    Value DefMacro(IScope scope, ListValue args)
+    {
+        if (args.Count == 0)
+        {
+            throw Error.Arg("Expected 'name'.");
+        }
+        if (args.Count == 1)
+        {
+            throw Error.Arg("Expected 'body'.");
+        }
+
+        var name = args[0].ToDictionaryValue();
+        var body = args[args.Count - 1].ToDictionaryValue();
+
+        var requireArg = true;
+        var expectDefault = false;
+        var expectEquals = false;
+        var argNames = ImmutableList.CreateBuilder<DictionaryValue>();
+        var argDefaults = ImmutableList.CreateBuilder<DictionaryValue>();
+        foreach (var arg in args.Skip(1).Take(args.Count - 2))
+        {
+            var argDict = arg.ToDictionaryValue();
+            if (expectEquals && !IsKeyword(argDict, "="))
+            {
+                throw Error.Arg($"Argument '{Evaluator.Shared.Evaluate(scope, argNames[argNames.Count - 1].ToDictionaryValue())}' must have a default value.");
+            }
+            if (argNames.Count > 0 && IsKeyword(argDict, "=") && !expectDefault && !requireArg)
+            {
+                expectDefault = true;
+                expectEquals = false;
+            }
+            else
+            {
+                if (expectDefault)
+                {
+                    argDefaults.Add(argDict);
+                    requireArg = true;
+                }
+                else
+                {
+                    argNames.Add(TryConvertVariableToLiteral(argDict));
+                    requireArg = false;
+                    expectEquals = argDefaults.Count > 0;
+                }
+                expectDefault = false;
+            }
+        }
+
+        if (expectEquals)
+        {
+            throw Error.Arg($"Argument '{Evaluator.Shared.Evaluate(scope, argNames[argNames.Count - 1].ToDictionaryValue())}' must have a default value.");
+        }
+
+        DictionaryValue? restArg = null;
+        if (expectDefault)
+        {
+            restArg = argNames[argNames.Count - 1];
+            argNames.RemoveAt(argNames.Count - 1);
+        }
+
+        return Node.DefineCommand(name, body, new ListValue(argNames.ToImmutable()), new ListValue(argDefaults.ToImmutable()), restArg);
+    }
+
+    static DictionaryValue TryConvertVariableToLiteral(Value node)
+    {
+        var nodeDict = node.ToDictionaryValue();
+
+        return Node.IsVariable(nodeDict) ? Node.Literal(nodeDict[Keywords.Name].ToString()) : nodeDict;
     }
 
     Value IfMacro(IScope scope, ListValue args)

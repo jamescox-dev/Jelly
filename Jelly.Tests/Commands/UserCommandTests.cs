@@ -8,11 +8,11 @@ using Jelly.Values;
 [TestFixture]
 public class UserCommandTests
 {
-    ICommand _userCommandNoArgs = null!;
-    ICommand _userCommand2Args = null!;
-    ICommand _userCommand2To4Args = null!;
-    ICommand _userCommandVarArgs = null!;
-    ICommand _userCommandWithReturn = null!;
+    UserCommand _userCommandNoArgs = null!;
+    UserCommand _userCommand2Args = null!;
+    UserCommand _userCommand2To4Args = null!;
+    UserCommand _userCommandVarArgs = null!;
+    UserCommand _userCommandWithReturn = null!;
 
     IEvaluator _rootEvaluator = null!;
 
@@ -84,6 +84,39 @@ public class UserCommandTests
         var result = _userCommandWithReturn.Invoke(_scope, new ListValue());
         
         result.Should().Be("retrunedValue".ToValue());
+    }
+
+    [Test]
+    public void TheBodyOfTheCommandCanBeRetrived()
+    {
+        _userCommandNoArgs.Body.Should().Be(_userCommandBody);
+    }
+
+    [Test]
+    public void TheNamesOfTheRequiredArgumentCanBeRetrived()
+    {
+        _userCommand2Args.RequiredArgumentNames.Should().Equal("a", "b");
+    }
+
+    [Test]
+    public void TheNamesOfTheOptionalArgumentCanBeRetrived()
+    {
+        _userCommand2Args.OptionalArgumentNames.Should().BeEmpty();
+        _userCommand2To4Args.OptionalArgumentNames.Should().Equal("c", "d");
+    }
+
+    [Test]
+    public void TheDefaultValuesOfTheOptionalArgumentCanBeRetrived()
+    {
+        _userCommand2Args.OptionalArgumentDefaultValues.Should().BeEmpty();
+        _userCommand2To4Args.OptionalArgumentDefaultValues.Should().Equal(3.ToValue(), 4.ToValue());
+    }
+
+    [Test]
+    public void TheNameOfTheRestArgumentCanBeRetrived()
+    {
+        _userCommandNoArgs.RestArgumentName.Should().BeNull();
+        _userCommandVarArgs.RestArgumentName.Should().Be("e");
     }
 
     [SetUp]

@@ -44,6 +44,22 @@ public static class Node
     public static DictionaryValue DefineVariable(string name, DictionaryValue value) =>
         new DictionaryValue(Keywords.Type, Keywords.DefineVariable, Keywords.Name, name.ToValue(), Keywords.Value, value);
 
+    public static DictionaryValue DefineCommand(DictionaryValue name, DictionaryValue body, ListValue argNames, ListValue argDefaults, DictionaryValue? restArgName = null) =>
+        restArgName is not null
+            ? new DictionaryValue(
+                Keywords.Type, Keywords.DefineCommand,
+                Keywords.Name, name,
+                Keywords.Body, body,
+                Keywords.ArgNames, argNames,
+                Keywords.ArgDefaults, argDefaults,
+                Keywords.RestArgName, restArgName)
+            : new DictionaryValue(
+                Keywords.Type, Keywords.DefineCommand,
+                Keywords.Name, name,
+                Keywords.Body, body,
+                Keywords.ArgNames, argNames,
+                Keywords.ArgDefaults, argDefaults);
+
     public static DictionaryValue If(DictionaryValue condition, DictionaryValue thenBody, DictionaryValue elseBody) =>
         new DictionaryValue(Keywords.Type, Keywords.If, Keywords.Condition, condition, Keywords.Then, thenBody, Keywords.Else, elseBody);
 
@@ -93,5 +109,10 @@ public static class Node
     public static Value GetLiteralValue(DictionaryValue literal)
     {
         return literal[Keywords.Value];
+    }
+
+    internal static bool IsVariable(Value n)
+    {
+        throw new NotImplementedException();
     }
 }

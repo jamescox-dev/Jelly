@@ -197,4 +197,16 @@ public class EvaluatorTests
 
         result.Should().Be("hello".ToValue());
     }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateADefineCommandNode()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var scope = new Mock<IScope>();
+        var node = Node.DefineCommand(Node.Literal("test"), Node.Literal("body"), new ListValue(), new ListValue());
+
+        evaluator.Evaluate(scope.Object, node, evaluator);
+
+        scope.Verify(m => m.DefineCommand("test", It.IsAny<ICommand>()));
+    }
 }
