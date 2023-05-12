@@ -89,6 +89,50 @@ public static class Node
                 Keywords.ErrorHandlers, errorHandlers.Select((errorHandler) =>
                     new ListValue(errorHandler.Item1, errorHandler.Item2)).ToValue());
 
+    public static DictionaryValue ForRange(DictionaryValue iteratorName, DictionaryValue start, DictionaryValue end, DictionaryValue step, DictionaryValue body) =>
+        new DictionaryValue(
+            Keywords.Type, Keywords.ForRange,
+            Keywords.It, iteratorName,
+            Keywords.Start, start,
+            Keywords.End, end,
+            Keywords.Step, step,
+            Keywords.Body, body
+        );
+
+    public static DictionaryValue ForList(DictionaryValue indexIteratorName, DictionaryValue valueIteratorName, DictionaryValue list, DictionaryValue body) =>
+        new DictionaryValue(
+            Keywords.Type, Keywords.ForList,
+            Keywords.ItIndex, indexIteratorName,
+            Keywords.ItValue, valueIteratorName,
+            Keywords.List, list,
+            Keywords.Body, body
+        );
+
+    public static DictionaryValue ForList(DictionaryValue valueIteratorName, DictionaryValue list, DictionaryValue body) =>
+        new DictionaryValue(
+            Keywords.Type, Keywords.ForList,
+            Keywords.ItValue, valueIteratorName,
+            Keywords.List, list,
+            Keywords.Body, body
+        );
+
+    public static DictionaryValue ForDict(DictionaryValue keyIteratorName, DictionaryValue valueIteratorName, DictionaryValue dict, DictionaryValue body) =>
+        new DictionaryValue(
+            Keywords.Type, Keywords.ForDict,
+            Keywords.ItKey, keyIteratorName,
+            Keywords.ItValue, valueIteratorName,
+            Keywords.Dict, dict,
+            Keywords.Body, body
+        );
+
+    public static DictionaryValue ForDict(DictionaryValue valueIteratorName, DictionaryValue dict, DictionaryValue body) =>
+        new DictionaryValue(
+            Keywords.Type, Keywords.ForDict,
+            Keywords.ItValue, valueIteratorName,
+            Keywords.Dict, dict,
+            Keywords.Body, body
+        );
+
     public static bool IsLiteral(DictionaryValue node) => IsType(node, Keywords.Literal);
 
     public static bool IsVariable(DictionaryValue node) => IsType(node, Keywords.Variable);

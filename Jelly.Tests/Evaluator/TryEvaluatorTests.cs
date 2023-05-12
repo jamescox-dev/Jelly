@@ -73,4 +73,6 @@ public class TryEvaluatorTests
 
         result.Should().Be("this should be the result".ToValue());
     }
+
+    // TODO:  Add errtype, errmessage, errpos special variables to handler bodies.
 }

@@ -263,6 +263,94 @@ public class NodeTests
     }
 
     [Test]
+    public void AForRangeNodeCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.ForRange(
+            Node.Literal("i"),
+            Node.Literal(2), 
+            Node.Literal(10), 
+            Node.Literal(2),
+            Node.Literal("body"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "forrange".ToValue(),
+            "it".ToValue(), Node.Literal("i"),
+            "start".ToValue(), Node.Literal(2),
+            "end".ToValue(), Node.Literal(10),
+            "step".ToValue(), Node.Literal(2),
+            "body".ToValue(), Node.Literal("body")
+        ));
+    }
+
+    [Test]
+    public void AForListNodeCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.ForList(
+            Node.Literal("i"),
+            Node.Literal("j"), 
+            Node.Literal(new ListValue("a".ToValue(), "b".ToValue())), 
+            Node.Literal("body"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "forlist".ToValue(),
+            "it_index".ToValue(), Node.Literal("i"),
+            "it_value".ToValue(), Node.Literal("j"),
+            "list".ToValue(), Node.Literal(new ListValue("a".ToValue(), "b".ToValue())),
+            "body".ToValue(), Node.Literal("body")
+        ));
+    }
+
+    [Test]
+    public void AForListNodeCanBeCreateWithoutAnIndexInterator()
+    {
+        var node = Node.ForList(
+            Node.Literal("j"), 
+            Node.Literal(new ListValue("a".ToValue(), "b".ToValue())), 
+            Node.Literal("body"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "forlist".ToValue(),
+            "it_value".ToValue(), Node.Literal("j"),
+            "list".ToValue(), Node.Literal(new ListValue("a".ToValue(), "b".ToValue())),
+            "body".ToValue(), Node.Literal("body")
+        ));
+    }
+
+    [Test]
+    public void AForDictNodeCanBeCreateWithTheCorrectAttributes()
+    {
+        var node = Node.ForDict(
+            Node.Literal("k"),
+            Node.Literal("v"), 
+            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            Node.Literal("body"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "fordict".ToValue(),
+            "it_key".ToValue(), Node.Literal("k"),
+            "it_value".ToValue(), Node.Literal("v"),
+            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            "body".ToValue(), Node.Literal("body")
+        ));
+    }
+
+    [Test]
+    public void AForDictNodeCanBeCreateWithoutAKeyInterator()
+    {
+        var node = Node.ForDict(
+            Node.Literal("v"), 
+            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            Node.Literal("body"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "fordict".ToValue(),
+            "it_value".ToValue(), Node.Literal("v"),
+            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            "body".ToValue(), Node.Literal("body")
+        ));
+    }
+
+    [Test]
     public void TheTypeOfANodeCanBeChecked()
     {
         var literal = Node.Literal("test".ToValue());

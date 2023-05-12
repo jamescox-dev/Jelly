@@ -5,6 +5,7 @@ using Jelly.Values;
 
 public class TestCommand : ICommand
 {
+    public int Invokations { get; set; } = 0;
     public EvaluationFlags EvaluationFlags { get; set; } = EvaluationFlags.Arguments;
     public Value ReturnValue { get; set; } = "42".ToValue();
     public IScope? ScopePassedToInvoke { get; private set; }
@@ -14,6 +15,7 @@ public class TestCommand : ICommand
     {
         ScopePassedToInvoke = scope;
         ArgsPassedToInvoke = args;
+        ++Invokations;
         return ReturnValue;
     }
 }

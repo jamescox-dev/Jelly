@@ -106,4 +106,9 @@ public class DictionaryValue : Value
     public override bool ToBool() => true;
 
     public override double ToDouble() => double.NaN;
+
+    public IEnumerable<KeyValuePair<Value, Value>> ToEnumerable()
+    {
+        return _items;
+    }
 }
