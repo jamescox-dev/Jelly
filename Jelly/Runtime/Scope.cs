@@ -1,9 +1,4 @@
-namespace Jelly;
-
-using System;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
+namespace Jelly.Runtime;
 
 public class Scope : IScope
 {

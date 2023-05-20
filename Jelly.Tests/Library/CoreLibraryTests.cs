@@ -29,6 +29,7 @@ public class CoreLibraryTests
             _scope.Invoking(s => s.GetCommand("break")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("continue")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("def")).Should().NotThrow();
+            _scope.Invoking(s => s.GetCommand("for")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsdef")).Should().NotThrow();
             _scope.Invoking(s => s.GetCommand("lsvar")).Should().NotThrow();
@@ -214,6 +215,124 @@ public class CoreLibraryTests
             base.Setup();
             _defCommand = _scope.GetCommand("def");
         }
+    }
+
+    #endregion
+
+    #region for
+
+    [TestFixture]
+    public class ForTests : CoreLibraryTests
+    {
+        [Test]
+        public void WhenCalledWithoutArgumentsAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue();
+            
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'iterator'.");
+        }
+
+        [Test]
+        public void WhenCalledWithOnlyOneArgumentAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("a"));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'iterator', or '=', 'in', or 'of' keyword.");
+        }
+
+        [Test]
+        public void WhenCalledWithTwoArgumentsAndTheSecondArgumentIsTheInKeywordArgumentAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("i"), Node.Literal("in"));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'list'.");
+        }
+
+        [Test]
+        public void WhenCalledWithTwoArgumentsAndTheSecondArgumentIsTheOfKeywordArgumentAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("i"), Node.Literal("of"));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'dict'.");
+        }
+
+        [Test]
+        public void WhenCalledWithTwoArgumentsAndTheSecondArgumentIsTheEqualsKeywordArgumentAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("i"), Node.Literal("="));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'start'.");
+        }
+
+        [Test]
+        public void WhenCalledWithThreeArgumentsAndTheSecondArgumentIsTheInKeywordAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("i"), Node.Literal("in"), Node.Literal("1 2 3"));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'body'.");
+        }
+
+        [Test]
+        public void WhenCalledWithThreeArgumentsAndTheSecondArgumentIsTheOfKeywordAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("i"), Node.Literal("of"), Node.Literal("a 1 b 2"));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Expected 'body'.");
+        }
+
+        [Test]
+        public void WhenCalledWithMoreThanFourArgumentsAndTheSecondArgumentIsTheInKeywordAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("i"), Node.Literal("in"), Node.Literal("a 1 b 2"), Node.Literal("body"), Node.Literal("Extra!"));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Unexpected 'Extra!', after 'body'.");
+        }
+
+        [Test]
+        public void WhenCalledWithWithMoreThanFourArgumentsAndTheSecondArgumentIsTheOfKeywordAnErrorIsThrown()
+        {
+            var forCmd = _scope.GetCommand("for");
+            var args = new ListValue(Node.Variable("i"), Node.Literal("of"), Node.Literal("a 1 b 2"), Node.Literal("body"), Node.Literal("Extra!"));
+
+            forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+                .Throw<ArgError>().WithMessage("Unexpected 'Extra!', after 'body'.");
+        }
+
+        // [Test]
+        // public void WhenCalledWithMoreThanFiveArgumentsAndTheThirdArgumentIsTheInKeywordAnErrorIsThrown()
+        // {
+        //     var forCmd = _scope.GetCommand("for");
+        //     var args = new ListValue(Node.Variable("i"), Node.Variable("v"), Node.Literal("in"), Node.Literal("a 1 b 2"), Node.Literal("body"), Node.Literal("Extra!"));
+
+        //     forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+        //         .Throw<ArgError>().WithMessage("Unexpected 'Extra!', after 'body'.");
+        // }
+
+        // [Test]
+        // public void WhenCalledWithWithMoreThanFiveArgumentsAndTheThirdArgumentIsTheOfKeywordAnErrorIsThrown()
+        // {
+        //     var forCmd = _scope.GetCommand("for");
+        //     var args = new ListValue(Node.Variable("k"), Node.Variable("v"), Node.Literal("of"), Node.Literal("a 1 b 2"), Node.Literal("body"), Node.Literal("Extra!"));
+
+        //     forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
+        //         .Throw<ArgError>().WithMessage("Unexpected 'Extra!', after 'body'.");
+        // }
     }
 
     #endregion

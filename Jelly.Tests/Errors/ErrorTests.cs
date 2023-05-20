@@ -31,6 +31,7 @@ public class ErrorTests
     [TestCase("/Error/PARSE", typeof(ParseError))]
     [TestCase("/error/", typeof(Error))]
     [TestCase("/error/arg/", typeof(ArgError))]
+    [TestCase("/error/arg/missing/", typeof(MissingArgError))]
     [TestCase("/error/eval/", typeof(EvalError))]
     [TestCase("/error/name/", typeof(NameError))]
     [TestCase("/error/parse/", typeof(ParseError))]
@@ -77,6 +78,14 @@ public class ErrorTests
         error.Message.Should().Be("Unexpected 'return' outside of def.");
         error.Value.Should().Be("test".ToValue());
         error.GetType().Should().Be(typeof(Return));
+    }
+
+    [Test]
+    public void AMissingArgCanBeCreatedWithMatchedArgumentsCount()
+    {
+        var error = (MissingArgError)Error.MissingArg(10);
+
+        error.MatchedArgumentCount.Should().Be(10);
     }
 
     [TestCase("/error/", "/error/", true)]

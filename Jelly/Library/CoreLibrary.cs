@@ -14,7 +14,7 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("break", new SimpleMacro(BreakMacro));
         scope.DefineCommand("continue", new SimpleMacro(ContinueMacro));
         scope.DefineCommand("def", new SimpleMacro(DefMacro));
-        // TODO:  for i = 1 to 10 {}, for i = 1 to 10 step 2 {}, for v in list {}, for i v in list, for v of dict {}, for k v of dict {}
+        scope.DefineCommand("for", new SimpleMacro(ForMacro));
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
         scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, TypeMarshaller.Shared));
         scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, TypeMarshaller.Shared));
@@ -123,6 +123,59 @@ public class CoreLibrary : ILibrary
         return Node.IsVariable(nodeDict) ? Node.Literal(nodeDict[Keywords.Name].ToString()) : nodeDict;
     }
 
+    Value ForMacro(IScope scope, ListValue args)
+    {
+        // TODO:  for i = 1 to 10 {}, for i = 1 to 10 step 2 {}, for v in list {}, for i v in list, for v of dict {}, for k v of dict {}
+
+        if (args.Count == 0)
+        {
+            throw Error.Arg("Expected 'iterator'.");
+        }
+        else if (args.Count == 1)
+        {
+            throw Error.Arg("Expected 'iterator', or '=', 'in', or 'of' keyword.");
+        }
+        else if (args.Count >= 2)
+        {
+            if (IsKeyword(args[1].ToDictionaryValue(), "in"))
+            {
+                if (args.Count == 2)
+                {
+                    throw Error.Arg("Expected 'list'.");
+                }
+                else if (args.Count == 3)
+                {
+                    throw Error.Arg("Expected 'body'.");
+                }
+                else if (args.Count > 4)
+                {
+                    throw Error.Arg($"Unexpected '{Evaluator.Shared.Evaluate(scope, args[4].ToDictionaryValue())}', after 'body'.");
+                }
+            }
+            else if (IsKeyword(args[1].ToDictionaryValue(), "of"))
+            {
+                if (args.Count == 2)
+                {
+                    throw Error.Arg("Expected 'dict'.");
+                }
+                else if (args.Count == 3)
+                {
+                    throw Error.Arg("Expected 'body'.");
+                }
+                else if (args.Count > 4)
+                {
+                    throw Error.Arg($"Unexpected '{Evaluator.Shared.Evaluate(scope, args[4].ToDictionaryValue())}', after 'body'.");
+                }
+            }
+            else if (IsKeyword(args[1].ToDictionaryValue(), "="))
+            {
+                throw Error.Arg("Expected 'start'.");
+            }
+        }
+        
+        throw new NotImplementedException();
+    }
+
     Value IfMacro(IScope scope, ListValue args)
     {
         if (args.Count == 0)
@@ -134,7 +187,7 @@ public class CoreLibrary : ILibrary
             throw Error.Arg("Expected 'then_body'.");
         }
 
-        var conditoins = new List<DictionaryValue> { args[0].ToDictionaryValue() };
+        var conditions = new List<DictionaryValue> { args[0].ToDictionaryValue() };
         var thenBodies = new List<DictionaryValue> { args[1].ToDictionaryValue() };
         DictionaryValue? elseBody = null;
 
@@ -148,7 +201,7 @@ public class CoreLibrary : ILibrary
             {
                 if (!expectElse)
                 {
-                    conditoins.Add(arg);
+                    conditions.Add(arg);
                 }
                 else
                 {
@@ -196,7 +249,7 @@ public class CoreLibrary : ILibrary
 
         DictionaryValue? ifNode = null;
 
-        foreach ((var condition, var thenBody) in conditoins.Zip(thenBodies).Reverse())
+        foreach ((var condition, var thenBody) in conditions.Zip(thenBodies).Reverse())
         {
             if (ifNode is null)
             {

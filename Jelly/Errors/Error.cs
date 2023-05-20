@@ -1,5 +1,6 @@
 namespace Jelly.Errors;
 
+using Jelly.Commands.ArgParsers;
 using Jelly.Values;
 
 public class Error : Exception
@@ -9,6 +10,7 @@ public class Error : Exception
         { "/break/", Break },
         { "/continue/", Continue },
         { "/error/arg/", Arg },
+        { "/error/arg/missing/", MissingArg },
         { "/error/eval/", Eval },
         { "/error/name/", Name },
         { "/error/parse/", Parse },
@@ -68,6 +70,15 @@ public class Error : Exception
 
     public static Error Arg(string message, Value _) => Arg(message);
 
+    public static Error MissingArg(string message) => new MissingArgError(message);
+
+    public static Error MissingArg(string message, Value _) => MissingArg(message);
+
+    public static Error MissingArg(params Expectation[] expectations) => new MissingArgError(0, expectations);
+
+    public static Error MissingArg(int matchScore, params Expectation[] expectations) => 
+        new MissingArgError(matchScore, expectations);
+
     public static Error Eval(string message) => new EvalError(message);
 
     public static Error Eval(string message, Value _) => Eval(message);
@@ -100,6 +111,32 @@ public class Error : Exception
 public class ArgError : Error
 {
     internal ArgError(string message) : base("/error/arg/", message) {}
+
+    internal ArgError(string subType, string message) : base(Error.NormalizeType($"/error/arg/{subType}"), message) {}
+}
+
+public class MissingArgError : ArgError
+{
+    public int MatchedArgumentCount { get; }
+    public IReadOnlyList<Expectation> Expectations => _expectations;
+
+    readonly Expectation[] _expectations;
+
+    internal MissingArgError(int matchScore, Expectation[] expectations) : base("missing", CreateExpectationMessage(expectations))
+    {
+        MatchedArgumentCount = matchScore;
+        _expectations = expectations;
+    }
+
+    internal MissingArgError(string message) : base("missing", message)
+    {
+        _expectations = Array.Empty<Expectation>();
+    }
+
+    static string CreateExpectationMessage(Expectation[] expectations)
+    {
+        return "";
+    }
 }
 
 public class EvalError : Error

@@ -1,7 +1,4 @@
-namespace Jelly;
-
-using Jelly.Commands;
-using Jelly.Values;
+namespace Jelly.Runtime;
 
 public interface IScope
 {
