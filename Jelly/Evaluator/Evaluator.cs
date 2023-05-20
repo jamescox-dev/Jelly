@@ -28,6 +28,11 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator(Keywords.DefineCommand.ToString(), new DefineCommandEvaluator());
     }
 
+    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    {
+        throw new NotImplementedException();
+    }
+
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         return _evaluator.Evaluate(scope, node, this);

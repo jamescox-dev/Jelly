@@ -35,6 +35,11 @@ internal class BinOpEvaluator : IEvaluator
         _bitwiseOpFuncs.Add("rshift", RightShift);
     }
 
+    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    {
+        throw new NotImplementedException();
+    }
+
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         if (_arithmaticOpFuncs.TryGetValue(node[OpKeyword].ToString(), out var arithOp))

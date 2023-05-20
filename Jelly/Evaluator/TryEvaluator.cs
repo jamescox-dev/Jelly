@@ -2,6 +2,11 @@ namespace Jelly.Evaluator;
 
 internal class TryEvaluator : IEvaluator
 {
+    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    {
+        throw new NotImplementedException();
+    }
+
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         Value result = Value.Empty;

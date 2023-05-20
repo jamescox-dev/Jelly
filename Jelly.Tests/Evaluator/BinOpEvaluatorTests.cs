@@ -1,19 +1,20 @@
 namespace Jelly.Evaluator.Tests;
 
+using Jelly.Runtime;
+
 [TestFixture]
 public class BinOpEvaluatorTests
 {
     IEvaluator _evaluator = null!;
 
-    Evaluator _rootEvaluator = null!;
-    Scope _scope = null!;
+    Environment _env = null!;
 
     [Test]
-    public void ConcatinationsCanBeEvaluated()
+    public void ConcatenationsCanBeEvaluated()
     {
         var binOp = Node.BinOp("cat", Node.Literal("jello, "), Node.Literal("world"));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = _evaluator.Evaluate(_env, binOp);
 
         result.Should().Be("jello, world".ToValue());
     }
@@ -311,8 +312,7 @@ public class BinOpEvaluatorTests
     [SetUp]
     public void Setup()
     {
-        _rootEvaluator = new Evaluator();
-        _scope = new Scope();
+        _env = new Environment();
 
         _evaluator = new BinOpEvaluator();
     }

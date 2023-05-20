@@ -5,6 +5,11 @@ internal class UnaryOpEvaluator : IEvaluator
     static readonly StringValue OpKeyword = new StringValue("op");
     static readonly StringValue AKeyword = new StringValue("a");
 
+    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    {
+        throw new NotImplementedException();
+    }
+
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         if (node[OpKeyword].ToString() == "pos")

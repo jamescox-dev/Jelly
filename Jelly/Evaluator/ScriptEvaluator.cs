@@ -6,6 +6,11 @@ internal class ScriptEvaluator : IEvaluator
 {
     static readonly StringValue CommandsKeyword = new StringValue("commands");
 
+    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    {
+        throw new NotImplementedException();
+    }
+
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
     {
         var commands = node[CommandsKeyword].ToListValue();
