@@ -1,9 +1,5 @@
 namespace Jelly.Values;
 
-using Jelly.Errors;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-
 public abstract class Value : IEquatable<Value>, IComparable<Value>
 {
     public static readonly Value Empty = new StringValue(string.Empty);

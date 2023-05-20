@@ -1,10 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 internal class DefineCommandEvaluator : IEvaluator
 {
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
@@ -14,7 +9,7 @@ internal class DefineCommandEvaluator : IEvaluator
         var uniqueArgNames = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
         var argNames = node[Keywords.ArgNames].ToListValue();
         var argDefaults = node[Keywords.ArgDefaults].ToListValue();
-        
+
         var requiredArgs = new List<string>();
         foreach (var argName in argNames.Take<Value>(argNames.Count - argDefaults.Count))
         {

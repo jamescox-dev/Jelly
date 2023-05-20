@@ -1,8 +1,5 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class NodeEvaluatorTests
 {
@@ -27,7 +24,7 @@ public class NodeEvaluatorTests
 
         var test1result = interpreter.Evaluate(scope, test1Node, anotherInterpreter);
         var test2result = interpreter.Evaluate(scope, test2Node, anotherInterpreter);
-        
+
         test1result.Should().Be(new StringValue("hi"));
         test1Interpreter.ScopePassedToEvaluate.Should().Be(scope);
         test1Interpreter.NodeEvaluated.Should().Be(test1Node);

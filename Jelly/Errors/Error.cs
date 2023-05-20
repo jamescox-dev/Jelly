@@ -1,8 +1,5 @@
 namespace Jelly.Errors;
 
-using Jelly.Commands.ArgParsers;
-using Jelly.Values;
-
 public class Error : Exception
 {
     static readonly SortedDictionary<string, Func<string, Value, Error>> ErrorConstructors = new(StringComparer.InvariantCultureIgnoreCase)
@@ -14,7 +11,7 @@ public class Error : Exception
         { "/error/eval/", Eval },
         { "/error/name/", Name },
         { "/error/parse/", Parse },
-        { "/error/parse/missing/end_token/", MissingEndToken }, 
+        { "/error/parse/missing/end_token/", MissingEndToken },
         { "/error/type/", BuildType },
         { "/error/value/", BuildValue },
         { "/return/", Return },
@@ -61,7 +58,7 @@ public class Error : Exception
     public static Error Break() => new Break();
 
     public static Error Break(string _, Value __) => Break();
-    
+
     public static Error Continue() => new Continue();
 
     public static Error Continue(string _, Value __) => Continue();
@@ -76,7 +73,7 @@ public class Error : Exception
 
     public static Error MissingArg(params Expectation[] expectations) => new MissingArgError(0, expectations);
 
-    public static Error MissingArg(int matchScore, params Expectation[] expectations) => 
+    public static Error MissingArg(int matchScore, params Expectation[] expectations) =>
         new MissingArgError(matchScore, expectations);
 
     public static Error Eval(string message) => new EvalError(message);
@@ -104,7 +101,7 @@ public class Error : Exception
     public static Error BuildType(string message, Value _) => BuildType(message);
 
     public static Error Return(string _) => new Return();
-    
+
     public static Error Return(string _, Value value) => new Return(value);
 }
 

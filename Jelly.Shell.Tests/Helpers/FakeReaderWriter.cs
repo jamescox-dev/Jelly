@@ -1,7 +1,5 @@
 namespace Jelly.Shell.Tests.Helpers;
 
-using Jelly.Shell.Io;
-
 public class FakeReaderWriter : IReader, IWriter, IHistoryManager
 {
     readonly Queue<string> _queuedLines = new();
@@ -15,14 +13,14 @@ public class FakeReaderWriter : IReader, IWriter, IHistoryManager
     public string ReadLine()
     {
         var line = _queuedLines.Dequeue();
-        
+
         IoOps.Add(new ReadLineOp(line));
-        
+
         return line;
     }
 
     public void WriteLine(string output) => IoOps.Add(new WriteLineOp(output));
-    
+
     public void Write(string output) => IoOps.Add(new WriteOp(output));
 
     public bool IoOpsContains(params IoOp[] expected)
@@ -40,10 +38,10 @@ public class FakeReaderWriter : IReader, IWriter, IHistoryManager
         return false;
     }
 
-    public void VerifyIoOpsContains(params IoOp[] expected) => 
+    public void VerifyIoOpsContains(params IoOp[] expected) =>
         IoOpsContains(expected).Should().BeTrue();
-    
-    public void VerifyIoOpsDoesNotContain(params IoOp[] expected) => 
+
+    public void VerifyIoOpsDoesNotContain(params IoOp[] expected) =>
         IoOpsContains(expected).Should().BeFalse();
 
     public void AddHistory(string command)
@@ -64,11 +62,11 @@ public class FakeReaderWriter : IReader, IWriter, IHistoryManager
 
 public abstract record class IoOp(string Data) {}
 
-public record class ReadLineOp(string Data) : IoOp(Data) {} 
+public record class ReadLineOp(string Data) : IoOp(Data) {}
 
-public record class WriteLineOp(string Data) : IoOp(Data) {} 
+public record class WriteLineOp(string Data) : IoOp(Data) {}
 
-public record class WriteOp(string Data) : IoOp(Data) {} 
+public record class WriteOp(string Data) : IoOp(Data) {}
 
 public record class LoadHistoryOp() : IoOp("") {}
 

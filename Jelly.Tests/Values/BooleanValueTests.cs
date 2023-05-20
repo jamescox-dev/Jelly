@@ -1,7 +1,5 @@
 namespace Jelly.Values.Tests;
 
-using Jelly.Values;
-
 [TestFixture]
 public class BooleanValueTests
 {

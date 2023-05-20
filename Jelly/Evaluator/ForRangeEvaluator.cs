@@ -1,9 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Values;
-
 public class ForRangeEvaluator : IEvaluator
 {
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
@@ -18,7 +14,7 @@ public class ForRangeEvaluator : IEvaluator
         {
             throw Error.Arg("step can not be zero.");
         }
-        
+
         var result = Value.Empty;
         if (step < 0)
         {
@@ -46,7 +42,7 @@ public class ForRangeEvaluator : IEvaluator
             }
             return result;
         }
-        
+
         if (start > end)
         {
             throw Error.Arg("step must be negative when start is greater than end.");

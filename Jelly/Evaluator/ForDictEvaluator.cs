@@ -1,9 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Values;
-
 public class ForDictEvaluator : IEvaluator
 {
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)

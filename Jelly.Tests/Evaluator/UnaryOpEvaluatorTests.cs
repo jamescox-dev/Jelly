@@ -1,15 +1,10 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class UnaryOpEvaluatorTests
 {
     IEvaluator _evaluator = null!;
-    
+
     Evaluator _rootEvaluator = null!;
     Scope _scope = null!;
 

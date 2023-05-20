@@ -1,7 +1,5 @@
 namespace Jelly.Parser.Scanning;
 
-using Jelly.Ast;
-
 public interface IScannerConfig
 {
     IReadOnlySet<char> ListItemSeparators { get; }
@@ -39,7 +37,7 @@ public interface IScannerConfig
     char ScriptEnd { get; }
 
     char ExpressionBegin { get; }
-    
+
     char ExpressionEnd { get; }
 
     IReadOnlySet<char> Quotes { get; }

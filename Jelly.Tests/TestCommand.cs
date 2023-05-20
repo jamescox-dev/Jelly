@@ -1,8 +1,5 @@
 namespace Jelly.Tests;
 
-using Jelly.Commands;
-using Jelly.Values;
-
 public class TestCommand : ICommand
 {
     public int Invokations { get; set; } = 0;

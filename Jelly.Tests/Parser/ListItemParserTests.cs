@@ -1,10 +1,5 @@
 namespace Jelly.Parser.Tests;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
-
 [TestFixture]
 public class ListItemParserTests
 {
@@ -13,7 +8,7 @@ public class ListItemParserTests
     {
         var parser = new ListItemParser();
         var scanner = new Scanner("jelly");
-    
+
         var node = parser.Parse(scanner);
 
         node.Should().Be("jelly".ToValue());

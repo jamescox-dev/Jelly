@@ -1,3 +1,13 @@
 global using NUnit.Framework;
 global using FluentAssertions;
 global using Moq;
+global using Jelly.Ast;
+global using Jelly.Errors;
+global using Jelly.Evaluator;
+global using Jelly.Library;
+global using Jelly.Parser;
+global using Jelly.Parser.Scanning;
+global using Jelly.Runtime;
+global using Jelly.Shell.Io;
+global using Jelly.Shell.Tests.Helpers;
+global using Jelly.Values;

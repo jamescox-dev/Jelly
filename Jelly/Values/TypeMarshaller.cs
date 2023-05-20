@@ -1,6 +1,5 @@
 namespace Jelly.Values;
 
-using Jelly.Errors;
 using System.Collections;
 
 public class TypeMarshaller : ITypeMarshaller
@@ -31,7 +30,7 @@ public class TypeMarshaller : ITypeMarshaller
         }
         if (clrValue is IDictionary dictionaryValue)
         {
-            return new DictionaryValue(dictionaryValue.Keys.Cast<object>().Select(k => 
+            return new DictionaryValue(dictionaryValue.Keys.Cast<object>().Select(k =>
                 new KeyValuePair<Value, Value>(Marshal(k), Marshal(dictionaryValue[k]))));
         }
         if (clrValue is IEnumerable enumerableValue)

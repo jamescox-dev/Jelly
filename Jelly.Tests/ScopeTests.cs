@@ -1,9 +1,5 @@
 namespace Jelly.Tests;
 
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class ScopeTests
 {
@@ -48,7 +44,7 @@ public class ScopeTests
 
         scope.DefineVariable("name", "Vic".ToValue());
         scope.SetVariable("name", "Bob".ToValue());
-        
+
         var value = scope.GetVariable("name");
 
         value.Should().Be("Bob".ToValue());
@@ -62,7 +58,7 @@ public class ScopeTests
         scope.Invoking(s => s.GetVariable("unknown")).Should()
             .Throw<NameError>().WithMessage("Variable 'unknown' not defined.");
     }
-    
+
     [Test]
     public void TryingToSetAVariableThatDoesNotExistsThrowsAnError()
     {
@@ -98,7 +94,7 @@ public class ScopeTests
 
         commands.Should().BeEquivalentTo(new[] { "test1", "test2", "test3" });
     }
-    
+
     [Test]
     public void ACommandCanBeDefinedInAScopeAndRetrievedByItsName()
     {
@@ -218,7 +214,7 @@ public class ScopeTests
     public void AScopeCanBeDefinedWithAnOuterScope()
     {
         var outer = new Scope();
-        
+
         var scope = new Scope(outer);
 
         scope.OuterScope.Should().Be(outer);

@@ -1,7 +1,5 @@
 namespace Jelly.Parser.Scanning;
 
-using Jelly.Ast;
-
 public class ScannerConfig : IScannerConfig
 {
     public static readonly IScannerConfig Default = new ScannerConfig();
@@ -23,25 +21,25 @@ public class ScannerConfig : IScannerConfig
         { 't', '\t' }, { 'T', '\t' },
         { 'v', '\v' }, { 'V', '\v' },
     };
-    
-    static readonly HashSet<char> _listItemSeparators = new() { ' ', '\t', '\n', '\r' }; 
 
-    static readonly HashSet<char> _commandSeparators = new() { '\n', ';' }; 
+    static readonly HashSet<char> _listItemSeparators = new() { ' ', '\t', '\n', '\r' };
 
-    static readonly HashSet<char> _wordSeparators = new() { ' ', '\t', '\r' }; 
+    static readonly HashSet<char> _commandSeparators = new() { '\n', ';' };
+
+    static readonly HashSet<char> _wordSeparators = new() { ' ', '\t', '\r' };
 
     static readonly HashSet<char> _quotes = new() { '\'', '"' };
 
     static readonly Dictionary<string, Operator> _operators = new(StringComparer.InvariantCultureIgnoreCase)
     {
         { "or", Operator.Or }, { "orelse", Operator.OrElse }, { "and", Operator.And }, { "andthen", Operator.AndThen }, { "not", Operator.Not },
-        { "<", Operator.LessThan }, { "<=", Operator.LessThanOrEqual }, 
-        { "=", Operator.Equal }, 
-        { ">=", Operator.GreaterThanOrEqual }, { ">", Operator.GreaterThan }, 
+        { "<", Operator.LessThan }, { "<=", Operator.LessThanOrEqual },
+        { "=", Operator.Equal },
+        { ">=", Operator.GreaterThanOrEqual }, { ">", Operator.GreaterThan },
         { "<>", Operator.NotEqual },
         { "|", Operator.BitwiseOr }, { "^", Operator.BitwiseXor }, { "&", Operator.BitwiseAnd },
         { "<<", Operator.BitshiftLeft }, { ">>", Operator.BitshiftRight },
-        { "+", Operator.Add }, { "-", Operator.Subtract }, { "++", Operator.Concatinate }, 
+        { "+", Operator.Add }, { "-", Operator.Subtract }, { "++", Operator.Concatinate },
         { "*", Operator.Multiply }, {"/", Operator.Divide }, {"//", Operator.FloorDivide }, {"%", Operator.Modulo }, {"%%", Operator.FloorModulo },
         { "~", Operator.BitwiseNot },
         { "**", Operator.Exponent },

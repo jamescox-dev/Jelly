@@ -1,13 +1,10 @@
 namespace Jelly.Evaluator.Test;
 
-using Jelly.Ast;
-using Jelly.Values;
-
 [TestFixture]
 public class IfEvaluatorTest
 {
     IfEvaluator _evaluator = null!;
-    
+
     Scope _scope = null!;
     Evaluator _rootEvaluator = null!;
 
@@ -40,7 +37,7 @@ public class IfEvaluatorTest
     public void TheElseBodyOfAnIfNodeIsEvaluatedIfTheConditionEvaluatesToFalseAndTheResultOfTheElseBodyIsReturned()
     {
         var ifNode = Node.If(
-            Node.Literal(false), 
+            Node.Literal(false),
             Node.Command(Node.Literal("test1"), new ListValue()),
             Node.Command(Node.Literal("test2"), new ListValue()));
 

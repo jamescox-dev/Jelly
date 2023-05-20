@@ -1,8 +1,5 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Ast;
-using Jelly.Values;
-
 [TestFixture]
 public class WhileEvaluatorTests
 {
@@ -29,7 +26,7 @@ public class WhileEvaluatorTests
         var whileNode = Node.While(
             Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())),
             Node.Script(Node.Command(Node.Literal("body".ToValue()), new ListValue())));
-        
+
         var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
 
         bodyCmd.CallCount.Should().Be(3);
@@ -44,9 +41,9 @@ public class WhileEvaluatorTests
         _scope.DefineCommand("cond", condCmd);
         _scope.DefineCommand("body", bodyCmd);
         var whileNode = Node.While(
-            Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())), 
+            Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())),
             Node.Script(Node.Command(Node.Literal("body".ToValue()), new ListValue())));
-        
+
         var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
 
         bodyCmd.CallCount.Should().Be(0);
@@ -64,14 +61,14 @@ public class WhileEvaluatorTests
             Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())),
             Node.Script(
                 Node.Raise(
-                    Node.Literal("/break/"), 
-                    Node.Literal(Value.Empty), 
+                    Node.Literal("/break/"),
+                    Node.Literal(Value.Empty),
                     Node.Literal(Value.Empty)
                 ),
                 Node.Script(Node.Command(Node.Literal("body".ToValue()), new ListValue()))
             )
         );
-        
+
         var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
 
         bodyCmd.CallCount.Should().Be(0);
@@ -91,17 +88,17 @@ public class WhileEvaluatorTests
             Node.Script(
                 Node.Assignment("count", Node.BinOp("add", Node.Variable("count"), Node.Literal(1))),
                 Node.If(
-                    Node.BinOp("lte", Node.Variable("count"), Node.Literal(2)), 
+                    Node.BinOp("lte", Node.Variable("count"), Node.Literal(2)),
                     Node.Raise(
-                        Node.Literal("/continue/"), 
-                        Node.Literal(Value.Empty), 
+                        Node.Literal("/continue/"),
+                        Node.Literal(Value.Empty),
                         Node.Literal(Value.Empty)
                     )
                 ),
                 Node.Command(Node.Literal("body".ToValue()), new ListValue())
             )
         );
-        
+
         var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
 
         bodyCmd.CallCount.Should().Be(1);

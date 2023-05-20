@@ -1,11 +1,6 @@
 namespace Jelly.Runtime.Tests;
 
-using Jelly.Ast;
-using Jelly.Errors;
 using Jelly.Evaluator;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
 
 [TestFixture]
 public class EnvironmentTests
@@ -35,7 +30,7 @@ public class EnvironmentTests
     {
         var env = new Environment();
 
-        env.Parser.Should().BeOfType<ScriptParser>();   
+        env.Parser.Should().BeOfType<ScriptParser>();
     }
 
     [Test]
@@ -109,7 +104,7 @@ public class EnvironmentTests
         _mockEvaluator = new();
 
         _environment = new Environment(_mockParser.Object, _mockEvaluator.Object);
-    
+
         _mockParser.Setup(m => m.Parse(It.Is<Scanner>(s => s.Source == "test"))).Returns(_testNode);
 
         _mockEvaluator.Setup(m => m.Evaluate(_environment.GlobalScope, _testNode, _mockEvaluator.Object))

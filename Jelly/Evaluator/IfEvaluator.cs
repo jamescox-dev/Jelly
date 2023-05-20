@@ -1,8 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Ast;
-using Jelly.Values;
-
 internal class IfEvaluator : IEvaluator
 {
     public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)

@@ -7,14 +7,14 @@ using System.Text;
 public class DictionaryValue : Value
 {
     ImmutableSortedDictionary<Value, Value> _items;
-    
+
     public DictionaryValue()
     {
         _items = ImmutableSortedDictionary<Value, Value>.Empty;
     }
 
     public DictionaryValue(params Value[] list) : this((IEnumerable<Value>)list)
-    {   
+    {
     }
 
     public DictionaryValue(IEnumerable<Value> list)
@@ -28,7 +28,7 @@ public class DictionaryValue : Value
             {
                 key = item;
             }
-            else 
+            else
             {
                 items.Add(key, item);
                 key = null;

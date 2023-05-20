@@ -7,7 +7,7 @@ public interface IScope
     IEnumerable<string> GetVariableNames(bool localOnly = false);
 
     void DefineVariable(string name, Value initialValue);
-    
+
     Value GetVariable(string name);
 
     void SetVariable(string name, Value value);

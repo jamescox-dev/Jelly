@@ -1,7 +1,5 @@
 namespace Jelly.Commands;
 
-using Jelly.Values;
-
 public class SimpleCommand : ICommand
 {
     public delegate Value CommandDelegate(IScope scope, ListValue args);
@@ -10,7 +8,7 @@ public class SimpleCommand : ICommand
 
     readonly CommandDelegate _command;
 
-    public SimpleCommand(CommandDelegate command) 
+    public SimpleCommand(CommandDelegate command)
     {
         _command = command;
     }

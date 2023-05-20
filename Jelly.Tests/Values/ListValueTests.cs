@@ -1,9 +1,5 @@
 namespace Jelly.Values.Tests;
 
-using Jelly.Values;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-
 [TestFixture]
 public class ListValueTests
 {
@@ -106,7 +102,7 @@ public class ListValueTests
         var b = list.ToBool();
 
         b.Should().BeTrue();
-    }    
+    }
 
     [TestCase("0", 0.0)]
     [TestCase("false", 0.0)]
@@ -132,5 +128,5 @@ public class ListValueTests
         var d = list.ToDouble();
 
         double.IsNaN(d).Should().BeTrue();
-    }   
+    }
 }

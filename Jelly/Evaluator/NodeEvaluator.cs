@@ -1,8 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Errors;
-using Jelly.Values;
-
 internal class NodeEvaluator : IEvaluator
 {
     static readonly StringValue TypeKey = new StringValue("type");

@@ -1,8 +1,5 @@
 namespace Jelly.Commands;
 
-using Jelly.Errors;
-using Jelly.Values;
-
 public class WrappedCommand : ICommand
 {
     readonly ITypeMarshaller _typeMashaller;
@@ -21,7 +18,7 @@ public class WrappedCommand : ICommand
     {
         _wrappedDelegate = wrappedDelegate;
         _typeMashaller = typeMarshaller;
-        
+
         var argumentTypes = new List<Type>();
         var argumentNames = new List<string>();
         var optionalArgumentDefaultValues = new List<object?>();
@@ -101,7 +98,7 @@ public class WrappedCommand : ICommand
         {
             var extraCount = args.Count - _maxArgumentCount;
             var extraParams = Array.CreateInstance(_paramsType, extraCount);
-        
+
             for (var j = 0; j < extraCount; ++j)
             {
                 extraParams.SetValue(_typeMashaller.Marshal(args[i], _paramsType), j);

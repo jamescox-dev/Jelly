@@ -1,12 +1,10 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Ast;
-using Jelly.Values;
-
 public class Evaluator : IEvaluator
 {
     readonly NodeEvaluator _evaluator;
 
+    // TODO:  Remove this.
     public static readonly IEvaluator Shared = new Evaluator();
 
     public Evaluator()

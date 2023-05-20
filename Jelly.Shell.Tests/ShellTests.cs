@@ -1,15 +1,5 @@
 namespace Jelly.Shell.Tests;
 
-using Jelly.Errors;
-using Jelly.Evaluator;
-using Jelly.Library;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
-using Jelly.Shell.Tests.Helpers;
-using Jelly.Ast;
-using System.Reflection;
-
 [TestFixture]
 public class ShellTests
 {
@@ -58,7 +48,7 @@ public class ShellTests
         _shell.Repl();
 
         _fakeReaderWriter.VerifyIoOpsContains(
-            new WriteOp("> "), 
+            new WriteOp("> "),
             new ReadLineOp("print jello, world")
         );
     }
@@ -146,10 +136,10 @@ public class ShellTests
         _shell.Repl();
 
         _fakeReaderWriter.VerifyIoOpsContains(
-            new WriteOp("> "), 
+            new WriteOp("> "),
             new ReadLineOp("print jello, world"),
             new WriteLineOp("the result!"),
-            new WriteOp("> "), 
+            new WriteOp("> "),
             new ReadLineOp("print jello, world"),
             new WriteLineOp("the result!")
         );
@@ -196,13 +186,13 @@ public class ShellTests
     {
         _fakeReaderWriter.EnqueueInput("print 'jello,");
         _fakeReaderWriter.EnqueueInput("world'");
-        
+
         _shell.Repl();
 
         _fakeReaderWriter.VerifyIoOpsContains(
-            new WriteOp("> "), 
+            new WriteOp("> "),
             new ReadLineOp("print 'jello,"),
-            new WriteOp(". "), 
+            new WriteOp(". "),
             new ReadLineOp("world'"),
             new WriteLineOp("the result!")
         );
@@ -245,7 +235,7 @@ public class ShellTests
     {
         _mockEvaluator.Setup(m => m.Evaluate(It.IsAny<IScope>(), It.IsAny<DictionaryValue>()))
             .Throws(Error.Name("Unknown variable!"));
-        
+
         var result = _shell.RunScript("print jello, world");
 
         result.Should().Be(-1);

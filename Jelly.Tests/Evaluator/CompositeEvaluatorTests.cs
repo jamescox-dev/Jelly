@@ -1,8 +1,5 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Ast;
-using Jelly.Values;
-
 [TestFixture]
 public class CompositeEvaluatorTests
 {

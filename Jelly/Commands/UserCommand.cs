@@ -1,8 +1,6 @@
 namespace Jelly.Commands;
 
-using Jelly.Errors;
 using Jelly.Evaluator;
-using Jelly.Values;
 
 public class UserCommand : ICommand
 {

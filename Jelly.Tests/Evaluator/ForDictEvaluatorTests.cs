@@ -1,10 +1,5 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class ForDictEvaluatorTests
 {
@@ -101,8 +96,8 @@ public class ForDictEvaluatorTests
         var body = Node.Script(
             Node.Command(Node.Literal("test"), new ListValue()),
             Node.Raise(
-                Node.Literal("/break/"), 
-                Node.Literal(Value.Empty), 
+                Node.Literal("/break/"),
+                Node.Literal(Value.Empty),
                 Node.Literal(Value.Empty)
             ),
             Node.Command(Node.Literal("test"), new ListValue())
@@ -122,8 +117,8 @@ public class ForDictEvaluatorTests
         var body = Node.Script(
             Node.Command(Node.Literal("record"), new ListValue(Node.Variable("k"))),
             Node.Raise(
-                Node.Literal("/continue/"), 
-                Node.Literal(Value.Empty), 
+                Node.Literal("/continue/"),
+                Node.Literal(Value.Empty),
                 Node.Literal(Value.Empty)
             ),
             Node.Command(Node.Literal("test"), new ListValue())
@@ -144,12 +139,12 @@ public class ForDictEvaluatorTests
         _recoredValues = new();
         _testCommand = new TestCommand();
         _testCommand.ReturnValue = "Result!".ToValue();
-        _recordCommand = new SimpleCommand((scope, args) => { 
+        _recordCommand = new SimpleCommand((scope, args) => {
             if (args.Count == 1)
             {
-                _recoredValues.Add(args[0]); 
+                _recoredValues.Add(args[0]);
             }
-            return Value.Empty; 
+            return Value.Empty;
         });
         _scope.DefineCommand("test", _testCommand);
         _scope.DefineCommand("record", _recordCommand);

@@ -1,15 +1,10 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class BinOpEvaluatorTests
 {
     IEvaluator _evaluator = null!;
-    
+
     Evaluator _rootEvaluator = null!;
     Scope _scope = null!;
 
@@ -226,8 +221,8 @@ public class BinOpEvaluatorTests
         _scope.DefineCommand("a", new SimpleCommand((scope, args) => BooleanValue.False));
         _scope.DefineCommand("b", new SimpleCommand((scope, args) => { evaluated = true; return BooleanValue.True; }));
         var binOp = Node.BinOp(
-            "andthen", 
-            Node.Command(Node.Literal("a"), new ListValue()), 
+            "andthen",
+            Node.Command(Node.Literal("a"), new ListValue()),
             Node.Command(Node.Literal("b"), new ListValue()));
 
         var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
@@ -257,8 +252,8 @@ public class BinOpEvaluatorTests
         _scope.DefineCommand("a", new SimpleCommand((scope, args) => BooleanValue.True));
         _scope.DefineCommand("b", new SimpleCommand((scope, args) => { evaluated = true; return BooleanValue.False; }));
         var binOp = Node.BinOp(
-            "orelse", 
-            Node.Command(Node.Literal("a"), new ListValue()), 
+            "orelse",
+            Node.Command(Node.Literal("a"), new ListValue()),
             Node.Command(Node.Literal("b"), new ListValue()));
 
         var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);

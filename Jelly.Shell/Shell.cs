@@ -1,14 +1,5 @@
 ﻿namespace Jelly.Shell;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Evaluator;
-using Jelly.Library;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-using Jelly.Shell.Io;
-using Jelly.Values;
-
 public class Shell
 {
     readonly IReader _reader;
@@ -19,7 +10,7 @@ public class Shell
     readonly IEnumerable<ILibrary> _libraries;
     readonly ShellConfig _config;
     readonly IHistoryManager _historyManager;
-    
+
     public Shell(IReader reader, IWriter writer, IScope globalScope, IParser parser, IEvaluator evaluator, IEnumerable<ILibrary> libraries, ShellConfig config, IHistoryManager historyManager)
     {
         _reader = reader;

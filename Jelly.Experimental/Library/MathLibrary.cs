@@ -1,12 +1,6 @@
 namespace Jelly.Experimental;
 
-using Jelly;
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
 using Jelly.Evaluator;
-using Jelly.Library;
-using Jelly.Values;
 
 public class MathLibrary : ILibrary
 {

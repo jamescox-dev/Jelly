@@ -1,9 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class RaiseEvaluatorTests
 {

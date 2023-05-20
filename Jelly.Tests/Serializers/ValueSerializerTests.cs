@@ -1,9 +1,6 @@
 namespace Jelly.Serializers.Tests;
 
 using Jelly.Evaluator;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
 
 public class ValueSerializerTests
 {
@@ -45,7 +42,7 @@ public class ValueSerializerTests
         var evaluator = new Evaluator();
 
         var escapedValue = ValueSerializer.Escape(stringValue);
-        
+
         evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!, evaluator).ToString().Should().Be(stringValue, $"escapedValue = {escapedValue}");
     }
 
@@ -57,7 +54,7 @@ public class ValueSerializerTests
     public void ValuesShouldBeEsscapedWithBackSlashIfTheyOnlyContainOneNonWhitespaceSpecialCharacter(string stringValue, string expectedEscape, bool shouldMatch)
     {
         var escapedValue = ValueSerializer.Escape(stringValue);
-        
+
         if (shouldMatch)
         {
             escapedValue.Should().Be(expectedEscape);

@@ -1,7 +1,5 @@
 namespace Jelly.Commands.Tests;
 
-using Jelly.Values;
-
 [TestFixture]
 public class SimpleMacroTests
 {

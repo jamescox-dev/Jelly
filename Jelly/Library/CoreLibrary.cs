@@ -1,10 +1,7 @@
 namespace Jelly.Library;
 
-using Jelly.Ast;
-using Jelly.Errors;
 using Jelly.Evaluator;
-using Jelly.Commands;
-using Jelly.Values;
+
 using System.Collections.Immutable;
 
 public class CoreLibrary : ILibrary
@@ -172,7 +169,7 @@ public class CoreLibrary : ILibrary
                 throw Error.Arg("Expected 'start'.");
             }
         }
-        
+
         throw new NotImplementedException();
     }
 
@@ -273,7 +270,7 @@ public class CoreLibrary : ILibrary
 
     static bool IsKeyword(DictionaryValue word, string keyword)
     {
-        return Node.IsLiteral(word) 
+        return Node.IsLiteral(word)
             && Node.GetLiteralValue(word).ToString()
                 .Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
     }
@@ -304,7 +301,7 @@ public class CoreLibrary : ILibrary
         var type = args[0].ToDictionaryValue();
         var message = args.Count > 1 ? args[1].ToDictionaryValue() : Node.Literal(Value.Empty);
         var value = args.Count > 2 ? args[2].ToDictionaryValue() : Node.Literal(Value.Empty);
-        
+
         return Node.Raise(type, message, value);
     }
 

@@ -1,7 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Values;
-
 internal class VariableEvaluator : IEvaluator
 {
     static readonly StringValue NameKey = new("name");

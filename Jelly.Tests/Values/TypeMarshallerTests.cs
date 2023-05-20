@@ -1,7 +1,5 @@
 namespace Jelly.Values.Tests;
 
-using Jelly.Errors;
-
 [TestFixture]
 public class TypeMarshallerTests
 {
@@ -41,18 +39,18 @@ public class TypeMarshallerTests
 
         jellyValue.GetType().Should().Be(typeof(ListValue));
         jellyValue.Should().Be(new ListValue(
-            Value.Empty, 
-            NumberValue.One, 
-            BooleanValue.True, 
-            NumberValue.One, 
-            "hi".ToValue(), 
+            Value.Empty,
+            NumberValue.One,
+            BooleanValue.True,
+            NumberValue.One,
+            "hi".ToValue(),
             new ListValue("bye".ToValue())));
     }
 
     [Test]
     public void IfAClrTypeIsADictionaryAJellyDictionaryValueIsReturnedWithEachOfItsKeyValueParisMarshelledToJellyValues()
     {
-        var clrValue = new Dictionary<object, object?> 
+        var clrValue = new Dictionary<object, object?>
         {
             { 1, 2.0 },
             { true, "false" },

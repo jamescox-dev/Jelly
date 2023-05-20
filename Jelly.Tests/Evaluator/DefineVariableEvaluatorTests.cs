@@ -1,8 +1,8 @@
 namespace Jelly.Evaluator.Test;
 
 using Jelly;
-using Jelly.Ast;
-using Jelly.Values;
+
+
 
 [TestFixture]
 public class DefineVariableEvaluatorTests

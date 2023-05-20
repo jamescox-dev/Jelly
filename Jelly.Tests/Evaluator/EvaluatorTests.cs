@@ -1,10 +1,5 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class EvaluatorTests
 {
@@ -15,7 +10,7 @@ public class EvaluatorTests
         var node = Node.Literal("Hi".ToValue());
 
         var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
-        
+
         result.Should().Be("Hi".ToValue());
     }
 
@@ -26,7 +21,7 @@ public class EvaluatorTests
         var node = Node.Composite(Node.Literal("Hi".ToValue()));
 
         var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
-        
+
         result.Should().Be("Hi".ToValue());
     }
 
@@ -37,9 +32,9 @@ public class EvaluatorTests
         Mock<IScope> scope = new Mock<IScope>();
         scope.Setup(m => m.GetVariable("Name")).Returns("Bill".ToValue());
         var node = Node.Variable("Name");
-        
+
         var result = evaluator.Evaluate(scope.Object, node);
-        
+
         result.Should().Be("Bill".ToValue());
     }
 
@@ -52,9 +47,9 @@ public class EvaluatorTests
         command.SetupGet(m => m.EvaluationFlags).Returns(EvaluationFlags.Arguments);
         scope.Setup(m => m.GetCommand("Foo")).Returns(command.Object);
         var node = Node.Command(Node.Literal("Foo".ToValue()), new ListValue());
-        
+
         var result = evaluator.Evaluate(scope.Object, node);
-        
+
         command.Verify(m => m.Invoke(scope.Object, new ListValue()), Times.Once);
     }
 

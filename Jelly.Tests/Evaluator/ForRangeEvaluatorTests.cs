@@ -1,10 +1,5 @@
 namespace Jelly.Evaluator.Tests;
 
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class ForRangeEvaluatorTests
 {
@@ -102,8 +97,8 @@ public class ForRangeEvaluatorTests
         var body = Node.Script(
             Node.Command(Node.Literal("test"), new ListValue()),
             Node.Raise(
-                Node.Literal("/break/"), 
-                Node.Literal(Value.Empty), 
+                Node.Literal("/break/"),
+                Node.Literal(Value.Empty),
                 Node.Literal(Value.Empty)
             ),
             Node.Command(Node.Literal("test"), new ListValue())
@@ -123,8 +118,8 @@ public class ForRangeEvaluatorTests
         var body = Node.Script(
             Node.Command(Node.Literal("record"), new ListValue(Node.Variable("a"))),
             Node.Raise(
-                Node.Literal("/continue/"), 
-                Node.Literal(Value.Empty), 
+                Node.Literal("/continue/"),
+                Node.Literal(Value.Empty),
                 Node.Literal(Value.Empty)
             ),
             Node.Command(Node.Literal("test"), new ListValue())

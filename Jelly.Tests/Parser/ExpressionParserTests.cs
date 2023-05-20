@@ -1,10 +1,5 @@
 namespace Jelly.Parser.Tests;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
-
 [TestFixture]
 public class ExpressionParserTests
 {
@@ -16,7 +11,7 @@ public class ExpressionParserTests
         var scanner = new Scanner("()");
 
         var expr = _parser.Parse(scanner);
-    
+
         scanner.Position.Should().Be(2);
         expr.Should().Be(Node.Expression());
     }
@@ -27,7 +22,7 @@ public class ExpressionParserTests
         var scanner = new Scanner("(,)");
 
         var expr = _parser.Parse(scanner);
-    
+
         scanner.Position.Should().Be(3);
         expr.Should().Be(Node.Expression(Node.Literal(Value.Empty), Node.Literal(Value.Empty)));
     }
@@ -38,7 +33,7 @@ public class ExpressionParserTests
         var scanner = new Scanner("noway!");
 
         var expr = _parser.Parse(scanner);
-    
+
         scanner.Position.Should().Be(0);
         expr.Should().BeNull();
     }
@@ -59,7 +54,7 @@ public class ExpressionParserTests
         var scanner = new Scanner("(56.5)");
 
         var expr = _parser.Parse(scanner);
-    
+
         expr.Should().Be(Node.Expression(Node.Literal(56.5.ToValue())));
     }
 
@@ -69,7 +64,7 @@ public class ExpressionParserTests
         var scanner = new Scanner("(\t\n\r 12 \n\r\t)");
 
         var expr = _parser.Parse(scanner);
-    
+
         scanner.Position.Should().Be(12);
         expr.Should().Be(Node.Expression(Node.Literal(12.0.ToValue())));
     }
@@ -235,9 +230,9 @@ public class ExpressionParserTests
 
         expr.Should().Be(Node.Expression(
             Node.Command(
-                Node.Literal("max"), 
+                Node.Literal("max"),
                 new ListValue(
-                    Node.Variable("a"), 
+                    Node.Variable("a"),
                     Node.Variable("b")))));
     }
 
@@ -259,7 +254,7 @@ public class ExpressionParserTests
 
         expr.Should().Be(Node.Expression(
             Node.Command(
-                Node.Literal("max"), 
+                Node.Literal("max"),
                 new ListValue())));
     }
 

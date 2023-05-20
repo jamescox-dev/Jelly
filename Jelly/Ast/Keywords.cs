@@ -1,7 +1,5 @@
 namespace Jelly.Ast;
 
-using Jelly.Values;
-
 public static class Keywords
 {
     public static readonly StringValue A = new StringValue("a");

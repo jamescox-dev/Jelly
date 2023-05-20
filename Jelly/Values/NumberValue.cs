@@ -45,7 +45,7 @@ public class NumberValue : Value
     };
 
     readonly double _value;
-    
+
     public NumberValue(double value)
     {
         _value = value;
@@ -61,8 +61,8 @@ public class NumberValue : Value
 
     public override string ToString()
     {
-        return !double.IsNaN(_value) 
-            ? double.IsFinite(_value) 
+        return !double.IsNaN(_value)
+            ? double.IsFinite(_value)
                 ? _value.ToString("G17").ToLowerInvariant()
                 : (_value > 0 ? "inf" : "-inf")
             : "nan";
@@ -136,7 +136,7 @@ public class NumberValue : Value
             {
                 if (parsedBigInt > DoubleMaxValueAsBigInt)
                 {
-                    value = negative ? double.NegativeInfinity : double.PositiveInfinity;     
+                    value = negative ? double.NegativeInfinity : double.PositiveInfinity;
                 }
                 else
                 {
@@ -188,7 +188,7 @@ public class NumberValue : Value
             }
             if (parsedBigInt > DoubleMaxValueAsBigInt)
             {
-                value = negative ? double.NegativeInfinity : double.PositiveInfinity;     
+                value = negative ? double.NegativeInfinity : double.PositiveInfinity;
             }
             else
             {

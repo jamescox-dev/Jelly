@@ -1,14 +1,10 @@
 namespace Jelly.Examples.Tests;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Jelly.Evaluator;
-using Jelly.Library;
-using Jelly.Parser;
 using Jelly.Shell;
-using Jelly.Shell.Io;
 
 [TestFixture]
 public class ExampleTests
@@ -27,7 +23,7 @@ public class ExampleTests
                 new Scope(),
                 new ScriptParser(),
                 new Evaluator(),
-                new ILibrary[] { 
+                new ILibrary[] {
                     new Jelly.Experimental.CoreLibrary(),
                     new Jelly.Library.CoreLibrary(),
                     new Jelly.Experimental.MathLibrary(),
@@ -35,7 +31,7 @@ public class ExampleTests
                 },
                 new ShellConfig(),
                 historyManager);
-        
+
         shell.RunScript(script);
 
         writer.Output.ToString().Should().Be(expectedOutput);

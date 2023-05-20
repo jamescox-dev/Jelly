@@ -1,11 +1,5 @@
 namespace Jelly.Shell.Library;
 
-using Jelly;
-using Jelly.Commands;
-using Jelly.Library;
-using Jelly.Shell.Io;
-using Jelly.Values;
-
 public class CoreIoLibrary : ILibrary
 {
     readonly IReader _reader;
@@ -37,7 +31,7 @@ public class CoreIoLibrary : ILibrary
         {
             _writer.Write(string.Join(" ", args));
         }
-        
+
         return Value.Empty;
     }
 
@@ -47,7 +41,7 @@ public class CoreIoLibrary : ILibrary
         {
             _writer.Write(string.Join(" ", args));
         }
-        
+
         return _reader.ReadLine().ToValue();
     }
 }

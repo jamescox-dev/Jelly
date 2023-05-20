@@ -1,9 +1,6 @@
 namespace Jelly.Commands.Tests;
 
-using Jelly.Ast;
-using Jelly.Errors;
 using Jelly.Evaluator;
-using Jelly.Values;
 
 [TestFixture]
 public class UserCommandTests
@@ -44,7 +41,7 @@ public class UserCommandTests
     {
         _userCommandVarArgs.Invoke(_scope, new ListValue(
             1.ToValue(), 2.ToValue(), 3.ToValue(), 4.ToValue(), 5.ToValue(), 6.ToValue()));
-        
+
         _passedScope!.GetVariable("a").Should().Be(1.ToValue());
         _passedScope!.GetVariable("b").Should().Be(2.ToValue());
         _passedScope!.GetVariable("c").Should().Be(3.ToValue());
@@ -71,7 +68,7 @@ public class UserCommandTests
     {
         _userCommand2To4Args.Invoke(_scope, new ListValue(
             1.ToValue(), 2.ToValue()));
-        
+
         _passedScope!.GetVariable("a").Should().Be(1.ToValue());
         _passedScope!.GetVariable("b").Should().Be(2.ToValue());
         _passedScope!.GetVariable("c").Should().Be(3.ToValue());
@@ -82,7 +79,7 @@ public class UserCommandTests
     public void IfTheUserCommandThrowsAReturnTheReturnsValueIsReturned()
     {
         var result = _userCommandWithReturn.Invoke(_scope, new ListValue());
-        
+
         result.Should().Be("retrunedValue".ToValue());
     }
 
@@ -125,35 +122,35 @@ public class UserCommandTests
         _rootEvaluator = new Evaluator();
 
         _scope = new();
-        var testCommand = new SimpleCommand((scope, _) => 
+        var testCommand = new SimpleCommand((scope, _) =>
         {
             _passedScope = scope;
-            return "test-command-result".ToValue(); 
+            return "test-command-result".ToValue();
         });
         _scope.DefineCommand("test", testCommand);
-        
+
         _userCommandBody = Node.Command(Node.Literal("test"), new ListValue());
 
         _userCommandNoArgs = new UserCommand(
             Array.Empty<string>(), Array.Empty<(string, Value)>(), null, _userCommandBody);
-        
+
         _userCommand2Args = new UserCommand(
             new string[] { "a", "b" }, Array.Empty<(string, Value)>(), null, _userCommandBody);
-        
+
         _userCommand2To4Args = new UserCommand(
-            new string[] { "a", "b" }, 
-            new (string, Value)[] { ("c", 3.ToValue()), ("d", 4.ToValue()) }, 
-            null, 
+            new string[] { "a", "b" },
+            new (string, Value)[] { ("c", 3.ToValue()), ("d", 4.ToValue()) },
+            null,
             _userCommandBody);
-        
+
         _userCommandVarArgs = new UserCommand(
-            new string[] { "a", "b" }, 
-            new (string, Value)[] { ("c", 3.ToValue()), ("d", 4.ToValue()) }, 
-            "e", 
+            new string[] { "a", "b" },
+            new (string, Value)[] { ("c", 3.ToValue()), ("d", 4.ToValue()) },
+            "e",
             _userCommandBody);
-        
+
         _userCommandWithReturn = new UserCommand(
-            Array.Empty<string>(), Array.Empty<(string, Value)>(), null, 
+            Array.Empty<string>(), Array.Empty<(string, Value)>(), null,
             Node.Raise(Node.Literal("/return"), Node.Literal(Value.Empty), Node.Literal("retrunedValue")));
     }
 }

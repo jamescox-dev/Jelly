@@ -1,10 +1,5 @@
 namespace Jelly.Parser.Tests;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
-
 [TestFixture]
 public class NestingWordParserTests
 {
@@ -13,7 +8,7 @@ public class NestingWordParserTests
     {
         var parser = new NestingWordParser();
         var scanner = new Scanner("hello");
-        
+
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(0);
@@ -25,7 +20,7 @@ public class NestingWordParserTests
     {
         var parser = new NestingWordParser();
         var scanner = new Scanner("[]");
-        
+
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(2);
@@ -37,7 +32,7 @@ public class NestingWordParserTests
     {
         var parser = new NestingWordParser();
         var scanner = new Scanner("[{hello}, $world!]");
-        
+
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(18);
@@ -49,7 +44,7 @@ public class NestingWordParserTests
     {
         var parser = new NestingWordParser();
         var scanner = new Scanner("[open [ close ] close] not this ]");
-        
+
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(22);
@@ -61,7 +56,7 @@ public class NestingWordParserTests
     {
         var parser = new NestingWordParser();
         var scanner = new Scanner("[this [never [ends]]...");
-        
+
         parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-input in nesting-word.");
     }
@@ -71,7 +66,7 @@ public class NestingWordParserTests
     {
         var parser = new NestingWordParser();
         var scanner = new Scanner(@"[ \[ \\\[ \\[ \\\\\] ]]");
-        
+
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(23);

@@ -1,7 +1,5 @@
 namespace Jelly.Values.Tests;
 
-using Jelly.Values;
-
 [TestFixture]
 public class DictionaryValueTests
 {
@@ -14,7 +12,7 @@ public class DictionaryValueTests
 
         str.Should().Be("");
     }
-    
+
     [Test]
     public void ADictionaryValuesStringRepresentationContainsTheStringRepresentationOfEachOfItsKeysAndAssociatedValueSeparatedBySpacesInAlphabeticalOrderByWithEachPairSeparatedByNewlines()
     {
@@ -47,7 +45,7 @@ public class DictionaryValueTests
 
         var name = dict["name".ToValue()];
         var age = dict["age".ToValue()];
-        
+
         name.Should().Be("James".ToValue());
         age.Should().Be("38".ToValue());
     }
@@ -60,7 +58,7 @@ public class DictionaryValueTests
             "age".ToValue(), "38".ToValue());
 
         var success = dict.TryGetValue("name".ToValue(), out var name);
-        
+
         success.Should().BeTrue();
         name.Should().Be("James".ToValue());
     }
@@ -73,7 +71,7 @@ public class DictionaryValueTests
             "age".ToValue(), "38".ToValue());
 
         var success = dict.TryGetValue("unknown".ToValue(), out var name);
-        
+
         success.Should().BeFalse();
         name.Should().Be(Value.Empty);
     }
@@ -97,7 +95,7 @@ public class DictionaryValueTests
             "age".ToValue(), "38".ToValue());
 
         var exists = dict.ContainsKey(key.ToValue());
-        
+
         exists.Should().Be(expected);
     }
 
@@ -117,7 +115,7 @@ public class DictionaryValueTests
         var dict1 = new DictionaryValue();
         var dict2 = new DictionaryValue(Value.Empty);
         var dict3 = new DictionaryValue(new NumberValue(1.0), " ".ToValue());
-        
+
         double.IsNaN(dict1.ToDouble()).Should().BeTrue();
         double.IsNaN(dict2.ToDouble()).Should().BeTrue();
         double.IsNaN(dict3.ToDouble()).Should().BeTrue();
@@ -129,7 +127,7 @@ public class DictionaryValueTests
         var dict1 = new DictionaryValue();
         var dict2 = new DictionaryValue(Value.Empty);
         var dict3 = new DictionaryValue(new NumberValue(1.0), " ".ToValue());
-        
+
         dict1.ToBool().Should().BeTrue();
         dict2.ToBool().Should().BeTrue();
         dict3.ToBool().Should().BeTrue();

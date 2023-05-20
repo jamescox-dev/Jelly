@@ -1,8 +1,5 @@
 namespace Jelly.Ast.Tests;
 
-using Jelly.Ast;
-using Jelly.Values;
-
 [TestFixture]
 public class NodeTests
 {
@@ -45,7 +42,7 @@ public class NodeTests
     {
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue());
         var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue());
-        
+
         var node = Node.Script(command1, command2);
 
         node.Should().Be(new DictionaryValue(
@@ -101,7 +98,7 @@ public class NodeTests
             "type".ToValue(), "expression".ToValue(),
             "subexpressions".ToValue(), new ListValue(Node.Literal("a".ToValue()), Node.Literal("b".ToValue()))));
     }
-    
+
     [Test]
     public void ABinaryOperatorCanBeCreatedWithTheCorrectAttributes()
     {
@@ -192,8 +189,8 @@ public class NodeTests
     public void ATryNodeCanBeCreateWithTheCorrectAttributes()
     {
         var node = Node.Try(
-            Node.Literal("body"), 
-            Node.Literal("finallyBody"), 
+            Node.Literal("body"),
+            Node.Literal("finallyBody"),
             (Node.Literal("/error1"), Node.Literal("errorBody1")),
             (Node.Literal("/error2"), Node.Literal("errorBody2")));
 
@@ -212,8 +209,8 @@ public class NodeTests
     public void ATryNodeCanBeCreateWithOutAFinallyBody()
     {
         var node = Node.Try(
-            Node.Literal("body"), 
-            null, 
+            Node.Literal("body"),
+            null,
             (Node.Literal("/error1"), Node.Literal("errorBody1")),
             (Node.Literal("/error2"), Node.Literal("errorBody2")));
 
@@ -231,10 +228,10 @@ public class NodeTests
     public void ADefineCommandNodeCanBeCreateWithTheCorrectAttributes()
     {
         var node = Node.DefineCommand(
-            Node.Literal("greet"), 
+            Node.Literal("greet"),
             Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
             new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue(Node.Literal(1)), Node.Literal("c"));
-        
+
         node.Should().Be(new DictionaryValue(
             Keywords.Type, Keywords.DefineCommand,
             Keywords.Name, Node.Literal("greet"),
@@ -249,10 +246,10 @@ public class NodeTests
     public void ADefineCommandNodeCanBeCreateWithoutARestParamName()
     {
         var node = Node.DefineCommand(
-            Node.Literal("greet"), 
+            Node.Literal("greet"),
             Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
             new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue(Node.Literal(1)));
-        
+
         node.Should().Be(new DictionaryValue(
             Keywords.Type, Keywords.DefineCommand,
             Keywords.Name, Node.Literal("greet"),
@@ -267,8 +264,8 @@ public class NodeTests
     {
         var node = Node.ForRange(
             Node.Literal("i"),
-            Node.Literal(2), 
-            Node.Literal(10), 
+            Node.Literal(2),
+            Node.Literal(10),
             Node.Literal(2),
             Node.Literal("body"));
 
@@ -287,8 +284,8 @@ public class NodeTests
     {
         var node = Node.ForList(
             Node.Literal("i"),
-            Node.Literal("j"), 
-            Node.Literal(new ListValue("a".ToValue(), "b".ToValue())), 
+            Node.Literal("j"),
+            Node.Literal(new ListValue("a".ToValue(), "b".ToValue())),
             Node.Literal("body"));
 
         node.Should().Be(new DictionaryValue(
@@ -304,8 +301,8 @@ public class NodeTests
     public void AForListNodeCanBeCreateWithoutAnIndexInterator()
     {
         var node = Node.ForList(
-            Node.Literal("j"), 
-            Node.Literal(new ListValue("a".ToValue(), "b".ToValue())), 
+            Node.Literal("j"),
+            Node.Literal(new ListValue("a".ToValue(), "b".ToValue())),
             Node.Literal("body"));
 
         node.Should().Be(new DictionaryValue(
@@ -321,15 +318,15 @@ public class NodeTests
     {
         var node = Node.ForDict(
             Node.Literal("k"),
-            Node.Literal("v"), 
-            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            Node.Literal("v"),
+            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
             Node.Literal("body"));
 
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "fordict".ToValue(),
             "it_key".ToValue(), Node.Literal("k"),
             "it_value".ToValue(), Node.Literal("v"),
-            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
             "body".ToValue(), Node.Literal("body")
         ));
     }
@@ -338,14 +335,14 @@ public class NodeTests
     public void AForDictNodeCanBeCreateWithoutAKeyInterator()
     {
         var node = Node.ForDict(
-            Node.Literal("v"), 
-            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            Node.Literal("v"),
+            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
             Node.Literal("body"));
 
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "fordict".ToValue(),
             "it_value".ToValue(), Node.Literal("v"),
-            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())), 
+            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
             "body".ToValue(), Node.Literal("body")
         ));
     }
@@ -360,7 +357,7 @@ public class NodeTests
         var composite = Node.Composite();
         var assignment = Node.Assignment("test", literal);
         var expression = Node.Expression(literal);
-        
+
         var isLiteral = Node.IsLiteral(literal);
         var isVariable = Node.IsVariable(variable);
         var isCommand = Node.IsCommand(command);

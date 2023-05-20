@@ -42,7 +42,7 @@ public class Scanner
     public int AdvanceWhile(Func<Scanner, bool> condition)
     {
         var amount = 0;
-        
+
         while (!IsEof && condition(this))
         {
             ++Position;
@@ -55,14 +55,14 @@ public class Scanner
     public char? CurrentCharacter => Position >= 0 && Position < Source.Length
         ? Source[Position]
         : null;
-    
+
     public string Substring(int length)
     {
         var start = Math.Max(Position, 0);
         var len = Math.Min(Position + length, Source.Length) - start;
 
         return Source.Substring(start, len);
-    }      
+    }
 
     public bool IsEof => Position >= Source.Length;
 
@@ -76,7 +76,7 @@ public class Scanner
 
     public bool IsEscapeSubstitutableCharacter => Config.EscapeCharacterSubstitutions.ContainsKey(CurrentCharacter ?? '\0');
 
-    public char? SubstitedEscapeCharacter => CurrentCharacter is not null 
+    public char? SubstitedEscapeCharacter => CurrentCharacter is not null
         ? Config.EscapeCharacterSubstitutions.GetValueOrDefault((char)CurrentCharacter!, (char)CurrentCharacter!)
         : null;
 
@@ -91,9 +91,9 @@ public class Scanner
     public bool IsCommentBegin => CurrentCharacter == Config.CommentBegin;
 
     public bool IsCommentEnd => CurrentCharacter == Config.CommentEnd;
-    
+
     public bool IsNestingQuoteBegin => CurrentCharacter == Config.NestingQuoteBegin;
-    
+
     public bool IsNestingQuoteEnd => CurrentCharacter == Config.NestingQuoteEnd;
 
     public bool IsQuote => Config.Quotes.Contains(CurrentCharacter ?? '\0');
@@ -101,21 +101,21 @@ public class Scanner
     public bool IsScriptBegin => CurrentCharacter == Config.ScriptBegin;
 
     public bool IsScriptEnd => CurrentCharacter == Config.ScriptEnd;
-    
+
     public bool IsExpressionBegin => CurrentCharacter == Config.ExpressionBegin;
-    
+
     public bool IsExpressionEnd => CurrentCharacter == Config.ExpressionEnd;
 
     public bool IsVariableMarker => CurrentCharacter == Config.VariableMarker;
-    
+
     public bool IsVariableBegin => CurrentCharacter == Config.VariableBegin;
-    
+
     public bool IsVariableEnd => CurrentCharacter == Config.VariableEnd;
 
     public bool IsAssignmentOperator => CurrentCharacter == Config.AssignmentOperator;
 
     public bool IsSpecialCharacter =>
-        IsEscapeCharacter || IsVariableMarker 
+        IsEscapeCharacter || IsVariableMarker
         || IsCommandSeparator || IsWordSeparator
         || IsExpressionBegin
         || IsScriptBegin

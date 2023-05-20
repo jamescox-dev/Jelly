@@ -1,8 +1,5 @@
 namespace Jelly.Commands.ArgParsers.Tests;
 
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class SingleArgParserTests
 {

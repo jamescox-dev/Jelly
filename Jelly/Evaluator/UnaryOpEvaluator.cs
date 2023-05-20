@@ -1,8 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Errors;
-using Jelly.Values;
-
 internal class UnaryOpEvaluator : IEvaluator
 {
     static readonly StringValue OpKeyword = new StringValue("op");

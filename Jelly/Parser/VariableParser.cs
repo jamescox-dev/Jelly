@@ -1,10 +1,5 @@
 namespace Jelly.Parser;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
-
 public class VariableParser : IParser
 {
     readonly char? _terminatingChar;
@@ -45,7 +40,7 @@ public class VariableParser : IParser
         return null;
     }
 
-    public bool IsTerminatingChar(Scanner scanner) => 
-        scanner.CurrentCharacter == _terminatingChar 
+    public bool IsTerminatingChar(Scanner scanner) =>
+        scanner.CurrentCharacter == _terminatingChar
         || (_terminateAtOperator && scanner.TryGetOperatorSymbol(out var _));
 }

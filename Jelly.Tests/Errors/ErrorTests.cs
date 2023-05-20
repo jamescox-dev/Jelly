@@ -1,7 +1,5 @@
 namespace Jelly.Errors.Test;
 
-using Jelly.Values;
-
 [TestFixture]
 public class ErrorTests
 {
@@ -22,7 +20,7 @@ public class ErrorTests
     public void ErrorTypesCanBeNormalized(string original, string expected)
     {
         var normalized = Error.NormalizeType(original);
-    
+
         normalized.Should().Be(expected);
     }
 

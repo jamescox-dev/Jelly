@@ -1,8 +1,5 @@
 namespace Jelly.Commands.Tests;
 
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class WrappedCommandTests
 {
@@ -118,7 +115,7 @@ public class WrappedCommandTests
         passedB.Should().Be("jelly");
         passedC.Should().BeFalse();
     }
-        
+
     [Test]
     public void WhenTheWrappedDelegateHasAParamsArgumentAndTheCommandRecivesMoreThanTheNumberOfRequiredAndOptionalArgumentsTheRestOfTheArgumentsArePassedToTheParamsArgument()
     {
@@ -154,8 +151,8 @@ public class WrappedCommandTests
     }
 
 
-    void FuncWithParams(string a, string b = "jelly", params string[] c) 
-    {  
+    void FuncWithParams(string a, string b = "jelly", params string[] c)
+    {
         _passedParams = c;
     }
 }

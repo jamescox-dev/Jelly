@@ -1,7 +1,5 @@
 namespace Jelly.Values.Tests;
 
-using Jelly.Values;
-
 [TestFixture]
 public class NumberValueTests
 {
@@ -15,7 +13,7 @@ public class NumberValueTests
         var num = new NumberValue(number);
 
         var str = num.ToString();
-        
+
         str.ToValue().ToDouble().Should().Be(number);
     }
 
@@ -28,7 +26,7 @@ public class NumberValueTests
 
         str.Should().Be(str.ToLowerInvariant());
     }
-    
+
 
     [TestCase("this is not a number")]
     [TestCase("_0")]
@@ -86,7 +84,7 @@ public class NumberValueTests
 
         number.Should().Be(expected);
     }
-    
+
     [TestCase("0", 0.0)]
     [TestCase("42", 42.0)]
     [TestCase("-42", -42.0)]
@@ -195,7 +193,7 @@ public class NumberValueTests
 
         b.Should().Be(expected);
     }
-    
+
     [Test]
     public void ANumberConvertsToAListWithTheNumberAsItsOnlyItem()
     {

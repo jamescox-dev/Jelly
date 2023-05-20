@@ -1,7 +1,5 @@
 namespace Jelly.Ast.Tests;
 
-using Jelly.Ast;
-
 [TestFixture]
 public class OperatorTests
 {

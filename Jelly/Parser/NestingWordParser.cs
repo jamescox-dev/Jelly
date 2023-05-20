@@ -1,7 +1,7 @@
-using Jelly.Values;
-using Jelly.Errors;
-using Jelly.Ast;
-using Jelly.Parser.Scanning;
+
+
+
+
 
 namespace Jelly.Parser;
 
@@ -10,7 +10,7 @@ public class NestingWordParser : IParser
     public DictionaryValue? Parse(Scanner scanner)
     {
         if (scanner.AdvanceIf(s => s.IsNestingQuoteBegin))
-        {   
+        {
             var depth = 1;
             var start = scanner.Position;
             var escapeRun = 0;

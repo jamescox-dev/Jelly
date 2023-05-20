@@ -1,15 +1,10 @@
 namespace Jelly.Parser;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
-
 public class ScriptParser : IParser
 {
     static CommandParser? TopLevelCommandParser;
     static CommandParser? SubscriptCommandParser;
-    
+
     readonly CommandParser _commandParser;
 
     readonly bool _subscriptParser;

@@ -1,10 +1,6 @@
 namespace Jelly.Values.Tests;
 
-using Jelly.Errors;
 using Jelly.Evaluator;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
 
 public class ValueTests
 {
@@ -29,7 +25,7 @@ public class ValueTests
     {
         var value1 = str1.ToValue();
         var value2 = str2.ToValue();
-        
+
         var result = value1.CompareTo(value2);
 
         result.Should().Be(expected);
@@ -120,7 +116,7 @@ public class ValueTests
             d.Should().Be(expected);
         }
     }
-    
+
     [TestCase(@"Jelly")]
     [TestCase(@"jello, world")]
     [TestCase(@"'hi'")]
@@ -133,7 +129,7 @@ public class ValueTests
         var value = stringValue.ToValue();
 
         var escapedValue = value.Escape();
-        
+
         evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!, evaluator).Should().Be(value, $"escapedValue = {escapedValue}");
     }
 

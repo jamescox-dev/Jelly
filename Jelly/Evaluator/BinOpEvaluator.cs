@@ -1,8 +1,5 @@
 namespace Jelly.Evaluator;
 
-using Jelly.Errors;
-using Jelly.Values;
-
 internal class BinOpEvaluator : IEvaluator
 {
     static readonly StringValue OpKeyword = new StringValue("op");
@@ -23,7 +20,7 @@ internal class BinOpEvaluator : IEvaluator
         _arithmaticOpFuncs.Add("mod", Mod);
         _arithmaticOpFuncs.Add("floormod", FloorMod);
         _arithmaticOpFuncs.Add("exp", Exp);
-        
+
         _numericComparisonOpFuncs.Add("lt", Lt);
         _numericComparisonOpFuncs.Add("lte", LtEq);
         _numericComparisonOpFuncs.Add("eq", Eq);

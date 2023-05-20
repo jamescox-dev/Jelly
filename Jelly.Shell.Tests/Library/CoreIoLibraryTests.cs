@@ -1,9 +1,5 @@
 namespace Jelly.Shell.Library.Tests;
 
-using Jelly.Library;
-using Jelly.Shell.Tests.Helpers;
-using Jelly.Values;
-
 [TestFixture]
 public class CoreIoLibraryTest
 {

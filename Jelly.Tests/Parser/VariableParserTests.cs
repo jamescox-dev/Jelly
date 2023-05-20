@@ -1,9 +1,5 @@
 namespace Jelly.Parser.Tests;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-
 [TestFixture]
 public class VariableParserTests
 {

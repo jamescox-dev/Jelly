@@ -1,8 +1,5 @@
 namespace Jelly.Parser;
 
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
 using System.Collections.Immutable;
 
 public class ListParser
@@ -14,7 +11,7 @@ public class ListParser
         var items = ImmutableList.CreateBuilder<Value>();
 
         scanner.AdvanceWhile(s => s.IsListItemSeparator);
-            
+
         while (!scanner.IsEof)
         {
             var item = ItemParser.Parse(scanner);
@@ -26,7 +23,7 @@ public class ListParser
             {
                 throw new ParseError("Unexpected input.");
             }
-            
+
             scanner.AdvanceWhile(s => s.IsListItemSeparator);
         }
 

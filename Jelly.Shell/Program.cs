@@ -1,9 +1,7 @@
 namespace Jelly.Shell;
 
+using System;
 using Jelly.Evaluator;
-using Jelly.Library;
-using Jelly.Parser;
-using Jelly.Shell.Io;
 
 public class Program
 {
@@ -19,7 +17,7 @@ public class Program
                 new Scope(),
                 new ScriptParser(),
                 new Evaluator(),
-                new ILibrary[] { 
+                new ILibrary[] {
                     new Jelly.Experimental.CoreLibrary(),
                     new Jelly.Library.CoreLibrary(),
                     new Jelly.Experimental.MathLibrary(),

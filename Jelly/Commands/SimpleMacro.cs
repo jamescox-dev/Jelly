@@ -1,7 +1,5 @@
 namespace Jelly.Commands;
 
-using Jelly.Values;
-
 public class SimpleMacro : ICommand
 {
     public delegate Value MacroDelegate(IScope scope, ListValue args);
@@ -10,7 +8,7 @@ public class SimpleMacro : ICommand
 
     readonly MacroDelegate _macro;
 
-    public SimpleMacro(MacroDelegate macro) 
+    public SimpleMacro(MacroDelegate macro)
     {
         _macro = macro;
     }

@@ -1,9 +1,5 @@
 namespace Jelly.Values;
 
-using Jelly.Errors;
-using Jelly.Parser;
-using Jelly.Parser.Scanning;
-
 public class StringValue : Value
 {
     readonly string _value;

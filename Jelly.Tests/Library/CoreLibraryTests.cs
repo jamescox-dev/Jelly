@@ -1,10 +1,5 @@
 namespace Jelly.Library.Tests;
 
-using Jelly.Ast;
-using Jelly.Commands;
-using Jelly.Errors;
-using Jelly.Values;
-
 [TestFixture]
 public class CoreLibraryTests
 {
@@ -51,7 +46,7 @@ public class CoreLibraryTests
         {
             var breakCmd = _scope.GetCommand("break");
             var args = new ListValue();
-            
+
             var result = breakCmd.Invoke(_scope, args);
 
             result.Should().Be(Node.Raise(
@@ -82,7 +77,7 @@ public class CoreLibraryTests
         {
             var continueCmd = _scope.GetCommand("continue");
             var args = new ListValue();
-            
+
             var result = continueCmd.Invoke(_scope, args);
 
             result.Should().Be(Node.Raise(
@@ -173,8 +168,8 @@ public class CoreLibraryTests
         public void WhenTheLastArgumentNameIsFollowedByAnEqualsThenTheFunctionBodyTheLastArgumentBecomesTheRestArgument()
         {
             var result = _defCommand.Invoke(_scope, new ListValue(
-                Node.Literal("test"), 
-                Node.Literal("name"), Node.Literal("="), Node.Literal("world"), 
+                Node.Literal("test"),
+                Node.Literal("name"), Node.Literal("="), Node.Literal("world"),
                 Node.Literal("rest"), Node.Literal("="), Node.Literal("body")));
 
             result.Should().Be(Node.DefineCommand(
@@ -185,7 +180,7 @@ public class CoreLibraryTests
         public void BugThreeEqualsSignsShouldNotThrowNotThrow()
         {
             var result = _defCommand.Invoke(_scope, new ListValue(
-                Node.Literal("test"), 
+                Node.Literal("test"),
                 Node.Literal("="), Node.Literal("="), Node.Literal("="), Node.Script()));
 
             result.Should().Be(Node.DefineCommand(
@@ -196,7 +191,7 @@ public class CoreLibraryTests
         public void ARequiredArgumentCanNotFollowAOptionalArgument()
         {
             _defCommand.Invoking(c => c.Invoke(_scope, new ListValue(
-                Node.Literal("test"), 
+                Node.Literal("test"),
                 Node.Literal("a"), Node.Literal("="), Node.Literal("1"), Node.Literal("b"), Node.Literal("c"), Node.Script()))).Should()
                     .Throw<ArgError>().WithMessage("Argument 'b' must have a default value.");
         }
@@ -205,7 +200,7 @@ public class CoreLibraryTests
         public void ARequiredArgumentCanNotBeTheLastArgumentFollowingAnOptionalArgument()
         {
             _defCommand.Invoking(c => c.Invoke(_scope, new ListValue(
-                Node.Literal("test"), 
+                Node.Literal("test"),
                 Node.Literal("a"), Node.Literal("="), Node.Literal("1"), Node.Literal("b"), Node.Script()))).Should()
                     .Throw<ArgError>().WithMessage("Argument 'b' must have a default value.");
         }
@@ -229,7 +224,7 @@ public class CoreLibraryTests
         {
             var forCmd = _scope.GetCommand("for");
             var args = new ListValue();
-            
+
             forCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'iterator'.");
         }
@@ -347,7 +342,7 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue();
-            
+
             ifCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'condition'.");
         }
@@ -357,7 +352,7 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(Node.Literal(true));
-            
+
             ifCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'then_body'.");
         }
@@ -367,14 +362,14 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(
-                Node.Literal(true), 
+                Node.Literal(true),
                 Node.Command(Node.Literal("print"), new ListValue(Node.Literal("jello, world"))));
-            
+
             var result = ifCmd.Invoke(_scope, args);
 
             result.Should().Be(
                 Node.If(
-                    Node.Literal(true), 
+                    Node.Literal(true),
                     Node.Scope(Node.Command(Node.Literal("print"), new ListValue(Node.Literal("jello, world"))))));
         }
 
@@ -383,7 +378,7 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(
-                Node.Literal(false), 
+                Node.Literal(false),
                 Node.Literal(1),
                 Node.Literal("ElIf"),
                 Node.Literal(false),
@@ -391,7 +386,7 @@ public class CoreLibraryTests
                 Node.Literal("elif"),
                 Node.Literal(true),
                 Node.Literal(3));
-            
+
             var result = ifCmd.Invoke(_scope, args);
 
             result.Should().Be(
@@ -411,11 +406,11 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(
-                Node.Literal(false), 
+                Node.Literal(false),
                 Node.Literal(1),
                 Node.Literal("Else"),
                 Node.Literal(0));
-            
+
             var result = ifCmd.Invoke(_scope, args);
 
             result.Should().Be(
@@ -431,19 +426,19 @@ public class CoreLibraryTests
         public void WhenTheWordFollowingAThenBodyIsNotElifAnErrorIsThrown(string word, bool shouldThrow)
         {
             var ifCmd = _scope.GetCommand("if");
-            var args = word == "else" 
+            var args = word == "else"
                 ? new ListValue(
-                    Node.Literal(false), 
+                    Node.Literal(false),
                     Node.Literal(1),
                     Node.Literal(word),
-                    Node.Literal(0)) 
+                    Node.Literal(0))
                 : new ListValue(
-                    Node.Literal(false), 
+                    Node.Literal(false),
                     Node.Literal(1),
                     Node.Literal(word),
                     Node.Literal(0),
                     Node.Literal(0));
-            
+
             if (shouldThrow)
             {
                 ifCmd.Invoking(c => c.Invoke(_scope, args)).Should()
@@ -455,18 +450,18 @@ public class CoreLibraryTests
                     .NotThrow<ArgError>();
             }
         }
-        
+
         [Test]
         public void WhenThereAreArgumentsAfterTheElseBodyAnErrorIsThrown()
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(
-                Node.Literal(false), 
+                Node.Literal(false),
                 Node.Literal(1),
                 Node.Literal("else"),
                 Node.Literal(0),
                 Node.Literal("Something"));
-            
+
             ifCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Unexpected arguments after 'else_body'.");
         }
@@ -476,10 +471,10 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(
-                Node.Literal(false), 
+                Node.Literal(false),
                 Node.Literal(1),
                 Node.Literal("else"));
-            
+
             ifCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'else_body'.");
         }
@@ -489,10 +484,10 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(
-                Node.Literal(false), 
+                Node.Literal(false),
                 Node.Literal(1),
                 Node.Literal("elif"));
-            
+
             ifCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'condition'.");
         }
@@ -502,15 +497,15 @@ public class CoreLibraryTests
         {
             var ifCmd = _scope.GetCommand("if");
             var args = new ListValue(
-                Node.Literal(false), 
+                Node.Literal(false),
                 Node.Literal(1),
                 Node.Literal("elif"),
                 Node.Literal(true));
-            
+
             ifCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'then_body'.");
         }
-    } 
+    }
 
     #endregion
 
@@ -529,7 +524,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
             scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
-            
+
             var result = lsDefCmd.Invoke(scope, new ListValue());
 
             result.Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
@@ -545,7 +540,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
             scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
-            
+
             var result = lsDefCmd.Invoke(scope, new ListValue(true.ToValue()));
 
             result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
@@ -569,7 +564,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineVariable("c", Value.Empty);
             scope.DefineVariable("a", Value.Empty);
-            
+
             var result = lsVarCmd.Invoke(scope, new ListValue());
 
             result.Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
@@ -585,7 +580,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineVariable("c", Value.Empty);
             scope.DefineVariable("a", Value.Empty);
-            
+
             var result = lsVarCmd.Invoke(scope, new ListValue(true.ToValue()));
 
             result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
@@ -620,8 +615,8 @@ public class CoreLibraryTests
             var result = raiseCmd.Invoke(testScope.Object, args);
 
             result.Should().Be(Node.Raise(
-                Node.Literal("/error/type"), 
-                Node.Literal(Value.Empty), 
+                Node.Literal("/error/type"),
+                Node.Literal(Value.Empty),
                 Node.Literal(Value.Empty)));
         }
 
@@ -635,8 +630,8 @@ public class CoreLibraryTests
             var result = raiseCmd.Invoke(testScope.Object, args);
 
             result.Should().Be(Node.Raise(
-                Node.Literal("/error/type"), 
-                Node.Literal("Test message."), 
+                Node.Literal("/error/type"),
+                Node.Literal("Test message."),
                 Node.Literal(Value.Empty)));
         }
 
@@ -650,8 +645,8 @@ public class CoreLibraryTests
             var result = raiseCmd.Invoke(testScope.Object, args);
 
             result.Should().Be(Node.Raise(
-                Node.Literal("/error/type"), 
-                Node.Literal("Test message."), 
+                Node.Literal("/error/type"),
+                Node.Literal("Test message."),
                 Node.Literal("value")));
         }
 
@@ -685,8 +680,8 @@ public class CoreLibraryTests
 
             result.Should().Be(
                 Node.Raise(
-                    Node.Literal("/return/"), 
-                    Node.Literal(Value.Empty), 
+                    Node.Literal("/return/"),
+                    Node.Literal(Value.Empty),
                     Node.Literal(Value.Empty)));
         }
 
@@ -701,8 +696,8 @@ public class CoreLibraryTests
 
             result.Should().Be(
                 Node.Raise(
-                    Node.Literal("/return/"), 
-                    Node.Literal(Value.Empty), 
+                    Node.Literal("/return/"),
+                    Node.Literal(Value.Empty),
                     Node.Variable("name")));
         }
 
@@ -742,7 +737,7 @@ public class CoreLibraryTests
             var result = tryCmd.Invoke(_scope, new ListValue(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))));
 
             result.Should().Be(Node.Try(
-                Node.Scope(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))), 
+                Node.Scope(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))),
                 null
             ));
         }
@@ -760,7 +755,7 @@ public class CoreLibraryTests
                 body, Node.Literal("finally".ToValue()), finallyBody));
 
             result.Should().Be(Node.Try(
-                Node.Scope(body), 
+                Node.Scope(body),
                 Node.Scope(finallyBody)
             ));
         }
@@ -785,7 +780,7 @@ public class CoreLibraryTests
         {
             var tryCmd = _scope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
-            
+
             tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(body, Node.Literal(exceptKeyword)))).Should()
                 .Throw<ArgError>().WithMessage("Expected 'error_details' argument.");
         }
@@ -796,7 +791,7 @@ public class CoreLibraryTests
         {
             var tryCmd = _scope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
-            
+
             tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(body, Node.Literal(exceptKeyword), Node.Literal("/error/")))).Should()
                 .Throw<ArgError>().WithMessage("Expected 'except_body' argument.");
         }
@@ -811,7 +806,7 @@ public class CoreLibraryTests
 
             var result = tryCmd.Invoke(_scope, new ListValue(
                 body, Node.Literal(exceptKeyword), Node.Literal("/error/"), excepetBody));
-            
+
             result.Should().Be(Node.Try(
                 Node.Scope(body),
                 null,
@@ -827,10 +822,10 @@ public class CoreLibraryTests
             var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
 
             var result = tryCmd.Invoke(_scope, new ListValue(
-                body, 
+                body,
                 Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
                 Node.Literal("except"), Node.Literal("/error/type"), excepetBody));
-            
+
             result.Should().Be(Node.Try(
                 Node.Scope(body),
                 null,
@@ -848,10 +843,10 @@ public class CoreLibraryTests
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
 
             var result = tryCmd.Invoke(_scope, new ListValue(
-                body, 
+                body,
                 Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
                 Node.Literal("finally"), finallyBody));
-            
+
             result.Should().Be(Node.Try(
                 Node.Scope(body),
                 Node.Scope(finallyBody),
@@ -864,7 +859,7 @@ public class CoreLibraryTests
         {
             var tryCmd = _scope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
-            
+
             tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(body, Node.Literal("nonsense")))).Should()
                 .Throw<ArgError>().WithMessage("Unexpected 'nonsense' argument.");
         }
@@ -878,7 +873,7 @@ public class CoreLibraryTests
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
 
             tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(
-                body, 
+                body,
                 Node.Literal("finally"), finallyBody,
                 Node.Literal("except"), Node.Literal("/error/arg"), excepetBody))).Should()
                     .Throw<ArgError>("Unexpected 'except' argument after 'finally'.");
@@ -893,7 +888,7 @@ public class CoreLibraryTests
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
 
             tryCmd.Invoking(c => c.Invoke(_scope, new ListValue(
-                body, 
+                body,
                 Node.Literal("finally"), finallyBody,
                 Node.Literal("finally"), finallyBody))).Should()
                     .Throw<ArgError>("Unexpected duplicate 'finally' argument.");
@@ -912,7 +907,7 @@ public class CoreLibraryTests
         {
             var varCmd = _scope.GetCommand("var");
             var args = new ListValue();
-            
+
             varCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'varname'.");
         }
@@ -932,9 +927,9 @@ public class CoreLibraryTests
         {
             var varCmd = _scope.GetCommand("var");
             var args = new ListValue(
-                Node.Variable("pi"), 
-                Node.Literal("="), 
-                Node.Literal("3.14159"), 
+                Node.Variable("pi"),
+                Node.Literal("="),
+                Node.Literal("3.14159"),
                 Node.Literal("What am I doing here?"));
 
             varCmd.Invoking(c => c.Invoke(_scope, args)).Should()
@@ -947,8 +942,8 @@ public class CoreLibraryTests
             var varCmd = _scope.GetCommand("var");
             var testScope = new Mock<IScope>();
             var args = new ListValue(
-                Node.Literal("pi"), 
-                Node.Literal("="), 
+                Node.Literal("pi"),
+                Node.Literal("="),
                 Node.Literal("3.14159"));
 
             var result = varCmd.Invoke(testScope.Object, args);
@@ -962,7 +957,7 @@ public class CoreLibraryTests
             var varCmd = _scope.GetCommand("var");
             var testScope = new Mock<IScope>();
             var args = new ListValue(
-                Node.Literal("pi".ToValue()), 
+                Node.Literal("pi".ToValue()),
                 Node.Literal("=".ToValue()));
 
             var result = varCmd.Invoke(testScope.Object, args);
@@ -989,8 +984,8 @@ public class CoreLibraryTests
             var varCmd = _scope.GetCommand("var");
             var testScope = new Mock<IScope>();
             var args = new ListValue(
-                Node.Variable("pi"), 
-                Node.Literal("=".ToValue()), 
+                Node.Variable("pi"),
+                Node.Literal("=".ToValue()),
                 Node.Literal("3.14159".ToValue()));
 
             var result = varCmd.Invoke(testScope.Object, args);
@@ -1011,7 +1006,7 @@ public class CoreLibraryTests
         {
             var whileCmd = _scope.GetCommand("while");
             var args = new ListValue();
-            
+
             whileCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'condition'.");
         }
@@ -1021,7 +1016,7 @@ public class CoreLibraryTests
         {
             var whileCmd = _scope.GetCommand("while");
             var args = new ListValue(Node.Literal("0".ToValue()));
-            
+
             whileCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'body'.");
         }
@@ -1031,12 +1026,12 @@ public class CoreLibraryTests
         {
             var whileCmd = _scope.GetCommand("while");
             var args = new ListValue(
-                Node.Literal("0".ToValue()), 
+                Node.Literal("0".ToValue()),
                 Node.Script(
-                    Node.Command(Node.Literal("print".ToValue()), 
+                    Node.Command(Node.Literal("print".ToValue()),
                     new ListValue())),
                 Node.Literal("EXTRA!".ToValue()));
-            
+
             whileCmd.Invoking(c => c.Invoke(_scope, args)).Should()
                 .Throw<ArgError>().WithMessage("Unexpected value 'EXTRA!'.");
         }
@@ -1046,16 +1041,16 @@ public class CoreLibraryTests
         {
             var whileCmd = _scope.GetCommand("while");
             var args = new ListValue(
-                Node.Literal("0"), 
+                Node.Literal("0"),
                 Node.Script(
-                    Node.Command(Node.Literal("print"), 
+                    Node.Command(Node.Literal("print"),
                     new ListValue())));
-            
+
             var result = whileCmd.Invoke(_scope, args);
 
-            result.Should().Be(Node.While(Node.Literal("0"), 
+            result.Should().Be(Node.While(Node.Literal("0"),
                 Node.Scope(Node.Script(
-                    Node.Command(Node.Literal("print"), 
+                    Node.Command(Node.Literal("print"),
                     new ListValue())))));
         }
     }

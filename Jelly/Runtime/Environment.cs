@@ -1,7 +1,6 @@
 namespace Jelly.Runtime;
 
 using Jelly.Evaluator;
-using Jelly.Parser.Scanning;
 
 public class Environment : IEnvironment
 {

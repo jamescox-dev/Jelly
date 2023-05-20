@@ -368,7 +368,7 @@ public class ScannerTests
     {
         var scanner1 = new Scanner(src1, pos1);
         var scanner2 = new Scanner(src2, pos2);
-        
+
         var equals = scanner1.Equals(scanner2);
 
         equals.Should().Be(expectedEqual);
@@ -382,7 +382,7 @@ public class ScannerTests
     {
         var scanner1 = new Scanner(source, position);
         var scanner2 = new Scanner("Unique", 1);
-    
+
         var hashCode = scanner1.GetHashCode();
 
         hashCode.Should().NotBe(scanner2.GetHashCode());

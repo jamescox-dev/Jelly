@@ -1,4 +1,4 @@
-using Jelly.Parser.Scanning;
+
 
 namespace Jelly.Parser.Tests;
 
@@ -10,7 +10,7 @@ public class CommentParserTests
     {
         var parser = new CommentParser();
         var scanner = new Scanner("#comment");
-        
+
         var node = parser.Parse(scanner);
 
         node.Should().BeNull();
@@ -22,7 +22,7 @@ public class CommentParserTests
     {
         var parser = new CommentParser();
         var scanner = new Scanner(source);
-        
+
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(expectedPosition);
@@ -33,7 +33,7 @@ public class CommentParserTests
     {
         var parser = new CommentParser();
         var scanner = new Scanner("not a comment");
-        
+
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(0);

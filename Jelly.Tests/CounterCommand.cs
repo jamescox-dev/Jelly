@@ -1,8 +1,5 @@
 namespace Jelly.Tests;
 
-using Jelly.Commands;
-using Jelly.Values;
-
 public class CounterCommand : ICommand
 {
     public int CallCount { get; private set; }

@@ -1,17 +1,17 @@
 namespace Jelly.Parser;
 
 using System.Text;
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
+
+
+
+
 
 public class QuotedWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
     static readonly VariableParser VariableParser = new();
     static readonly ScriptParser ScriptParser = new(true);
-    
+
     readonly bool _allowSubstitutions;
 
     public QuotedWordParser(bool allowSubstitutions=true)
@@ -49,7 +49,7 @@ public class QuotedWordParser : IParser
                 else if (scanner.AdvanceIf(s => s.CurrentCharacter == openingQuote))
                 {
                     FlushCurrentLitral();
-                    return _allowSubstitutions 
+                    return _allowSubstitutions
                         ? Node.Composite(parts.ToArray())
                         : parts[0];
                 }

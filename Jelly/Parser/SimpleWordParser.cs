@@ -1,15 +1,11 @@
 namespace Jelly.Parser;
 
-using Jelly.Ast;
-using Jelly.Errors;
-using Jelly.Parser.Scanning;
-using Jelly.Values;
 using System.Text;
 
 public class SimpleWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
-    
+
     readonly char? _terminatingChar;
     readonly bool _terminateAtOperator;
 
@@ -50,7 +46,7 @@ public class SimpleWordParser : IParser
         return start == scanner.Position ? null : Node.Literal(value.ToString().ToValue());
     }
 
-    public bool IsTerminatingChar(Scanner scanner) => 
-        scanner.CurrentCharacter == _terminatingChar 
+    public bool IsTerminatingChar(Scanner scanner) =>
+        scanner.CurrentCharacter == _terminatingChar
         || (_terminateAtOperator && scanner.TryGetOperatorSymbol(out var _));
 }
