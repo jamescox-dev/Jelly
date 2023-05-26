@@ -4,20 +4,20 @@ internal class IfEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
+        var condition = node.GetNode(Keywords.Condition);
+        var thenBody = node.GetNode(Keywords.Then);
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        var conditionResult = rootEvaluator.Evaluate(scope, node[Keywords.Condition].ToDictionaryValue());
+        var conditionResult = env.Evaluate(condition);
         if (conditionResult.ToBool())
         {
-            return rootEvaluator.Evaluate(scope, node[Keywords.Then].ToDictionaryValue());
+            return env.Evaluate(thenBody);
         }
-        else if (node.TryGetValue(Keywords.Else, out var elseBody))
+        else if (node.TryGetValue(Keywords.Else, out var elseBodyValue))
         {
-            return rootEvaluator.Evaluate(scope, elseBody.ToDictionaryValue());
+            var elseBody = elseBodyValue.ToNode();
+            return env.Evaluate(elseBody);
         }
+
         return Value.Empty;
     }
 }

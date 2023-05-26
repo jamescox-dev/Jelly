@@ -2,13 +2,8 @@ namespace Jelly.Evaluator;
 
 internal class LiteralEvaluator : IEvaluator
 {
-    static readonly StringValue ValueKey = new StringValue("value");
-
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
+        return node[Keywords.Value];
     }
-
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator) =>
-        node[ValueKey];
 }

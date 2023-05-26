@@ -8,17 +8,12 @@ internal class ScriptEvaluator : IEvaluator
 
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
-
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        var commands = node[CommandsKeyword].ToListValue();
+        var commands = node.GetList(Keywords.Commands);
 
         var result = Value.Empty;
         foreach (var command in commands)
         {
-            result = rootEvaluator.Evaluate(scope, command.ToDictionaryValue(), rootEvaluator);
+            result = env.Evaluate(command.ToNode());
         }
 
         return result;

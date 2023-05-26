@@ -4,12 +4,7 @@ internal class DefineCommandEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
-
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        var name = rootEvaluator.Evaluate(scope, node[Keywords.Name].ToDictionaryValue()).ToString();
+        var name = env.Evaluate(node.GetNode(Keywords.Name)).ToString();
 
         var uniqueArgNames = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
         var argNames = node[Keywords.ArgNames].ToListValue();

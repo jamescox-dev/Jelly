@@ -4,18 +4,15 @@ internal class WhileEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
+        var condition = node.GetNode(Keywords.Condition);
+        var body = node.GetNode(Keywords.Body);
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
         var result = Value.Empty;
-
-        while (EvaluateComdition(scope, node, rootEvaluator))
+        while (env.Evaluate(condition).ToBool())
         {
             try
             {
-                result = EvaluateBody(scope, node, rootEvaluator);
+                result = env.Evaluate(body);
             }
             catch (Break)
             {
@@ -29,15 +26,5 @@ internal class WhileEvaluator : IEvaluator
         }
 
         return result;
-    }
-
-    private static Value EvaluateBody(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        return rootEvaluator.Evaluate(scope, node[Keywords.Body].ToDictionaryValue());
-    }
-
-    private static bool EvaluateComdition(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        return rootEvaluator.Evaluate(scope, node[Keywords.Condition].ToDictionaryValue()).ToBool();
     }
 }
