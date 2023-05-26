@@ -8,12 +8,12 @@ internal class CompositeEvaluator : IEvaluator
 
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
+        return new StringValue(string.Join("", GetParts(env, node)));
     }
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
+    static IEnumerable<Value> GetParts(IEnvironment env, DictionaryValue node)
     {
-        return new StringValue(string.Join("", node[PartsKeyword].ToListValue()
-            .Select(part => rootEvaluator.Evaluate(scope, part.ToDictionaryValue(), rootEvaluator))));
+        return node.GetList(Keywords.Parts)
+                    .Select(part => env.Evaluate(part.ToNode()));
     }
 }

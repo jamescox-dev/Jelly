@@ -4,9 +4,6 @@ public class Evaluator : IEvaluator
 {
     readonly NodeEvaluator _evaluator;
 
-    // TODO:  Remove this.
-    public static readonly IEvaluator Shared = new Evaluator();
-
     public Evaluator()
     {
         _evaluator = new NodeEvaluator();
@@ -30,11 +27,6 @@ public class Evaluator : IEvaluator
 
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
-
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        return _evaluator.Evaluate(scope, node, this);
+        return _evaluator.Evaluate(env, node);
     }
 }

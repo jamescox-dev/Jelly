@@ -4,13 +4,9 @@ internal class DefineVariableEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
-
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        var value = rootEvaluator.Evaluate(scope, node[Keywords.Value].ToDictionaryValue(), rootEvaluator);
-        scope.DefineVariable(node[Keywords.Name].ToString(), value);
+        var name = node.GetString(Keywords.Name);
+        var value = env.Evaluate(node.GetNode(Keywords.Value));
+        env.CurrentScope.DefineVariable(name, value);
         return value;
     }
 }

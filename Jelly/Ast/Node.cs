@@ -33,7 +33,7 @@ public static class Node
         new DictionaryValue(Keywords.Type, Keywords.Assignment, Keywords.Name, name.ToValue(), Keywords.Value, value);
 
     public static DictionaryValue Expression(params DictionaryValue[] subexpressions) =>
-        new DictionaryValue(Keywords.Type, Keywords.Expression, Keywords.Subexpresions, new ListValue(subexpressions));
+        new DictionaryValue(Keywords.Type, Keywords.Expression, Keywords.SubExpressions, new ListValue(subexpressions));
 
     public static DictionaryValue BinOp(string op, DictionaryValue a, DictionaryValue b) =>
         new DictionaryValue(Keywords.Type, Keywords.BinOp, Keywords.Op, op.ToValue(), Keywords.A, a, Keywords.B, b);

@@ -2,22 +2,20 @@ namespace Jelly.Evaluator;
 
 internal class NodeEvaluator : IEvaluator
 {
-    static readonly StringValue TypeKey = new StringValue("type");
-
     Dictionary<string, IEvaluator> _evaluators = new();
 
-    public void AddEvaluator(string nodeType, IEvaluator rootEvaluator)
+    public void AddEvaluator(string nodeType, IEvaluator evaluator)
     {
-        _evaluators.Add(nodeType, rootEvaluator);
+        _evaluators.Add(nodeType, evaluator);
     }
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)
+    public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        if (node.TryGetValue(TypeKey, out var type))
+        if (node.TryGetValue(Keywords.Type, out var type))
         {
             if (_evaluators.TryGetValue(type.ToString(), out var typeEvaluator))
             {
-                return typeEvaluator.Evaluate(scope, node, evaluator);
+                return typeEvaluator.Evaluate(env, node);
             }
             else
             {

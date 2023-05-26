@@ -30,6 +30,6 @@ public class SimpleMacroTests
     {
         var macro = new SimpleMacro((s, a) => Value.Empty);
 
-        macro.EvaluationFlags.Should().Be(EvaluationFlags.RetrunValue);
+        macro.EvaluationFlags.Should().Be(EvaluationFlags.ReturnValue);
     }
 }

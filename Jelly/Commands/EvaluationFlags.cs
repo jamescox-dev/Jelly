@@ -5,6 +5,6 @@ public enum EvaluationFlags
 {
     None = 0,
     Arguments = 1,
-    RetrunValue = 2,
-    ArgumentsAndReturnValue = Arguments | RetrunValue,
+    ReturnValue = 2,
+    ArgumentsAndReturnValue = Arguments | ReturnValue,
 }

@@ -39,7 +39,7 @@ public class CommandEvaluatorTests
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
-        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.RetrunValue, ReturnValue = Node.Literal(Value.Empty) };
+        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.ReturnValue, ReturnValue = Node.Literal(Value.Empty) };
         scope.DefineCommand("greet", command);
         var args = new ListValue(Node.Literal("Vic".ToValue()), Node.Literal("Bob".ToValue()));
         var commandNode = Node.Command(Node.Literal("greet".ToValue()), args);
@@ -55,7 +55,7 @@ public class CommandEvaluatorTests
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
-        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.RetrunValue, ReturnValue = Node.Variable("test") };
+        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.ReturnValue, ReturnValue = Node.Variable("test") };
         scope.DefineCommand("macro", command);
         scope.DefineVariable("test", "1 2 3".ToValue());
         var commandNode = Node.Command(Node.Literal("macro"), new ListValue());

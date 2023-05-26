@@ -4,7 +4,7 @@ public class SimpleMacro : ICommand
 {
     public delegate Value MacroDelegate(IScope scope, ListValue args);
 
-    public EvaluationFlags EvaluationFlags => EvaluationFlags.RetrunValue;
+    public EvaluationFlags EvaluationFlags => EvaluationFlags.ReturnValue;
 
     readonly MacroDelegate _macro;
 
