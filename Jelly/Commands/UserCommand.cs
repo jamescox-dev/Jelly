@@ -58,7 +58,8 @@ public class UserCommand : ICommand
 
         try
         {
-            return Evaluator.Shared.Evaluate(commandScope, _body);
+            // TODO:  To change this.
+            return Value.Empty;//Evaluator.Shared.Evaluate(commandScope, _body);
         }
         catch (Return @return)
         {

@@ -34,7 +34,7 @@ public class Environment : IEnvironment
 
     public Value Evaluate(DictionaryValue node)
     {
-        return Evaluator.Evaluate(CurrentScope, node, Evaluator);
+        return Evaluator.Evaluate(this, node);
     }
 
     public IScope PopScope()

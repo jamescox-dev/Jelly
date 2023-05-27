@@ -4,46 +4,50 @@ internal class TryEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
+        var body = node.GetNode(Keywords.Body);
+        var finallyBody = node.GetNodeOrNull(Keywords.Finally);
+        var errorHandlers = node.GetList(Keywords.ErrorHandlers);
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
         Value result = Value.Empty;
-
         try
         {
-            result = rootEvaluator.Evaluate(scope, node[Keywords.Body].ToDictionaryValue(), rootEvaluator);
+            result = env.Evaluate(body);
         }
         catch (Error error)
         {
-            var handled = false;
-            foreach (var errorHandler in node[Keywords.ErrorHandlers].ToListValue())
+            var errorHandler = GetErrorHandlerForError(env, errorHandlers, error);
+            if (errorHandler is not null)
             {
-                var errorHandlerList = errorHandler.ToListValue();
-                var patternNode = errorHandlerList[0].ToDictionaryValue();
-                if (error.IsType(rootEvaluator.Evaluate(scope, patternNode).ToString()))
-                {
-                    var handlerBodyNode = errorHandlerList[1].ToDictionaryValue();
-                    result = rootEvaluator.Evaluate(scope, handlerBodyNode);
-                    handled = true;
-                    break;
-                }
+                result = env.Evaluate(errorHandler);
             }
-
-            if (!handled)
+            else
             {
                 throw;
             }
         }
         finally
         {
-            if (node.ContainsKey(Keywords.Finally))
+            if (finallyBody is not null)
             {
-                result = rootEvaluator.Evaluate(scope, node[Keywords.Finally].ToDictionaryValue(), rootEvaluator);
+                result = env.Evaluate(finallyBody);
             }
         }
 
         return result;
+    }
+
+    static DictionaryValue? GetErrorHandlerForError(IEnvironment env, ListValue errorHandlers, Error error)
+    {
+        foreach (var errorHandler in errorHandlers)
+        {
+            var errorHandlerTuple = errorHandler.ToListValue();
+            var errorTypePattern = env.Evaluate(errorHandlerTuple[0].ToNode()).ToString();
+            if (error.IsType(errorTypePattern))
+            {
+                var errorHandlerBody = errorHandlerTuple[1].ToNode();
+                return errorHandlerBody;
+            }
+        }
+        return null;
     }
 }

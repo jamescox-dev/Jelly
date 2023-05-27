@@ -4,61 +4,26 @@ public class ForRangeEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
+        var iteratorName = env.Evaluate(node.GetNode(Keywords.It)).ToString();
+        var start = env.Evaluate(node.GetNode(Keywords.Start)).ToDouble();
+        var end = env.Evaluate(node.GetNode(Keywords.End)).ToDouble();
+        var step = env.Evaluate(node.GetNode(Keywords.Step)).ToDouble();
+        var body = env.Evaluate(node.GetNode(Keywords.Body)).ToNode();
+
+        AssertStartEndAndStepValid(start, end, step);
+        return RunLoop(env, iteratorName, start, end, step, body);
     }
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
+    static Value RunLoop(
+        IEnvironment env, string iteratorName, double start, double end, double step, DictionaryValue body)
     {
-        var iteratorName = rootEvaluator.Evaluate(scope, node[Keywords.It].ToDictionaryValue()).ToString();
-        var start = rootEvaluator.Evaluate(scope, node[Keywords.Start].ToDictionaryValue()).ToDouble();
-        var end = rootEvaluator.Evaluate(scope, node[Keywords.End].ToDictionaryValue()).ToDouble();
-        var step = rootEvaluator.Evaluate(scope, node[Keywords.Step].ToDictionaryValue()).ToDouble();
-        var body = node[Keywords.Body].ToDictionaryValue();
-
-        if (step == 0)
-        {
-            throw Error.Arg("step can not be zero.");
-        }
-
         var result = Value.Empty;
-        if (step < 0)
+        for (var i = start; IndexIsPastOrAtEnd(i, start, end); i += step)
         {
-            if (start < end)
-            {
-                throw Error.Arg("step must be positive when start is less than end.");
-            }
-            for (var i = start; i >= end; i += step)
-            {
-                var innerScope = new Scope(scope);
-                innerScope.DefineVariable(iteratorName, i.ToValue());
-                try
-                {
-                    result = rootEvaluator.Evaluate(innerScope, body);
-                }
-                catch (Break)
-                {
-                    result = Value.Empty;
-                    break;
-                }
-                catch (Continue)
-                {
-                    continue;
-                }
-            }
-            return result;
-        }
-
-        if (start > end)
-        {
-            throw Error.Arg("step must be negative when start is greater than end.");
-        }
-        for (var i = start; i <= end; i += step)
-        {
-            var innerScope = new Scope(scope);
-            innerScope.DefineVariable(iteratorName, i.ToValue());
+            PushLoopBodyScope(env, iteratorName, i);
             try
             {
-                result = rootEvaluator.Evaluate(innerScope, body);
+                result = env.Evaluate(body);
             }
             catch (Break)
             {
@@ -69,7 +34,41 @@ public class ForRangeEvaluator : IEvaluator
             {
                 continue;
             }
+            finally
+            {
+                env.PopScope();
+            }
         }
         return result;
+    }
+
+    static void AssertStartEndAndStepValid(double start, double end, double step)
+    {
+        if (step == 0)
+        {
+            throw Error.Arg("step can not be zero.");
+        }
+        if (step < 0)
+        {
+            if (start < end)
+            {
+                throw Error.Arg("step must be positive when start is less than end.");
+            }
+        }
+        if (start > end)
+        {
+            throw Error.Arg("step must be negative when start is greater than end.");
+        }
+    }
+
+    static bool IndexIsPastOrAtEnd(double i, double start, double end)
+    {
+        return (start < end) ? i <= end : i >= end;
+    }
+
+    static void PushLoopBodyScope(IEnvironment env, string iteratorName, double value)
+    {
+        env.PushScope();
+        env.CurrentScope.DefineVariable(iteratorName, value.ToValue());
     }
 }

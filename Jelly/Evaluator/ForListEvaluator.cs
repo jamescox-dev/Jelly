@@ -4,35 +4,26 @@ public class ForListEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
+        var iteratorName = GetIteratorName(env, node);
+        var indexName = GetIndexName(env, node);
+        var list = GetList(env, node);
+        var body = node.GetNode(Keywords.Body);
+
+        AssertIteratorNamesAreUnique(iteratorName, indexName);
+
+        return RunLoop(env, iteratorName, indexName, list, body);
     }
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
+    static Value RunLoop(IEnvironment env, string iteratorName, string? indexName, ListValue list, DictionaryValue body)
     {
-        var iteratorName = rootEvaluator.Evaluate(scope, node[Keywords.ItValue].ToDictionaryValue()).ToString();
-        var indexName = node.ContainsKey(Keywords.ItIndex) ? rootEvaluator.Evaluate(scope, node[Keywords.ItIndex].ToDictionaryValue()).ToString() : null;
-        var list = rootEvaluator.Evaluate(scope, node[Keywords.List].ToDictionaryValue()).ToListValue();
-        var body = node[Keywords.Body].ToDictionaryValue();
-
-        if (iteratorName.Equals(indexName, StringComparison.InvariantCultureIgnoreCase))
-        {
-            throw Error.Arg($"index and value interators can not have the same name '{iteratorName}'.");
-        }
-
-        Value result = Value.Empty;
+        var result = Value.Empty;
         var index = 1;
-        foreach (var value in list)
+        foreach (var keyValue in list)
         {
-            var innerScope = new Scope(scope);
-            innerScope.DefineVariable(iteratorName, value);
-            if (indexName is not null)
-            {
-                innerScope.DefineVariable(indexName, index.ToValue());
-                ++index;
-            }
+            PushLoopBodyScope(env, iteratorName, indexName, keyValue, index++);
             try
             {
-                result = rootEvaluator.Evaluate(innerScope, body);
+                result = env.Evaluate(body);
             }
             catch (Break)
             {
@@ -43,8 +34,44 @@ public class ForListEvaluator : IEvaluator
             {
                 continue;
             }
+            finally
+            {
+                env.PopScope();
+            }
         }
-
         return result;
+    }
+
+    static string GetIteratorName(IEnvironment env, DictionaryValue node)
+    {
+        return env.Evaluate(node.GetNode(Keywords.ItValue)).ToString();
+    }
+
+    static string? GetIndexName(IEnvironment env, DictionaryValue node)
+    {
+        return node.ContainsKey(Keywords.ItIndex) ? env.Evaluate(node.GetNode(Keywords.ItIndex)).ToString() : null;
+    }
+
+    static ListValue GetList(IEnvironment env, DictionaryValue node)
+    {
+        return env.Evaluate(node.GetNode(Keywords.List)).ToListValue();
+    }
+
+    static void AssertIteratorNamesAreUnique(string iteratorName, string? indexName)
+    {
+        if (iteratorName.Equals(indexName, StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw Error.Arg($"index and value iterators can not have the same name '{iteratorName}'.");
+        }
+    }
+
+    static void PushLoopBodyScope(IEnvironment env, string iteratorName, string? indexName, Value value, int index)
+    {
+        env.PushScope();
+        env.CurrentScope.DefineVariable(iteratorName, value);
+        if (indexName is not null)
+        {
+            env.CurrentScope.DefineVariable(indexName, index.ToValue());
+        }
     }
 }
