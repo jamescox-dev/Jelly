@@ -6,15 +6,15 @@ internal class IfEvaluator : IEvaluator
     {
         var condition = node.GetNode(Keywords.Condition);
         var thenBody = node.GetNode(Keywords.Then);
+        var elseBody = node.GetNodeOrNull(Keywords.Else);
 
         var conditionResult = env.Evaluate(condition);
         if (conditionResult.ToBool())
         {
             return env.Evaluate(thenBody);
         }
-        else if (node.TryGetValue(Keywords.Else, out var elseBodyValue))
+        else if (elseBody is not null)
         {
-            var elseBody = elseBodyValue.ToNode();
             return env.Evaluate(elseBody);
         }
 

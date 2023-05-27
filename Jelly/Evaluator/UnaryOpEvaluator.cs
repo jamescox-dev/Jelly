@@ -2,34 +2,25 @@ namespace Jelly.Evaluator;
 
 internal class UnaryOpEvaluator : IEvaluator
 {
-    static readonly StringValue OpKeyword = new StringValue("op");
-    static readonly StringValue AKeyword = new StringValue("a");
-
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        throw new NotImplementedException();
-    }
+        var op = node.GetString(Keywords.Op);
+        var a = env.Evaluate(node.GetNode(Keywords.A));
 
-    public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator rootEvaluator)
-    {
-        if (node[OpKeyword].ToString() == "pos")
+        if (op == "pos")
         {
-            var a = rootEvaluator.Evaluate(scope, node[AKeyword].ToDictionaryValue(), rootEvaluator);
             return a.ToDouble().ToValue();
         }
-        if (node[OpKeyword].ToString() == "neg")
+        if (op == "neg")
         {
-            var a = rootEvaluator.Evaluate(scope, node[AKeyword].ToDictionaryValue(), rootEvaluator);
             return (-a.ToDouble()).ToValue();
         }
-        if (node[OpKeyword].ToString() == "not")
+        if (op == "not")
         {
-            var a = rootEvaluator.Evaluate(scope, node[AKeyword].ToDictionaryValue(), rootEvaluator);
             return (!a.ToBool()).ToValue();
         }
-        if (node[OpKeyword].ToString() == "bitnot")
+        if (op == "bitnot")
         {
-            var a = rootEvaluator.Evaluate(scope, node[AKeyword].ToDictionaryValue(), rootEvaluator);
             return (~ToInt32(a.ToDouble())).ToValue();
         }
 

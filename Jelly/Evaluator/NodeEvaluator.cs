@@ -11,9 +11,11 @@ internal class NodeEvaluator : IEvaluator
 
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        if (node.TryGetValue(Keywords.Type, out var type))
+        var type = node.GetStringOrNull(Keywords.Type);
+
+        if (type is not null)
         {
-            if (_evaluators.TryGetValue(type.ToString(), out var typeEvaluator))
+            if (_evaluators.TryGetValue(type, out var typeEvaluator))
             {
                 return typeEvaluator.Evaluate(env, node);
             }
