@@ -1,10 +1,8 @@
 namespace Jelly.Commands;
 
-public class SimpleCommand : ICommand
+public class SimpleCommand : CommandBase
 {
-    public delegate Value CommandDelegate(IScope scope, ListValue args);
-
-    public EvaluationFlags EvaluationFlags => EvaluationFlags.Arguments;
+    public delegate Value CommandDelegate(IEnvironment env, ListValue args);
 
     readonly CommandDelegate _command;
 
@@ -13,8 +11,9 @@ public class SimpleCommand : ICommand
         _command = command;
     }
 
-    public Value Invoke(IScope scope, ListValue args)
+    public override Value Invoke(IEnvironment env, ListValue args)
     {
-        return _command(scope, args);
+        ListValue evaluatedArgs = EvaluateArgs(env, args);
+        return _command(env, evaluatedArgs);
     }
 }

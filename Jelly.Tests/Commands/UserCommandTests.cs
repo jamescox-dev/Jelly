@@ -92,28 +92,28 @@ public class UserCommandTests
     [Test]
     public void TheNamesOfTheRequiredArgumentCanBeRetrived()
     {
-        _userCommand2Args.RequiredArgumentNames.Should().Equal("a", "b");
+        _userCommand2Args.RequiredArgNames.Should().Equal("a", "b");
     }
 
     [Test]
     public void TheNamesOfTheOptionalArgumentCanBeRetrived()
     {
-        _userCommand2Args.OptionalArgumentNames.Should().BeEmpty();
-        _userCommand2To4Args.OptionalArgumentNames.Should().Equal("c", "d");
+        _userCommand2Args.OptionalArgNames.Should().BeEmpty();
+        _userCommand2To4Args.OptionalArgNames.Should().Equal("c", "d");
     }
 
     [Test]
     public void TheDefaultValuesOfTheOptionalArgumentCanBeRetrived()
     {
-        _userCommand2Args.OptionalArgumentDefaultValues.Should().BeEmpty();
-        _userCommand2To4Args.OptionalArgumentDefaultValues.Should().Equal(3.ToValue(), 4.ToValue());
+        _userCommand2Args.OptionalArgDefaultValues.Should().BeEmpty();
+        _userCommand2To4Args.OptionalArgDefaultValues.Should().Equal(3.ToValue(), 4.ToValue());
     }
 
     [Test]
     public void TheNameOfTheRestArgumentCanBeRetrived()
     {
-        _userCommandNoArgs.RestArgumentName.Should().BeNull();
-        _userCommandVarArgs.RestArgumentName.Should().Be("e");
+        _userCommandNoArgs.RestArgame.Should().BeNull();
+        _userCommandVarArgs.RestArgame.Should().Be("e");
     }
 
     [SetUp]

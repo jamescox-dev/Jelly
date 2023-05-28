@@ -2,9 +2,7 @@ namespace Jelly.Commands;
 
 public class SimpleMacro : ICommand
 {
-    public delegate Value MacroDelegate(IScope scope, ListValue args);
-
-    public EvaluationFlags EvaluationFlags => EvaluationFlags.ReturnValue;
+    public delegate Value MacroDelegate(IEnvironment env, ListValue args);
 
     readonly MacroDelegate _macro;
 
@@ -13,8 +11,8 @@ public class SimpleMacro : ICommand
         _macro = macro;
     }
 
-    public Value Invoke(IScope scope, ListValue args)
+    public Value Invoke(IEnvironment env, ListValue args)
     {
-        return _macro(scope, args);
+        return env.Evaluate(_macro(env, args).ToNode());
     }
 }

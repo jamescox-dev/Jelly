@@ -53,7 +53,7 @@ public class DefineCommandEvaluatorTests
 
         var definedCommnad = (UserCommand)_scope.GetCommand("test");
 
-        definedCommnad.RequiredArgumentNames.Should().Equal("a", "b");
+        definedCommnad.RequiredArgNames.Should().Equal("a", "b");
     }
 
     [Test]
@@ -73,9 +73,9 @@ public class DefineCommandEvaluatorTests
 
         var definedCommnad = (UserCommand)_scope.GetCommand("test");
 
-        definedCommnad.RequiredArgumentNames.Should().Equal("a", "b");
-        definedCommnad.OptionalArgumentNames.Should().Equal("c");
-        definedCommnad.OptionalArgumentDefaultValues.Should().Equal("1".ToValue());
+        definedCommnad.RequiredArgNames.Should().Equal("a", "b");
+        definedCommnad.OptionalArgNames.Should().Equal("c");
+        definedCommnad.OptionalArgDefaultValues.Should().Equal("1".ToValue());
     }
 
     [Test]
@@ -124,7 +124,7 @@ public class DefineCommandEvaluatorTests
 
         var definedCommnad = (UserCommand)_scope.GetCommand("test");
 
-        definedCommnad.RestArgumentName.Should().Be(restArgumentName);
+        definedCommnad.RestArgame.Should().Be(restArgumentName);
     }
 
     [Test]

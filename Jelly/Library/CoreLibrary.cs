@@ -22,11 +22,11 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
     }
 
-    Value BreakMacro(IScope scope, ListValue args)
+    Value BreakMacro(IEnvironment env, ListValue args)
     {
         if (args.Count != 0)
         {
-            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[0].ToDictionaryValue())}'.");
+            throw Error.Arg($"Unexpected argument '{env.Evaluate(args[0].ToNode())}'.");
         }
 
         return Node.Raise(
@@ -36,11 +36,11 @@ public class CoreLibrary : ILibrary
         );
     }
 
-    Value ContinueMacro(IScope scope, ListValue args)
+    Value ContinueMacro(IEnvironment env, ListValue args)
     {
         if (args.Count != 0)
         {
-            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[0].ToDictionaryValue())}'.");
+            throw Error.Arg($"Unexpected argument '{env.Evaluate(args[0].ToNode())}'.");
         }
 
         return Node.Raise(
@@ -50,7 +50,7 @@ public class CoreLibrary : ILibrary
         );
     }
 
-    Value DefMacro(IScope scope, ListValue args)
+    Value DefMacro(IEnvironment env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -61,8 +61,8 @@ public class CoreLibrary : ILibrary
             throw Error.Arg("Expected 'body'.");
         }
 
-        var name = args[0].ToDictionaryValue();
-        var body = args[args.Count - 1].ToDictionaryValue();
+        var name = args[0].ToNode();
+        var body = args[args.Count - 1].ToNode();
 
         var requireArg = true;
         var expectDefault = false;
@@ -74,7 +74,7 @@ public class CoreLibrary : ILibrary
             var argDict = arg.ToDictionaryValue();
             if (expectEquals && !IsKeyword(argDict, "="))
             {
-                throw Error.Arg($"Argument '{Evaluator.Shared.Evaluate(scope, argNames[argNames.Count - 1].ToDictionaryValue())}' must have a default value.");
+                throw Error.Arg($"Argument '{env.Evaluate(argNames[argNames.Count - 1].ToNode())}' must have a default value.");
             }
             if (argNames.Count > 0 && IsKeyword(argDict, "=") && !expectDefault && !requireArg)
             {
@@ -100,7 +100,7 @@ public class CoreLibrary : ILibrary
 
         if (expectEquals)
         {
-            throw Error.Arg($"Argument '{Evaluator.Shared.Evaluate(scope, argNames[argNames.Count - 1].ToDictionaryValue())}' must have a default value.");
+            throw Error.Arg($"Argument '{env.Evaluate(argNames[argNames.Count - 1].ToNode())}' must have a default value.");
         }
 
         DictionaryValue? restArg = null;
@@ -120,7 +120,7 @@ public class CoreLibrary : ILibrary
         return Node.IsVariable(nodeDict) ? Node.Literal(nodeDict[Keywords.Name].ToString()) : nodeDict;
     }
 
-    Value ForMacro(IScope scope, ListValue args)
+    Value ForMacro(IEnvironment env, ListValue args)
     {
         // TODO:  for i = 1 to 10 {}, for i = 1 to 10 step 2 {}, for v in list {}, for i v in list, for v of dict {}, for k v of dict {}
 
@@ -134,7 +134,7 @@ public class CoreLibrary : ILibrary
         }
         else if (args.Count >= 2)
         {
-            if (IsKeyword(args[1].ToDictionaryValue(), "in"))
+            if (IsKeyword(args[1].ToNode(), "in"))
             {
                 if (args.Count == 2)
                 {
@@ -146,10 +146,10 @@ public class CoreLibrary : ILibrary
                 }
                 else if (args.Count > 4)
                 {
-                    throw Error.Arg($"Unexpected '{Evaluator.Shared.Evaluate(scope, args[4].ToDictionaryValue())}', after 'body'.");
+                    throw Error.Arg($"Unexpected '{env.Evaluate(args[4].ToNode())}', after 'body'.");
                 }
             }
-            else if (IsKeyword(args[1].ToDictionaryValue(), "of"))
+            else if (IsKeyword(args[1].ToNode(), "of"))
             {
                 if (args.Count == 2)
                 {
@@ -161,10 +161,10 @@ public class CoreLibrary : ILibrary
                 }
                 else if (args.Count > 4)
                 {
-                    throw Error.Arg($"Unexpected '{Evaluator.Shared.Evaluate(scope, args[4].ToDictionaryValue())}', after 'body'.");
+                    throw Error.Arg($"Unexpected '{env.Evaluate(args[4].ToNode())}', after 'body'.");
                 }
             }
-            else if (IsKeyword(args[1].ToDictionaryValue(), "="))
+            else if (IsKeyword(args[1].ToNode(), "="))
             {
                 throw Error.Arg("Expected 'start'.");
             }
@@ -173,7 +173,7 @@ public class CoreLibrary : ILibrary
         throw new NotImplementedException();
     }
 
-    Value IfMacro(IScope scope, ListValue args)
+    Value IfMacro(IEnvironment env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -184,15 +184,15 @@ public class CoreLibrary : ILibrary
             throw Error.Arg("Expected 'then_body'.");
         }
 
-        var conditions = new List<DictionaryValue> { args[0].ToDictionaryValue() };
-        var thenBodies = new List<DictionaryValue> { args[1].ToDictionaryValue() };
+        var conditions = new List<DictionaryValue> { args[0].ToNode() };
+        var thenBodies = new List<DictionaryValue> { args[1].ToNode() };
         DictionaryValue? elseBody = null;
 
         var expectElse = false;
         var i = 2;
         while (i < args.Count)
         {
-            var arg = args[i].ToDictionaryValue();
+            var arg = args[i].ToNode();
 
             if (i % 3 == 0)
             {
@@ -275,19 +275,19 @@ public class CoreLibrary : ILibrary
                 .Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    string[] LsDefCmd(IScope scope, bool localOnly = false)
+    string[] LsDefCmd(IEnvironment env, bool localOnly = false)
     {
-        var commands = scope.GetCommandNames(localOnly);
+        var commands = env.CurrentScope.GetCommandNames(localOnly);
         return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
     }
 
-    string[] LsVarCmd(IScope scope, bool localOnly = false)
+    string[] LsVarCmd(IEnvironment env, bool localOnly = false)
     {
-        var commands = scope.GetVariableNames(localOnly);
+        var commands = env.CurrentScope.GetVariableNames(localOnly);
         return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
     }
 
-    Value RaiseMacro(IScope scope, ListValue args)
+    Value RaiseMacro(IEnvironment env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -295,27 +295,27 @@ public class CoreLibrary : ILibrary
         }
         if (args.Count > 3)
         {
-            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[3].ToDictionaryValue())}'.");
+            throw Error.Arg($"Unexpected argument '{env.Evaluate(args[3].ToNode())}'.");
         }
 
-        var type = args[0].ToDictionaryValue();
-        var message = args.Count > 1 ? args[1].ToDictionaryValue() : Node.Literal(Value.Empty);
-        var value = args.Count > 2 ? args[2].ToDictionaryValue() : Node.Literal(Value.Empty);
+        var type = args[0].ToNode();
+        var message = args.Count > 1 ? args[1].ToNode() : Node.Literal(Value.Empty);
+        var value = args.Count > 2 ? args[2].ToNode() : Node.Literal(Value.Empty);
 
         return Node.Raise(type, message, value);
     }
 
-    Value ReturnMacro(IScope scope, ListValue args)
+    Value ReturnMacro(IEnvironment env, ListValue args)
     {
         var value = Node.Literal(Value.Empty);
 
         if (args.Count == 1)
         {
-            value = args[0].ToDictionaryValue();
+            value = args[0].ToNode();
         }
         else if (args.Count > 1)
         {
-            throw Error.Arg($"Unexpected argument '{Evaluator.Shared.Evaluate(scope, args[1].ToDictionaryValue())}'.");
+            throw Error.Arg($"Unexpected argument '{env.Evaluate(args[1].ToNode())}'.");
         }
 
         return Node.Raise(
@@ -324,19 +324,19 @@ public class CoreLibrary : ILibrary
             value);
     }
 
-    Value TryMacro(IScope scope, ListValue args)
+    Value TryMacro(IEnvironment env, ListValue args)
     {
         if (args.Count == 0)
         {
             throw Error.Arg("Expected 'body' argument.");
         }
 
-        var body = Node.Scope(args[0].ToDictionaryValue());
+        var body = Node.Scope(args[0].ToNode());
         var errorHandlers = new List<(DictionaryValue, DictionaryValue)>();
         DictionaryValue? finallyBody = null;
         for (var i = 1; i < args.Count;)
         {
-            var arg = args[i].ToDictionaryValue();
+            var arg = args[i].ToNode();
 
             if (IsKeyword(arg, "except"))
             {
@@ -352,7 +352,7 @@ public class CoreLibrary : ILibrary
                 {
                     throw Error.Arg("Expected 'except_body' argument.");
                 }
-                errorHandlers.Add((args[i + 1].ToDictionaryValue(), Node.Scope(args[i + 2].ToDictionaryValue())));
+                errorHandlers.Add((args[i + 1].ToNode(), Node.Scope(args[i + 2].ToNode())));
                 i += 3;
             }
             else if (IsKeyword(arg, "finally"))
@@ -365,12 +365,12 @@ public class CoreLibrary : ILibrary
                 {
                     throw Error.Arg("Expected 'finally_body' argument.");
                 }
-                finallyBody = Node.Scope(args[i + 1].ToDictionaryValue());
+                finallyBody = Node.Scope(args[i + 1].ToNode());
                 i += 2;
             }
             else
             {
-                throw Error.Arg($"Unexpected '{Evaluator.Shared.Evaluate(scope, arg)}' argument.");
+                throw Error.Arg($"Unexpected '{env.Evaluate(arg)}' argument.");
             }
         }
 
@@ -381,7 +381,7 @@ public class CoreLibrary : ILibrary
         );
     }
 
-    Value VarMacro(IScope scope, ListValue args)
+    Value VarMacro(IEnvironment env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -389,7 +389,7 @@ public class CoreLibrary : ILibrary
         }
         if (args.Count >= 2)
         {
-            var keyword = Evaluator.Shared.Evaluate(scope, args[1].ToDictionaryValue()).ToString();
+            var keyword = env.Evaluate(args[1].ToNode()).ToString();
             if (!keyword.Equals("=", StringComparison.InvariantCulture))
             {
                 throw new ArgError($"Expected keyword '=', but found '{keyword}'.");
@@ -397,18 +397,18 @@ public class CoreLibrary : ILibrary
         }
         if (args.Count > 3)
         {
-            var unexpected = Evaluator.Shared.Evaluate(scope, args[3].ToDictionaryValue()).ToString();
+            var unexpected = env.Evaluate(args[3].ToNode()).ToString();
             throw new ArgError($"Unexpected value '{unexpected}'.");
         }
 
-        var varnameNode = args[0].ToDictionaryValue();
+        var varnameNode = args[0].ToNode();
         var isVariable = varnameNode.ContainsKey(Keywords.Type) && varnameNode[Keywords.Type].Equals(Keywords.Variable);
-        var varname = isVariable ? varnameNode[Keywords.Name].ToString() : Evaluator.Shared.Evaluate(scope, varnameNode).ToString();
+        var varname = isVariable ? varnameNode[Keywords.Name].ToString() : env.Evaluate(varnameNode).ToString();
 
-        return Node.DefineVariable(varname, args.Count == 3 ? args[2].ToDictionaryValue() : Node.Literal(Value.Empty));
+        return Node.DefineVariable(varname, args.Count == 3 ? args[2].ToNode() : Node.Literal(Value.Empty));
     }
 
-    Value WhileMacro(IScope scope, ListValue args)
+    Value WhileMacro(IEnvironment env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -420,10 +420,10 @@ public class CoreLibrary : ILibrary
         }
         if (args.Count > 2)
         {
-            var unexpected = Evaluator.Shared.Evaluate(scope, args[2].ToDictionaryValue()).ToString();
+            var unexpected = env.Evaluate(args[2].ToNode()).ToString();
             throw new ArgError($"Unexpected value '{unexpected}'.");
         }
 
-        return Node.While(args[0].ToDictionaryValue(), Node.Scope(args[1].ToDictionaryValue()));
+        return Node.While(args[0].ToNode(), Node.Scope(args[1].ToNode()));
     }
 }

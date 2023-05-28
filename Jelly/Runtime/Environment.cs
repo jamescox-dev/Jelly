@@ -52,4 +52,17 @@ public class Environment : IEnvironment
         CurrentScope = new Scope(CurrentScope);
         return CurrentScope;
     }
+
+    public Value RunInNestedScope(Func<Value> action)
+    {
+        PushScope();
+        try
+        {
+            return action();
+        }
+        finally
+        {
+            PopScope();
+        }
+    }
 }

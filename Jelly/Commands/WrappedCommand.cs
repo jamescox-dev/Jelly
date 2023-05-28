@@ -1,115 +1,131 @@
 namespace Jelly.Commands;
 
-public class WrappedCommand : ICommand
+public class WrappedCommand : CommandBase
 {
-    readonly ITypeMarshaller _typeMashaller;
+    readonly ITypeMarshaller _typeMarshaller;
     readonly Delegate _wrappedDelegate;
-    readonly Type[] _argumentTypes;
-    readonly string[] _argumentNames;
-    readonly object?[] _optionalArgumentDefaultValues;
-    readonly int _requiredArgumentCount;
-    readonly int _maxArgumentCount;
-    readonly Type? _paramsType;
-    readonly bool _hasScopeArgument;
-
-    public EvaluationFlags EvaluationFlags => EvaluationFlags.Arguments;
+    readonly Type[] _argTypes;
+    readonly string[] _argNames;
+    readonly object?[] _optionalArgDefaultValues;
+    readonly int _minPositionalArgCount;
+    readonly int _maxPositionalArgsCount;
+    readonly Type? _paramsArgType;
+    readonly bool _hasEnvArg;
 
     public WrappedCommand(Delegate wrappedDelegate, ITypeMarshaller typeMarshaller)
     {
         _wrappedDelegate = wrappedDelegate;
-        _typeMashaller = typeMarshaller;
+        _typeMarshaller = typeMarshaller;
 
-        var argumentTypes = new List<Type>();
-        var argumentNames = new List<string>();
-        var optionalArgumentDefaultValues = new List<object?>();
-        var requiredArgumentCount = 0;
-        var maxArgumentCount = 0;
-        Type? paramsType = null;
-        var hasScopeArgument = false;
-        var firstArgument = true;
+        var argTypes = new List<Type>();
+        var argNames = new List<string>();
+        var optionalArgDefaultValues = new List<object?>();
+        var minPositionalArgCount = 0;
+        var maxPositionalArgCount = 0;
+        Type? paramsArgType = null;
+        var hasEnvArg = false;
+        var isFirstArg = true;
         foreach (var param in _wrappedDelegate.Method.GetParameters())
         {
-            if (firstArgument && param.ParameterType == typeof(IScope))
+            if (isFirstArg && param.ParameterType == typeof(IEnvironment))
             {
-                hasScopeArgument = true;
+                hasEnvArg = true;
             }
             else
             {
-                argumentTypes.Add(param.ParameterType);
-                argumentNames.Add(param.Name ?? "");
+                argTypes.Add(param.ParameterType);
+                argNames.Add(param.Name ?? string.Empty);
                 if (param.IsOptional)
                 {
-                    optionalArgumentDefaultValues.Add(param.DefaultValue);
-                    ++maxArgumentCount;
+                    optionalArgDefaultValues.Add(param.DefaultValue);
+                    ++maxPositionalArgCount;
                 }
                 else
                 {
                     if (Attribute.IsDefined(param, typeof(ParamArrayAttribute)))
                     {
-                        paramsType = param.ParameterType.GetElementType();
+                        paramsArgType = param.ParameterType.GetElementType();
                     }
                     else
                     {
-                        ++maxArgumentCount;
-                        ++requiredArgumentCount;
+                        ++maxPositionalArgCount;
+                        ++minPositionalArgCount;
                     }
                 }
             }
-            firstArgument = false;
+            isFirstArg = false;
         }
-        _argumentTypes = argumentTypes.ToArray();
-        _argumentNames = argumentNames.ToArray();
-        _optionalArgumentDefaultValues = optionalArgumentDefaultValues.ToArray();
-        _requiredArgumentCount = requiredArgumentCount;
-        _maxArgumentCount = maxArgumentCount;
-        _paramsType = paramsType;
-        _hasScopeArgument = hasScopeArgument;
+        _argTypes = argTypes.ToArray();
+        _argNames = argNames.ToArray();
+        _optionalArgDefaultValues = optionalArgDefaultValues.ToArray();
+        _minPositionalArgCount = minPositionalArgCount;
+        _maxPositionalArgsCount = maxPositionalArgCount;
+        _paramsArgType = paramsArgType;
+        _hasEnvArg = hasEnvArg;
     }
 
-    public Value Invoke(IScope scope, ListValue args)
+    // TODO:  In need of some serious refactoring.
+    public override Value Invoke(IEnvironment env, ListValue args)
     {
-        if (args.Count > _maxArgumentCount && _paramsType is null)
-        {
-            throw Error.Arg($"Unexpected argument '{args[_requiredArgumentCount]}'.");
-        }
-        if (args.Count < _requiredArgumentCount)
-        {
-            throw Error.Arg($"Expected '{_argumentNames[args.Count]}' argument.");
-        }
+        EnsureArgCountIsValid(args);
+        args = EvaluateArgs(env, args);
 
-        var scopeOffset = _hasScopeArgument ? 1 : 0;
-        var clrArgs = new object?[_maxArgumentCount + (_paramsType is not null ? 1 : 0) + scopeOffset];
+        var scopeOffset = _hasEnvArg ? 1 : 0;
+        var clrArgs = new object?[_maxPositionalArgsCount + (_paramsArgType is not null ? 1 : 0) + scopeOffset];
         var i = scopeOffset;
-        if (_hasScopeArgument)
+        if (_hasEnvArg)
         {
-            clrArgs[0] = scope;
+            clrArgs[0] = env;
         }
-        foreach (var arg in args.Take(_maxArgumentCount))
+        foreach (var arg in args.Take(_maxPositionalArgsCount))
         {
-            clrArgs[i] = _typeMashaller.Marshal(arg, _argumentTypes[i - scopeOffset]);
+            clrArgs[i] = _typeMarshaller.Marshal(arg, _argTypes[i - scopeOffset]);
             ++i;
         }
-        while (i < _maxArgumentCount)
+        while (i < _maxPositionalArgsCount)
         {
-            clrArgs[i] = _optionalArgumentDefaultValues[i - _requiredArgumentCount - scopeOffset];
+            clrArgs[i] = _optionalArgDefaultValues[i - _minPositionalArgCount - scopeOffset];
             ++i;
         }
-        if (_paramsType is not null)
+        if (_paramsArgType is not null)
         {
-            var extraCount = args.Count - _maxArgumentCount;
-            var extraParams = Array.CreateInstance(_paramsType, extraCount);
+            var extraCount = args.Count - _maxPositionalArgsCount;
+            var extraParams = Array.CreateInstance(_paramsArgType, extraCount);
 
             for (var j = 0; j < extraCount; ++j)
             {
-                extraParams.SetValue(_typeMashaller.Marshal(args[i], _paramsType), j);
+                extraParams.SetValue(_typeMarshaller.Marshal(args[i], _paramsArgType), j);
                 ++i;
             }
 
-            clrArgs[_maxArgumentCount] = extraParams;
+            clrArgs[_maxPositionalArgsCount] = extraParams;
         }
 
         var result = _wrappedDelegate.DynamicInvoke(clrArgs);
+        return _typeMarshaller.Marshal(result);
+    }
 
-        return _typeMashaller.Marshal(result);
+    void EnsureArgCountIsValid(ListValue args)
+    {
+        if (args.Count < _minPositionalArgCount)
+        {
+            throw ExpectedArgError(args);
+        }
+        if (args.Count > _maxPositionalArgsCount && _paramsArgType is null)
+        {
+            throw UnexpectedArgError(args);
+        }
+    }
+
+    // TODO:  This should be a standard error.
+    Error ExpectedArgError(ListValue args)
+    {
+        return Error.Arg($"Expected '{_argNames[args.Count]}' argument.");
+    }
+
+    // TODO:  This should be a standard error.
+    Error UnexpectedArgError(ListValue args)
+    {
+        throw Error.Arg($"Unexpected argument '{args[_minPositionalArgCount]}'.");
     }
 }

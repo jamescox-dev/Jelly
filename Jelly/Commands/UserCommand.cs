@@ -2,68 +2,108 @@ namespace Jelly.Commands;
 
 using Jelly.Evaluator;
 
-public class UserCommand : ICommand
+public class UserCommand : CommandBase
 {
-    public EvaluationFlags EvaluationFlags => Commands.EvaluationFlags.Arguments;
-
     public DictionaryValue Body => _body;
 
-    public IReadOnlyCollection<string> RequiredArgumentNames => _requiredArguments;
+    public IReadOnlyCollection<string> RequiredArgNames => _requiredArgNames;
 
-    public IReadOnlyCollection<string> OptionalArgumentNames => _optionalArguments.Select(arg => arg.Item1).ToArray();
+    public IReadOnlyCollection<string> OptionalArgNames => _optionalArgs.Select(arg => arg.Item1).ToArray();
 
-    public IReadOnlyCollection<Value> OptionalArgumentDefaultValues => _optionalArguments.Select(arg => arg.Item2).ToArray();
+    public IReadOnlyCollection<Value> OptionalArgDefaultValues => _optionalArgs.Select(arg => arg.Item2).ToArray();
 
-    public string? RestArgumentName => _restArgument;
+    public string? RestArgame => _restArgName;
 
-    readonly string[] _requiredArguments;
-    readonly (string, Value)[] _optionalArguments;
-    readonly string? _restArgument;
+    readonly string[] _requiredArgNames;
+    readonly (string, Value)[] _optionalArgs;
+    readonly string? _restArgName;
     readonly DictionaryValue _body;
 
-    public UserCommand(IEnumerable<string> requiredArguments, IEnumerable<(string, Value)> optionalArguments, string? restArgument, DictionaryValue body)
+    public UserCommand(
+        IEnumerable<string> requiredArgNames,
+        IEnumerable<(string, Value)> optionalArgs,
+        string? restArgName,
+        DictionaryValue body)
     {
-        _requiredArguments = requiredArguments.ToArray();
-        _optionalArguments = optionalArguments.ToArray();
-        _restArgument = restArgument;
+        _requiredArgNames = requiredArgNames.ToArray();
+        _optionalArgs = optionalArgs.ToArray();
+        _restArgName = restArgName;
         _body = body;
     }
 
-    public Value Invoke(IScope scope, ListValue args)
+    public override Value Invoke(IEnvironment env, ListValue args)
     {
-        var commandScope = new Scope(scope);
+        return env.RunInNestedScope(() =>
+        {
+            EnsureArgCountIsValid(args);
+            args = EvaluateArgs(env, args);
 
-        if (args.Count < _requiredArguments.Length)
-        {
-            throw Error.Arg($"Expected '{_requiredArguments[args.Count]}' argument.");
-        }
-        if (args.Count > _requiredArguments.Length + _optionalArguments.Length && _restArgument is null)
-        {
-            throw Error.Arg($"Unexpected argument '{args[_requiredArguments.Length + _optionalArguments.Length]}'.");
-        }
+            DefineRequiredArgs(env, args);
+            DefineOptionalArgs(env, args);
+            DefineRestArg(env, args);
 
-        var i = 0;
-        foreach (var arg in _requiredArguments)
-        {
-            commandScope.DefineVariable(arg, args[i++]);
-        }
-        foreach (var (arg, defaultValue) in _optionalArguments)
-        {
-            commandScope.DefineVariable(arg, i < args.Count ? args[i++] : defaultValue);
-        }
-        if (_restArgument is not null)
-        {
-            commandScope.DefineVariable(_restArgument!, new ListValue(args.Skip(i)));
-        }
+            return EvaluateBody(env);
+        });
+    }
 
+    void DefineRequiredArgs(IEnvironment env, ListValue args)
+    {
+        foreach (var (argName, argValue) in _requiredArgNames.Zip(args.Take(args.Count)))
+        {
+            env.CurrentScope.DefineVariable(argName, argValue);
+        }
+    }
+
+    void DefineOptionalArgs(IEnvironment env, ListValue args)
+    {
+        var i = _requiredArgNames.Length;
+        foreach (var (argName, defaultValue) in _optionalArgs)
+        {
+            env.CurrentScope.DefineVariable(argName, i < args.Count ? args[i++] : defaultValue);
+        }
+    }
+
+    void DefineRestArg(IEnvironment env, ListValue args)
+    {
+        if (_restArgName is not null)
+        {
+            env.CurrentScope.DefineVariable(_restArgName, new ListValue(args[^1]));
+        }
+    }
+
+    void EnsureArgCountIsValid(ListValue args)
+    {
+        if (args.Count < _requiredArgNames.Length)
+        {
+            throw ExpectedArgError(args);
+        }
+        if (args.Count > _requiredArgNames.Length + _optionalArgs.Length && _restArgName is null)
+        {
+            throw UnexpectedArgError(args);
+        }
+    }
+
+    // TODO:  This should be a standard error.
+    Error ExpectedArgError(ListValue args)
+    {
+        return Error.Arg($"Expected '{_requiredArgNames[args.Count]}' argument.");
+    }
+
+    // TODO:  This should be a standard error.
+    Error UnexpectedArgError(ListValue args)
+    {
+        throw Error.Arg($"Unexpected argument '{args[_requiredArgNames.Length + _optionalArgs.Length]}'.");
+    }
+
+    Value EvaluateBody(IEnvironment env)
+    {
         try
         {
-            // TODO:  To change this.
-            return Value.Empty;//Evaluator.Shared.Evaluate(commandScope, _body);
+            return env.Evaluate(_body);
         }
-        catch (Return @return)
+        catch (Return functionReturn)
         {
-            return @return.Value;
+            return functionReturn.Value;
         }
     }
 }
