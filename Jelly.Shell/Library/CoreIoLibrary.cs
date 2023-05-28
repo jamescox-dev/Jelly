@@ -18,14 +18,14 @@ public class CoreIoLibrary : ILibrary
         scope.DefineCommand("input", new SimpleCommand(CmdInput));
     }
 
-    public Value CmdPrint(IScope scope, ListValue args)
+    public Value CmdPrint(IEnvironment env, ListValue args)
     {
         _writer.WriteLine(string.Join(" ", args));
 
         return Value.Empty;
     }
 
-    public Value CmdPrintNoNewLine(IScope scope, ListValue args)
+    public Value CmdPrintNoNewLine(IEnvironment env, ListValue args)
     {
         if (args.Count > 0)
         {
@@ -35,7 +35,7 @@ public class CoreIoLibrary : ILibrary
         return Value.Empty;
     }
 
-    public Value CmdInput(IScope scope, ListValue args)
+    public Value CmdInput(IEnvironment env, ListValue args)
     {
         if (args.Count > 0)
         {

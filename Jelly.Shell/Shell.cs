@@ -4,20 +4,22 @@ public class Shell
 {
     readonly IReader _reader;
     readonly IWriter _writer;
-    readonly IScope _globalScope;
-    readonly IParser _parser;
-    readonly IEvaluator _evaluator;
+    readonly IEnvironment _env;
     readonly IEnumerable<ILibrary> _libraries;
     readonly ShellConfig _config;
     readonly IHistoryManager _historyManager;
 
-    public Shell(IReader reader, IWriter writer, IScope globalScope, IParser parser, IEvaluator evaluator, IEnumerable<ILibrary> libraries, ShellConfig config, IHistoryManager historyManager)
+    public Shell(
+        IReader reader,
+        IWriter writer,
+        IEnvironment env,
+        IEnumerable<ILibrary> libraries,
+        ShellConfig config,
+        IHistoryManager historyManager)
     {
         _reader = reader;
         _writer = writer;
-        _globalScope = globalScope;
-        _parser = parser;
-        _evaluator = evaluator;
+        _env = env;
         _libraries = libraries;
         _config = config;
         _historyManager = historyManager;
@@ -60,7 +62,7 @@ public class Shell
     {
         foreach (var library in _libraries)
         {
-            library.LoadIntoScope(_globalScope);
+            library.LoadIntoScope(_env.GlobalScope);
         }
     }
 
@@ -78,7 +80,7 @@ public class Shell
             input += (input.Length > 0 ? "\n" : "") + line;
             try
             {
-                script = _parser.Parse(new Scanner(input));
+                script = _env.Parser.Parse(new Scanner(input));
                 if (script is not null)
                 {
                     AddHistory(input);
@@ -102,7 +104,7 @@ public class Shell
 
     Value Evaluate(DictionaryValue script)
     {
-        return _evaluator.Evaluate(_globalScope, script);
+        return _env.Evaluate(script);
     }
 
     void PrintResult(Value result)
@@ -124,8 +126,8 @@ public class Shell
 
         try
         {
-            var script = _parser.Parse(new Scanner(source))!;
-            _evaluator.Evaluate(_globalScope, script);
+            var script = _env.Parser.Parse(new Scanner(source))!;
+            _env.Evaluate(script);
             return 0;
         }
         catch (Error error)

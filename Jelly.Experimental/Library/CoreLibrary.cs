@@ -8,12 +8,12 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("escape", new SimpleCommand(CmdEscape));
     }
 
-    public Value CmdCat(IScope scope, ListValue args)
+    public Value CmdCat(IEnvironment env, ListValue args)
     {
         return string.Join("", args).ToValue();
     }
 
-    public Value CmdEscape(IScope scope, ListValue args)
+    public Value CmdEscape(IEnvironment env, ListValue args)
     {
         return args[0].Escape().ToValue();
     }

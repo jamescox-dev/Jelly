@@ -31,7 +31,7 @@ public class MathLibrary : ILibrary
         return numbers.Max();
     }
 
-    public Value IncMacro(IScope scope, ListValue args)
+    public Value IncMacro(IEnvironment env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -55,7 +55,7 @@ public class MathLibrary : ILibrary
             amount = args[1].ToDictionaryValue();
         }
 
-        var name = Evaluator.Shared.Evaluate(scope, nameNode).ToString();
+        var name = env.Evaluate(nameNode).ToString();
 
         return Node.Assignment(name, Node.BinOp("add", Node.Variable(name), amount));
     }
