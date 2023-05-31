@@ -18,7 +18,7 @@ public class AssignmentEvaluatorTests : EvaluatorTestsBase
     {
         var assignment = Node.Assignment("name", Node.Literal("Bob".ToValue()));
 
-        var result = Evaluate(assignment)
+        var result = Evaluate(assignment);
 
         result.Should().Be("Bob".ToValue());
     }

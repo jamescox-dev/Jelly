@@ -3,18 +3,14 @@ namespace Jelly.Evaluator.Tests;
 using Jelly.Runtime;
 
 [TestFixture]
-public class BinOpEvaluatorTests
+public class BinOpEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Environment _env = null!;
-
     [Test]
     public void ConcatenationsCanBeEvaluated()
     {
         var binOp = Node.BinOp("cat", Node.Literal("jello, "), Node.Literal("world"));
 
-        var result = _evaluator.Evaluate(_env, binOp);
+        var result = Evaluate(binOp);
 
         result.Should().Be("jello, world".ToValue());
     }
@@ -24,7 +20,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("add", Node.Literal(3), Node.Literal(7));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(10.0.ToValue());
     }
@@ -34,7 +30,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("sub", Node.Literal(5), Node.Literal(11));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be((-6.0).ToValue());
     }
@@ -44,7 +40,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("mul", Node.Literal(5), Node.Literal(11));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(55.0.ToValue());
     }
@@ -54,7 +50,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("div", Node.Literal(10), Node.Literal(2));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(5.0.ToValue());
     }
@@ -67,7 +63,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("floordiv", Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(c.ToValue());
     }
@@ -80,7 +76,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("mod", Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(c.ToValue());
     }
@@ -93,7 +89,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("floormod", Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(c.ToValue());
     }
@@ -103,7 +99,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("exp", Node.Literal(10), Node.Literal(2));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(100.0.ToValue());
     }
@@ -126,7 +122,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp(op, Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -178,7 +174,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp(op, Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -195,7 +191,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp(op, Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -210,7 +206,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("andthen", Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -219,14 +215,16 @@ public class BinOpEvaluatorTests
     public void AndThensSecondArgumentIsNotEvaluatedIfTheFirstArgumentEvaluatesToFalse()
     {
         var evaluated = false;
-        _scope.DefineCommand("a", new SimpleCommand((scope, args) => BooleanValue.False));
-        _scope.DefineCommand("b", new SimpleCommand((scope, args) => { evaluated = true; return BooleanValue.True; }));
+        Environment.GlobalScope.DefineCommand("a", new SimpleCommand((scope, args) => BooleanValue.False));
+        Environment.GlobalScope.DefineCommand("b", new SimpleCommand((scope, args) => {
+            evaluated = true; return BooleanValue.True;
+        }));
         var binOp = Node.BinOp(
             "andthen",
             Node.Command(Node.Literal("a"), new ListValue()),
             Node.Command(Node.Literal("b"), new ListValue()));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         evaluated.Should().BeFalse();
     }
@@ -241,7 +239,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("orelse", Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -250,25 +248,25 @@ public class BinOpEvaluatorTests
     public void OrElsesSecondArgumentIsNotEvaluatedIfTheFirstArgumentEvaluatesToTrue()
     {
         var evaluated = false;
-        _scope.DefineCommand("a", new SimpleCommand((scope, args) => BooleanValue.True));
-        _scope.DefineCommand("b", new SimpleCommand((scope, args) => { evaluated = true; return BooleanValue.False; }));
+        Environment.GlobalScope.DefineCommand("a", new SimpleCommand((scope, args) => BooleanValue.True));
+        Environment.GlobalScope.DefineCommand("b", new SimpleCommand((scope, args) => { evaluated = true; return BooleanValue.False; }));
         var binOp = Node.BinOp(
             "orelse",
             Node.Command(Node.Literal("a"), new ListValue()),
             Node.Command(Node.Literal("b"), new ListValue()));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         evaluated.Should().BeFalse();
     }
 
-    [TestCase("unkown")]
+    [TestCase("unknown")]
     [TestCase("foo")]
     public void EvaluatingAnUnknownBinaryOperatorThrowsAValueError(string op)
     {
         var binOp = Node.BinOp(op, Node.Literal("a"), Node.Literal("b"));
 
-        _evaluator.Invoking(e => e.Evaluate(_scope, binOp, _rootEvaluator))
+        Evaluator.Invoking(e => e.Evaluate(Environment, binOp))
             .Should().Throw<ValueError>().WithMessage("Invalid binary operator.");
     }
 
@@ -280,7 +278,7 @@ public class BinOpEvaluatorTests
     {
         var binOp = Node.BinOp("div", Node.Literal(a), Node.Literal(zero));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator).ToDouble();
+        var result = Evaluate(binOp).ToDouble();
 
         double.IsInfinity(result).Should().BeTrue();
         if (sign > 0)
@@ -300,20 +298,17 @@ public class BinOpEvaluatorTests
     [TestCase("add", 1, double.NaN)]
     [TestCase("sub", double.NaN, double.NaN)]
     [TestCase("floordiv", double.NaN, double.NaN)]
-    public void IfAnyOfTheOperandsOfAnArithmaticOperatorAreNaNTheResultIsNaN(string op, double a, double b)
+    public void IfAnyOfTheOperandsOfAnArithmeticOperatorAreNaNTheResultIsNaN(string op, double a, double b)
     {
         var binOp = Node.BinOp(op, Node.Literal(a), Node.Literal(b));
 
-        var result = _evaluator.Evaluate(_scope, binOp, _rootEvaluator);
+        var result = Evaluate(binOp);
 
         double.IsNaN(result.ToDouble()).Should().BeTrue();
     }
 
-    [SetUp]
-    public void Setup()
+    protected override IEvaluator BuildEvaluatorUnderTest()
     {
-        _env = new Environment();
-
-        _evaluator = new BinOpEvaluator();
+        return new BinOpEvaluator();
     }
 }

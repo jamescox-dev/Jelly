@@ -1,7 +1,7 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class ExpressionEvaluatorTests
+public class ExpressionEvaluatorTests : EvaluatorTestsBase
 {
     IEvaluator _evaluator = null!;
 
