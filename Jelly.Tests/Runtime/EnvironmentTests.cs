@@ -107,7 +107,7 @@ public class EnvironmentTests
 
         _mockParser.Setup(m => m.Parse(It.Is<Scanner>(s => s.Source == "test"))).Returns(_testNode);
 
-        _mockEvaluator.Setup(m => m.Evaluate(_environment.GlobalScope, _testNode, _mockEvaluator.Object))
+        _mockEvaluator.Setup(m => m.Evaluate(_environment, _testNode))
             .Returns("RESULT!".ToValue());
     }
 }
