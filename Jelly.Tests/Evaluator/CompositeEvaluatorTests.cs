@@ -1,18 +1,16 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class CompositeEvaluatorTests
+public class CompositeEvaluatorTests : EvaluatorTestsBase
 {
     [Test]
     public void TheResultOfEvaluatingACompositeNodeIsTheResultOfEvaluatingEachOfItsPartsAndConcatenatingTheResults()
     {
-        var compositeEvaluator = new CompositeEvaluator();
-        var evaluator = new LiteralEvaluator();
         var part1 = Node.Literal("jello,".ToValue());
         var part2 = Node.Literal(" world".ToValue());
-        var node = Node.Composite(part1, part2);
+        var composite = Node.Composite(part1, part2);
 
-        var result = compositeEvaluator.Evaluate(new Mock<IScope>().Object, node, evaluator);
+        var result = Evaluate(composite);
 
         result.Should().Be("jello, world".ToValue());
     }
@@ -21,10 +19,15 @@ public class CompositeEvaluatorTests
     public void TheResultOfEvaluatingACompositeNodeThatHasNoPartsIsAnEmptyValue()
     {
         var compositeEvaluator = new CompositeEvaluator();
-        var node = Node.Composite();
+        var composite = Node.Composite();
 
-        var result = compositeEvaluator.Evaluate(new Mock<IScope>().Object, node, compositeEvaluator);
+        var result = Evaluate(composite);
 
         result.Should().Be(Value.Empty);
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new CompositeEvaluator();
     }
 }

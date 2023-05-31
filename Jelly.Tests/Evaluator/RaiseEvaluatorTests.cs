@@ -1,25 +1,22 @@
-namespace Jelly.Evaluator;
+namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class RaiseEvaluatorTests
+public class RaiseEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Evaluator _rootEvaluator = null!;
-
     [Test]
     public void AErrorIsThrownOfTheCorrectTypeAndWithTheCorrectMessageAndValue()
     {
-        var node = Node.Raise(Node.Literal("error"), Node.Literal("Test message."), Node.Literal("testvalue"));
+        var node = Node.Raise(Node.Literal("error"), Node.Literal("Test message."), Node.Literal("test-value"));
 
-        _evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, node, _rootEvaluator)).Should()
-            .Throw<Error>().WithMessage("Test message.").Where(e => e.Value.Equals("testvalue".ToValue())).Where(e => e.Type == Error.NormalizeType(e.Type));
+        Evaluator.Invoking(e => e.Evaluate(Environment, node)).Should()
+            .Throw<Error>()
+            .WithMessage("Test message.")
+            .Where(e => e.Value.Equals("test-value".ToValue()))
+            .Where(e => e.Type == Error.NormalizeType(e.Type));
     }
 
-    [SetUp]
-    public void Setup()
+    protected override IEvaluator BuildEvaluatorUnderTest()
     {
-        _evaluator = new RaiseEvaluator();
-        _rootEvaluator = new Evaluator();
+        return new RaiseEvaluator();
     }
 }

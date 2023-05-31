@@ -1,35 +1,30 @@
-namespace Jelly.Evaluator.Test;
-
-using Jelly;
-
-
+namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class DefineVariableEvaluatorTests
+public class DefineVariableEvaluatorTests : EvaluatorTestsBase
 {
     [Test]
     public void TheCorrectVariableIsDefinedInTheScope()
     {
-        var defineVariableEvaluator = new DefineVariableEvaluator();
-        var evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var assignment = Node.DefineVariable("name", Node.Literal("Bob".ToValue()));
 
-        defineVariableEvaluator.Evaluate(scope.Object, assignment, evaluator);
+        Evaluate(assignment);
 
-        scope.Verify(m => m.DefineVariable("name", "Bob".ToValue()), Times.Once);
+        Environment.GlobalScope.Invoking(s => s.GetVariable("Bob")).Should().NotThrow();
     }
 
     [Test]
     public void TheResultOfTheVariableDefinitionIsTheValueOfTheVariable()
     {
-        var DefineVariableEvaluator = new DefineVariableEvaluator();
-        var evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var assignment = Node.Assignment("name", Node.Literal("Bob".ToValue()));
 
-        var result = DefineVariableEvaluator.Evaluate(scope.Object, assignment, evaluator);
+        var result = Evaluate(assignment);
 
         result.Should().Be("Bob".ToValue());
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new DefineVariableEvaluator();
     }
 }
