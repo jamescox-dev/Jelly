@@ -36,14 +36,14 @@ public class ValueSerializerTests
     [TestCase(@"[[]")]
     [TestCase(@"[[]]]")]
     [TestCase(@"\'\\'\\\'\\\\'")]
-    public void ValuesCanBeEscapedSoThatTheirValueCanBeReiterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
+    public void ValuesCanBeEscapedSoThatTheirValueCanBeReinterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
         var parser = new WordParser();
         var evaluator = new Evaluator();
 
         var escapedValue = ValueSerializer.Escape(stringValue);
 
-        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!, evaluator).ToString().Should().Be(stringValue, $"escapedValue = {escapedValue}");
+        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!).ToString().Should().Be(stringValue, $"escapedValue = {escapedValue}");
     }
 
     [TestCase("a$b", @"a\$b", true)]
@@ -51,7 +51,7 @@ public class ValueSerializerTests
     [TestCase("a}b", @"a}b", true)]
     [TestCase("a{b{", @"a\{b\{", false)]
     [TestCase("a b", @"a\ b", false)]
-    public void ValuesShouldBeEsscapedWithBackSlashIfTheyOnlyContainOneNonWhitespaceSpecialCharacter(string stringValue, string expectedEscape, bool shouldMatch)
+    public void ValuesShouldBeEscapedWithBackSlashIfTheyOnlyContainOneNonWhitespaceSpecialCharacter(string stringValue, string expectedEscape, bool shouldMatch)
     {
         var escapedValue = ValueSerializer.Escape(stringValue);
 

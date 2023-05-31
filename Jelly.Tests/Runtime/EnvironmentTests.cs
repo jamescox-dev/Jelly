@@ -12,11 +12,20 @@ public class EnvironmentTests
     Mock<IParser> _mockParser = null!;
     Mock<IEvaluator> _mockEvaluator = null!;
 
-
     [Test]
     public void TheEnvironmentIsConstructedWithAGlobalScope()
     {
         _environment.GlobalScope.Should().NotBeNull();
+    }
+
+    [Test]
+    public void TheEnvironmentCanBeConstructedWithAUserSpecifiedGlobalScope()
+    {
+        var scope = new Scope();
+
+        var env = new Environment(scope);
+
+        env.GlobalScope.Should().Be(scope);
     }
 
     [Test]

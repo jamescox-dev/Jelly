@@ -122,7 +122,7 @@ public class ValueTests
     [TestCase(@"'hi'")]
     [TestCase("\"bye\"")]
     [TestCase("['single' \"double\"]")]
-    public void ValuesCanBeEscapedSoThatTheirValueCanBeReiterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
+    public void ValuesCanBeEscapedSoThatTheirValueCanBeReinterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
         var parser = new WordParser();
         var evaluator = new Evaluator();
@@ -130,7 +130,7 @@ public class ValueTests
 
         var escapedValue = value.Escape();
 
-        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!, evaluator).Should().Be(value, $"escapedValue = {escapedValue}");
+        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!).Should().Be(value, $"escapedValue = {escapedValue}");
     }
 
     [Test]

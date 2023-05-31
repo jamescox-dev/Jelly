@@ -3,14 +3,15 @@ namespace Jelly.Tests;
 public class TestCommand : ICommand
 {
     public int Invokations { get; set; } = 0;
-    public EvaluationFlags EvaluationFlags { get; set; } = EvaluationFlags.Arguments;
     public Value ReturnValue { get; set; } = "42".ToValue();
+    public IEnvironment? EnvironmentPassedToInvoke { get; private set; }
     public IScope? ScopePassedToInvoke { get; private set; }
     public ListValue? ArgsPassedToInvoke { get; private set; }
 
-    public Value Invoke(IScope scope, ListValue args)
+    public Value Invoke(IEnvironment env, ListValue args)
     {
-        ScopePassedToInvoke = scope;
+        EnvironmentPassedToInvoke = env;
+        ScopePassedToInvoke = env.CurrentScope;
         ArgsPassedToInvoke = args;
         ++Invokations;
         return ReturnValue;

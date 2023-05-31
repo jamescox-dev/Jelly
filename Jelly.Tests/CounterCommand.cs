@@ -6,9 +6,7 @@ public class CounterCommand : ICommand
     public int Count { get; set; }
     public int Increment { get; set; } = 1;
 
-    public EvaluationFlags EvaluationFlags => EvaluationFlags.Arguments;
-
-    public Value Invoke(IScope scope, ListValue args)
+    public Value Invoke(IEnvironment env, ListValue args)
     {
         ++CallCount;
         Count += Increment;

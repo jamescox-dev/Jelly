@@ -12,15 +12,19 @@ public class Environment : IEnvironment
 
     public IScope CurrentScope { get; private set; }
 
-    internal Environment(IParser parser, IEvaluator evaluator)
+    internal Environment(IScope globalScope, IParser parser, IEvaluator evaluator)
     {
         Parser = parser;
         Evaluator = evaluator;
-        GlobalScope = new Scope();
+        GlobalScope = globalScope;
         CurrentScope = GlobalScope;
     }
 
-    public Environment() : this(new ScriptParser(), new Evaluator()) {}
+    internal Environment(IParser parser, IEvaluator evaluator) : this(new Scope(), parser, evaluator) {}
+
+    public Environment(IScope globalScope) : this(globalScope, new ScriptParser(), new Evaluator()) {}
+
+    public Environment() : this(new Scope()) {}
 
     public Value Evaluate(string source)
     {
