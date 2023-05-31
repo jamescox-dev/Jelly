@@ -124,7 +124,7 @@ public class DefineCommandEvaluatorTests
 
         var definedCommnad = (UserCommand)_scope.GetCommand("test");
 
-        definedCommnad.RestArgame.Should().Be(restArgumentName);
+        definedCommnad.RestArgName.Should().Be(restArgumentName);
     }
 
     [Test]

@@ -1,9 +1,11 @@
 namespace Jelly.Commands.Tests;
 
+using Jelly.Runtime;
+
 [TestFixture]
 public class WrappedCommandTests
 {
-    Scope _scope = null!;
+    Environment _env = null!;
 
     string[] _passedParams = null!;
 
@@ -12,17 +14,9 @@ public class WrappedCommandTests
     [SetUp]
     public void Setup()
     {
-        _scope = new();
+        _env = new();
         _mockTypeMarshaller = new();
         _passedParams = Array.Empty<string>();
-    }
-
-    [Test]
-    public void WrappedCommandIsFlaggedForArgumentEvaluation()
-    {
-        var command = new WrappedCommand(() => {}, _mockTypeMarshaller.Object);
-
-        command.EvaluationFlags.Should().Be(EvaluationFlags.Arguments);
     }
 
     [Test]
@@ -32,7 +26,7 @@ public class WrappedCommandTests
         var func = () => { called = true; };
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
 
-        var result = command.Invoke(_scope, new ListValue());
+        var result = command.Invoke(_env, new ListValue());
 
         called.Should().BeTrue();
     }
@@ -44,13 +38,13 @@ public class WrappedCommandTests
         var func = () => returnValue;
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
 
-        var result = command.Invoke(_scope, new ListValue());
+        var result = command.Invoke(_env, new ListValue());
 
         _mockTypeMarshaller.Verify(m => m.Marshal(returnValue));
     }
 
     [Test]
-    public void EachArgumentPassedToTheCommandIsMarshalledIntoANativeClrTypeBeforeBegingPassedToTheWrappedDelegate()
+    public void EachArgumentPassedToTheCommandIsEvaluatedAndMarshalledIntoANativeClrTypeBeforeBeingPassedToTheDelegate()
     {
         var passedA = 0;
         var passedB = "";
@@ -65,7 +59,7 @@ public class WrappedCommandTests
         _mockTypeMarshaller.Setup(m => m.Marshal(jellyB, typeof(string))).Returns("jelly");
         _mockTypeMarshaller.Setup(m => m.Marshal(jellyC, typeof(bool))).Returns(false);
 
-        command.Invoke(_scope, args);
+        command.Invoke(_env, args);
 
         _mockTypeMarshaller.Verify(m => m.Marshal(jellyA, typeof(int)));
         _mockTypeMarshaller.Verify(m => m.Marshal(jellyB, typeof(string)));
@@ -83,7 +77,7 @@ public class WrappedCommandTests
         var args = new ListValue(8.ToValue());
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(int))).Returns(0);
 
-        command.Invoking(c => c.Invoke(_scope, args)).Should()
+        command.Invoking(c => c.Invoke(_env, args)).Should()
             .Throw<ArgError>().WithMessage("Expected 'b' argument.");
     }
 
@@ -95,7 +89,7 @@ public class WrappedCommandTests
         var args = new ListValue(8.ToValue(), 16.ToValue());
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(int))).Returns(0);
 
-        command.Invoking(c => c.Invoke(_scope, args)).Should()
+        command.Invoking(c => c.Invoke(_env, args)).Should()
             .Throw<ArgError>().WithMessage("Unexpected argument '16'.");
     }
 
@@ -110,31 +104,31 @@ public class WrappedCommandTests
         var args = new ListValue("42".ToValue());
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(int))).Returns(42);
 
-        command.Invoke(_scope, args);
+        command.Invoke(_env, args);
         passedA.Should().Be(42);
         passedB.Should().Be("jelly");
         passedC.Should().BeFalse();
     }
 
     [Test]
-    public void WhenTheWrappedDelegateHasAParamsArgumentAndTheCommandRecivesMoreThanTheNumberOfRequiredAndOptionalArgumentsTheRestOfTheArgumentsArePassedToTheParamsArgument()
+    public void WhenTheWrappedDelegateHasAParamsArgumentAndTheCommandReceivesMoreThanTheNumberOfRequiredAndOptionalArgumentsTheRestOfTheArgumentsArePassedToTheParamsArgument()
     {
         var command = new WrappedCommand(FuncWithParams, _mockTypeMarshaller.Object);
         var args = new ListValue("42".ToValue(), "jelly".ToValue(), "a".ToValue(), "b".ToValue(), "c".ToValue());
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(string))).Returns<Value, Type>((v, _) => v.ToString());
 
-        command.Invoke(_scope, args);
+        command.Invoke(_env, args);
         _passedParams.SequenceEqual(new[] {"a", "b", "c"}).Should().BeTrue();
     }
 
     [Test]
-    public void WhenTheWrappedDelegateHasAParamsArgumentAndTheCommandRecivesMoreTheRequiredAndOptionalArgumentsTheParamsArgumentIsAnEmptyArray()
+    public void WhenTheWrappedDelegateHasAParamsArgumentAndTheCommandReceivesMoreTheRequiredAndOptionalArgumentsTheParamsArgumentIsAnEmptyArray()
     {
         var command = new WrappedCommand(FuncWithParams, _mockTypeMarshaller.Object);
         var args = new ListValue("42".ToValue(), "jelly".ToValue());
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(string))).Returns<Value, Type>((v, _) => v.ToString());
 
-        command.Invoke(_scope, args);
+        command.Invoke(_env, args);
         _passedParams.SequenceEqual(Array.Empty<string>()).Should().BeTrue();
     }
 
@@ -145,9 +139,9 @@ public class WrappedCommandTests
         var func = (IScope scope) => { passedScope = scope; };
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
 
-        command.Invoke(_scope, new ListValue());
+        command.Invoke(_env, new ListValue());
 
-        passedScope.Should().Be(_scope);
+        passedScope.Should().Be(_env);
     }
 
 

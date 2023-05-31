@@ -1,27 +1,29 @@
 namespace Jelly.Commands.Tests;
 
+using Jelly.Runtime;
+
 [TestFixture]
 public class SimpleCommandTests
 {
     [Test]
-    public void TheDelegateCalledWithEachOfItsArgumentsEvaluated()
+    public void TheDelegateIsCalledWithTheCurrentEnvironmentAndEachOfItsArgumentsEvaluatedAndTheResultIsReturned()
     {
         var command = new SimpleCommand(TestCommand);
-        var mockScope = new Mock<IScope>();
-        var testArgs = new ListValue("1".ToValue(), "2".ToValue(), "3".ToValue());
-        IScope? passedScope = null;
+        var env = new Environment();
+        var args = new ListValue(Node.Literal(1), Node.Literal(2), Node.Literal(3));
+        IEnvironment? passedEnv = null;
         ListValue? passedArgs = null;
-        Value TestCommand(IEnvironment scope, ListValue args)
+        Value TestCommand(IEnvironment env, ListValue args)
         {
-            passedScope = scope;
+            passedEnv = env;
             passedArgs = args;
-            return "42".ToValue();
+            return 42.ToValue();
         }
 
-        var result = command.Invoke(mockScope.Object, testArgs);
+        var result = command.Invoke(env, args);
 
-        result.Should().Be("42".ToValue());
-        passedScope.Should().Be(mockScope.Object);
-        ((IEnumerable<Value>?)passedArgs).Should().BeEquivalentTo(testArgs);
+        result.Should().Be(42.ToValue());
+        passedEnv.Should().Be(env);
+        ((IEnumerable<Value>?)passedArgs).Should().Equal(1.ToValue(), 2.ToValue(), 3.ToValue());
     }
 }

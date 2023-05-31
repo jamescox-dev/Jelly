@@ -1,6 +1,6 @@
 namespace Jelly.Commands.Tests;
 
-using Jelly.Evaluator;
+using Jelly.Runtime;
 
 [TestFixture]
 public class UserCommandTests
@@ -11,36 +11,36 @@ public class UserCommandTests
     UserCommand _userCommandVarArgs = null!;
     UserCommand _userCommandWithReturn = null!;
 
-    IEvaluator _rootEvaluator = null!;
+    Environment _env = null!;
 
-    Scope _scope = null!;
-
+    IEnvironment? _passedEnv = null;
     IScope? _passedScope = null;
 
     DictionaryValue _userCommandBody = null!;
 
     [Test]
-    public void InvokingAUserCommandEvaluatesTheBodyAndReturnsTheResult()
+    public void TheBodyIsEvaluatedTheResultIsReturned()
     {
-        var result = _userCommandNoArgs.Invoke(_scope, new ListValue());
+        var result = _userCommandNoArgs.Invoke(_env, new ListValue());
 
         result.Should().Be("test-command-result".ToValue());
     }
 
     [Test]
-    public void TheBodyOfTheCommandIsEvaluatedInANewScopeWithinTheCurrentScope()
+    public void TheBodyIsEvaluatedInTheCurrentEnvironmentWithANewScopeWithinTheCurrentScope()
     {
-        _userCommandNoArgs.Invoke(_scope, new ListValue());
+        _userCommandNoArgs.Invoke(_env, new ListValue());
 
+        _passedEnv.Should().BeSameAs(_env);
         _passedScope.Should().NotBeNull();
-        _passedScope!.OuterScope.Should().Be(_scope);
+        _passedScope!.OuterScope.Should().Be(_env.GlobalScope);
     }
 
     [Test]
-    public void AVariableIsDefinedForEachArgumentPassedToTheCommandWithItsCorrespondingValue()
+    public void AVariableIsDefinedForEachArgumentPassedToTheCommandWithItsCorrespondingEvaluatedValue()
     {
-        _userCommandVarArgs.Invoke(_scope, new ListValue(
-            1.ToValue(), 2.ToValue(), 3.ToValue(), 4.ToValue(), 5.ToValue(), 6.ToValue()));
+        _userCommandVarArgs.Invoke(_env, new ListValue(
+            Node.Literal(1), Node.Literal(2), Node.Literal(3), Node.Literal(4), Node.Literal(5), Node.Literal(6)));
 
         _passedScope!.GetVariable("a").Should().Be(1.ToValue());
         _passedScope!.GetVariable("b").Should().Be(2.ToValue());
@@ -52,22 +52,22 @@ public class UserCommandTests
     [Test]
     public void IfTooFewArgumentsArePassedAnErrorIsThrown()
     {
-        _userCommand2Args.Invoking(c => c.Invoke(_scope, new ListValue(1.ToValue()))).Should()
+        _userCommand2Args.Invoking(c => c.Invoke(_env, new ListValue(Node.Literal(1)))).Should()
             .Throw<ArgError>().WithMessage("Expected 'b' argument.");
     }
 
     [Test]
     public void IfTooManyArgumentsArePassedAnErrorIsThrown()
     {
-        _userCommand2Args.Invoking(c => c.Invoke(_scope, new ListValue(1.ToValue(), 2.ToValue(), 3.ToValue()))).Should()
-            .Throw<ArgError>().WithMessage("Unexpected argument '3'.");
+        _userCommand2Args.Invoking(c => c.Invoke(_env, new ListValue(Node.Literal(1), Node.Literal(2), Node.Literal(3))))
+            .Should().Throw<ArgError>().WithMessage("Unexpected argument '3'.");
     }
 
     [Test]
     public void IfACommandHasOptionalArgumentsThatAreNotSpecifiedTheyAreSetToTheirDefaultValues()
     {
-        _userCommand2To4Args.Invoke(_scope, new ListValue(
-            1.ToValue(), 2.ToValue()));
+        _userCommand2To4Args.Invoke(_env, new ListValue(
+            Node.Literal(1), Node.Literal(2)));
 
         _passedScope!.GetVariable("a").Should().Be(1.ToValue());
         _passedScope!.GetVariable("b").Should().Be(2.ToValue());
@@ -78,56 +78,55 @@ public class UserCommandTests
     [Test]
     public void IfTheUserCommandThrowsAReturnTheReturnsValueIsReturned()
     {
-        var result = _userCommandWithReturn.Invoke(_scope, new ListValue());
+        var result = _userCommandWithReturn.Invoke(_env, new ListValue());
 
-        result.Should().Be("retrunedValue".ToValue());
+        result.Should().Be("returnedValue".ToValue());
     }
 
     [Test]
-    public void TheBodyOfTheCommandCanBeRetrived()
+    public void TheBodyOfTheCommandCanBeRetrieved()
     {
         _userCommandNoArgs.Body.Should().Be(_userCommandBody);
     }
 
     [Test]
-    public void TheNamesOfTheRequiredArgumentCanBeRetrived()
+    public void TheNamesOfTheRequiredArgumentCanBeRetrieved()
     {
         _userCommand2Args.RequiredArgNames.Should().Equal("a", "b");
     }
 
     [Test]
-    public void TheNamesOfTheOptionalArgumentCanBeRetrived()
+    public void TheNamesOfTheOptionalArgumentCanBeRetrieved()
     {
         _userCommand2Args.OptionalArgNames.Should().BeEmpty();
         _userCommand2To4Args.OptionalArgNames.Should().Equal("c", "d");
     }
 
     [Test]
-    public void TheDefaultValuesOfTheOptionalArgumentCanBeRetrived()
+    public void TheDefaultValuesOfTheOptionalArgumentCanBeRetrieved()
     {
         _userCommand2Args.OptionalArgDefaultValues.Should().BeEmpty();
         _userCommand2To4Args.OptionalArgDefaultValues.Should().Equal(3.ToValue(), 4.ToValue());
     }
 
     [Test]
-    public void TheNameOfTheRestArgumentCanBeRetrived()
+    public void TheNameOfTheRestArgumentCanBeRetrieved()
     {
-        _userCommandNoArgs.RestArgame.Should().BeNull();
-        _userCommandVarArgs.RestArgame.Should().Be("e");
+        _userCommandNoArgs.RestArgName.Should().BeNull();
+        _userCommandVarArgs.RestArgName.Should().Be("e");
     }
 
     [SetUp]
     public void Setup()
     {
-        _rootEvaluator = new Evaluator();
-
-        _scope = new();
-        var testCommand = new SimpleCommand((scope, _) =>
+        _env = new();
+        var testCommand = new SimpleCommand((env, _) =>
         {
-            _passedScope = scope;
+            _passedEnv = env;
+            _passedScope = env.CurrentScope;
             return "test-command-result".ToValue();
         });
-        _scope.DefineCommand("test", testCommand);
+        _env.GlobalScope.DefineCommand("test", testCommand);
 
         _userCommandBody = Node.Command(Node.Literal("test"), new ListValue());
 
@@ -151,6 +150,6 @@ public class UserCommandTests
 
         _userCommandWithReturn = new UserCommand(
             Array.Empty<string>(), Array.Empty<(string, Value)>(), null,
-            Node.Raise(Node.Literal("/return"), Node.Literal(Value.Empty), Node.Literal("retrunedValue")));
+            Node.Raise(Node.Literal("/return"), Node.Literal(Value.Empty), Node.Literal("returnedValue")));
     }
 }

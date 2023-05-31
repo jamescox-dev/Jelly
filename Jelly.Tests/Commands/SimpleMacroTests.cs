@@ -1,35 +1,29 @@
 namespace Jelly.Commands.Tests;
 
+using Jelly.Runtime;
+
 [TestFixture]
 public class SimpleMacroTests
 {
     [Test]
-    public void TheDelegatePassedInTheConstructorIsCalledWithTheArgumentsPassedToInvokeAndItReturnValueReturned()
+    public void TheDelegateIsCalledWithTheCurrentEnvironmentAndEachOfItsArgumentsUnevaluatedAndTheResultEvaluatedAndReturned()
     {
         var macro = new SimpleMacro(TestMacro);
-        var mockScope = new Mock<IScope>();
-        var testArgs = new ListValue("1".ToValue(), "2".ToValue(), "3".ToValue());
-        IScope? passedScope = null;
+        var env = new Environment();
+        var args = new ListValue(Node.Literal(1), Node.Literal(2), Node.Literal(3));
+        IEnvironment? passedEnv = null;
         ListValue? passedArgs = null;
-        Value TestMacro(IScope scope, ListValue args)
+        Value TestMacro(IEnvironment env, ListValue args)
         {
-            passedScope = scope;
+            passedEnv = env;
             passedArgs = args;
-            return "42".ToValue();
+            return Node.Literal(42);
         }
 
-        var result = macro.Invoke(mockScope.Object, testArgs);
+        var result = macro.Invoke(env, args);
 
-        result.Should().Be("42".ToValue());
-        passedScope.Should().Be(mockScope.Object);
-        ((IEnumerable<Value>?)passedArgs).Should().BeEquivalentTo(testArgs);
-    }
-
-    [Test]
-    public void TheMacroIsFlaggedToNotHaveItArgumentEvaluatedButItReturnValueEvaluated()
-    {
-        var macro = new SimpleMacro((s, a) => Value.Empty);
-
-        macro.EvaluationFlags.Should().Be(EvaluationFlags.ReturnValue);
+        result.Should().Be(42.ToValue());
+        passedEnv.Should().Be(env);
+        ((IEnumerable<Value>?)passedArgs).Should().Equal(args);
     }
 }

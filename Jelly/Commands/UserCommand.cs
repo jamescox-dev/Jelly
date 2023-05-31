@@ -12,7 +12,7 @@ public class UserCommand : CommandBase
 
     public IReadOnlyCollection<Value> OptionalArgDefaultValues => _optionalArgs.Select(arg => arg.Item2).ToArray();
 
-    public string? RestArgame => _restArgName;
+    public string? RestArgName => _restArgName;
 
     readonly string[] _requiredArgNames;
     readonly (string, Value)[] _optionalArgs;
