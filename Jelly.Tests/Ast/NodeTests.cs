@@ -364,7 +364,7 @@ public class NodeTests
         var isScript = Node.IsScript(script);
         var isComposite = Node.IsComposite(composite);
         var isAssignment = Node.IsAssignment(assignment);
-        var isExpression = Node.IsExprssion(expression);
+        var isExpression = Node.IsExpression(expression);
 
         isLiteral.Should().BeTrue();
         isVariable.Should().BeTrue();

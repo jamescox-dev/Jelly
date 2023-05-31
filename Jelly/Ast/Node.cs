@@ -145,7 +145,7 @@ public static class Node
 
     public static bool IsAssignment(DictionaryValue node) => IsType(node, Keywords.Assignment);
 
-    public static bool IsExprssion(DictionaryValue node) => IsType(node, Keywords.Expression);
+    public static bool IsExpression(DictionaryValue node) => IsType(node, Keywords.Expression);
 
     static bool IsType(DictionaryValue node, StringValue type) =>
         node.TryGetValue(Keywords.Type, out var typeValue) && typeValue == type;

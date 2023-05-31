@@ -1,5 +1,8 @@
 ﻿namespace Jelly.Shell;
 
+using System.Text.Json;
+using System.Collections.Generic;
+
 public class Shell
 {
     readonly IReader _reader;
@@ -84,6 +87,9 @@ public class Shell
                 if (script is not null)
                 {
                     AddHistory(input);
+                    Console.WriteLine(JsonSerializer.Serialize(ToClr(script), new JsonSerializerOptions {
+                        WriteIndented = true
+                    }));
                     return script;
                 }
             }
@@ -136,4 +142,16 @@ public class Shell
             return -1;
         }
     }
+
+    // TODO:  This needs moving...
+    public object ToClr(Value value) => value switch
+    {
+        BooleanValue boolean => boolean.ToBool(),
+        NumberValue number => number.ToDouble(),
+        StringValue str => str.ToString(),
+        ListValue list => list.Select(v => ToClr(v)).ToList(),
+        DictionaryValue dict => new Dictionary<object, object>(
+            dict.ToEnumerable().Select(kvp => new KeyValuePair<object, object>(ToClr(kvp.Key), ToClr(kvp.Value)))),
+        _ => null
+    };
 }

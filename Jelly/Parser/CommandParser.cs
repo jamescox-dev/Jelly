@@ -30,7 +30,7 @@ public class CommandParser : IParser
 
         if (words.Count == 1)
         {
-            if (Node.IsVariable(words[0]) || Node.IsExprssion(words[0]))
+            if (Node.IsVariable(words[0]) || Node.IsExpression(words[0]))
             {
                 return words[0];
             }
@@ -43,7 +43,7 @@ public class CommandParser : IParser
                 throw new ParseError($"Unexpected {words[3]["type".ToValue()]} after assignment value.");
             }
             var value = words.Count > 2 ? words[2] : Node.Literal(Value.Empty);
-            return Node.Assignment(words[0]["name".ToValue()].ToString(), value);
+            return Node.Assignment(words[0].GetString(Keywords.Name), value);
         }
 
         return words.Count > 0 ? Node.Command(words[0], new ListValue(words.Skip(1))) : null;

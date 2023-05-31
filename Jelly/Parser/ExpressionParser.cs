@@ -67,7 +67,7 @@ public class ExpressionParser : IParser
                 {
                     if (!prevWasOperator)
                     {
-                        if (functionName is not null && Node.IsExprssion(word))
+                        if (functionName is not null && Node.IsExpression(word))
                         {
                             operands.Push(Node.Command(functionName, word[SubexpressionsKeyword].ToListValue()));
                             functionName = null;
