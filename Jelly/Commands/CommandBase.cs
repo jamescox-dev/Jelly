@@ -2,10 +2,10 @@ namespace Jelly.Commands;
 
 public abstract class CommandBase : ICommand
 {
-    public abstract Value Invoke(IEnvironment env, ListValue args);
+    public abstract Value Invoke(IEnvironment env, ListValue unevaluatedArgs);
 
-    protected static ListValue EvaluateArgs(IEnvironment env, ListValue args)
+    protected static ListValue EvaluateArgs(IEnvironment env, ListValue unevaluatedArgs)
     {
-        return args.Select(arg => env.Evaluate(arg.ToNode())).ToValue();
+        return unevaluatedArgs.Select(arg => env.Evaluate(arg.ToNode())).ToValue();
     }
 }

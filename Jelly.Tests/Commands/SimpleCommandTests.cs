@@ -4,14 +4,14 @@ namespace Jelly.Commands.Tests;
 public class SimpleCommandTests
 {
     [Test]
-    public void TheDelegatePassedInTheConstructorIsCalledWithTheArgumentsPassedToInvokeAndItReturnValueReturned()
+    public void TheDelegateCalledWithEachOfItsArgumentsEvaluated()
     {
         var command = new SimpleCommand(TestCommand);
         var mockScope = new Mock<IScope>();
         var testArgs = new ListValue("1".ToValue(), "2".ToValue(), "3".ToValue());
         IScope? passedScope = null;
         ListValue? passedArgs = null;
-        Value TestCommand(IScope scope, ListValue args)
+        Value TestCommand(IEnvironment scope, ListValue args)
         {
             passedScope = scope;
             passedArgs = args;
@@ -23,13 +23,5 @@ public class SimpleCommandTests
         result.Should().Be("42".ToValue());
         passedScope.Should().Be(mockScope.Object);
         ((IEnumerable<Value>?)passedArgs).Should().BeEquivalentTo(testArgs);
-    }
-
-    [Test]
-    public void TheCommandShouldBeFlaggedToHaveItsArgumentsEvaluatedButNotItsReturnValue()
-    {
-        var command = new SimpleCommand((s, a) => Value.Empty);
-
-        command.EvaluationFlags.Should().Be(EvaluationFlags.Arguments);
     }
 }

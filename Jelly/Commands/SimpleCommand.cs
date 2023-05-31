@@ -11,9 +11,9 @@ public class SimpleCommand : CommandBase
         _command = command;
     }
 
-    public override Value Invoke(IEnvironment env, ListValue args)
+    public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
     {
-        ListValue evaluatedArgs = EvaluateArgs(env, args);
-        return _command(env, evaluatedArgs);
+        ListValue args = EvaluateArgs(env, unevaluatedArgs);
+        return _command(env, args);
     }
 }

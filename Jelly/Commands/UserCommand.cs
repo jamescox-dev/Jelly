@@ -31,13 +31,13 @@ public class UserCommand : CommandBase
         _body = body;
     }
 
-    public override Value Invoke(IEnvironment env, ListValue args)
+    public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
     {
         return env.RunInNestedScope(() =>
         {
-            EnsureArgCountIsValid(args);
-            args = EvaluateArgs(env, args);
+            EnsureArgCountIsValid(unevaluatedArgs);
 
+            var args = EvaluateArgs(env, unevaluatedArgs);
             DefineRequiredArgs(env, args);
             DefineOptionalArgs(env, args);
             DefineRestArg(env, args);
@@ -84,15 +84,15 @@ public class UserCommand : CommandBase
     }
 
     // TODO:  This should be a standard error.
-    Error ExpectedArgError(ListValue args)
+    Error ExpectedArgError(ListValue unevaluatedArgs)
     {
-        return Error.Arg($"Expected '{_requiredArgNames[args.Count]}' argument.");
+        return Error.Arg($"Expected '{_requiredArgNames[unevaluatedArgs.Count]}' argument.");
     }
 
     // TODO:  This should be a standard error.
-    Error UnexpectedArgError(ListValue args)
+    Error UnexpectedArgError(ListValue unevaluatedArgs)
     {
-        throw Error.Arg($"Unexpected argument '{args[_requiredArgNames.Length + _optionalArgs.Length]}'.");
+        throw Error.Arg($"Unexpected argument '{unevaluatedArgs[_requiredArgNames.Length + _optionalArgs.Length]}'.");
     }
 
     Value EvaluateBody(IEnvironment env)
