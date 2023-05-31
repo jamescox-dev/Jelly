@@ -29,7 +29,7 @@ public class ForRangeEvaluatorTests
 
         var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(10);
+        _testCommand.Invocations.Should().Be(10);
         result.Should().Be("Result!".ToValue());
     }
 
@@ -108,7 +108,7 @@ public class ForRangeEvaluatorTests
 
         var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(1);
+        _testCommand.Invocations.Should().Be(1);
         result.Should().Be(Value.Empty);
     }
 
@@ -129,7 +129,7 @@ public class ForRangeEvaluatorTests
 
         _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(0);
+        _testCommand.Invocations.Should().Be(0);
         _recoredIterators.Should().Equal(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 

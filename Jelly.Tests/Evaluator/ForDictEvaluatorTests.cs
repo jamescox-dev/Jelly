@@ -48,7 +48,7 @@ public class ForDictEvaluatorTests
 
         var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(2);
+        _testCommand.Invocations.Should().Be(2);
     }
 
     [Test]
@@ -107,7 +107,7 @@ public class ForDictEvaluatorTests
 
         var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(1);
+        _testCommand.Invocations.Should().Be(1);
         result.Should().Be(Value.Empty);
     }
 
@@ -128,7 +128,7 @@ public class ForDictEvaluatorTests
 
         _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(0);
+        _testCommand.Invocations.Should().Be(0);
         _recoredValues.Should().Equal("a".ToValue(), "b".ToValue());
     }
 

@@ -2,7 +2,7 @@ namespace Jelly.Tests;
 
 public class TestCommand : ICommand
 {
-    public int Invokations { get; set; } = 0;
+    public int Invocations { get; set; } = 0;
     public Value ReturnValue { get; set; } = "42".ToValue();
     public IEnvironment? EnvironmentPassedToInvoke { get; private set; }
     public IScope? ScopePassedToInvoke { get; private set; }
@@ -13,7 +13,7 @@ public class TestCommand : ICommand
         EnvironmentPassedToInvoke = env;
         ScopePassedToInvoke = env.CurrentScope;
         ArgsPassedToInvoke = args;
-        ++Invokations;
+        ++Invocations;
         return ReturnValue;
     }
 }

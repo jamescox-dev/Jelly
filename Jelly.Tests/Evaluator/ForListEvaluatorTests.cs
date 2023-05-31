@@ -48,7 +48,7 @@ public class ForListEvaluatorTests
 
         var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(3);
+        _testCommand.Invocations.Should().Be(3);
     }
 
     [Test]
@@ -107,7 +107,7 @@ public class ForListEvaluatorTests
 
         var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(1);
+        _testCommand.Invocations.Should().Be(1);
         result.Should().Be(Value.Empty);
     }
 
@@ -128,7 +128,7 @@ public class ForListEvaluatorTests
 
         _evaluator.Evaluate(_scope, node, _rootEvaluator);
 
-        _testCommand.Invokations.Should().Be(0);
+        _testCommand.Invocations.Should().Be(0);
         _recoredValues.Should().Equal("a".ToValue(), "b".ToValue(), "c".ToValue());
     }
 

@@ -11,7 +11,7 @@ public abstract class EvaluatorTestsBase
     protected Value Evaluate(DictionaryValue node) => Evaluator.Evaluate(Environment, node);
 
     [SetUp]
-    public void Setup()
+    public virtual void Setup()
     {
         Environment = new Environment();
         Evaluator = BuildEvaluatorUnderTest();

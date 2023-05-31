@@ -1,42 +1,34 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class ScopeEvaluatorTests
+public class ScopeEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Scope _scope = null!;
-    Evaluator _rootEvaluator = null!;
-
     [Test]
     public void EvaluatingAScopeNodeReturnsTheResultOfEvaluatingItsBody()
     {
         var scopeNode = Node.Scope(Node.Literal("hi"));
 
-        var result = _evaluator.Evaluate(_scope, scopeNode, _rootEvaluator);
+        var result = Evaluate(scopeNode);
 
         result.Should().Be("hi".ToValue());
     }
 
     [Test]
-    public void EvaluatingAScopeNodeEvauatesItsBodyWithANewScopeWithTheCurrentScopeSetAsItsOuterScope()
+    public void EvaluatingAScopeNodeEvaluatesItsBodyWithANewScopeWithTheCurrentScopeSetAsItsOuterScope()
     {
         IScope? passedScope = null;
-        var testCommand = new SimpleCommand((scope, _) => { passedScope = scope; return Value.Empty; });
-        _scope.DefineCommand("test", testCommand);
+        var testCommand = new SimpleCommand((env, _) => { passedScope = env.CurrentScope; return Value.Empty; });
+        Environment.GlobalScope.DefineCommand("test", testCommand);
         var scopeNode = Node.Scope(Node.Command(Node.Literal("test"), new ListValue()));
 
-        var result = _evaluator.Evaluate(_scope, scopeNode, _rootEvaluator);
+        var result = Evaluate(scopeNode);
 
         passedScope.Should().NotBeNull();
-        passedScope!.OuterScope.Should().Be(_scope);
+        passedScope!.OuterScope.Should().Be(Environment.GlobalScope);
     }
 
-    [SetUp]
-    public void Setup()
+    protected override IEvaluator BuildEvaluatorUnderTest()
     {
-        _scope = new();
-        _rootEvaluator = new();
-        _evaluator = new ScopeEvaluator();
+        return new ScopeEvaluator();
     }
 }

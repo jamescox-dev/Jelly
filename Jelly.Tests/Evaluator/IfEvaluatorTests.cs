@@ -1,13 +1,8 @@
-namespace Jelly.Evaluator.Test;
+namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class IfEvaluatorTest
+public class IfEvaluatorTest : EvaluatorTestsBase
 {
-    IfEvaluator _evaluator = null!;
-
-    Scope _scope = null!;
-    Evaluator _rootEvaluator = null!;
-
     TestCommand _test1Command = null!;
     TestCommand _test2Command = null!;
 
@@ -16,9 +11,9 @@ public class IfEvaluatorTest
     {
         var ifNode = Node.If(Node.Literal(true), Node.Command(Node.Literal("test1"), new ListValue()));
 
-        var result = _evaluator.Evaluate(_scope, ifNode, _rootEvaluator);
+        var result = Evaluate(ifNode);
 
-        _test1Command.ScopePassedToInvoke.Should().Be(_scope);
+        _test1Command.EnvironmentPassedToInvoke.Should().Be(Environment);
         result.Should().Be("test1.result".ToValue());
     }
 
@@ -27,9 +22,9 @@ public class IfEvaluatorTest
     {
         var ifNode = Node.If(Node.Literal(false), Node.Command(Node.Literal("test1"), new ListValue()));
 
-        var result = _evaluator.Evaluate(_scope, ifNode, _rootEvaluator);
+        var result = Evaluate(ifNode);
 
-        _test1Command.ScopePassedToInvoke.Should().Be(null);
+        _test1Command.EnvironmentPassedToInvoke.Should().Be(null);
         result.Should().Be(Value.Empty);
     }
 
@@ -41,24 +36,25 @@ public class IfEvaluatorTest
             Node.Command(Node.Literal("test1"), new ListValue()),
             Node.Command(Node.Literal("test2"), new ListValue()));
 
-        var result = _evaluator.Evaluate(_scope, ifNode, _rootEvaluator);
+        var result = Evaluate(ifNode);
 
-        _test2Command.ScopePassedToInvoke.Should().Be(_scope);
+        _test2Command.EnvironmentPassedToInvoke.Should().Be(Environment);
         result.Should().Be("test2.result".ToValue());
     }
 
-    [SetUp]
-    public void Setup()
+    public override void Setup()
     {
-        _evaluator = new IfEvaluator();
-
-        _scope = new Scope();
-        _rootEvaluator = new Evaluator();
+        base.Setup();
 
         _test1Command = new TestCommand { ReturnValue = "test1.result".ToValue() };
         _test2Command = new TestCommand { ReturnValue = "test2.result".ToValue() };
 
-        _scope.DefineCommand("test1", _test1Command);
-        _scope.DefineCommand("test2", _test2Command);
+        Environment.GlobalScope.DefineCommand("test1", _test1Command);
+        Environment.GlobalScope.DefineCommand("test2", _test2Command);
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new IfEvaluator();
     }
 }

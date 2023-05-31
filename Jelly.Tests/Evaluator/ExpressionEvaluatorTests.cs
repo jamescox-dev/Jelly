@@ -11,26 +11,21 @@ public class ExpressionEvaluatorTests : EvaluatorTestsBase
     [Test]
     public void AnExpressionEvaluatesEachOfItsSubExpressionsNode()
     {
-        var invokations = 0;
-        var testCommand = new SimpleCommand((_, _) => { ++invokations; return invokations.ToValue(); });
+        var invocations = 0;
+        var testCommand = new SimpleCommand((_, _) => { ++invocations; return invocations.ToValue(); });
         _scope.DefineCommand("test", testCommand);
         var expr = Node.Expression
         (Node.Command(Node.Literal("test"), new ListValue()),
             Node.Command(Node.Literal("test"), new ListValue()));
 
-        var result = _evaluator.Evaluate(_scope, expr, _rootEvaluator);
+        var result = Evaluate(expr);
 
-        invokations.Should().Be(2);
+        invocations.Should().Be(2);
         result.Should().Be(2.0.ToValue());
     }
 
-
-    [SetUp]
-    public void Setup()
+    protected override IEvaluator BuildEvaluatorUnderTest()
     {
-        _rootEvaluator = new Evaluator();
-        _scope = new Scope();
-
-        _evaluator = new ExpressionEvaluator();
+        return new ExpressionEvaluator();
     }
 }
