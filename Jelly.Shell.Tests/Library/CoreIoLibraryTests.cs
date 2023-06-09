@@ -41,7 +41,7 @@ public class CoreIoLibraryTest
         _library.LoadIntoScope(_env.GlobalScope);
         var print = _env.GlobalScope.GetCommand("print");
 
-        print.Invoke(_env, new ListValue("jello,".ToValue(), "world".ToValue()));
+        print.Invoke(_env, new ListValue(Node.Literal("jello,"), Node.Literal("world")));
 
         _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("jello, world"));
     }
@@ -68,7 +68,7 @@ public class CoreIoLibraryTest
         _library.LoadIntoScope(_env.GlobalScope);
         var print = _env.GlobalScope.GetCommand("print...");
 
-        print.Invoke(_env, new ListValue("jello,".ToValue(), "world".ToValue()));
+        print.Invoke(_env, new ListValue(Node.Literal("jello,"), Node.Literal("world")));
 
         _fakeReaderWriter.VerifyIoOpsContains(new WriteOp("jello, world"));
     }
@@ -97,7 +97,7 @@ public class CoreIoLibraryTest
         _library.LoadIntoScope(_env.GlobalScope);
         var print = _env.GlobalScope.GetCommand("input");
 
-        print.Invoke(_env, new ListValue("what".ToValue(), "is".ToValue(), "your".ToValue(), "name? ".ToValue()));
+        print.Invoke(_env, new ListValue(Node.Literal("what"), Node.Literal("is"), Node.Literal("your"), Node.Literal("name? ")));
 
         _fakeReaderWriter.VerifyIoOpsContains(new WriteOp("what is your name? "), new ReadLineOp("Bob"));
     }

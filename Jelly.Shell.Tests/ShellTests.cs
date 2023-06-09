@@ -20,7 +20,7 @@ public class ShellTests
     {
         _shell.Repl();
 
-        _mockLibrary.Verify(m => m.LoadIntoScope(_mockScope.Object), Times.Exactly(2));
+        _mockLibrary.Verify(m => m.LoadIntoScope(_mockScope.Object), Times.Once);
     }
 
     [Test]
@@ -28,7 +28,7 @@ public class ShellTests
     {
         _shell.Repl();
 
-        _fakeReaderWriter.IoOps.First().Should().Be(new WriteLineOp($"Jelly {JellyInfo.VersionString}\n"));
+        _fakeReaderWriter.IoOps.First().Should().Be(new WriteLineOp(string.Format(_config.WelcomeMessage, JellyInfo.VersionString)));
     }
 
     [Test]
@@ -204,7 +204,7 @@ public class ShellTests
     {
         _shell.RunScript("print jello, world");
 
-        _mockLibrary.Verify(m => m.LoadIntoScope(_mockScope.Object), Times.Exactly(2));
+        _mockLibrary.Verify(m => m.LoadIntoScope(_mockScope.Object), Times.Once);
     }
 
     [Test]
@@ -254,6 +254,9 @@ public class ShellTests
         _mockEvaluator = new Mock<IEvaluator>();
         _mockScope = new Mock<IScope>();
         _mockLibrary = new Mock<ILibrary>();
+
+        _mockEnv.SetupGet(m => m.GlobalScope).Returns(_mockScope.Object);
+        _mockEnv.SetupGet(m => m.Parser).Returns(_mockParser.Object);
 
         _expectedParsedScript = Node.Script(Node.Command(Node.Literal("print".ToValue()), new ListValue(
                 Node.Literal("jello,".ToValue()), Node.Literal("world".ToValue())

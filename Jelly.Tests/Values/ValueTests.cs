@@ -125,12 +125,12 @@ public class ValueTests
     public void ValuesCanBeEscapedSoThatTheirValueCanBeReinterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
         var parser = new WordParser();
-        var evaluator = new Evaluator();
+        var env = new Runtime.Environment();
         var value = stringValue.ToValue();
 
         var escapedValue = value.Escape();
 
-        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!).Should().Be(value, $"escapedValue = {escapedValue}");
+        env.Evaluate(parser.Parse(new Scanner(escapedValue))!).Should().Be(value, $"escapedValue = {escapedValue}");
     }
 
     [Test]
