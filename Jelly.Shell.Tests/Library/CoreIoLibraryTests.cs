@@ -1,22 +1,24 @@
 namespace Jelly.Shell.Library.Tests;
 
+using Jelly.Runtime;
+
 [TestFixture]
 public class CoreIoLibraryTest
 {
     ILibrary _library = null!;
 
-    Scope _scope = null!;
+    Environment _env = null!;
 
     FakeReaderWriter _fakeReaderWriter = null!;
 
     [Test]
     public void TheCorrectCommandsAreDeclaredInTheScope()
     {
-        _library.LoadIntoScope(_scope);
+        _library.LoadIntoScope(_env.GlobalScope);
 
-        _scope.Invoking(m => m.GetCommand("print")).Should().NotThrow();
-        _scope.Invoking(m => m.GetCommand("print...")).Should().NotThrow();
-        _scope.Invoking(m => m.GetCommand("input")).Should().NotThrow();
+        _env.GlobalScope.Invoking(m => m.GetCommand("print")).Should().NotThrow();
+        _env.GlobalScope.Invoking(m => m.GetCommand("print...")).Should().NotThrow();
+        _env.GlobalScope.Invoking(m => m.GetCommand("input")).Should().NotThrow();
     }
 
     #region print
@@ -24,10 +26,10 @@ public class CoreIoLibraryTest
     [Test]
     public void ThePrintCommandWritesANewLineWhenNoArgumentsArePassedAndReturnsAnEmptyValue()
     {
-        _library.LoadIntoScope(_scope);
-        var print = _scope.GetCommand("print");
+        _library.LoadIntoScope(_env.GlobalScope);
+        var print = _env.GlobalScope.GetCommand("print");
 
-        var result = print.Invoke(_scope, new ListValue());
+        var result = print.Invoke(_env, new ListValue());
 
         result.Should().Be(Value.Empty);
         _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp(string.Empty));
@@ -36,10 +38,10 @@ public class CoreIoLibraryTest
     [Test]
     public void ThePrintCommandWritesEachOfItsArgumentsAsStringsSeparatedBySpacesFollowedByANewLine()
     {
-        _library.LoadIntoScope(_scope);
-        var print = _scope.GetCommand("print");
+        _library.LoadIntoScope(_env.GlobalScope);
+        var print = _env.GlobalScope.GetCommand("print");
 
-        print.Invoke(_scope, new ListValue("jello,".ToValue(), "world".ToValue()));
+        print.Invoke(_env, new ListValue("jello,".ToValue(), "world".ToValue()));
 
         _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("jello, world"));
     }
@@ -51,10 +53,10 @@ public class CoreIoLibraryTest
     [Test]
     public void ThePrintNoNewLineCommandWritesNothingWhenItHasNoArgumentsAndReturnsAnEmptyValue()
     {
-        _library.LoadIntoScope(_scope);
-        var print = _scope.GetCommand("print...");
+        _library.LoadIntoScope(_env.GlobalScope);
+        var print = _env.GlobalScope.GetCommand("print...");
 
-        var result = print.Invoke(_scope, new ListValue());
+        var result = print.Invoke(_env, new ListValue());
 
         result.Should().Be(Value.Empty);
         _fakeReaderWriter.IoOps.Should().BeEmpty();
@@ -63,10 +65,10 @@ public class CoreIoLibraryTest
     [Test]
     public void ThePrintNoNewLineCommandWritesEachOfItsArgumentsAsStringsSeparatedBySpaces()
     {
-        _library.LoadIntoScope(_scope);
-        var print = _scope.GetCommand("print...");
+        _library.LoadIntoScope(_env.GlobalScope);
+        var print = _env.GlobalScope.GetCommand("print...");
 
-        print.Invoke(_scope, new ListValue("jello,".ToValue(), "world".ToValue()));
+        print.Invoke(_env, new ListValue("jello,".ToValue(), "world".ToValue()));
 
         _fakeReaderWriter.VerifyIoOpsContains(new WriteOp("jello, world"));
     }
@@ -79,10 +81,10 @@ public class CoreIoLibraryTest
     public void TheInputCommandWritesNothingWhenItHasNoArgumentsAndReturnsAnLineOfInput()
     {
         _fakeReaderWriter.EnqueueInput("Bob");
-        _library.LoadIntoScope(_scope);
-        var input = _scope.GetCommand("input");
+        _library.LoadIntoScope(_env.GlobalScope);
+        var input = _env.GlobalScope.GetCommand("input");
 
-        var result = input.Invoke(_scope, new ListValue());
+        var result = input.Invoke(_env, new ListValue());
 
         result.Should().Be("Bob".ToValue());
         _fakeReaderWriter.IoOps.Single().Should().Be(new ReadLineOp("Bob"));
@@ -92,10 +94,10 @@ public class CoreIoLibraryTest
     public void TheInputCommandWritesEachOfItsArgumentsAsStringsSeparatedBySpaces()
     {
         _fakeReaderWriter.EnqueueInput("Bob");
-        _library.LoadIntoScope(_scope);
-        var print = _scope.GetCommand("input");
+        _library.LoadIntoScope(_env.GlobalScope);
+        var print = _env.GlobalScope.GetCommand("input");
 
-        print.Invoke(_scope, new ListValue("what".ToValue(), "is".ToValue(), "your".ToValue(), "name? ".ToValue()));
+        print.Invoke(_env, new ListValue("what".ToValue(), "is".ToValue(), "your".ToValue(), "name? ".ToValue()));
 
         _fakeReaderWriter.VerifyIoOpsContains(new WriteOp("what is your name? "), new ReadLineOp("Bob"));
     }
@@ -106,7 +108,7 @@ public class CoreIoLibraryTest
     public void Setup()
     {
         _fakeReaderWriter = new FakeReaderWriter();
-        _scope = new Scope();
+        _env = new Environment();
         _library = new CoreIoLibrary(_fakeReaderWriter, _fakeReaderWriter);
     }
 }

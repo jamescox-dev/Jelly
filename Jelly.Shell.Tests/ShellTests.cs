@@ -9,6 +9,7 @@ public class ShellTests
     DictionaryValue _expectedParsedScript = null!;
 
     FakeReaderWriter _fakeReaderWriter = null!;
+    Mock<IEnvironment> _mockEnv = null!;
     Mock<IParser> _mockParser = null!;
     Mock<IEvaluator> _mockEvaluator = null!;
     Mock<IScope> _mockScope = null!;
@@ -70,7 +71,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _mockEvaluator.Verify(m => m.Evaluate(_mockScope.Object, It.IsAny<DictionaryValue>()), Times.Never);
+        _mockEnv.Verify(m => m.Evaluate(It.IsAny<DictionaryValue>()), Times.Never);
     }
 
     [Test]
@@ -92,14 +93,14 @@ public class ShellTests
 
         _shell.Repl();
 
-        _mockEvaluator.Verify(m => m.Evaluate(_mockScope.Object, _expectedParsedScript), Times.Once);
+        _mockEnv.Verify(m => m.Evaluate(_expectedParsedScript), Times.Once);
     }
 
     [Test]
     public void IfEvaluatingTheInputThrowsAnErrorTheErrorIsWritten()
     {
         _fakeReaderWriter.EnqueueInput("print jello, world");
-        _mockEvaluator.Setup(m => m.Evaluate(It.IsAny<IScope>(), It.IsAny<DictionaryValue>()))
+        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictionaryValue>()))
             .Throws(Error.Name("Unknown variable!"));
 
         _shell.Repl();
@@ -128,7 +129,7 @@ public class ShellTests
     }
 
     [Test]
-    public void TheReplRunsInALoopUntilInterrupetedByAFatalError()
+    public void TheReplRunsInALoopUntilInterruptedByAFatalError()
     {
         _fakeReaderWriter.EnqueueInput("print jello, world");
         _fakeReaderWriter.EnqueueInput("print jello, world");
@@ -146,7 +147,7 @@ public class ShellTests
     }
 
     [Test]
-    public void WhenACommandIsEnteredItIsAddedToTheHistroyManager()
+    public void WhenACommandIsEnteredItIsAddedToTheHistoryManager()
     {
         _fakeReaderWriter.EnqueueInput("print jello, world");
 
@@ -156,7 +157,7 @@ public class ShellTests
     }
 
     [Test]
-    public void IfTheCommandIsJustWhitespaceItIsNotAddedToTheHistroyManager()
+    public void IfTheCommandIsJustWhitespaceItIsNotAddedToTheHistoryManager()
     {
         _fakeReaderWriter.EnqueueInput("  \n\t  ");
 
@@ -223,17 +224,17 @@ public class ShellTests
     }
 
     [Test]
-    public void RunningAScriptEvaluesTheParsedSource()
+    public void RunningAScriptEvaluatesTheParsedSource()
     {
         _shell.RunScript("print jello, world");
 
-        _mockEvaluator.Verify(m => m.Evaluate(_mockScope.Object, It.IsAny<DictionaryValue>()), Times.Once);
+        _mockEnv.Verify(m => m.Evaluate(It.IsAny<DictionaryValue>()), Times.Once);
     }
 
     [Test]
     public void IfAErrorIsThrownItIsDisplayedToTheUserAndAnErrorCodeIsReturned()
     {
-        _mockEvaluator.Setup(m => m.Evaluate(It.IsAny<IScope>(), It.IsAny<DictionaryValue>()))
+        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictionaryValue>()))
             .Throws(Error.Name("Unknown variable!"));
 
         var result = _shell.RunScript("print jello, world");
@@ -247,6 +248,7 @@ public class ShellTests
     {
         _config = new ShellConfig();
 
+        _mockEnv = new Mock<IEnvironment>();
         _fakeReaderWriter = new FakeReaderWriter();
         _mockParser = new Mock<IParser>();
         _mockEvaluator = new Mock<IEvaluator>();
@@ -269,9 +271,18 @@ public class ShellTests
         _mockParser.Setup(m => m.Parse(new Scanner("noop")))
             .Returns(new DictionaryValue());
 
-        _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, _expectedParsedScript)).Returns("the result!".ToValue());
-        _mockEvaluator.Setup(m => m.Evaluate(_mockScope.Object, new DictionaryValue())).Returns(Value.Empty);
+        _mockEnv.Setup(m => m.Evaluate(_expectedParsedScript)).Returns("the result!".ToValue());
+        _mockEnv.Setup(m => m.Evaluate(new DictionaryValue())).Returns(Value.Empty);
 
-        _shell = new Shell(_fakeReaderWriter, _fakeReaderWriter, _mockScope.Object, _mockParser.Object, _mockEvaluator.Object, new ILibrary[] { _mockLibrary.Object, _mockLibrary.Object }, _config, _fakeReaderWriter);
+        _shell = new Shell(
+            _fakeReaderWriter,
+            _fakeReaderWriter,
+            _mockEnv.Object,
+            new ILibrary[] {
+                _mockLibrary.Object
+            },
+            _config,
+            _fakeReaderWriter
+        );
     }
 }
