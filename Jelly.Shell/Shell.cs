@@ -143,15 +143,18 @@ public class Shell
         }
     }
 
-    // TODO:  This needs moving...
-    public object ToClr(Value value) => value switch
+    // TODO:  This needs moving, and testing...
+    public object? ToClr(Value value)
     {
-        BooleanValue boolean => boolean.ToBool(),
-        NumberValue number => number.ToDouble(),
-        StringValue str => str.ToString(),
-        ListValue list => list.Select(v => ToClr(v)).ToList(),
-        DictionaryValue dict => new Dictionary<object, object>(
-            dict.ToEnumerable().Select(kvp => new KeyValuePair<object, object>(ToClr(kvp.Key), ToClr(kvp.Value)))),
-        _ => null
-    };
+        return value switch
+        {
+            BooleanValue boolean => boolean.ToBool(),
+            NumberValue number => number.ToDouble(),
+            StringValue str => str.ToString(),
+            ListValue list => list.Select(v => ToClr(v)).ToList(),
+            DictionaryValue dict => new Dictionary<string, object?>(
+                dict.ToEnumerable().Select(kvp => new KeyValuePair<string, object?>(ToClr(kvp.Key)?.ToString() ?? string.Empty, ToClr(kvp.Value)))),
+            _ => null
+        };
+    }
 }
