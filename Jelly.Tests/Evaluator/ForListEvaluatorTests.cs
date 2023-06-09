@@ -1,14 +1,10 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class ForListEvaluatorTests
+public class ForListEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Scope _scope = null!;
-    List<Value> _recoredValues = null!;
+    List<Value> _recordedValues = null!;
     TestCommand _testCommand = null!;
-    IEvaluator _rootEvaluator = null!;
     SimpleCommand _recordCommand = null!;
 
     [Test]
@@ -16,7 +12,7 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("c"), Node.Literal(new ListValue()), CreateLoopBody("c"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         result.Should().Be(Value.Empty);
     }
@@ -26,7 +22,7 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("c"), Node.Literal(new ListValue(1.ToValue())), CreateLoopBody("c"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         result.Should().Be("Result!".ToValue());
     }
@@ -36,7 +32,7 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("c"), Node.Literal(new ListValue(1.ToValue())), CreateLoopBody("c"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.ScopePassedToInvoke?.Invoking(s => s.GetVariable("c")).Should().NotThrow();
     }
@@ -46,7 +42,7 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("b"), Node.Literal(new ListValue(1.ToValue(), 2.ToValue(), 3.ToValue())), CreateLoopBody("b"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.Invocations.Should().Be(3);
     }
@@ -56,9 +52,9 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("a"), Node.Literal(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue())), CreateLoopBody("a"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _recoredValues.Should().Equal("a".ToValue(), "b".ToValue(), "c".ToValue());
+        _recordedValues.Should().Equal("a".ToValue(), "b".ToValue(), "c".ToValue());
     }
 
     [Test]
@@ -66,9 +62,9 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("i"), Node.Literal("a"), Node.Literal(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue())), CreateLoopBody("i"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _recoredValues.Should().Equal(1.ToValue(), 2.ToValue(), 3.ToValue());
+        _recordedValues.Should().Equal(1.ToValue(), 2.ToValue(), 3.ToValue());
     }
 
     [Test]
@@ -76,9 +72,9 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("i"), Node.Literal("a"), Node.Literal(new ListValue(1.ToValue(), 2.ToValue(), 3.ToValue())), CreateLoopBody("a"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(_scope);
+        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
     }
 
     [Test]
@@ -86,8 +82,8 @@ public class ForListEvaluatorTests
     {
         var node = Node.ForList(Node.Literal("SAME"), Node.Literal("same"), Node.Literal(new ListValue()), Node.Script());
 
-        _evaluator.Invoking(e => e.Evaluate(_scope, node, _rootEvaluator)).Should()
-            .Throw<ArgError>("index and value interators can not have the same value 'SAME'.");
+        this.Invoking(e => e.Evaluate(node)).Should()
+            .Throw<ArgError>("index and value iterators can not have the same value 'SAME'.");
     }
 
     [Test]
@@ -105,7 +101,7 @@ public class ForListEvaluatorTests
 
         var node = Node.ForList(Node.Literal("a"), Node.Literal(new ListValue("a".ToValue(), "b".ToValue())), body);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.Invocations.Should().Be(1);
         result.Should().Be(Value.Empty);
@@ -126,31 +122,28 @@ public class ForListEvaluatorTests
 
         var node = Node.ForList(Node.Literal("a"), Node.Literal(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue())), body);
 
-        _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        Evaluate(node);
 
         _testCommand.Invocations.Should().Be(0);
-        _recoredValues.Should().Equal("a".ToValue(), "b".ToValue(), "c".ToValue());
+        _recordedValues.Should().Equal("a".ToValue(), "b".ToValue(), "c".ToValue());
     }
 
-    [SetUp]
-    public void Setup()
+    public override void Setup()
     {
-        _scope = new Scope();
-        _recoredValues = new();
+        base.Setup();
+
+        _recordedValues = new();
         _testCommand = new TestCommand();
         _testCommand.ReturnValue = "Result!".ToValue();
         _recordCommand = new SimpleCommand((scope, args) => {
             if (args.Count == 1)
             {
-                _recoredValues.Add(args[0]);
+                _recordedValues.Add(args[0]);
             }
             return Value.Empty;
         });
-        _scope.DefineCommand("test", _testCommand);
-        _scope.DefineCommand("record", _recordCommand);
-        _rootEvaluator = new Evaluator();
-
-        _evaluator = new ForListEvaluator();
+        Environment.GlobalScope.DefineCommand("test", _testCommand);
+        Environment.GlobalScope.DefineCommand("record", _recordCommand);
     }
 
     static DictionaryValue CreateLoopBody(string iteratorName)
@@ -158,5 +151,10 @@ public class ForListEvaluatorTests
         return Node.Script(
             Node.Command(Node.Literal("record"), new ListValue(Node.Variable(iteratorName))),
             Node.Command(Node.Literal("test"), new ListValue()));
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new ForListEvaluator();
     }
 }

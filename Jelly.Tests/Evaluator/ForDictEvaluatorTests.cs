@@ -1,14 +1,10 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class ForDictEvaluatorTests
+public class ForDictEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Scope _scope = null!;
-    List<Value> _recoredValues = null!;
+    List<Value> _recordedValues = null!;
     TestCommand _testCommand = null!;
-    IEvaluator _rootEvaluator = null!;
     SimpleCommand _recordCommand = null!;
 
     [Test]
@@ -16,7 +12,7 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("c"), Node.Literal(new DictionaryValue()), CreateLoopBody("c"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         result.Should().Be(Value.Empty);
     }
@@ -26,7 +22,7 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("c"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue())), CreateLoopBody("c"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         result.Should().Be("Result!".ToValue());
     }
@@ -36,7 +32,7 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("c"), Node.Literal(new DictionaryValue(1.ToValue())), CreateLoopBody("c"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.ScopePassedToInvoke?.Invoking(s => s.GetVariable("c")).Should().NotThrow();
     }
@@ -46,7 +42,7 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("b"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("b"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.Invocations.Should().Be(2);
     }
@@ -56,9 +52,9 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("b"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("b"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _recoredValues.Should().Equal(1.ToValue(), 2.ToValue());
+        _recordedValues.Should().Equal(1.ToValue(), 2.ToValue());
     }
 
     [Test]
@@ -66,9 +62,9 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("k"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _recoredValues.Should().Equal("a".ToValue(), "b".ToValue());
+        _recordedValues.Should().Equal("a".ToValue(), "b".ToValue());
     }
 
     [Test]
@@ -76,9 +72,9 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("k"));
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(_scope);
+        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
     }
 
     [Test]
@@ -86,8 +82,8 @@ public class ForDictEvaluatorTests
     {
         var node = Node.ForDict(Node.Literal("SAME"), Node.Literal("same"), Node.Literal(new DictionaryValue()), Node.Script());
 
-        _evaluator.Invoking(e => e.Evaluate(_scope, node, _rootEvaluator)).Should()
-            .Throw<ArgError>("key and value interators can not have the same value 'SAME'.");
+        this.Invoking(e => e.Evaluate(node)).Should()
+            .Throw<ArgError>("key and value iterators can not have the same value 'SAME'.");
     }
 
     [Test]
@@ -105,7 +101,7 @@ public class ForDictEvaluatorTests
 
         var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), body);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.Invocations.Should().Be(1);
         result.Should().Be(Value.Empty);
@@ -126,31 +122,29 @@ public class ForDictEvaluatorTests
 
         var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), body);
 
-        _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        Evaluate(node);
 
         _testCommand.Invocations.Should().Be(0);
-        _recoredValues.Should().Equal("a".ToValue(), "b".ToValue());
+        _recordedValues.Should().Equal("a".ToValue(), "b".ToValue());
     }
 
     [SetUp]
-    public void Setup()
+    public override void Setup()
     {
-        _scope = new Scope();
-        _recoredValues = new();
+        base.Setup();
+
+        _recordedValues = new();
         _testCommand = new TestCommand();
         _testCommand.ReturnValue = "Result!".ToValue();
         _recordCommand = new SimpleCommand((scope, args) => {
             if (args.Count == 1)
             {
-                _recoredValues.Add(args[0]);
+                _recordedValues.Add(args[0]);
             }
             return Value.Empty;
         });
-        _scope.DefineCommand("test", _testCommand);
-        _scope.DefineCommand("record", _recordCommand);
-        _rootEvaluator = new Evaluator();
-
-        _evaluator = new ForDictEvaluator();
+        Environment.GlobalScope.DefineCommand("test", _testCommand);
+        Environment.GlobalScope.DefineCommand("record", _recordCommand);
     }
 
     static DictionaryValue CreateLoopBody(string iteratorName)
@@ -158,5 +152,10 @@ public class ForDictEvaluatorTests
         return Node.Script(
             Node.Command(Node.Literal("record"), new ListValue(Node.Variable(iteratorName))),
             Node.Command(Node.Literal("test"), new ListValue()));
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new ForDictEvaluator();
     }
 }

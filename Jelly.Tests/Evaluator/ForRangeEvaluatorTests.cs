@@ -1,15 +1,11 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class ForRangeEvaluatorTests
+public class ForRangeEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Scope _scope = null!;
-    List<double> _recoredIterators = null!;
+    List<double> _recordedIterators = null!;
     TestCommand _testCommand = null!;
     DictionaryValue _testBody = null!;
-    IEvaluator _rootEvaluator = null!;
     SimpleCommand _recordCommand = null!;
 
     [Test]
@@ -17,7 +13,7 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(0), Node.Literal(1), _testBody);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         result.Should().Be("Result!".ToValue());
     }
@@ -27,7 +23,7 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(1), Node.Literal(10), Node.Literal(1), _testBody);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.Invocations.Should().Be(10);
         result.Should().Be("Result!".ToValue());
@@ -38,10 +34,10 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(8), Node.Literal(10), Node.Literal(1), _testBody);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(_scope);
-        _recoredIterators.Should().Equal(8.0, 9.0, 10.0);
+        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
+        _recordedIterators.Should().Equal(8.0, 9.0, 10.0);
     }
 
     [Test]
@@ -49,9 +45,9 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(2), _testBody);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _recoredIterators.Should().Equal(0.0, 2.0, 4.0, 6.0, 8.0, 10.0);
+        _recordedIterators.Should().Equal(0.0, 2.0, 4.0, 6.0, 8.0, 10.0);
     }
 
     [Test]
@@ -59,7 +55,7 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(0), _testBody);
 
-        _evaluator.Invoking(e =>e.Evaluate(_scope, node, _rootEvaluator)).Should()
+        this.Invoking(e =>e.Evaluate(node)).Should()
             .Throw<ArgError>().WithMessage("step can not be zero.");
     }
 
@@ -68,9 +64,9 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(5), Node.Literal(1), Node.Literal(-1), _testBody);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
-        _recoredIterators.Should().Equal(5.0, 4.0, 3.0, 2.0, 1.0);
+        _recordedIterators.Should().Equal(5.0, 4.0, 3.0, 2.0, 1.0);
     }
 
     [Test]
@@ -78,7 +74,7 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(-2), _testBody);
 
-        _evaluator.Invoking(e =>e.Evaluate(_scope, node, _rootEvaluator)).Should()
+        this.Invoking(e =>e.Evaluate(node)).Should()
             .Throw<ArgError>().WithMessage("step must be positive when start is less than end.");
     }
 
@@ -87,7 +83,7 @@ public class ForRangeEvaluatorTests
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(10), Node.Literal(0), Node.Literal(2), _testBody);
 
-        _evaluator.Invoking(e =>e.Evaluate(_scope, node, _rootEvaluator)).Should()
+        this.Invoking(e =>e.Evaluate(node)).Should()
             .Throw<ArgError>().WithMessage("step must be negative when start is greater than end.");
     }
 
@@ -106,7 +102,7 @@ public class ForRangeEvaluatorTests
 
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(2), body);
 
-        var result = _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        var result = Evaluate(node);
 
         _testCommand.Invocations.Should().Be(1);
         result.Should().Be(Value.Empty);
@@ -127,27 +123,30 @@ public class ForRangeEvaluatorTests
 
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(1), Node.Literal(10), Node.Literal(1), body);
 
-        _evaluator.Evaluate(_scope, node, _rootEvaluator);
+        Evaluate(node);
 
         _testCommand.Invocations.Should().Be(0);
-        _recoredIterators.Should().Equal(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        _recordedIterators.Should().Equal(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 
     [SetUp]
-    public void Setup()
+    public override void Setup()
     {
-        _scope = new Scope();
-        _recoredIterators = new();
+        base.Setup();
+
+        _recordedIterators = new();
         _testCommand = new TestCommand();
         _testCommand.ReturnValue = "Result!".ToValue();
-        _recordCommand = new SimpleCommand((scope, args) => { _recoredIterators.Add(args[0].ToDouble()); return Value.Empty; });
-        _scope.DefineCommand("test", _testCommand);
-        _scope.DefineCommand("record", _recordCommand);
+        _recordCommand = new SimpleCommand((scope, args) => { _recordedIterators.Add(args[0].ToDouble()); return Value.Empty; });
+        Environment.GlobalScope.DefineCommand("test", _testCommand);
+        Environment.GlobalScope.DefineCommand("record", _recordCommand);
         _testBody = Node.Script(
             Node.Command(Node.Literal("record"), new ListValue(Node.Variable("a"))),
             Node.Command(Node.Literal("test"), new ListValue()));
-        _rootEvaluator = new Evaluator();
+    }
 
-        _evaluator = new ForRangeEvaluator();
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new ForRangeEvaluator();
     }
 }
