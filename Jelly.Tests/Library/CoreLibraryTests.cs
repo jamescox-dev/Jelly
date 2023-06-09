@@ -44,16 +44,12 @@ public class CoreLibraryTests
     public class BreakTests : CoreLibraryTests
     {
         [Test]
-        public void ARaiseNodeOfTypeBreakIsReturned()
+        public void ABreakErrorIsRaised()
         {
             var breakCmd = _env.GlobalScope.GetCommand("break");
             var args = new ListValue();
 
-            var result = breakCmd.Invoke(_env, args);
-
-            result.Should().Be(Node.Raise(
-                Node.Literal("/break/"), Node.Literal(Value.Empty), Node.Literal(Value.Empty)
-            ));
+            breakCmd.Invoking(c => c.Invoke(_env, args)).Should().Throw<Break>();
         }
 
         [Test]

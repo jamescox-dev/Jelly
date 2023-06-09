@@ -1,6 +1,6 @@
 namespace Jelly.Serializers.Tests;
 
-using Jelly.Evaluator;
+using Jelly.Runtime;
 
 public class ValueSerializerTests
 {
@@ -39,11 +39,11 @@ public class ValueSerializerTests
     public void ValuesCanBeEscapedSoThatTheirValueCanBeReinterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
         var parser = new WordParser();
-        var evaluator = new Evaluator();
+        var env = new Environment();
 
         var escapedValue = ValueSerializer.Escape(stringValue);
 
-        evaluator.Evaluate(null!, parser.Parse(new Scanner(escapedValue))!).ToString().Should().Be(stringValue, $"escapedValue = {escapedValue}");
+        env.Evaluate(parser.Parse(new Scanner(escapedValue))!).ToString().Should().Be(stringValue, $"escapedValue = {escapedValue}");
     }
 
     [TestCase("a$b", @"a\$b", true)]
