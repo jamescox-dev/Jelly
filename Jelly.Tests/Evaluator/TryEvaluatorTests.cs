@@ -1,27 +1,14 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class TryEvaluatorTests
+public class TryEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Evaluator _rootEvaluator = null!;
-    Scope _scope = null!;
-
-    [SetUp]
-    public void Setup()
-    {
-        _evaluator = new TryEvaluator();
-        _rootEvaluator = new Evaluator();
-        _scope = new Scope();
-    }
-
     [Test]
     public void TheResultOfANonThrowingTryBlockIsTheResultOfEvaluatingItsBody()
     {
         var tryNode = Node.Try(Node.Literal("success"), null);
 
-        var result = _evaluator.Evaluate(_scope, tryNode, _rootEvaluator);
+        var result = Evaluate(tryNode);
 
         result.Should().Be("success".ToValue());
     }
@@ -35,7 +22,7 @@ public class TryEvaluatorTests
             (Node.Literal("/error/"), Node.Literal("me first")),
             (Node.Literal("/error/type"), Node.Literal("even though I'm more specific")));
 
-        var result = _evaluator.Evaluate(_scope, tryNode, _rootEvaluator);
+        var result = Evaluate(tryNode);
 
         result.Should().Be("me first".ToValue());
     }
@@ -49,7 +36,7 @@ public class TryEvaluatorTests
             (Node.Literal("/wont/"), Node.Literal("not going to happen")),
             (Node.Literal("/match"), Node.Literal("ever!")));
 
-        _evaluator.Invoking(e => e.Evaluate(_scope, tryNode, _rootEvaluator)).Should()
+        this.Invoking(e => e.Evaluate(tryNode)).Should()
             .Throw<Error>().WithMessage("Test error").Where(e => e.Value.Equals("Test".ToValue()));
     }
 
@@ -65,9 +52,14 @@ public class TryEvaluatorTests
             (Node.Literal("/error/"), Node.Literal("me first")),
             (Node.Literal("/error/type"), Node.Literal("even though I'm more specific")));
 
-        var result = _evaluator.Evaluate(_scope, tryNode, _rootEvaluator);
+        var result = Evaluate(tryNode);
 
         result.Should().Be("this should be the result".ToValue());
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new TryEvaluator();
     }
 
     // TODO:  Add errtype, errmessage, errpos special variables to handler bodies.

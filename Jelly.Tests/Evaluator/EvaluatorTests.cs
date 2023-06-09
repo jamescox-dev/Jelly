@@ -1,7 +1,7 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class EvaluatorTests
+public class EvaluatorTests : EvaluatorTestsBase
 {
     [Test]
     public void TheEvaluatorCanEvaluateALiteralNode()
@@ -9,7 +9,7 @@ public class EvaluatorTests
         IEvaluator evaluator = new Evaluator();
         var node = Node.Literal("Hi".ToValue());
 
-        var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
+        var result = Evaluate(node);
 
         result.Should().Be("Hi".ToValue());
     }
@@ -20,7 +20,7 @@ public class EvaluatorTests
         IEvaluator evaluator = new Evaluator();
         var node = Node.Composite(Node.Literal("Hi".ToValue()));
 
-        var result = evaluator.Evaluate(new Mock<IScope>().Object, node);
+        var result = Evaluate(node);
 
         result.Should().Be("Hi".ToValue());
     }
@@ -33,7 +33,7 @@ public class EvaluatorTests
         scope.Setup(m => m.GetVariable("Name")).Returns("Bill".ToValue());
         var node = Node.Variable("Name");
 
-        var result = evaluator.Evaluate(scope.Object, node);
+        var result = Evaluate(node);
 
         result.Should().Be("Bill".ToValue());
     }
@@ -44,13 +44,11 @@ public class EvaluatorTests
         IEvaluator evaluator = new Evaluator();
         Mock<IScope> scope = new Mock<IScope>();
         Mock<ICommand> command = new Mock<ICommand>();
-        command.SetupGet(m => m.EvaluationFlags).Returns(EvaluationFlags.Arguments);
         scope.Setup(m => m.GetCommand("Foo")).Returns(command.Object);
         var node = Node.Command(Node.Literal("Foo".ToValue()), new ListValue());
 
-        var result = evaluator.Evaluate(scope.Object, node);
-
-        command.Verify(m => m.Invoke(scope.Object, new ListValue()), Times.Once);
+        var result = Evaluate(node);
+        command.Verify(m => m.Invoke(Environment, new ListValue()), Times.Once);
     }
 
     [Test]
@@ -59,15 +57,14 @@ public class EvaluatorTests
         IEvaluator evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         var command = new Mock<ICommand>();
-        command.SetupGet(m => m.EvaluationFlags).Returns(EvaluationFlags.Arguments);
-        command.Setup(m => m.Invoke(scope.Object, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => args[0]);
+        command.Setup(m => m.Invoke(Environment, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => args[0]);
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue(Node.Literal("1".ToValue())));
         var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue(Node.Literal("2".ToValue())));
         scope.Setup(m => m.GetCommand("command1")).Returns(command.Object);
         scope.Setup(m => m.GetCommand("command2")).Returns(command.Object);
         var node = Node.Script(command1, command2);
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be("2".ToValue());
     }
@@ -79,7 +76,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.Assignment("answer", Node.Literal("42".ToValue()));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         scope.Verify(s => s.SetVariable("answer", "42".ToValue()), Times.Once);
         result.Should().Be("42".ToValue());
@@ -92,7 +89,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.DefineVariable("answer", Node.Literal("42".ToValue()));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         scope.Verify(s => s.DefineVariable("answer", "42".ToValue()), Times.Once);
         result.Should().Be("42".ToValue());
@@ -105,7 +102,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.Expression(Node.Literal(8));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be(8.0.ToValue());
     }
@@ -117,7 +114,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.BinOp("add", Node.Literal(1), Node.Literal(2));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be(3.0.ToValue());
     }
@@ -129,7 +126,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.UniOp("not", Node.Literal(false.ToValue()));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be(true.ToValue());
     }
@@ -141,7 +138,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.If(Node.Literal(false), Node.Literal("yes"), Node.Literal("no"));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be("no".ToValue());
     }
@@ -153,7 +150,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.While(Node.Literal(false), Node.Literal("I never run!"));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be(Value.Empty);
     }
@@ -161,11 +158,10 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateAScopeNode()
     {
-        IEvaluator evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         var node = Node.Scope(Node.Literal("boo"));
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be("boo".ToValue());
     }
@@ -173,11 +169,10 @@ public class EvaluatorTests
     [Test]
     public void TheEvaluatorCanEvaluateARaiseNode()
     {
-        IEvaluator evaluator = new Evaluator();
         var scope = new Mock<IScope>();
         var node = Node.Raise(Node.Literal("/error/test"), Node.Literal("Test message."), Node.Literal("testvalue"));
 
-        evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, node, evaluator)).Should()
+        this.Invoking(e => e.Evaluate(node)).Should()
             .Throw<Error>().WithMessage("Test message.").Where(e => e.Value.Equals("testvalue".ToValue()));
     }
 
@@ -188,7 +183,7 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.Try(Node.Literal("hello"), null);
 
-        var result = evaluator.Evaluate(scope.Object, node, evaluator);
+        var result = Evaluate(node);
 
         result.Should().Be("hello".ToValue());
     }
@@ -200,8 +195,13 @@ public class EvaluatorTests
         var scope = new Mock<IScope>();
         var node = Node.DefineCommand(Node.Literal("test"), Node.Literal("body"), new ListValue(), new ListValue());
 
-        evaluator.Evaluate(scope.Object, node, evaluator);
+        Evaluate(node);
 
         scope.Verify(m => m.DefineCommand("test", It.IsAny<ICommand>()));
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new Evaluator();
     }
 }

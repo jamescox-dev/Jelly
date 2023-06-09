@@ -1,42 +1,29 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class DefineCommandEvaluatorTests
+public class DefineCommandEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Evaluator _rootEvaluator = null!;
-    Scope _scope = null!;
-
-    [SetUp]
-    public void Setup()
-    {
-        _evaluator = new DefineCommandEvaluator();
-        _rootEvaluator = new Evaluator();
-        _scope = new Scope();
-    }
-
     [Test]
     public void TheNameOfTheCommandIsEvaluatedAndACoomandWithThatNameIsDefinedInTheCurrentScope()
     {
         var defNode = Node.DefineCommand(Node.Literal("test"), Node.Literal("hi"), new ListValue(), new ListValue());
 
-        _evaluator.Evaluate(_scope, defNode, _rootEvaluator);
+        Evaluate(defNode);
 
-        _scope.Invoking(s => s.GetCommand("test")).Should().NotThrow<NameError>();
+        Environment.GlobalScope.Invoking(s => s.GetCommand("test")).Should().NotThrow<NameError>();
     }
 
     [Test]
     public void TheCommandDefinedInTheScopeIsAUserCommandWithItBodySetCorrectly()
     {
         var defNode = Node.DefineCommand(Node.Literal("test"), Node.Literal("hi"), new ListValue(), new ListValue());
-        _evaluator.Evaluate(_scope, defNode, _rootEvaluator);
+        Evaluate(defNode);
 
-        var definedCommnad = _scope.GetCommand("test");
+        var definedCommand = Environment.GlobalScope.GetCommand("test");
 
-        definedCommnad.Should().BeOfType<UserCommand>();
-        var definedUserCommnad = (UserCommand)definedCommnad;
-        definedUserCommnad.Body.Should().Be(Node.Literal("hi"));
+        definedCommand.Should().BeOfType<UserCommand>();
+        var definedUserCommand = (UserCommand)definedCommand;
+        definedUserCommand.Body.Should().Be(Node.Literal("hi"));
     }
 
     [Test]
@@ -49,9 +36,9 @@ public class DefineCommandEvaluatorTests
                 Node.Literal("a"),
                 Node.Literal("b")
             ), new ListValue());
-        _evaluator.Evaluate(_scope, defNode, _rootEvaluator);
+        Evaluate(defNode);
 
-        var definedCommnad = (UserCommand)_scope.GetCommand("test");
+        var definedCommnad = (UserCommand)Environment.GlobalScope.GetCommand("test");
 
         definedCommnad.RequiredArgNames.Should().Equal("a", "b");
     }
@@ -69,9 +56,9 @@ public class DefineCommandEvaluatorTests
             ), new ListValue(
                 Node.Literal("1")
             ));
-        _evaluator.Evaluate(_scope, defNode, _rootEvaluator);
+        Evaluate(defNode);
 
-        var definedCommnad = (UserCommand)_scope.GetCommand("test");
+        var definedCommnad = (UserCommand)Environment.GlobalScope.GetCommand("test");
 
         definedCommnad.RequiredArgNames.Should().Equal("a", "b");
         definedCommnad.OptionalArgNames.Should().Equal("c");
@@ -90,7 +77,7 @@ public class DefineCommandEvaluatorTests
             ),
             new ListValue());
 
-        _evaluator.Invoking(e => e.Evaluate(_scope, defNode, _rootEvaluator)).Should()
+        this.Invoking(e => e.Evaluate(defNode)).Should()
             .Throw<ArgError>().WithMessage("Argument with name 'A' already defined.");
     }
 
@@ -107,7 +94,7 @@ public class DefineCommandEvaluatorTests
             new ListValue(Node.Literal(1)),
             Node.Literal("B"));
 
-        _evaluator.Invoking(e => e.Evaluate(_scope, defNode, _rootEvaluator)).Should()
+        this.Invoking(e => e.Evaluate(defNode)).Should()
             .Throw<ArgError>().WithMessage("Argument with name 'B' already defined.");
     }
 
@@ -120,9 +107,9 @@ public class DefineCommandEvaluatorTests
             Node.Literal("body"),
             new ListValue(), new ListValue(),
             restArgumentName is null ? null : Node.Literal("and_the_rest"));
-        _evaluator.Evaluate(_scope, defNode, _rootEvaluator);
+        Evaluate(defNode);
 
-        var definedCommnad = (UserCommand)_scope.GetCommand("test");
+        var definedCommnad = (UserCommand)Environment.GlobalScope.GetCommand("test");
 
         definedCommnad.RestArgName.Should().Be(restArgumentName);
     }
@@ -132,8 +119,13 @@ public class DefineCommandEvaluatorTests
     {
         var defNode = Node.DefineCommand(Node.Literal("test"), Node.Literal("hi"), new ListValue(), new ListValue());
 
-        var result = _evaluator.Evaluate(_scope, defNode, _rootEvaluator);
+        var result = Evaluate(defNode);
 
         result.Should().Be(Value.Empty);
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new DefineCommandEvaluator();
     }
 }

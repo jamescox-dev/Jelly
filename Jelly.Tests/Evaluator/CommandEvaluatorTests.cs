@@ -1,7 +1,7 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class CommandEvaluatorTests
+public class CommandEvaluatorTests : EvaluatorTestsBase
 {
     [Test]
     public void TheNameOfTheCommandIsEvaluatedAndRetrievedFromTheScope()
@@ -12,7 +12,7 @@ public class CommandEvaluatorTests
         var commandNode = Node.Command(Node.Literal("greet".ToValue()), new ListValue());
         var commandEvaluator = new CommandEvaluator();
 
-        commandEvaluator.Evaluate(scope.Object, commandNode, evaluator);
+        Evaluate(commandNode);
 
         scope.Verify(m => m.GetCommand("greet"));
     }
@@ -28,7 +28,7 @@ public class CommandEvaluatorTests
         var commandNode = Node.Command(Node.Literal("greet".ToValue()), args);
         var commandEvaluator = new CommandEvaluator();
 
-        commandEvaluator.Evaluate(scope, commandNode, evaluator);
+        Evaluate(commandNode);
 
         ((IComparable<Value>?)command.ArgsPassedToInvoke).Should().Be(new ListValue("Vic".ToValue(), "Bob".ToValue()));
         command.ScopePassedToInvoke.Should().Be(scope);
@@ -39,13 +39,13 @@ public class CommandEvaluatorTests
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
-        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.ReturnValue, ReturnValue = Node.Literal(Value.Empty) };
+        var command = new TestCommand() { ReturnValue = Node.Literal(Value.Empty) };
         scope.DefineCommand("greet", command);
         var args = new ListValue(Node.Literal("Vic".ToValue()), Node.Literal("Bob".ToValue()));
         var commandNode = Node.Command(Node.Literal("greet".ToValue()), args);
         var commandEvaluator = new CommandEvaluator();
 
-        commandEvaluator.Evaluate(scope, commandNode, evaluator);
+        Evaluate(commandNode);
 
         ((IComparable<Value>?)command.ArgsPassedToInvoke).Should().Be(args);
     }
@@ -55,13 +55,13 @@ public class CommandEvaluatorTests
     {
         var evaluator = new Evaluator();
         var scope = new Scope();
-        var command = new TestCommand() { EvaluationFlags = EvaluationFlags.ReturnValue, ReturnValue = Node.Variable("test") };
+        var command = new TestCommand() { ReturnValue = Node.Variable("test") };
         scope.DefineCommand("macro", command);
         scope.DefineVariable("test", "1 2 3".ToValue());
         var commandNode = Node.Command(Node.Literal("macro"), new ListValue());
         var commandEvaluator = new CommandEvaluator();
 
-        var result = commandEvaluator.Evaluate(scope, commandNode, evaluator);
+        var result = Evaluate(commandNode);
 
         result.Should().Be("1 2 3".ToValue());
     }
@@ -76,8 +76,13 @@ public class CommandEvaluatorTests
         var commandNode = Node.Command(Node.Literal("greet".ToValue()), new ListValue());
         var commandEvaluator = new CommandEvaluator();
 
-        var result = commandEvaluator.Evaluate(scope, commandNode, evaluator);
+        var result = Evaluate(commandNode);
 
         result.Should().Be("42".ToValue());
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new CommandEvaluator();
     }
 }

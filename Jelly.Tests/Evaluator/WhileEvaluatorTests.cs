@@ -1,62 +1,57 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class WhileEvaluatorTests
+public class WhileEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
+    CounterCommand _condCmd = null!;
+    CounterCommand _bodyCmd = null!;
 
-    Evaluator _rootEvaluator = null!;
-    Scope _scope = null!;
-
-    [SetUp]
-    public void Setup()
+    public override void Setup()
     {
-        _evaluator = new WhileEvaluator();
-        _rootEvaluator = new Evaluator();
-        _scope = new Scope();
+        base.Setup();
+
+        _condCmd = new CounterCommand { Increment = -1 };
+        _bodyCmd = new CounterCommand();
+
+        Environment.GlobalScope.DefineCommand("cond", _condCmd);
+        Environment.GlobalScope.DefineCommand("body", _bodyCmd);
     }
 
     [Test]
     public void TheBodyIsEvaluatedWhileEvaluatingTheConditionIsNotZeroTheResultIsTheResultOfTheLastCommandEvaluatedInTheBody()
     {
-        var condCmd = new CounterCommand { Count = 4, Increment = -1};
-        var bodyCmd = new CounterCommand();
-        _scope.DefineCommand("cond", condCmd);
-        _scope.DefineCommand("body", bodyCmd);
+        _condCmd.Count = 4;
+
         var whileNode = Node.While(
             Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())),
             Node.Script(Node.Command(Node.Literal("body".ToValue()), new ListValue())));
 
-        var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
+        var result = Evaluate(whileNode);
 
-        bodyCmd.CallCount.Should().Be(3);
+        _bodyCmd.CallCount.Should().Be(3);
         result.Should().Be("3".ToValue());
     }
 
     [Test]
     public void TheWhileNodeEvaluatesTpAnEmptyValueIfTheBodyNeverRuns()
     {
-        var condCmd = new CounterCommand { Count = 1, Increment = -1};
-        var bodyCmd = new CounterCommand();
-        _scope.DefineCommand("cond", condCmd);
-        _scope.DefineCommand("body", bodyCmd);
+        _condCmd.Count = 1;
+
         var whileNode = Node.While(
             Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())),
             Node.Script(Node.Command(Node.Literal("body".ToValue()), new ListValue())));
 
-        var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
+        var result = Evaluate(whileNode);
 
-        bodyCmd.CallCount.Should().Be(0);
+        _bodyCmd.CallCount.Should().Be(0);
         result.Should().Be(Value.Empty);
     }
 
     [Test]
     public void TheLoopEndsAfterABreakIsThrownTheResultIsAnEmptyValue()
     {
-        var condCmd = new CounterCommand { Count = 4, Increment = -1};
-        var bodyCmd = new CounterCommand();
-        _scope.DefineCommand("cond", condCmd);
-        _scope.DefineCommand("body", bodyCmd);
+        _condCmd.Count = 4;
+
         var whileNode = Node.While(
             Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())),
             Node.Script(
@@ -69,20 +64,18 @@ public class WhileEvaluatorTests
             )
         );
 
-        var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
+        var result = Evaluate(whileNode);
 
-        bodyCmd.CallCount.Should().Be(0);
+        _bodyCmd.CallCount.Should().Be(0);
         result.Should().Be(Value.Empty);
     }
 
     [Test]
     public void TheExecutionOfTheLoopBodyEndsAfterAContinueIsThrownAndTheConditionIsReavaluatedAndTheLoopContinues()
     {
-        var condCmd = new CounterCommand { Count = 4, Increment = -1};
-        var bodyCmd = new CounterCommand();
-        _scope.DefineVariable("count", 0.ToValue());
-        _scope.DefineCommand("cond", condCmd);
-        _scope.DefineCommand("body", bodyCmd);
+        _condCmd.Count = 4;
+        Environment.GlobalScope.DefineVariable("count", 0.ToValue());
+
         var whileNode = Node.While(
             Node.Script(Node.Command(Node.Literal("cond".ToValue()), new ListValue())),
             Node.Script(
@@ -99,9 +92,14 @@ public class WhileEvaluatorTests
             )
         );
 
-        var result = _evaluator.Evaluate(_scope, whileNode, _rootEvaluator);
+        var result = Evaluate(whileNode);
 
-        bodyCmd.CallCount.Should().Be(1);
+        _bodyCmd.CallCount.Should().Be(1);
         result.Should().Be(1.ToValue());
+    }
+
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new WhileEvaluator();
     }
 }

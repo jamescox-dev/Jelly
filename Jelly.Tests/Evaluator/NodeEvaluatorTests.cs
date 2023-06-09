@@ -1,7 +1,7 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class NodeEvaluatorTests
+public class NodeEvaluatorTests : EvaluatorTestsBase
 {
     [Test]
     public void TheNodeEvaluatorCallsTheConfiguredEvaluatorForTheGivenNodeTypeAndTheScopeAndEvaluatorPassedToEvaluateIsPassedToTheRetrievedEvaluatorsEvaluateMethod()
@@ -22,15 +22,15 @@ public class NodeEvaluatorTests
             new(new StringValue("message"), new StringValue("bye")),
         });
 
-        var test1result = interpreter.Evaluate(scope, test1Node, anotherInterpreter);
-        var test2result = interpreter.Evaluate(scope, test2Node, anotherInterpreter);
+        var test1result = interpreter.Evaluate(Environment, test1Node);
+        var test2result = interpreter.Evaluate(Environment, test2Node);
 
         test1result.Should().Be(new StringValue("hi"));
-        test1Interpreter.ScopePassedToEvaluate.Should().Be(scope);
+        test1Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
         test1Interpreter.NodeEvaluated.Should().Be(test1Node);
         test1Interpreter.EvaluatorPassedToEvaluate.Should().Be(anotherInterpreter);
         test2result.Should().Be(new StringValue("bye"));
-        test2Interpreter.ScopePassedToEvaluate.Should().Be(scope);
+        test2Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
         test2Interpreter.NodeEvaluated.Should().Be(test2Node);
         test2Interpreter.EvaluatorPassedToEvaluate.Should().Be(anotherInterpreter);
     }
@@ -41,7 +41,7 @@ public class NodeEvaluatorTests
         IEvaluator evaluator = new Evaluator();
         var invalidNode = new DictionaryValue();
 
-        evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
+        this.Invoking(e => e.Evaluate(invalidNode))
             .Should().Throw<Error>().WithMessage("Can not evaluate node, no type specified.")
             .Where(e => e.Type == "/error/eval/");
     }
@@ -54,22 +54,26 @@ public class NodeEvaluatorTests
             "type".ToValue(), "invalid".ToValue()
         );
 
-        evaluator.Invoking(e => e.Evaluate(new Mock<IScope>().Object, invalidNode))
+        this.Invoking(e => e.Evaluate(invalidNode))
             .Should().Throw<Error>().WithMessage("Can not evaluate node of type: 'invalid'.")
             .Where(e => e.Type == "/error/eval/");
     }
 
+    protected override IEvaluator BuildEvaluatorUnderTest()
+    {
+        return new NodeEvaluator();
+    }
+
     public class TestEvaluator : IEvaluator
     {
-        public IScope? ScopePassedToEvaluate { get; private set; }
+        public IEnvironment? EnvironmentPassedToEvaluate { get; private set; }
         public DictionaryValue? NodeEvaluated { get; private set; }
         public IEvaluator? EvaluatorPassedToEvaluate { get; private set; }
 
-        public Value Evaluate(IScope scope, DictionaryValue node, IEvaluator evaluator)
+        public Value Evaluate(IEnvironment env, DictionaryValue node)
         {
-            ScopePassedToEvaluate = scope;
+            EnvironmentPassedToEvaluate = env;
             NodeEvaluated = node;
-            EvaluatorPassedToEvaluate = evaluator;
 
             return node[new StringValue("message")];
         }

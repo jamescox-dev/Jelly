@@ -1,20 +1,15 @@
 namespace Jelly.Evaluator.Tests;
 
 [TestFixture]
-public class UnaryOpEvaluatorTests
+public class UnaryOpEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Evaluator _rootEvaluator = null!;
-    Scope _scope = null!;
-
     [TestCase("notreal")]
     [TestCase("bla")]
     public void AnUnknownOperatorResultsInAValueErrorBeingThrown(string op)
     {
         var uniOp = Node.UniOp(op, Node.Literal(0));
 
-        _evaluator.Invoking(e => e.Evaluate(_scope, uniOp, _rootEvaluator))
+        this.Invoking(e => e.Evaluate(uniOp))
             .Should().Throw<ValueError>().WithMessage("Invalid unary operator.");
     }
 
@@ -28,7 +23,7 @@ public class UnaryOpEvaluatorTests
     {
         var uniOp = Node.UniOp("pos", Node.Literal(a));
 
-        var result = _evaluator.Evaluate(_scope, uniOp, _rootEvaluator);
+        var result = Evaluate(uniOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -43,7 +38,7 @@ public class UnaryOpEvaluatorTests
     {
         var uniOp = Node.UniOp("neg", Node.Literal(a));
 
-        var result = _evaluator.Evaluate(_scope, uniOp, _rootEvaluator);
+        var result = Evaluate(uniOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -59,7 +54,7 @@ public class UnaryOpEvaluatorTests
     {
         var uniOp = Node.UniOp("not", Node.Literal(a));
 
-        var result = _evaluator.Evaluate(_scope, uniOp, _rootEvaluator);
+        var result = Evaluate(uniOp);
 
         result.Should().Be(expected.ToValue());
     }
@@ -75,17 +70,13 @@ public class UnaryOpEvaluatorTests
     {
         var uniOp = Node.UniOp("bitnot", Node.Literal(a));
 
-        var result = _evaluator.Evaluate(_scope, uniOp, _rootEvaluator);
+        var result = Evaluate(uniOp);
 
         result.Should().Be(expected.ToValue());
     }
 
-    [SetUp]
-    public void Setup()
+    protected override IEvaluator BuildEvaluatorUnderTest()
     {
-        _rootEvaluator = new Evaluator();
-        _scope = new Scope();
-
-        _evaluator = new UnaryOpEvaluator();
+        return new UnaryOpEvaluator();
     }
 }
