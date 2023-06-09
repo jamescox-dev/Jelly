@@ -3,7 +3,7 @@ namespace Jelly.Examples.Tests;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Jelly.Evaluator;
+using Jelly.Runtime;
 using Jelly.Shell;
 
 [TestFixture]
@@ -20,9 +20,7 @@ public class ExampleTests
         var shell = new Shell(
                 reader,
                 writer,
-                new Scope(),
-                new ScriptParser(),
-                new Evaluator(),
+                new Environment(),
                 new ILibrary[] {
                     new Jelly.Experimental.CoreLibrary(),
                     new Jelly.Library.CoreLibrary(),
