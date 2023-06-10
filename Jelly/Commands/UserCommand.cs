@@ -35,7 +35,7 @@ public class UserCommand : CommandBase
     {
         return env.RunInNestedScope(() =>
         {
-            EnsureArgCountIsValid(unevaluatedArgs);
+            EnsureArgCountIsValid(env, unevaluatedArgs);
 
             var args = EvaluateArgs(env, unevaluatedArgs);
             DefineRequiredArgs(env, args);
@@ -67,11 +67,12 @@ public class UserCommand : CommandBase
     {
         if (_restArgName is not null)
         {
-            env.CurrentScope.DefineVariable(_restArgName, new ListValue(args[^1]));
+            var nonRestArgCount = _requiredArgNames.Length + _optionalArgs.Length;
+            env.CurrentScope.DefineVariable(_restArgName, new ListValue(args.Skip(nonRestArgCount)));
         }
     }
 
-    void EnsureArgCountIsValid(ListValue args)
+    void EnsureArgCountIsValid(IEnvironment env, ListValue args)
     {
         if (args.Count < _requiredArgNames.Length)
         {
@@ -79,7 +80,7 @@ public class UserCommand : CommandBase
         }
         if (args.Count > _requiredArgNames.Length + _optionalArgs.Length && _restArgName is null)
         {
-            throw UnexpectedArgError(args);
+            throw UnexpectedArgError(env, args);
         }
     }
 
@@ -90,9 +91,10 @@ public class UserCommand : CommandBase
     }
 
     // TODO:  This should be a standard error.
-    Error UnexpectedArgError(ListValue unevaluatedArgs)
+    Error UnexpectedArgError(IEnvironment env, ListValue unevaluatedArgs)
     {
-        throw Error.Arg($"Unexpected argument '{unevaluatedArgs[_requiredArgNames.Length + _optionalArgs.Length]}'.");
+        var argValue = env.Evaluate(unevaluatedArgs[_requiredArgNames.Length + _optionalArgs.Length].ToNode());
+        throw Error.Arg($"Unexpected argument '{argValue}'.");
     }
 
     Value EvaluateBody(IEnvironment env)

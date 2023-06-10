@@ -67,8 +67,8 @@ public class WrappedCommand : CommandBase
     // TODO:  In need of some serious refactoring.
     public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
     {
-        EnsureArgCountIsValid(unevaluatedArgs);
-        unevaluatedArgs = EvaluateArgs(env, unevaluatedArgs);
+        EnsureArgCountIsValid(env, unevaluatedArgs);
+        var args = EvaluateArgs(env, unevaluatedArgs);
 
         var scopeOffset = _hasEnvArg ? 1 : 0;
         var clrArgs = new object?[_maxPositionalArgsCount + (_paramsArgType is not null ? 1 : 0) + scopeOffset];
@@ -77,7 +77,7 @@ public class WrappedCommand : CommandBase
         {
             clrArgs[0] = env;
         }
-        foreach (var arg in unevaluatedArgs.Take(_maxPositionalArgsCount))
+        foreach (var arg in args.Take(_maxPositionalArgsCount))
         {
             clrArgs[i] = _typeMarshaller.Marshal(arg, _argTypes[i - scopeOffset]);
             ++i;
@@ -89,12 +89,12 @@ public class WrappedCommand : CommandBase
         }
         if (_paramsArgType is not null)
         {
-            var extraCount = unevaluatedArgs.Count - _maxPositionalArgsCount;
+            var extraCount = args.Count - _maxPositionalArgsCount;
             var extraParams = Array.CreateInstance(_paramsArgType, extraCount);
 
             for (var j = 0; j < extraCount; ++j)
             {
-                extraParams.SetValue(_typeMarshaller.Marshal(unevaluatedArgs[i], _paramsArgType), j);
+                extraParams.SetValue(_typeMarshaller.Marshal(args[i], _paramsArgType), j);
                 ++i;
             }
 
@@ -105,7 +105,7 @@ public class WrappedCommand : CommandBase
         return _typeMarshaller.Marshal(result);
     }
 
-    void EnsureArgCountIsValid(ListValue unevaluatedArgs)
+    void EnsureArgCountIsValid(IEnvironment env, ListValue unevaluatedArgs)
     {
         if (unevaluatedArgs.Count < _minPositionalArgCount)
         {
@@ -113,7 +113,7 @@ public class WrappedCommand : CommandBase
         }
         if (unevaluatedArgs.Count > _maxPositionalArgsCount && _paramsArgType is null)
         {
-            throw UnexpectedArgError(unevaluatedArgs);
+            throw UnexpectedArgError(env, unevaluatedArgs);
         }
     }
 
@@ -124,8 +124,9 @@ public class WrappedCommand : CommandBase
     }
 
     // TODO:  This should be a standard error.
-    Error UnexpectedArgError(ListValue unevaluatedArgs)
+    Error UnexpectedArgError(IEnvironment env, ListValue unevaluatedArgs)
     {
-        throw Error.Arg($"Unexpected argument '{unevaluatedArgs[_minPositionalArgCount]}'.");
+        var argValue = env.Evaluate(unevaluatedArgs[_minPositionalArgCount].ToNode());
+        throw Error.Arg($"Unexpected argument '{argValue}'.");
     }
 }
