@@ -73,10 +73,10 @@ public class CoreLibraryTests
         [Test]
         public void ARaiseNodeOfTypeContinueIsReturned()
         {
-            var continueCmd = _env.GlobalScope.GetCommand("continue");
+            var continueCmd = (SimpleMacro)_env.GlobalScope.GetCommand("continue");
             var args = new ListValue();
 
-            var result = continueCmd.Invoke(_env, args);
+            var result = continueCmd.InvokeMacroDelegate(_env, args);
 
             result.Should().Be(Node.Raise(
                 Node.Literal("/continue/"), Node.Literal(Value.Empty), Node.Literal(Value.Empty)
@@ -101,7 +101,7 @@ public class CoreLibraryTests
     [TestFixture]
     public class DefTests : CoreLibraryTests
     {
-        ICommand _defCommand = null!;
+        SimpleMacro _defCommand = null!;
 
         [Test]
         public void WhenCalledWithNoArgumentsAnArgErrorIsThrown()
@@ -120,7 +120,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenCalledWithANameAndABodyACommandDefinitionNodeIsReturned()
         {
-            var result = _defCommand.Invoke(_env, new ListValue(Node.Literal("test"), Node.Literal("body")));
+            var result = _defCommand.InvokeMacroDelegate(_env, new ListValue(Node.Literal("test"), Node.Literal("body")));
 
             result.Should().Be(Node.DefineCommand(
                 Node.Literal("test"), Node.Literal("body"), new ListValue(), new ListValue()));
@@ -129,7 +129,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenCalledWithANameASingleArgumentNameAndABodyACommandDefinitionNodeIsReturned()
         {
-            var result = _defCommand.Invoke(_env, new ListValue(Node.Literal("test"), Node.Literal("name"), Node.Literal("body")));
+            var result = _defCommand.InvokeMacroDelegate(_env, new ListValue(Node.Literal("test"), Node.Literal("name"), Node.Literal("body")));
 
             result.Should().Be(Node.DefineCommand(
                 Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("name")), new ListValue()));
@@ -138,7 +138,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenCalledWithANameASingleVariableArgumentNameAndABodyACommandDefinitionNodeWithTheVariableAsALiteralIsReturned()
         {
-            var result = _defCommand.Invoke(_env, new ListValue(Node.Literal("test"), Node.Variable("name"), Node.Literal("body")));
+            var result = _defCommand.InvokeMacroDelegate(_env, new ListValue(Node.Literal("test"), Node.Variable("name"), Node.Literal("body")));
 
             result.Should().Be(Node.DefineCommand(
                 Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("name")), new ListValue()));
@@ -147,7 +147,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenCalledWithANameMultipleArgumentNamesAndABodyACommandDefinitionNodeIsReturned()
         {
-            var result = _defCommand.Invoke(_env, new ListValue(Node.Literal("test"), Node.Literal("a"), Node.Variable("b"), Node.Literal("body")));
+            var result = _defCommand.InvokeMacroDelegate(_env, new ListValue(Node.Literal("test"), Node.Literal("a"), Node.Variable("b"), Node.Literal("body")));
 
             result.Should().Be(Node.DefineCommand(
                 Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue()));
@@ -156,7 +156,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenAnArgumentNameIsFollowedByAnEqualsKeyWordTheFollowingArgumentIsConsideredItsDefaultValueCommandDefinitionNodeIsReturned()
         {
-            var result = _defCommand.Invoke(_env, new ListValue(Node.Literal("test"), Node.Literal("name"), Node.Literal("="), Node.Literal("world"), Node.Literal("body")));
+            var result = _defCommand.InvokeMacroDelegate(_env, new ListValue(Node.Literal("test"), Node.Literal("name"), Node.Literal("="), Node.Literal("world"), Node.Literal("body")));
 
             result.Should().Be(Node.DefineCommand(
                 Node.Literal("test"), Node.Literal("body"), new ListValue(Node.Literal("name")), new ListValue(Node.Literal("world"))));
@@ -165,7 +165,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenTheLastArgumentNameIsFollowedByAnEqualsThenTheFunctionBodyTheLastArgumentBecomesTheRestArgument()
         {
-            var result = _defCommand.Invoke(_env, new ListValue(
+            var result = _defCommand.InvokeMacroDelegate(_env, new ListValue(
                 Node.Literal("test"),
                 Node.Literal("name"), Node.Literal("="), Node.Literal("world"),
                 Node.Literal("rest"), Node.Literal("="), Node.Literal("body")));
@@ -177,7 +177,7 @@ public class CoreLibraryTests
         [Test]
         public void BugThreeEqualsSignsShouldNotThrowNotThrow()
         {
-            var result = _defCommand.Invoke(_env, new ListValue(
+            var result = _defCommand.InvokeMacroDelegate(_env, new ListValue(
                 Node.Literal("test"),
                 Node.Literal("="), Node.Literal("="), Node.Literal("="), Node.Script()));
 
@@ -206,7 +206,7 @@ public class CoreLibraryTests
         public override void Setup()
         {
             base.Setup();
-            _defCommand = _env.GlobalScope.GetCommand("def");
+            _defCommand = (SimpleMacro)_env.GlobalScope.GetCommand("def");
         }
     }
 
@@ -338,7 +338,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenCalledWithoutArgumentsAnErrorIsThrown()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue();
 
             ifCmd.Invoking(c => c.Invoke(_env, args)).Should()
@@ -348,7 +348,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenCalledWithOnlyOneArgumentAnErrorIsThrown()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(Node.Literal(true));
 
             ifCmd.Invoking(c => c.Invoke(_env, args)).Should()
@@ -358,12 +358,12 @@ public class CoreLibraryTests
         [Test]
         public void WhenCalledWithOnlyTwoArgumentTheCorrectIfNodeIsReturned()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
                 Node.Literal(true),
                 Node.Command(Node.Literal("print"), new ListValue(Node.Literal("jello, world"))));
 
-            var result = ifCmd.Invoke(_env, args);
+            var result = ifCmd.InvokeMacroDelegate(_env, args);
 
             result.Should().Be(
                 Node.If(
@@ -374,7 +374,7 @@ public class CoreLibraryTests
         [Test]
         public void AElifCanFollowAThenBody()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
                 Node.Literal(false),
                 Node.Literal(1),
@@ -385,7 +385,7 @@ public class CoreLibraryTests
                 Node.Literal(true),
                 Node.Literal(3));
 
-            var result = ifCmd.Invoke(_env, args);
+            var result = ifCmd.InvokeMacroDelegate(_env, args);
 
             result.Should().Be(
                 Node.If(
@@ -402,14 +402,14 @@ public class CoreLibraryTests
         [Test]
         public void AnElseCanFollowAThenBody()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
                 Node.Literal(false),
                 Node.Literal(1),
                 Node.Literal("Else"),
                 Node.Literal(0));
 
-            var result = ifCmd.Invoke(_env, args);
+            var result = ifCmd.InvokeMacroDelegate(_env, args);
 
             result.Should().Be(
                 Node.If(
@@ -423,7 +423,7 @@ public class CoreLibraryTests
         [TestCase("boo", true)]
         public void WhenTheWordFollowingAThenBodyIsNotElifAnErrorIsThrown(string word, bool shouldThrow)
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = word == "else"
                 ? new ListValue(
                     Node.Literal(false),
@@ -452,7 +452,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenThereAreArgumentsAfterTheElseBodyAnErrorIsThrown()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
                 Node.Literal(false),
                 Node.Literal(1),
@@ -467,7 +467,7 @@ public class CoreLibraryTests
         [Test]
         public void IfThereIsNotArgumentForAnElseBodyAfterTheElseKeywordAnErrorIsThrown()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
                 Node.Literal(false),
                 Node.Literal(1),
@@ -480,7 +480,7 @@ public class CoreLibraryTests
         [Test]
         public void IfThereIsNotArgumentForAnConditionAfterTheElIfKeywordAnErrorIsThrown()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
                 Node.Literal(false),
                 Node.Literal(1),
@@ -493,7 +493,7 @@ public class CoreLibraryTests
         [Test]
         public void IfThereIsNotArgumentForAThenBodyAfterTheElIfKeywordAndCondtionAnErrorIsThrown()
         {
-            var ifCmd = _env.GlobalScope.GetCommand("if");
+            var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
                 Node.Literal(false),
                 Node.Literal(1),
@@ -541,7 +541,7 @@ public class CoreLibraryTests
             scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
             var env = new Environment(scope);
 
-            var result = lsDefCmd.Invoke(env, new ListValue(true.ToValue()));
+            var result = lsDefCmd.Invoke(env, new ListValue(Node.Literal(true)));
 
             result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
         }
@@ -583,7 +583,7 @@ public class CoreLibraryTests
             scope.DefineVariable("a", Value.Empty);
             var env = new Environment(scope);
 
-            var result = lsVarCmd.Invoke(env, new ListValue(true.ToValue()));
+            var result = lsVarCmd.Invoke(env, new ListValue(Node.Literal(true)));
 
             result.Should().Be(new ListValue("a".ToValue(), "c".ToValue()));
         }
@@ -599,22 +599,22 @@ public class CoreLibraryTests
         [Test]
         public void WithNoArgumentsAnArgErrorIsThrow()
         {
-            var raiseCmd = _env.GlobalScope.GetCommand("raise");
-            var mockEnv = new Mock<IEnvironment>();
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var env = new Environment();
             var args = new ListValue();
 
-            raiseCmd.Invoking(c => c.Invoke(mockEnv.Object, args)).Should()
+            raiseCmd.Invoking(c => c.Invoke(env, args)).Should()
                 .Throw<ArgError>().WithMessage("Expected 'type' argument.");
         }
 
         [Test]
         public void WithOneArgumentsARaiseNodeIsReturnedWithTheCorrectType()
         {
-            var raiseCmd = _env.GlobalScope.GetCommand("raise");
-            var mockEnv = new Mock<IEnvironment>();
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var env = new Environment();
             var args = new ListValue(Node.Literal("/error/type"));
 
-            var result = raiseCmd.Invoke(mockEnv.Object, args);
+            var result = raiseCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(Node.Raise(
                 Node.Literal("/error/type"),
@@ -625,11 +625,11 @@ public class CoreLibraryTests
         [Test]
         public void WithTwoArgumentsARaiseNodeIsReturnedWithTheCorrectTypeAndMessage()
         {
-            var raiseCmd = _env.GlobalScope.GetCommand("raise");
-            var mockEnv = new Mock<IEnvironment>();
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var env = new Environment();
             var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."));
 
-            var result = raiseCmd.Invoke(mockEnv.Object, args);
+            var result = raiseCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(Node.Raise(
                 Node.Literal("/error/type"),
@@ -640,11 +640,11 @@ public class CoreLibraryTests
         [Test]
         public void WithThreeArgumentsARaiseNodeIsReturnedWithTheCorrectTypeMessageAndValue()
         {
-            var raiseCmd = _env.GlobalScope.GetCommand("raise");
-            var mockEnv = new Mock<IEnvironment>();
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var env = new Environment();
             var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."), Node.Literal("value"));
 
-            var result = raiseCmd.Invoke(mockEnv.Object, args);
+            var result = raiseCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(Node.Raise(
                 Node.Literal("/error/type"),
@@ -655,11 +655,11 @@ public class CoreLibraryTests
         [Test]
         public void WithMoreThanThreeArgumentsAnArgErrorIsThrow()
         {
-            var raiseCmd = _env.GlobalScope.GetCommand("raise");
-            var mockEnv = new Mock<IEnvironment>();
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var env = new Environment();
             var args = new ListValue(Value.Empty, Value.Empty, Value.Empty, Node.Literal("boo"));
 
-            raiseCmd.Invoking(c => c.Invoke(mockEnv.Object, args)).Should()
+            raiseCmd.Invoking(c => c.Invoke(env, args)).Should()
                 .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
         }
     }
@@ -674,11 +674,11 @@ public class CoreLibraryTests
         [Test]
         public void WithoutArgumentsARaiseNodeWithAnEmptyValueIsReturned()
         {
-            var returnCmd = _env.GlobalScope.GetCommand("return");
-            var mockEnv = new Mock<IEnvironment>();
+            var returnCmd = (SimpleMacro)_env.GlobalScope.GetCommand("return");
+            var env = new Environment();
             var args = new ListValue();
 
-            var result = returnCmd.Invoke(mockEnv.Object, args);
+            var result = returnCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(
                 Node.Raise(
@@ -690,11 +690,11 @@ public class CoreLibraryTests
         [Test]
         public void WithOneArgumentARaiseNodeIsReturnedWithTheCorrectReturnValue()
         {
-            var returnCmd = _env.GlobalScope.GetCommand("return");
-            var mockEnv = new Mock<IEnvironment>();
+            var returnCmd = (SimpleMacro)_env.GlobalScope.GetCommand("return");
+            var env = new Environment();
             var args = new ListValue(Node.Variable("name"));
 
-            var result = returnCmd.Invoke(mockEnv.Object, args);
+            var result = returnCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(
                 Node.Raise(
@@ -706,11 +706,11 @@ public class CoreLibraryTests
         [Test]
         public void WithMoreThanOneArgumentAnErrorIsThrown()
         {
-            var returnCmd = _env.GlobalScope.GetCommand("return");
-            var mockEnv = new Mock<IEnvironment>();
+            var returnCmd = (SimpleMacro)_env.GlobalScope.GetCommand("return");
+            var env = new Environment();
             var args = new ListValue(Node.Variable("name"), Node.Literal("boo"));
 
-            returnCmd.Invoking(c => c.Invoke(mockEnv.Object, args)).Should()
+            returnCmd.Invoking(c => c.Invoke(env, args)).Should()
                 .Throw<ArgError>().WithMessage("Unexpected argument 'boo'.");
         }
     }
@@ -725,7 +725,7 @@ public class CoreLibraryTests
         [Test]
         public void WhenNoArgumentsArePassedAnArgErrorIsThrown()
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
 
             tryCmd.Invoking(c => c.Invoke(_env, new ListValue())).Should()
                 .Throw<ArgError>().WithMessage("Expected 'body' argument.");
@@ -734,9 +734,9 @@ public class CoreLibraryTests
         [Test]
         public void WhenOnlyOneArgumentIsPassedAnSimpleTryNodeReturned()
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
 
-            var result = tryCmd.Invoke(_env, new ListValue(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))));
+            var result = tryCmd.InvokeMacroDelegate(_env, new ListValue(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))));
 
             result.Should().Be(Node.Try(
                 Node.Scope(Node.Script(Node.Command(Node.Literal("print"), new ListValue()))),
@@ -749,11 +749,11 @@ public class CoreLibraryTests
         [TestCase("FINALLY")]
         public void WhenTheSecondToLastArgumentIsTheFinallyKeywordTheFinalArgumentIsIncludedAsTheFinallyBody(string finallyKeyword)
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue(finallyKeyword.ToValue())));
 
-            var result = tryCmd.Invoke(_env, new ListValue(
+            var result = tryCmd.InvokeMacroDelegate(_env, new ListValue(
                 body, Node.Literal("finally".ToValue()), finallyBody));
 
             result.Should().Be(Node.Try(
@@ -767,7 +767,7 @@ public class CoreLibraryTests
         [TestCase("FInalLY")]
         public void WhenTheLastArgumentIsTheFinallyKeywordAnErrorIsThrown(string finallyKeyword)
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue(finallyKeyword.ToValue())));
 
@@ -780,7 +780,7 @@ public class CoreLibraryTests
         [TestCase("ExCepT")]
         public void WhenTheThirdArgumentBeginsWithTheExceptKeywordButIsNotFollowedByAnyOtherArgumentsAnErrorIsThrows(string exceptKeyword)
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
 
             tryCmd.Invoking(c => c.Invoke(_env, new ListValue(body, Node.Literal(exceptKeyword)))).Should()
@@ -791,7 +791,7 @@ public class CoreLibraryTests
         [TestCase("excepT")]
         public void WhenTheThirdArgumentBeginsWithTheExceptKeywordAndIsFollowedByErrorDetailsButIsNotFollowedByAnyOtherArgumentsAnErrorIsThrows(string exceptKeyword)
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
 
             tryCmd.Invoking(c => c.Invoke(_env, new ListValue(body, Node.Literal(exceptKeyword), Node.Literal("/error/")))).Should()
@@ -802,11 +802,11 @@ public class CoreLibraryTests
         [TestCase("excePT")]
         public void WhenTheThirdArgumentBeginsWithTheExceptKeywordAndIsFollowedByErrorDetailsExceptBodyTheCorrectTryNodeIsReturned(string exceptKeyword)
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
             var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
 
-            var result = tryCmd.Invoke(_env, new ListValue(
+            var result = tryCmd.InvokeMacroDelegate(_env, new ListValue(
                 body, Node.Literal(exceptKeyword), Node.Literal("/error/"), excepetBody));
 
             result.Should().Be(Node.Try(
@@ -819,11 +819,11 @@ public class CoreLibraryTests
         [Test]
         public void MultipleExceptClausesCanBeParesed()
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
             var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
 
-            var result = tryCmd.Invoke(_env, new ListValue(
+            var result = tryCmd.InvokeMacroDelegate(_env, new ListValue(
                 body,
                 Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
                 Node.Literal("except"), Node.Literal("/error/type"), excepetBody));
@@ -839,12 +839,12 @@ public class CoreLibraryTests
         [Test]
         public void ExceptClausesCanBeFollowedByAFinallyClause()
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
             var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
 
-            var result = tryCmd.Invoke(_env, new ListValue(
+            var result = tryCmd.InvokeMacroDelegate(_env, new ListValue(
                 body,
                 Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
                 Node.Literal("finally"), finallyBody));
@@ -859,7 +859,7 @@ public class CoreLibraryTests
         [Test]
         public void AnErrorIsThrownIfAnotherValueOtherThanTheExcpetOrFinallyKeywordsAreFoundWhenOneOfTheKeywordWouldHaveBeenExpected()
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
 
             tryCmd.Invoking(c => c.Invoke(_env, new ListValue(body, Node.Literal("nonsense")))).Should()
@@ -869,7 +869,7 @@ public class CoreLibraryTests
         [Test]
         public void ACatchClauseCanNotComeAfterAFinallyClause()
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
             var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
@@ -884,7 +884,7 @@ public class CoreLibraryTests
         [Test]
         public void ATryCanOnlyHaveOneFinallyClause()
         {
-            var tryCmd = _env.GlobalScope.GetCommand("try");
+            var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
             var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
@@ -907,7 +907,7 @@ public class CoreLibraryTests
         [Test]
         public void TheVarCommandThrowsAnErrorWhenNoArgumentsArePassed()
         {
-            var varCmd = _env.GlobalScope.GetCommand("var");
+            var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
             var args = new ListValue();
 
             varCmd.Invoking(c => c.Invoke(_env, args)).Should()
@@ -917,7 +917,7 @@ public class CoreLibraryTests
         [Test]
         public void TheVarCommandThrowsAnErrorWhenTheSecondArgumentIsNotTheEqualsKeyword()
         {
-            var varCmd = _env.GlobalScope.GetCommand("var");
+            var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
             var args = new ListValue(Node.Variable("pi"), Node.Literal("for all!"));
 
             varCmd.Invoking(c => c.Invoke(_env, args)).Should()
@@ -927,7 +927,7 @@ public class CoreLibraryTests
         [Test]
         public void TheVarCommandThrowsAnErrorWhenMoreThanThreeArgumentsAreGiven()
         {
-            var varCmd = _env.GlobalScope.GetCommand("var");
+            var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
             var args = new ListValue(
                 Node.Variable("pi"),
                 Node.Literal("="),
@@ -941,14 +941,14 @@ public class CoreLibraryTests
         [Test]
         public void ADefineVariableIsReturnedWithTheCorrectDetails()
         {
-            var varCmd = _env.GlobalScope.GetCommand("var");
-            var mockEnv = new Mock<IEnvironment>();
+            var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
+            var env = new Environment();
             var args = new ListValue(
                 Node.Literal("pi"),
                 Node.Literal("="),
                 Node.Literal("3.14159"));
 
-            var result = varCmd.Invoke(mockEnv.Object, args);
+            var result = varCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(Node.DefineVariable("pi", Node.Literal("3.14159")));
         }
@@ -956,13 +956,13 @@ public class CoreLibraryTests
         [Test]
         public void WhenNoValueIsSpecifiedAnEmptyValueIsUsed()
         {
-            var varCmd = _env.GlobalScope.GetCommand("var");
-            var mockEnv = new Mock<IEnvironment>();
+            var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
+            var env = new Environment();
             var args = new ListValue(
                 Node.Literal("pi".ToValue()),
                 Node.Literal("=".ToValue()));
 
-            var result = varCmd.Invoke(mockEnv.Object, args);
+            var result = varCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(Node.DefineVariable("pi", Node.Literal(Value.Empty)));
         }
@@ -970,12 +970,12 @@ public class CoreLibraryTests
         [Test]
         public void TheVarCommandDefinesAVariableWithTheEmptyValueWhenOneArgumentsIsPassed()
         {
-            var varCmd = _env.GlobalScope.GetCommand("var");
-            var mockEnv = new Mock<IEnvironment>();
+            var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
+            var env = new Environment();
             var args = new ListValue(
                 Node.Literal("pi".ToValue()));
 
-            var result = varCmd.Invoke(mockEnv.Object, args);
+            var result = varCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(Node.DefineVariable("pi", Node.Literal(Value.Empty)));
         }
@@ -983,14 +983,14 @@ public class CoreLibraryTests
         [Test]
         public void WhenTheFirstArgumentIsAVariableNodeItsNotEvaluatedAndItsNameIsUsed()
         {
-            var varCmd = _env.GlobalScope.GetCommand("var");
-            var mockEnv = new Mock<IEnvironment>();
+            var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
+            var env = new Environment();
             var args = new ListValue(
                 Node.Variable("pi"),
                 Node.Literal("=".ToValue()),
                 Node.Literal("3.14159".ToValue()));
 
-            var result = varCmd.Invoke(mockEnv.Object, args);
+            var result = varCmd.InvokeMacroDelegate(env, args);
 
             result.Should().Be(Node.DefineVariable("pi", Node.Literal("3.14159")));
         }
@@ -1041,14 +1041,14 @@ public class CoreLibraryTests
         [Test]
         public void TheCorrectWhileNodeIsReturned()
         {
-            var whileCmd = _env.GlobalScope.GetCommand("while");
+            var whileCmd = (SimpleMacro)_env.GlobalScope.GetCommand("while");
             var args = new ListValue(
                 Node.Literal("0"),
                 Node.Script(
                     Node.Command(Node.Literal("print"),
                     new ListValue())));
 
-            var result = whileCmd.Invoke(_env, args);
+            var result = whileCmd.InvokeMacroDelegate(_env, args);
 
             result.Should().Be(Node.While(Node.Literal("0"),
                 Node.Scope(Node.Script(
