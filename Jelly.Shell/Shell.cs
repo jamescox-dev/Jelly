@@ -87,9 +87,10 @@ public class Shell
                 if (script is not null)
                 {
                     AddHistory(input);
-                    Console.WriteLine(JsonSerializer.Serialize(ToClr(script), new JsonSerializerOptions {
-                        WriteIndented = true
-                    }));
+                    // TODO:  This should be a command line option.
+                    // Console.WriteLine(JsonSerializer.Serialize(ToClr(script), new JsonSerializerOptions {
+                    //     WriteIndented = true
+                    // }));
                     return script;
                 }
             }
@@ -143,18 +144,18 @@ public class Shell
         }
     }
 
-    // TODO:  This needs moving, and testing...
-    public object? ToClr(Value value)
-    {
-        return value switch
-        {
-            BooleanValue boolean => boolean.ToBool(),
-            NumberValue number => number.ToDouble(),
-            StringValue str => str.ToString(),
-            ListValue list => list.Select(v => ToClr(v)).ToList(),
-            DictionaryValue dict => new Dictionary<string, object?>(
-                dict.ToEnumerable().Select(kvp => new KeyValuePair<string, object?>(ToClr(kvp.Key)?.ToString() ?? string.Empty, ToClr(kvp.Value)))),
-            _ => null
-        };
-    }
+    // TODO:  This needs moving, and testing, and should be a command line option...
+    // public object? ToClr(Value value)
+    // {
+    //     return value switch
+    //     {
+    //         BooleanValue boolean => boolean.ToBool(),
+    //         NumberValue number => number.ToDouble(),
+    //         StringValue str => str.ToString(),
+    //         ListValue list => list.Select(v => ToClr(v)).ToList(),
+    //         DictionaryValue dict => new Dictionary<string, object?>(
+    //             dict.ToEnumerable().Select(kvp => new KeyValuePair<string, object?>(ToClr(kvp.Key)?.ToString() ?? string.Empty, ToClr(kvp.Value)))),
+    //         _ => null
+    //     };
+    // }
 }
