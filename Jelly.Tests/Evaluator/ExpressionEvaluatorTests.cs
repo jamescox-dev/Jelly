@@ -3,17 +3,12 @@ namespace Jelly.Evaluator.Tests;
 [TestFixture]
 public class ExpressionEvaluatorTests : EvaluatorTestsBase
 {
-    IEvaluator _evaluator = null!;
-
-    Evaluator _rootEvaluator = null!;
-    Scope _scope = null!;
-
     [Test]
     public void AnExpressionEvaluatesEachOfItsSubExpressionsNode()
     {
         var invocations = 0;
         var testCommand = new SimpleCommand((_, _) => { ++invocations; return invocations.ToValue(); });
-        _scope.DefineCommand("test", testCommand);
+        Environment.GlobalScope.DefineCommand("test", testCommand);
         var expr = Node.Expression
         (Node.Command(Node.Literal("test"), new ListValue()),
             Node.Command(Node.Literal("test"), new ListValue()));

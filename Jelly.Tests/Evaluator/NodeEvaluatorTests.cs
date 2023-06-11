@@ -6,13 +6,11 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheNodeEvaluatorCallsTheConfiguredEvaluatorForTheGivenNodeTypeAndTheScopeAndEvaluatorPassedToEvaluateIsPassedToTheRetrievedEvaluatorsEvaluateMethod()
     {
-        var scope = new Scope();
-        var anotherInterpreter = new TestEvaluator();
-        var interpreter = new NodeEvaluator();
+        var nodeEvaluator = (NodeEvaluator)Evaluator;
         var test1Interpreter = new TestEvaluator();
         var test2Interpreter = new TestEvaluator();
-        interpreter.AddEvaluator("type1", test1Interpreter);
-        interpreter.AddEvaluator("type2", test2Interpreter);
+        nodeEvaluator.AddEvaluator("type1", test1Interpreter);
+        nodeEvaluator.AddEvaluator("type2", test2Interpreter);
         var test1Node = new DictionaryValue(new KeyValuePair<Value, Value>[] {
             new(new StringValue("type"), new StringValue("type1")),
             new(new StringValue("message"), new StringValue("hi")),
@@ -22,17 +20,17 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
             new(new StringValue("message"), new StringValue("bye")),
         });
 
-        var test1result = interpreter.Evaluate(Environment, test1Node);
-        var test2result = interpreter.Evaluate(Environment, test2Node);
+        var test1result = nodeEvaluator.Evaluate(Environment, test1Node);
+        var test2result = nodeEvaluator.Evaluate(Environment, test2Node);
 
         test1result.Should().Be(new StringValue("hi"));
         test1Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
         test1Interpreter.NodeEvaluated.Should().Be(test1Node);
-        test1Interpreter.EvaluatorPassedToEvaluate.Should().Be(anotherInterpreter);
+        test1Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
         test2result.Should().Be(new StringValue("bye"));
         test2Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
         test2Interpreter.NodeEvaluated.Should().Be(test2Node);
-        test2Interpreter.EvaluatorPassedToEvaluate.Should().Be(anotherInterpreter);
+        test2Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
     }
 
     [Test]

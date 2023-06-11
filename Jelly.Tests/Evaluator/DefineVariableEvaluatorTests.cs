@@ -4,13 +4,13 @@ namespace Jelly.Evaluator.Tests;
 public class DefineVariableEvaluatorTests : EvaluatorTestsBase
 {
     [Test]
-    public void TheCorrectVariableIsDefinedInTheScope()
+    public void TheCorrectVariableIsDefinedInTheScopeWithTheCorrectValue()
     {
         var assignment = Node.DefineVariable("name", Node.Literal("Bob".ToValue()));
 
         Evaluate(assignment);
 
-        Environment.GlobalScope.Invoking(s => s.GetVariable("Bob")).Should().NotThrow();
+        Environment.GlobalScope.GetVariable("name").Should().Be("Bob".ToValue());
     }
 
     [Test]

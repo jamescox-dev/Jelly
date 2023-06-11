@@ -23,6 +23,12 @@ public class AssignmentEvaluatorTests : EvaluatorTestsBase
         result.Should().Be("Bob".ToValue());
     }
 
+    public override void Setup()
+    {
+        base.Setup();
+        Environment.GlobalScope.DefineVariable("name", "Jeff".ToValue());
+    }
+
     protected override IEvaluator BuildEvaluatorUnderTest()
     {
         return new AssignmentEvaluator();

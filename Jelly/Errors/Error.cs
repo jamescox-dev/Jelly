@@ -35,7 +35,7 @@ public class Error : Exception
 
     internal protected Error(string type, string message, Value value) : base(message)
     {
-        Type = type;
+        Type = NormalizeType(type);
         Value = value;
     }
 

@@ -137,7 +137,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
         _recordedIterators = new();
         _testCommand = new TestCommand();
         _testCommand.ReturnValue = "Result!".ToValue();
-        _recordCommand = new SimpleCommand((scope, args) => { _recordedIterators.Add(args[0].ToDouble()); return Value.Empty; });
+        _recordCommand = new SimpleCommand((_, args) => { _recordedIterators.Add(args[0].ToDouble()); return Value.Empty; });
         Environment.GlobalScope.DefineCommand("test", _testCommand);
         Environment.GlobalScope.DefineCommand("record", _recordCommand);
         _testBody = Node.Script(

@@ -8,7 +8,7 @@ public class ForRangeEvaluator : IEvaluator
         var start = env.Evaluate(node.GetNode(Keywords.Start)).ToDouble();
         var end = env.Evaluate(node.GetNode(Keywords.End)).ToDouble();
         var step = env.Evaluate(node.GetNode(Keywords.Step)).ToDouble();
-        var body = env.Evaluate(node.GetNode(Keywords.Body)).ToNode();
+        var body = node.GetNode(Keywords.Body);
 
         AssertStartEndAndStepValid(start, end, step);
         return RunLoop(env, iteratorName, start, end, step, body);
@@ -18,7 +18,7 @@ public class ForRangeEvaluator : IEvaluator
         IEnvironment env, string iteratorName, double start, double end, double step, DictionaryValue body)
     {
         var result = Value.Empty;
-        for (var i = start; IndexIsPastOrAtEnd(i, start, end); i += step)
+        for (var i = start; IndexIsBeforeOrAtEnd(i, start, end); i += step)
         {
             PushLoopBodyScope(env, iteratorName, i);
             try
@@ -48,21 +48,22 @@ public class ForRangeEvaluator : IEvaluator
         {
             throw Error.Arg("step can not be zero.");
         }
-        if (step < 0)
+        if (start < end && step < 0)
         {
-            if (start < end)
-            {
-                throw Error.Arg("step must be positive when start is less than end.");
-            }
+            throw Error.Arg("step must be positive when start is less than end.");
         }
-        if (start > end)
+        if (start > end && step > 0)
         {
             throw Error.Arg("step must be negative when start is greater than end.");
         }
     }
 
-    static bool IndexIsPastOrAtEnd(double i, double start, double end)
+    static bool IndexIsBeforeOrAtEnd(double i, double start, double end)
     {
+        if (start == end)
+        {
+            return i == end;
+        }
         return (start < end) ? i <= end : i >= end;
     }
 

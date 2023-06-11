@@ -28,9 +28,7 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAVariableNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        Mock<IScope> scope = new Mock<IScope>();
-        scope.Setup(m => m.GetVariable("Name")).Returns("Bill".ToValue());
+        Environment.GlobalScope.DefineVariable("Name", "Bill".ToValue());
         var node = Node.Variable("Name");
 
         var result = Evaluate(node);
@@ -41,10 +39,8 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateACommandNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        Mock<IScope> scope = new Mock<IScope>();
         Mock<ICommand> command = new Mock<ICommand>();
-        scope.Setup(m => m.GetCommand("Foo")).Returns(command.Object);
+        Environment.GlobalScope.DefineCommand("Foo", command.Object);
         var node = Node.Command(Node.Literal("Foo".ToValue()), new ListValue());
 
         var result = Evaluate(node);
@@ -54,44 +50,38 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAScriptNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var command = new Mock<ICommand>();
-        command.Setup(m => m.Invoke(Environment, It.IsAny<ListValue>())).Returns<IScope, ListValue>((scope, args) => args[0]);
+        command.Setup(m => m.Invoke(Environment, It.IsAny<ListValue>())).Returns<IEnvironment, ListValue>((_, args) => args[0]);
+        Environment.GlobalScope.DefineCommand("command1", command.Object);
+        Environment.GlobalScope.DefineCommand("command2", command.Object);
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue(Node.Literal("1".ToValue())));
         var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue(Node.Literal("2".ToValue())));
-        scope.Setup(m => m.GetCommand("command1")).Returns(command.Object);
-        scope.Setup(m => m.GetCommand("command2")).Returns(command.Object);
         var node = Node.Script(command1, command2);
 
         var result = Evaluate(node);
 
-        result.Should().Be("2".ToValue());
+        result.Should().Be(Node.Literal("2".ToValue()));
     }
 
     [Test]
     public void TheEvaluatorCanEvaluateAnAssignmentNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
+        Environment.GlobalScope.DefineVariable("answer", 0.ToValue());
         var node = Node.Assignment("answer", Node.Literal("42".ToValue()));
 
         var result = Evaluate(node);
 
-        scope.Verify(s => s.SetVariable("answer", "42".ToValue()), Times.Once);
-        result.Should().Be("42".ToValue());
+        Environment.GlobalScope.GetVariable("answer").Should().Be(42.ToValue());
     }
 
     [Test]
     public void TheEvaluatorCanEvaluateADefineVariableNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.DefineVariable("answer", Node.Literal("42".ToValue()));
 
         var result = Evaluate(node);
 
-        scope.Verify(s => s.DefineVariable("answer", "42".ToValue()), Times.Once);
+        Environment.GlobalScope.GetVariable("answer").Should().Be("42".ToValue());
         result.Should().Be("42".ToValue());
     }
 
@@ -191,13 +181,11 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateADefineCommandNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.DefineCommand(Node.Literal("test"), Node.Literal("body"), new ListValue(), new ListValue());
 
         Evaluate(node);
 
-        scope.Verify(m => m.DefineCommand("test", It.IsAny<ICommand>()));
+        Environment.GlobalScope.GetCommand("test");
     }
 
     protected override IEvaluator BuildEvaluatorUnderTest()
