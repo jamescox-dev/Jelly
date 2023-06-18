@@ -6,6 +6,8 @@ using System.Text;
 
 public class DictionaryValue : Value
 {
+    public static readonly DictionaryValue EmptyDictionary = new();
+
     ImmutableSortedDictionary<Value, Value> _items;
 
     public DictionaryValue()
@@ -15,6 +17,11 @@ public class DictionaryValue : Value
 
     public DictionaryValue(params Value[] list) : this((IEnumerable<Value>)list)
     {
+    }
+
+    public DictionaryValue(ImmutableSortedDictionary<Value, Value> dict)
+    {
+        _items = dict;
     }
 
     public DictionaryValue(IEnumerable<Value> list)

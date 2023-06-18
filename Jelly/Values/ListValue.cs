@@ -6,6 +6,8 @@ using System.Text;
 
 public class ListValue : Value, IEnumerable<Value>
 {
+    public static readonly ListValue EmptyList = new();
+
     ImmutableList<Value> _items;
 
     public ListValue()

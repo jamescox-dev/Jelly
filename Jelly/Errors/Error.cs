@@ -8,6 +8,7 @@ public class Error : Exception
         { "/continue/", Continue },
         { "/error/arg/", Arg },
         { "/error/arg/missing/", MissingArg },
+        { "/error/arg/unexpected/", UnexpectedArg },
         { "/error/eval/", Eval },
         { "/error/name/", Name },
         { "/error/parse/", Parse },
@@ -67,14 +68,13 @@ public class Error : Exception
 
     public static Error Arg(string message, Value _) => Arg(message);
 
+    public static Error UnexpectedArg(string message) => new UnexpectedArgError(message);
+
+    public static Error UnexpectedArg(string message, Value _) => UnexpectedArg(message);
+
     public static Error MissingArg(string message) => new MissingArgError(message);
 
     public static Error MissingArg(string message, Value _) => MissingArg(message);
-
-    public static Error MissingArg(params Expectation[] expectations) => new MissingArgError(0, expectations);
-
-    public static Error MissingArg(int matchScore, params Expectation[] expectations) =>
-        new MissingArgError(matchScore, expectations);
 
     public static Error Eval(string message) => new EvalError(message);
 
@@ -109,30 +109,43 @@ public class ArgError : Error
 {
     internal ArgError(string message) : base("/error/arg/", message) {}
 
-    internal ArgError(string subType, string message) : base(Error.NormalizeType($"/error/arg/{subType}"), message) {}
+    internal ArgError(string type, string message) : base(type, message) {}
+}
+
+public class UnexpectedArgError : ArgError
+{
+    internal UnexpectedArgError(string commandName, int expectedArgCount, int actualArgCount)
+        : this(BuildStandardMessage(commandName, expectedArgCount, actualArgCount)) {}
+
+    internal UnexpectedArgError(string commandName, int expectedMinArgCount, int expectedMaxArgCount, int actualArgCount)
+        : this(BuildStandardRangeMessage(commandName, expectedMinArgCount, expectedMaxArgCount, actualArgCount)) {}
+
+    internal UnexpectedArgError(string message) : base("/error/arg/unexpected/", message) {}
+
+    static string BuildStandardMessage(string commandName, int expectedArgCount, int actualArgCount)
+    {
+        return $"{commandName} takes {expectedArgCount.Of("argument")} but {actualArgCount.WasWere()} given.";
+    }
+
+    static string BuildStandardRangeMessage(
+        string commandName, int expectedMinArgCount, int expectedMaxArgCount, int actualArgCount)
+    {
+        return $"{commandName} takes from {expectedMinArgCount} to {expectedMaxArgCount.Of("argument")} but {actualArgCount.WasWere()} given.";
+    }
 }
 
 public class MissingArgError : ArgError
 {
-    public int MatchedArgumentCount { get; }
-    public IReadOnlyList<Expectation> Expectations => _expectations;
+    internal MissingArgError(string commandName, IEnumerable<Arg> expectedArg)
+        : this(BuildStandardMessage(commandName, expectedArg.ToList())) {}
 
-    readonly Expectation[] _expectations;
+    internal MissingArgError(string message) : base("/error/arg/missing/", message) {}
 
-    internal MissingArgError(int matchScore, Expectation[] expectations) : base("missing", CreateExpectationMessage(expectations))
+    static string BuildStandardMessage(string commandName, IList<Arg> expectedArg)
     {
-        MatchedArgumentCount = matchScore;
-        _expectations = expectations;
-    }
-
-    internal MissingArgError(string message) : base("missing", message)
-    {
-        _expectations = Array.Empty<Expectation>();
-    }
-
-    static string CreateExpectationMessage(Expectation[] expectations)
-    {
-        return "";
+        var missingArgCountString = expectedArg.Count == 1 ? "1 required argument" : $"{expectedArg.Count} required arguments";
+        var expectedArgNamesString = expectedArg.Select(a => a.Name).JoinAnd();
+        return $"{commandName} missing {missingArgCountString}:  {expectedArgNamesString}.";
     }
 }
 
