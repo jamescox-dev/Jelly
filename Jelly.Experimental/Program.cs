@@ -1,13 +1,18 @@
 using Jelly.Experimental;
 using Jelly.Commands.ArgParsers;
+using System.Text.Json;
 
-var parser = new SimpleArgParser(new Arg("name"));
+var parser = new SeqArgParser(
+    new ArgParser("key"), 
+    new ArgParser("value"), 
+    new ArgParser("of"), 
+    new ArgParser("dict"), 
+    new ArgParser("body")
+);
 
-var args = new List<Value>
-{
-    "Alfie".ToValue(),
-};
+var result = parser.Parse(new ListValue(
+    "k".ToValue(), "v".ToValue(), Node.Literal("of"), "d".ToValue(), Node.Script()));
 
-var result = parser.Parse("test", args, );
-
-Console.WriteLine("hello, world");
+Console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions {
+    WriteIndented = true
+}));
