@@ -8,3 +8,5 @@ public record OptArg(string Name, Value DefaultValue) : Arg(Name)
 }
 
 public record RestArg(string Name) : Arg(Name)  {}
+
+public record KwArg(string Name) : Arg(Name) {}
