@@ -1,5 +1,6 @@
 namespace Jelly.Commands.ArgParsers;
 
+
 public class SingleArgPattern : IArgPattern
 {
     readonly string _argName;
@@ -19,6 +20,6 @@ public class SingleArgPattern : IArgPattern
             });
         }
 
-        return new ArgPatternMissing(position, new HashSet<Arg>{ new Arg(_argName) });
+        return new ArgPatternResultMissing(position, new HashSet<Arg>{ new Arg(_argName) });
     }
 }

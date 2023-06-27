@@ -27,8 +27,8 @@ public class SingleArgPatternTests
 
         var result = pattern.Parse(0, args);
 
-        result.Should().BeOfType<ArgPatternMissing>().Which.Position.Should().Be(0);
-        result.Should().BeOfType<ArgPatternMissing>()
+        result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(0);
+        result.Should().BeOfType<ArgPatternResultMissing>()
             .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg>{ new Arg("another_test") });
     }
 
@@ -40,8 +40,8 @@ public class SingleArgPatternTests
 
         var result = pattern.Parse(1, args);
 
-        result.Should().BeOfType<ArgPatternMissing>().Which.Position.Should().Be(1);
-        result.Should().BeOfType<ArgPatternMissing>()
+        result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(1);
+        result.Should().BeOfType<ArgPatternResultMissing>()
             .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg>{ new Arg("yet_another") });
     }
 

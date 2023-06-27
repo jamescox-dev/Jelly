@@ -147,6 +147,9 @@ public static class Node
 
     public static bool IsExpression(DictionaryValue node) => IsType(node, Keywords.Expression);
 
+    public static bool IsKeyword(DictionaryValue node, string keyword) =>
+        IsLiteral(node) && GetLiteralValue(node).ToString().Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
+
     static bool IsType(DictionaryValue node, StringValue type) =>
         node.TryGetValue(Keywords.Type, out var typeValue) && typeValue == type;
 
