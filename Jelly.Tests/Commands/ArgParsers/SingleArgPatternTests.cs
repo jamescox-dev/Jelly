@@ -9,7 +9,7 @@ public class SingleArgPatternTests
         var args = new ListValue("test_value".ToValue());
         var pattern = new SingleArgPattern("test_arg");
 
-        var result = pattern.Parse(0, args);
+        var result = pattern.Match(0, args);
 
         result.Should().BeOfType<ArgPatternSuccess>().Which.Position.Should().Be(1);
         result.Should().BeOfType<ArgPatternSuccess>()
@@ -25,7 +25,7 @@ public class SingleArgPatternTests
         var args = ListValue.EmptyList;
         var pattern = new SingleArgPattern("another_test");
 
-        var result = pattern.Parse(0, args);
+        var result = pattern.Match(0, args);
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(0);
         result.Should().BeOfType<ArgPatternResultMissing>()
@@ -38,7 +38,7 @@ public class SingleArgPatternTests
         var args = new ListValue("test_value".ToValue());
         var pattern = new SingleArgPattern("yet_another");
 
-        var result = pattern.Parse(1, args);
+        var result = pattern.Match(1, args);
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(1);
         result.Should().BeOfType<ArgPatternResultMissing>()
@@ -53,7 +53,7 @@ public class SingleArgPatternTests
         var args = new ListValue("one".ToValue(), "two".ToValue(), "three".ToValue());
         var pattern = new SingleArgPattern("anyway");
 
-        var result = pattern.Parse(position, args);
+        var result = pattern.Match(position, args);
 
         result.Should().BeOfType<ArgPatternSuccess>().Which.Position.Should().Be(position + 1);
         result.Should().BeOfType<ArgPatternSuccess>()

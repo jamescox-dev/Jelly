@@ -114,6 +114,9 @@ public class ArgError : Error
 
 public class UnexpectedArgError : ArgError
 {
+    internal UnexpectedArgError(string commandName, Arg lastArg)
+        : this(BuildStandardUnexpectedMessage(commandName, lastArg)) {}
+
     internal UnexpectedArgError(string commandName, int expectedArgCount, int actualArgCount)
         : this(BuildStandardMessage(commandName, expectedArgCount, actualArgCount)) {}
 
@@ -121,6 +124,11 @@ public class UnexpectedArgError : ArgError
         : this(BuildStandardRangeMessage(commandName, expectedMinArgCount, expectedMaxArgCount, actualArgCount)) {}
 
     internal UnexpectedArgError(string message) : base("/error/arg/unexpected/", message) {}
+
+    static string BuildStandardUnexpectedMessage(string commandName, Arg lastArg)
+    {
+        return $"{commandName} received unexpected argument after {lastArg.Name}.";
+    }
 
     static string BuildStandardMessage(string commandName, int expectedArgCount, int actualArgCount)
     {
@@ -141,8 +149,21 @@ public class MissingArgError : ArgError
 
     internal MissingArgError(string message) : base("/error/arg/missing/", message) {}
 
+    public static MissingArgError FromPossibleArgs(string commandName, IReadOnlySet<Arg> possibleArgs)
+    {
+        var expectedKeywordsString = possibleArgs.Where(a => a is KwArg).Select(a => a.Name).OrderBy(n => n).JoinOr();
+        var expectedArgNamesString = possibleArgs.Where(a => a is not KwArg).Select(a => a.Name).OrderBy(n => n).JoinOr();
+        var message = string.IsNullOrEmpty(expectedKeywordsString)
+            ? $"{commandName} missing argument, expected:  {expectedArgNamesString}."
+            : $"{commandName} missing argument, expected keyword:  {expectedKeywordsString}, or value for:  {expectedArgNamesString}.";
+
+        return new MissingArgError(message);
+    }
+
     static string BuildStandardMessage(string commandName, IList<Arg> expectedArg)
     {
+        var argGroups = expectedArg.GroupBy(a => a.GetType());
+
         var missingArgCountString = expectedArg.Count == 1 ? "1 required argument" : $"{expectedArg.Count} required arguments";
         var expectedArgNamesString = expectedArg.Select(a => a.Name).JoinAnd();
         return $"{commandName} missing {missingArgCountString}:  {expectedArgNamesString}.";

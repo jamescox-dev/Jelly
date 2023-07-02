@@ -10,7 +10,7 @@ public class SingleArgPattern : IArgPattern
         _argName = argName;
     }
 
-    public ArgPatternResult Parse(int position, ListValue args)
+    public ArgPatternResult Match(int position, ListValue args)
     {
         if (position < args.Count)
         {

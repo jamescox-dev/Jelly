@@ -9,7 +9,7 @@ public class KeywordArgPatternTests
         var args = new ListValue(Node.Literal("key_test"));
         var pattern = new KeywordArgPattern("key_test");
 
-        var result = pattern.Parse(0, args);
+        var result = pattern.Match(0, args);
 
         result.Should().BeOfType<ArgPatternSuccess>().Which.Position.Should().Be(1);
         result.Should().BeOfType<ArgPatternSuccess>()
@@ -22,7 +22,7 @@ public class KeywordArgPatternTests
         var args = new ListValue(Node.Literal("not_match"));
         var pattern = new KeywordArgPattern("another_key");
 
-        var result = pattern.Parse(0, args);
+        var result = pattern.Match(0, args);
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(0);
         result.Should().BeOfType<ArgPatternResultMissing>()
@@ -35,7 +35,7 @@ public class KeywordArgPatternTests
         var args = new ListValue(Node.Literal("Case_Insensitive"));
         var pattern = new KeywordArgPattern("case_insensitive");
 
-        var result = pattern.Parse(0, args);
+        var result = pattern.Match(0, args);
 
         result.Should().BeOfType<ArgPatternSuccess>().Which.Position.Should().Be(1);
         result.Should().BeOfType<ArgPatternSuccess>()
@@ -48,7 +48,7 @@ public class KeywordArgPatternTests
         var args = ListValue.EmptyList;
         var pattern = new KeywordArgPattern("keyword");
 
-        var result = pattern.Parse(0, args);
+        var result = pattern.Match(0, args);
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(0);
         result.Should().BeOfType<ArgPatternResultMissing>()
@@ -61,7 +61,7 @@ public class KeywordArgPatternTests
         var args = new ListValue("test_value".ToValue());
         var pattern = new KeywordArgPattern("more_words");
 
-        var result = pattern.Parse(1, args);
+        var result = pattern.Match(1, args);
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(1);
         result.Should().BeOfType<ArgPatternResultMissing>()
@@ -76,7 +76,7 @@ public class KeywordArgPatternTests
         var args = new ListValue(Node.Literal("one"), Node.Literal("two"), Node.Literal("three"));
         var pattern = new KeywordArgPattern(keyword);
 
-        var result = pattern.Parse(position, args);
+        var result = pattern.Match(position, args);
 
         result.Should().BeOfType<ArgPatternSuccess>().Which.Position.Should().Be(position + 1);
         result.Should().BeOfType<ArgPatternSuccess>()

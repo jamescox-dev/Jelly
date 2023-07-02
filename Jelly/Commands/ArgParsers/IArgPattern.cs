@@ -2,5 +2,5 @@ namespace Jelly.Commands.ArgParsers;
 
 public interface IArgPattern
 {
-    ArgPatternResult Parse(int position, ListValue args);
+    ArgPatternResult Match(int position, ListValue args);
 }

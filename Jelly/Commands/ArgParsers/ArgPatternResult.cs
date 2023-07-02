@@ -9,4 +9,4 @@ public record ArgPatternSuccess(int Position, IReadOnlyDictionary<string, Value>
 public record ArgPatternResultMissing(int Position, IReadOnlySet<Arg> MissingArgs)
     : ArgPatternResult(Position);
 
-public record ArgPatternResultUnexpected(int Position) : ArgPatternResult(Position);
+public record ArgPatternResultUnexpected(int Position, Arg LastArg) : ArgPatternResult(Position);
