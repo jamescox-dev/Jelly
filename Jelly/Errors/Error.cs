@@ -114,7 +114,7 @@ public class ArgError : Error
 
 public class UnexpectedArgError : ArgError
 {
-    internal UnexpectedArgError(string commandName, Arg lastArg)
+    internal UnexpectedArgError(string commandName, Arg? lastArg)
         : this(BuildStandardUnexpectedMessage(commandName, lastArg)) {}
 
     internal UnexpectedArgError(string commandName, int expectedArgCount, int actualArgCount)
@@ -125,9 +125,11 @@ public class UnexpectedArgError : ArgError
 
     internal UnexpectedArgError(string message) : base("/error/arg/unexpected/", message) {}
 
-    static string BuildStandardUnexpectedMessage(string commandName, Arg lastArg)
+    static string BuildStandardUnexpectedMessage(string commandName, Arg? lastArg)
     {
-        return $"{commandName} received unexpected argument after {lastArg.Name}.";
+        return lastArg is null
+            ? $"{commandName} received unexpected argument"
+            : $"{commandName} received unexpected argument after {lastArg.Name}.";
     }
 
     static string BuildStandardMessage(string commandName, int expectedArgCount, int actualArgCount)
