@@ -25,6 +25,9 @@ public static class ValueExtensions
     public static DictionaryValue ToNode(this Value value) =>
         value.ToDictionaryValue();
 
+    public static DictionaryValue GetNode(this DictionaryValue dict, string key) =>
+        dict[key.ToValue()].ToDictionaryValue();
+
     public static DictionaryValue GetNode(this DictionaryValue dict, Value key) =>
         dict[key].ToDictionaryValue();
 

@@ -188,6 +188,39 @@ public class EvaluatorTests : EvaluatorTestsBase
         Environment.GlobalScope.GetCommand("test");
     }
 
+    [Test]
+    public void TheEvaluatorCanEvaluateAForList()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var node = Node.ForList(Node.Literal("v"), Node.Literal(ListValue.EmptyList), Node.Script());
+
+        var result = Evaluate(node);
+
+        result.Should().Be(Value.Empty);
+    }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAForDict()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var node = Node.ForDict(Node.Literal("v"), Node.Literal(DictionaryValue.EmptyDictionary), Node.Script());
+
+        var result = Evaluate(node);
+
+        result.Should().Be(Value.Empty);
+    }
+
+    [Test]
+    public void TheEvaluatorCanEvaluateAForRange()
+    {
+        IEvaluator evaluator = new Evaluator();
+        var node = Node.ForRange(Node.Literal("i"), Node.Literal(0), Node.Literal(0), Node.Literal(1), Node.Script());
+
+        var result = Evaluate(node);
+
+        result.Should().Be(Value.Empty);
+    }
+
     protected override IEvaluator BuildEvaluatorUnderTest()
     {
         return new Evaluator();

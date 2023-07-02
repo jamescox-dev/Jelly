@@ -158,8 +158,12 @@ public static class Node
         return literal[Keywords.Value];
     }
 
-    internal static bool IsVariable(Value n)
+    public static DictionaryValue ToLiteralIfVariable(DictionaryValue node)
     {
-        throw new NotImplementedException();
+        if (Node.IsVariable(node))
+        {
+            return Node.Literal(node.GetString(Keywords.Name));
+        }
+        return node;
     }
 }

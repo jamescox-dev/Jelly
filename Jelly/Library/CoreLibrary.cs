@@ -6,12 +6,22 @@ using System.Collections.Immutable;
 
 public class CoreLibrary : ILibrary
 {
+    static readonly IArgParser ForArgParser = new PatternArgParser(
+        new OrPattern(
+            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("key"), new SingleArgPattern("value"), new KeywordArgPattern("of"), new SingleArgPattern("dict"), new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("value"), new KeywordArgPattern("of"), new SingleArgPattern("dict"), new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("index"), new SingleArgPattern("value"), new KeywordArgPattern("in"), new SingleArgPattern("list"), new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("value"), new KeywordArgPattern("in"), new SingleArgPattern("list"), new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("it"), new KeywordArgPattern("="), new SingleArgPattern("start"), new KeywordArgPattern("to"), new SingleArgPattern("end"), new KeywordArgPattern("step"), new SingleArgPattern("step"), new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("it"), new KeywordArgPattern("="), new SingleArgPattern("start"), new KeywordArgPattern("to"), new SingleArgPattern("end"), new SingleArgPattern("body"))))
+            );
+
     public void LoadIntoScope(IScope scope)
     {
         scope.DefineCommand("break", new SimpleMacro(BreakMacro));
         scope.DefineCommand("continue", new SimpleMacro(ContinueMacro));
         scope.DefineCommand("def", new SimpleMacro(DefMacro));
-        scope.DefineCommand("for", new SimpleMacro(ForMacro));
+        scope.DefineCommand("for", new ArgParsedMacro("for", ForArgParser, ForMacro));
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
         scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, TypeMarshaller.Shared));
         scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, TypeMarshaller.Shared));
@@ -120,57 +130,22 @@ public class CoreLibrary : ILibrary
         return Node.IsVariable(nodeDict) ? Node.Literal(nodeDict[Keywords.Name].ToString()) : nodeDict;
     }
 
-    Value ForMacro(IEnvironment env, ListValue args)
+    Value ForMacro(IEnvironment env, DictionaryValue args)
     {
-        // TODO:  for i = 1 to 10 {}, for i = 1 to 10 step 2 {}, for v in list {}, for i v in list, for v of dict {}, for k v of dict {}
-
-        if (args.Count == 0)
+        var value = Node.ToLiteralIfVariable(args.GetNode(Keywords.Value));
+        if (args.ContainsKey(Keywords.Index))
         {
-            throw Error.Arg("Expected 'iterator'.");
+            var index = Node.ToLiteralIfVariable(args.GetNode(Keywords.Index));
+            return Node.ForList(
+                index,
+                value,
+                args.GetNode(Keywords.List),
+                args.GetNode(Keywords.Body));
         }
-        else if (args.Count == 1)
-        {
-            throw Error.Arg("Expected 'iterator', or '=', 'in', or 'of' keyword.");
-        }
-        else if (args.Count >= 2)
-        {
-            if (IsKeyword(args[1].ToNode(), "in"))
-            {
-                if (args.Count == 2)
-                {
-                    throw Error.Arg("Expected 'list'.");
-                }
-                else if (args.Count == 3)
-                {
-                    throw Error.Arg("Expected 'body'.");
-                }
-                else if (args.Count > 4)
-                {
-                    throw Error.Arg($"Unexpected '{env.Evaluate(args[4].ToNode())}', after 'body'.");
-                }
-            }
-            else if (IsKeyword(args[1].ToNode(), "of"))
-            {
-                if (args.Count == 2)
-                {
-                    throw Error.Arg("Expected 'dict'.");
-                }
-                else if (args.Count == 3)
-                {
-                    throw Error.Arg("Expected 'body'.");
-                }
-                else if (args.Count > 4)
-                {
-                    throw Error.Arg($"Unexpected '{env.Evaluate(args[4].ToNode())}', after 'body'.");
-                }
-            }
-            else if (IsKeyword(args[1].ToNode(), "="))
-            {
-                throw Error.Arg("Expected 'start'.");
-            }
-        }
-
-        throw new NotImplementedException();
+        return Node.ForList(
+            value,
+            args.GetNode(Keywords.List),
+            args.GetNode(Keywords.Body));
     }
 
     Value IfMacro(IEnvironment env, ListValue args)

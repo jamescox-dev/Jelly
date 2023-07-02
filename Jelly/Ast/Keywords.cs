@@ -27,6 +27,7 @@ public static class Keywords
     public static readonly StringValue ForList = new StringValue("forlist");
     public static readonly StringValue ForDict = new StringValue("fordict");
     public static readonly StringValue If = new StringValue("if");
+    public static readonly StringValue Index = new StringValue("index");
     public static readonly StringValue It = new StringValue("it");
     public static readonly StringValue ItIndex = new StringValue("it_index");
     public static readonly StringValue ItKey = new StringValue("it_key");

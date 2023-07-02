@@ -1,0 +1,10 @@
+print List iteration:
+for index value in [a b c] {
+    print $value
+}
+print
+
+print List iteration with index:
+for index value in [one two three] {
+    print "{$index}:  {$value}"
+}

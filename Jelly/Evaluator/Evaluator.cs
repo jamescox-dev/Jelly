@@ -23,6 +23,9 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator(Keywords.Raise.ToString(), new RaiseEvaluator());
         _evaluator.AddEvaluator(Keywords.Try.ToString(), new TryEvaluator());
         _evaluator.AddEvaluator(Keywords.DefineCommand.ToString(), new DefineCommandEvaluator());
+        _evaluator.AddEvaluator(Keywords.ForList.ToString(), new ForListEvaluator());
+        _evaluator.AddEvaluator(Keywords.ForDict.ToString(), new ForDictEvaluator());
+        _evaluator.AddEvaluator(Keywords.ForRange.ToString(), new ForRangeEvaluator());
     }
 
     public Value Evaluate(IEnvironment env, DictionaryValue node)

@@ -7,7 +7,8 @@ public class ShellConfig
  _   | / _ ` | | ` | `
 | `__| | __/ | | |_| |
  `____/`___`__`_`__, | {0}
-               `____/";
+               `____/
+";
 
     public string Prompt => "> ";
 
