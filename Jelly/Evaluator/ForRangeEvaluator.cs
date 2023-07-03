@@ -7,11 +7,20 @@ public class ForRangeEvaluator : IEvaluator
         var iteratorName = env.Evaluate(node.GetNode(Keywords.It)).ToString();
         var start = env.Evaluate(node.GetNode(Keywords.Start)).ToDouble();
         var end = env.Evaluate(node.GetNode(Keywords.End)).ToDouble();
-        var step = env.Evaluate(node.GetNode(Keywords.Step)).ToDouble();
+        var step = GetStep(env, node, start, end);
         var body = node.GetNode(Keywords.Body);
 
         AssertStartEndAndStepValid(start, end, step);
         return RunLoop(env, iteratorName, start, end, step, body);
+    }
+
+    static double GetStep(IEnvironment env, DictionaryValue node, double start, double end)
+    {
+        if (node.ContainsKey(Keywords.Step))
+        {
+            return env.Evaluate(node.GetNode(Keywords.Step)).ToDouble();
+        }
+        return Math.Sign(end - start);
     }
 
     static Value RunLoop(

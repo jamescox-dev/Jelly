@@ -41,6 +41,28 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     }
 
     [Test]
+    public void WhenAStepIsNotGivenAndStartIsLessThanEndADefaultStepOfOneIsGiven()
+    {
+        var node = Node.ForRange(Node.Literal("a"), Node.Literal(8), Node.Literal(10), _testBody);
+
+        var result = Evaluate(node);
+
+        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
+        _recordedIterators.Should().Equal(8.0, 9.0, 10.0);
+    }
+
+    [Test]
+    public void WhenAStepIsNotGivenAndStartIsGreaterThanEndADefaultStepOfNegativeOneIsGiven()
+    {
+        var node = Node.ForRange(Node.Literal("a"), Node.Literal(10), Node.Literal(8), _testBody);
+
+        var result = Evaluate(node);
+
+        _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
+        _recordedIterators.Should().Equal(10.0, 9.0, 8.0);
+    }
+
+    [Test]
     public void TheIteratorCanBeIncrementedByASetAmount()
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(2), _testBody);

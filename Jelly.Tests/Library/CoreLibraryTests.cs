@@ -223,7 +223,6 @@ public class CoreLibraryTests
             var forCmd = _env.GlobalScope.GetCommand("for");
             var bodyCommand = new RecordingTestCommand();
             _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
-            var args = new ListValue();
 
             var result = forCmd.Invoke(_env, new ListValue(
                 Node.Literal("i"),
@@ -245,7 +244,6 @@ public class CoreLibraryTests
             var forCmd = _env.GlobalScope.GetCommand("for");
             var bodyCommand = new RecordingTestCommand();
             _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
-            var args = new ListValue();
 
             var result = forCmd.Invoke(_env, new ListValue(
                 Node.Literal("i"),
@@ -263,12 +261,11 @@ public class CoreLibraryTests
         }
 
         [Test]
-        public void TheIndexAndValueIteratorsCanBeGivenAVariables()
+        public void TheIndexAndValueIteratorsCanBeGivenAsVariables()
         {
             var forCmd = _env.GlobalScope.GetCommand("for");
             var bodyCommand = new RecordingTestCommand();
             _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
-            var args = new ListValue();
 
             var result = forCmd.Invoke(_env, new ListValue(
                 Node.Variable("iv"),
@@ -283,6 +280,141 @@ public class CoreLibraryTests
                 new ListValue(1.ToValue(), "a".ToValue()),
                 new ListValue(2.ToValue(), "b".ToValue()),
                 new ListValue(3.ToValue(), "c".ToValue()));
+        }
+
+        [Test]
+        public void WhenADictArgumentIsPassedTheBodyIsEvaluatedForEachItemInTheDictionaryAndTheResultIsThatOfTheLastEvaluation()
+        {
+            var forCmd = _env.GlobalScope.GetCommand("for");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = forCmd.Invoke(_env, new ListValue(
+                Node.Literal("k"),
+                Node.Literal("of"),
+                Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("k"))))
+            ));
+
+            result.Should().Be(2.ToValue());
+            bodyCommand.RecordedArguments.Should().Equal(
+                new ListValue("a".ToValue()),
+                new ListValue("b".ToValue()));
+        }
+
+        [Test]
+        public void AnOptionalValueIteratorCanBeSuppliedForDicts()
+        {
+            var forCmd = _env.GlobalScope.GetCommand("for");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = forCmd.Invoke(_env, new ListValue(
+                Node.Literal("k"),
+                Node.Literal("v"),
+                Node.Literal("of"),
+                Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("k"), Node.Variable("v"))))
+            ));
+
+            result.Should().Be(2.ToValue());
+            bodyCommand.RecordedArguments.Should().Equal(
+                new ListValue("a".ToValue(), 1.ToValue()),
+                new ListValue("b".ToValue(), 2.ToValue()));
+        }
+
+        [Test]
+        public void TheKeyAndValueIteratorsCanBeGivenAsVariables()
+        {
+            var forCmd = _env.GlobalScope.GetCommand("for");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = forCmd.Invoke(_env, new ListValue(
+                Node.Variable("kv"),
+                Node.Variable("vv"),
+                Node.Literal("of"),
+                Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("kv"), Node.Variable("vv"))))
+            ));
+
+            result.Should().Be(2.ToValue());
+            bodyCommand.RecordedArguments.Should().Equal(
+                new ListValue("a".ToValue(), 1.ToValue()),
+                new ListValue("b".ToValue(), 2.ToValue()));
+        }
+
+        [Test]
+        public void WhenAStartArgumentIsPassedTheBodyIsEvaluatedForEachValueBetweenTheStartAndEndValueAndTheResultIsThatOfTheLastEvaluation()
+        {
+            var forCmd = _env.GlobalScope.GetCommand("for");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = forCmd.Invoke(_env, new ListValue(
+                Node.Literal("i"),
+                Node.Literal("="),
+                Node.Literal("1"),
+                Node.Literal("to"),
+                Node.Literal("3"),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("i"))))
+            ));
+
+            result.Should().Be(3.ToValue());
+            bodyCommand.RecordedArguments.Should().Equal(
+                new ListValue(1.ToValue()),
+                new ListValue(2.ToValue()),
+                new ListValue(3.ToValue()));
+        }
+
+        [Test]
+        public void AnOptionalStepCanBeSuppliedForRanges()
+        {
+            var forCmd = _env.GlobalScope.GetCommand("for");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = forCmd.Invoke(_env, new ListValue(
+                Node.Literal("i"),
+                Node.Literal("="),
+                Node.Literal("2"),
+                Node.Literal("to"),
+                Node.Literal("6"),
+                Node.Literal("step"),
+                Node.Literal("2"),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("i"))))
+            ));
+
+            result.Should().Be(3.ToValue());
+            bodyCommand.RecordedArguments.Should().Equal(
+                new ListValue(2.ToValue()),
+                new ListValue(4.ToValue()),
+                new ListValue(6.ToValue()));
+        }
+
+        [Test]
+        public void TheIteratorCanBeGivenAsAVariable()
+        {
+            var forCmd = _env.GlobalScope.GetCommand("for");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = forCmd.Invoke(_env, new ListValue(
+                Node.Variable("iv"),
+                Node.Literal("="),
+                Node.Literal("2"),
+                Node.Literal("to"),
+                Node.Literal("6"),
+                Node.Literal("step"),
+                Node.Literal("2"),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("iv"))))
+            ));
+
+            result.Should().Be(3.ToValue());
+            bodyCommand.RecordedArguments.Should().Equal(
+                new ListValue(2.ToValue()),
+                new ListValue(4.ToValue()),
+                new ListValue(6.ToValue()));
         }
     }
 

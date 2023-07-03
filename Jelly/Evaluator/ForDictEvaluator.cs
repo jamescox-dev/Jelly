@@ -4,22 +4,22 @@ public class ForDictEvaluator : IEvaluator
 {
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
-        var iteratorName = GetIteratorName(env, node);
-        var keyName = GetKeyName(env, node);
+        var keyIteratorName = GetKeyIteratorName(env, node);
+        var valueIteratorName = GetValueIteratorName(env, node);
         var dict = GetDict(env, node);
         var body = node.GetNode(Keywords.Body);
 
-        AssertIteratorNamesAreUnique(iteratorName, keyName);
+        AssertIteratorNamesAreUnique(keyIteratorName, valueIteratorName);
 
-        return RunLoop(env, iteratorName, keyName, dict, body);
+        return RunLoop(env, keyIteratorName, valueIteratorName, dict, body);
     }
 
-    static Value RunLoop(IEnvironment env, string iteratorName, string? keyName, DictionaryValue dict, DictionaryValue body)
+    static Value RunLoop(IEnvironment env, string keyIteratorName, string? valueIteratorName, DictionaryValue dict, DictionaryValue body)
     {
         var result = Value.Empty;
         foreach (var keyValue in dict.ToEnumerable())
         {
-            PushLoopBodyScope(env, iteratorName, keyName, keyValue);
+            PushLoopBodyScope(env, keyIteratorName, valueIteratorName, keyValue);
             try
             {
                 result = env.Evaluate(body);
@@ -41,14 +41,14 @@ public class ForDictEvaluator : IEvaluator
         return result;
     }
 
-    static string GetIteratorName(IEnvironment env, DictionaryValue node)
+    static string GetKeyIteratorName(IEnvironment env, DictionaryValue node)
     {
-        return env.Evaluate(node.GetNode(Keywords.ItValue)).ToString();
+        return env.Evaluate(node.GetNode(Keywords.ItKey)).ToString();
     }
 
-    static string? GetKeyName(IEnvironment env, DictionaryValue node)
+    static string? GetValueIteratorName(IEnvironment env, DictionaryValue node)
     {
-        return node.ContainsKey(Keywords.ItKey) ? env.Evaluate(node.GetNode(Keywords.ItKey)).ToString() : null;
+        return node.ContainsKey(Keywords.ItValue) ? env.Evaluate(node.GetNode(Keywords.ItValue)).ToString() : null;
     }
 
     static DictionaryValue GetDict(IEnvironment env, DictionaryValue node)
@@ -64,13 +64,13 @@ public class ForDictEvaluator : IEvaluator
         }
     }
 
-    static void PushLoopBodyScope(IEnvironment env, string iteratorName, string? keyName, KeyValuePair<Value, Value> keyValue)
+    static void PushLoopBodyScope(IEnvironment env, string keyIteratorName, string? valueIteratorName, KeyValuePair<Value, Value> keyValue)
     {
         env.PushScope();
-        env.CurrentScope.DefineVariable(iteratorName, keyValue.Value);
-        if (keyName is not null)
+        env.CurrentScope.DefineVariable(keyIteratorName, keyValue.Key);
+        if (valueIteratorName is not null)
         {
-            env.CurrentScope.DefineVariable(keyName, keyValue.Key);
+            env.CurrentScope.DefineVariable(valueIteratorName, keyValue.Value);
         }
     }
 }

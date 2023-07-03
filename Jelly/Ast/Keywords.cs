@@ -32,6 +32,7 @@ public static class Keywords
     public static readonly StringValue ItIndex = new StringValue("it_index");
     public static readonly StringValue ItKey = new StringValue("it_key");
     public static readonly StringValue ItValue = new StringValue("it_value");
+    public static readonly StringValue Key = new StringValue("key");
     public static readonly StringValue List = new StringValue("list");
     public static readonly StringValue Literal = new StringValue("literal");
     public static readonly StringValue Message = new StringValue("message");

@@ -99,6 +99,15 @@ public static class Node
             Keywords.Body, body
         );
 
+    public static DictionaryValue ForRange(DictionaryValue iteratorName, DictionaryValue start, DictionaryValue end, DictionaryValue body) =>
+        new DictionaryValue(
+            Keywords.Type, Keywords.ForRange,
+            Keywords.It, iteratorName,
+            Keywords.Start, start,
+            Keywords.End, end,
+            Keywords.Body, body
+        );
+
     public static DictionaryValue ForList(DictionaryValue indexIteratorName, DictionaryValue valueIteratorName, DictionaryValue list, DictionaryValue body) =>
         new DictionaryValue(
             Keywords.Type, Keywords.ForList,
@@ -125,10 +134,10 @@ public static class Node
             Keywords.Body, body
         );
 
-    public static DictionaryValue ForDict(DictionaryValue valueIteratorName, DictionaryValue dict, DictionaryValue body) =>
+    public static DictionaryValue ForDict(DictionaryValue keyIteratorName, DictionaryValue dict, DictionaryValue body) =>
         new DictionaryValue(
             Keywords.Type, Keywords.ForDict,
-            Keywords.ItValue, valueIteratorName,
+            Keywords.ItKey, keyIteratorName,
             Keywords.Dict, dict,
             Keywords.Body, body
         );

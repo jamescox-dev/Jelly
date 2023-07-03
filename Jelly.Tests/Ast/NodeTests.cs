@@ -332,16 +332,16 @@ public class NodeTests
     }
 
     [Test]
-    public void AForDictNodeCanBeCreateWithoutAKeyInterator()
+    public void AForDictNodeCanBeCreateWithoutAValueIterator()
     {
         var node = Node.ForDict(
-            Node.Literal("v"),
+            Node.Literal("k"),
             Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
             Node.Literal("body"));
 
         node.Should().Be(new DictionaryValue(
             "type".ToValue(), "fordict".ToValue(),
-            "it_value".ToValue(), Node.Literal("v"),
+            "it_key".ToValue(), Node.Literal("k"),
             "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
             "body".ToValue(), Node.Literal("body")
         ));

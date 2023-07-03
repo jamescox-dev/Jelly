@@ -28,19 +28,19 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
     }
 
     [Test]
-    public void AVairableWithTheNameOfTheIteratorIsDefinedInTheScopePassedToTheBody()
+    public void AVariableWithTheNameOfTheIteratorIsDefinedInTheScopePassedToTheBody()
     {
-        var node = Node.ForDict(Node.Literal("c"), Node.Literal(new DictionaryValue(1.ToValue())), CreateLoopBody("c"));
+        var node = Node.ForDict(Node.Literal("key"), Node.Literal(new DictionaryValue(1.ToValue())), CreateLoopBody("key"));
 
         var result = Evaluate(node);
 
-        _testCommand.ScopePassedToInvoke?.Invoking(s => s.GetVariable("c")).Should().NotThrow();
+        _testCommand.ScopePassedToInvoke?.Invoking(s => s.GetVariable("key")).Should().NotThrow();
     }
 
     [Test]
-    public void TheBodyIsEvaluatedOneTimeForEachItemInTheDict()
+    public void TheBodyIsEvaluatedOneTimeForEachKeyInTheDict()
     {
-        var node = Node.ForDict(Node.Literal("b"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("b"));
+        var node = Node.ForDict(Node.Literal("name"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("name"));
 
         var result = Evaluate(node);
 
@@ -48,23 +48,23 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
     }
 
     [Test]
-    public void TheBodyIsEvaluatedInAScopeWithAIteratorVariableDefinedAndAssignedTheValueOfTheCurrentItem()
+    public void TheBodyIsEvaluatedInAScopeWithAnIteratorVariableDefinedAndAssignedTheValueOfTheCurrentKey()
     {
         var node = Node.ForDict(Node.Literal("b"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("b"));
 
         var result = Evaluate(node);
 
-        _recordedValues.Should().Equal(1.ToValue(), 2.ToValue());
+        _recordedValues.Should().Equal("a".ToValue(), "b".ToValue());
     }
 
     [Test]
-    public void TheBodyIsEvaluatedInAScopeWithAIndexVariableDefinedAndAssignedTheKeyOfTheCurrentItem()
+    public void TheBodyIsEvaluatedInAScopeWithAValueVariableDefinedAndAssignedTheValueOfTheCurrentItem()
     {
-        var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("k"));
+        var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("v"));
 
         var result = Evaluate(node);
 
-        _recordedValues.Should().Equal("a".ToValue(), "b".ToValue());
+        _recordedValues.Should().Equal(1.ToValue(), 2.ToValue());
     }
 
     [Test]

@@ -8,12 +8,44 @@ public class CoreLibrary : ILibrary
 {
     static readonly IArgParser ForArgParser = new PatternArgParser(
         new OrPattern(
-            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("key"), new SingleArgPattern("value"), new KeywordArgPattern("of"), new SingleArgPattern("dict"), new SingleArgPattern("body"))),
-            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("value"), new KeywordArgPattern("of"), new SingleArgPattern("dict"), new SingleArgPattern("body"))),
-            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("index"), new SingleArgPattern("value"), new KeywordArgPattern("in"), new SingleArgPattern("list"), new SingleArgPattern("body"))),
-            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("value"), new KeywordArgPattern("in"), new SingleArgPattern("list"), new SingleArgPattern("body"))),
-            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("it"), new KeywordArgPattern("="), new SingleArgPattern("start"), new KeywordArgPattern("to"), new SingleArgPattern("end"), new KeywordArgPattern("step"), new SingleArgPattern("step"), new SingleArgPattern("body"))),
-            new ExactPattern(new SequenceArgPattern(new SingleArgPattern("it"), new KeywordArgPattern("="), new SingleArgPattern("start"), new KeywordArgPattern("to"), new SingleArgPattern("end"), new SingleArgPattern("body"))))
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("key"),
+                new SingleArgPattern("value"),
+                new KeywordArgPattern("of"),
+                new SingleArgPattern("dict"),
+                new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("key"),
+                new KeywordArgPattern("of"),
+                new SingleArgPattern("dict"),
+                new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("index"),
+                new SingleArgPattern("value"),
+                new KeywordArgPattern("in"),
+                new SingleArgPattern("list"),
+                new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("value"),
+                new KeywordArgPattern("in"),
+                new SingleArgPattern("list"),
+                new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("it"),
+                new KeywordArgPattern("="),
+                new SingleArgPattern("start"),
+                new KeywordArgPattern("to"),
+                new SingleArgPattern("end"),
+                new KeywordArgPattern("step"),
+                new SingleArgPattern("step"),
+                new SingleArgPattern("body"))),
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("it"),
+                new KeywordArgPattern("="),
+                new SingleArgPattern("start"),
+                new KeywordArgPattern("to"),
+                new SingleArgPattern("end"),
+                new SingleArgPattern("body"))))
             );
 
     public void LoadIntoScope(IScope scope)
@@ -132,20 +164,40 @@ public class CoreLibrary : ILibrary
 
     Value ForMacro(IEnvironment env, DictionaryValue args)
     {
-        var value = Node.ToLiteralIfVariable(args.GetNode(Keywords.Value));
-        if (args.ContainsKey(Keywords.Index))
+        var body = args.GetNode(Keywords.Body);
+
+        if (args.ContainsKey(Keywords.Start))
         {
-            var index = Node.ToLiteralIfVariable(args.GetNode(Keywords.Index));
-            return Node.ForList(
-                index,
-                value,
-                args.GetNode(Keywords.List),
-                args.GetNode(Keywords.Body));
+            var it = Node.ToLiteralIfVariable(args.GetNode(Keywords.It));
+            var start = args.GetNode(Keywords.Start);
+            var end = args.GetNode(Keywords.End);
+            if (args.ContainsKey(Keywords.Step))
+            {
+                var step = args.GetNode(Keywords.Step);
+                return Node.ForRange(it, start, end, step, body);
+            }
+            return Node.ForRange(it, start, end, body);
         }
-        return Node.ForList(
-            value,
-            args.GetNode(Keywords.List),
-            args.GetNode(Keywords.Body));
+
+        if (args.ContainsKey(Keywords.List))
+        {
+            var value = Node.ToLiteralIfVariable(args.GetNode(Keywords.Value));
+            var list = args.GetNode(Keywords.List);
+            if (args.ContainsKey(Keywords.Index))
+            {
+                var index = Node.ToLiteralIfVariable(args.GetNode(Keywords.Index));
+                return Node.ForList(index, value, list, body);
+            }
+            return Node.ForList(value, list, body);
+        }
+        var key = Node.ToLiteralIfVariable(args.GetNode(Keywords.Key));
+        var dict = args.GetNode(Keywords.Dict);
+        if (args.ContainsKey(Keywords.Value))
+        {
+            var value = Node.ToLiteralIfVariable(args.GetNode(Keywords.Value));
+            return Node.ForDict(key, value, dict, body);
+        }
+        return Node.ForDict(key, dict, body);
     }
 
     Value IfMacro(IEnvironment env, ListValue args)
