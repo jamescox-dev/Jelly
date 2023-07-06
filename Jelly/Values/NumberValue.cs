@@ -6,11 +6,12 @@ using System.Text.RegularExpressions;
 
 public class NumberValue : Value
 {
-    public static readonly NumberValue Zero = new NumberValue(0.0);
-    public static readonly NumberValue One = new NumberValue(1.0);
+    public static readonly NumberValue Zero = new(0.0);
+    public static readonly NumberValue One = new(1.0);
+    public static readonly NumberValue NaN = new(double.NaN);
 
-    static readonly BigInteger DoubleMaxValueAsBigInt = new BigInteger(double.MaxValue);
-    static readonly Regex NumberPattern = new Regex(@"
+    static readonly BigInteger DoubleMaxValueAsBigInt = new(double.MaxValue);
+    static readonly Regex NumberPattern = new(@"
         ^\s*
         (
             [+-]?

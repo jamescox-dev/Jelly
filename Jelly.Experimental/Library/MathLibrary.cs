@@ -1,16 +1,19 @@
 namespace Jelly.Experimental;
 
-using Jelly.Evaluator;
+using Jelly.Commands.ArgParsers;
 
 public class MathLibrary : ILibrary
 {
+    static readonly StringValue Amount = new("amount");
+    readonly IArgParser IncArgParser = new StandardArgParser(new Arg("variable"), new OptArg("amount", Node.Literal(1)));
+
     public void LoadIntoScope(IScope scope)
     {
         var typeMarshaller = new TypeMarshaller();
 
         scope.DefineCommand("min", new WrappedCommand(MinCmd, typeMarshaller));
         scope.DefineCommand("max", new WrappedCommand(MaxCmd, typeMarshaller));
-        scope.DefineCommand("inc", new SimpleMacro(IncMacro));
+        scope.DefineCommand("inc", new ArgParsedMacro("inc", IncArgParser, IncMacro));
     }
 
     public double MinCmd(params double[] numbers)
@@ -31,32 +34,10 @@ public class MathLibrary : ILibrary
         return numbers.Max();
     }
 
-    public Value IncMacro(IEnvironment env, ListValue args)
+    public Value IncMacro(IEnvironment env, DictionaryValue args)
     {
-        if (args.Count == 0)
-        {
-            throw Error.Arg("Expected 'variable'.");
-        }
-        if (args.Count > 2)
-        {
-            throw Error.Arg("Unexpected arguments after 'amount'.");
-        }
-
-        var nameNode = args[0].ToDictionaryValue();
-
-        if (Node.IsVariable(nameNode))
-        {
-            nameNode = Node.Literal(nameNode[Keywords.Name]);
-        }
-
-        var amount = Node.Literal(NumberValue.One);
-        if (args.Count == 2)
-        {
-            amount = args[1].ToDictionaryValue();
-        }
-
-        var name = env.Evaluate(nameNode).ToString();
-
+        var name = env.Evaluate(Node.ToLiteralIfVariable(args.GetNode(Keywords.Variable))).ToString();
+        var amount = args.GetNode(Amount);
         return Node.Assignment(name, Node.BinOp("add", Node.Variable(name), amount));
     }
 }

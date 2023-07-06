@@ -3,7 +3,7 @@ namespace Jelly.Shell;
 using System;
 using Jelly.Runtime;
 
-public class Program
+public static class Program
 {
     public static int Main(string[] args)
     {
@@ -19,15 +19,13 @@ public class Program
                     new Jelly.Experimental.CoreLibrary(),
                     new Jelly.Library.CoreLibrary(),
                     new Jelly.Experimental.MathLibrary(),
+                    new Jelly.Library.MathLibrary(),
                     new Jelly.Shell.Library.CoreIoLibrary(reader, writer)
                 },
                 new ShellConfig(),
                 historyManager);
 
-        Console.CancelKeyPress += (sender, args) =>
-        {
-            historyManager.SaveHistory();
-        };
+        Console.CancelKeyPress += (sender, args) => historyManager.SaveHistory();
 
         if (args.Length == 0)
         {
