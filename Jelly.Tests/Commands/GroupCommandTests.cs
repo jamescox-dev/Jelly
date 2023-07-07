@@ -14,7 +14,7 @@ public class GroupCommandTests
     }
 
     [Test]
-    public void IfTheGroupCommandDoesNotReceiveASubCommandNameAnErrorIsThrown()
+    public void IfTheGroupCommandDoesNotReceiveAValueAnErrorIsThrown()
     {
         var group = new GroupCommand("test1");
 
