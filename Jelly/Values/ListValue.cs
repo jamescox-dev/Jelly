@@ -1,5 +1,6 @@
 namespace Jelly.Values;
 
+using System;
 using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
@@ -8,7 +9,7 @@ public class ListValue : Value, IEnumerable<Value>
 {
     public static readonly ListValue EmptyList = new();
 
-    ImmutableList<Value> _items;
+    readonly ImmutableList<Value> _items;
 
     public ListValue()
     {
@@ -31,14 +32,34 @@ public class ListValue : Value, IEnumerable<Value>
 
     public Value this[int index]
     {
-        get => _items[index];
+        get
+        {
+            if (index >= 0 && index < Count)
+            {
+                return _items[index];
+            }
+            throw new IndexError("index out of bounds.");
+        }
+    }
+
+    public ListValue SetItem(int index, Value value)
+    {
+        if (index >= 0 && index < Count)
+        {
+            return new ListValue(_items.SetItem(index, value));
+        }
+        throw new IndexError("index out of bounds.");
     }
 
     public int Count => _items.Count;
 
+    public ListValue Add(Value value) => new(_items.Add(value));
+
+    public ListValue AddRange(ListValue list) => new(_items.AddRange(list));
+
     public override ListValue ToListValue() => this;
 
-    public override DictionaryValue ToDictionaryValue() => new DictionaryValue((IEnumerable<Value>)this);
+    public override DictionaryValue ToDictionaryValue() => new((IEnumerable<Value>)this);
 
     public IEnumerator<Value> GetEnumerator() => _items.GetEnumerator();
 
@@ -51,7 +72,7 @@ public class ListValue : Value, IEnumerable<Value>
         {
             if (!first)
             {
-                str.Append("\n");
+                str.Append('\n');
             }
             else
             {

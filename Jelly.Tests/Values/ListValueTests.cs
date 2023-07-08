@@ -55,9 +55,29 @@ public class ListValueTests
     {
         var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
 
-        var item = list[1];
+        var item = list[0];
 
-        item.Should().Be("b".ToValue());
+        item.Should().Be("a".ToValue());
+    }
+
+    [Test]
+    public void IfAnIndexIsBelowZeroAnIndexErrorIsRaised()
+    {
+        var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+        var action = () => list[-1];
+
+        action.Should().Throw<IndexError>().WithMessage("index out of bounds.");
+    }
+
+    [Test]
+    public void IfAnIndexIsGreaterOrEqualToTheLengthOfTheList()
+    {
+        var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+        var equal = () => list[3];
+        var greater = () => list[4];
+
+        equal.Should().Throw<IndexError>().WithMessage("index out of bounds.");
+        greater.Should().Throw<IndexError>().WithMessage("index out of bounds.");
     }
 
     [Test]
@@ -128,5 +148,55 @@ public class ListValueTests
         var d = list.ToDouble();
 
         double.IsNaN(d).Should().BeTrue();
+    }
+
+    [Test]
+    public void AnItemCanBeAddedToAList()
+    {
+        var list = new ListValue("a".ToValue());
+
+        var newList = list.Add("z".ToValue());
+
+        ((Value)newList).Should().Be(new ListValue("a".ToValue(), "z".ToValue()));
+    }
+
+    [Test]
+    public void AnItemInTheListCanBeChanged()
+    {
+        var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+
+        var newList = list.SetItem(1, "x".ToValue());
+
+        ((Value)newList).Should().Be(new ListValue("a".ToValue(), "x".ToValue(), "c".ToValue()));
+    }
+
+    [Test]
+    public void AnListCanBeAddedToAList()
+    {
+        var list = new ListValue("a".ToValue());
+
+        var newList = list.AddRange(new ListValue("b".ToValue(), "c".ToValue()));
+
+        ((Value)newList).Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue()));
+    }
+
+    [Test]
+    public void IfAnIndexIsBelowZeroWhenSettingAnItemAnIndexErrorIsRaised()
+    {
+        var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+        var action = () => list.SetItem(-1, "x".ToValue());
+
+        action.Should().Throw<IndexError>().WithMessage("index out of bounds.");
+    }
+
+    [Test]
+    public void IfAnIndexIsGreaterOrEqualToTheLengthOfTheListWhenSettingAnItem()
+    {
+        var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+        var equal = () => list.SetItem(3, "x".ToValue());
+        var greater = () => list.SetItem(4, "x".ToValue());
+
+        equal.Should().Throw<IndexError>().WithMessage("index out of bounds.");
+        greater.Should().Throw<IndexError>().WithMessage("index out of bounds.");
     }
 }
