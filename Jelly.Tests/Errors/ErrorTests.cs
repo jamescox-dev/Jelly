@@ -32,6 +32,7 @@ public class ErrorTests
     [TestCase("/error/arg/unexpected", typeof(UnexpectedArgError))]
     [TestCase("/error/arg/missing/", typeof(MissingArgError))]
     [TestCase("/error/eval/", typeof(EvalError))]
+    [TestCase("/error/index/", typeof(IndexError))]
     [TestCase("/error/name/", typeof(NameError))]
     [TestCase("/error/parse/", typeof(ParseError))]
     [TestCase("/error/parse/missing/end_token/", typeof(MissingEndTokenError))]
@@ -78,14 +79,6 @@ public class ErrorTests
         error.Value.Should().Be("test".ToValue());
         error.GetType().Should().Be(typeof(Return));
     }
-
-    // [Test]
-    // public void AMissingArgCanBeCreatedWithMatchedArgumentsCount()
-    // {
-    //     var error = (MissingArgError)Error.MissingArg(10);
-
-    //     error.MatchedArgumentCount.Should().Be(10);
-    // }
 
     [TestCase("/error/", "/error/", true)]
     [TestCase("/error/", "/ERROR/", true)]
