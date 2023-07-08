@@ -10,6 +10,7 @@ public class Error : Exception
         { "/error/arg/missing/", MissingArg },
         { "/error/arg/unexpected/", UnexpectedArg },
         { "/error/eval/", Eval },
+        { "/error/index/", Index },
         { "/error/name/", Name },
         { "/error/parse/", Parse },
         { "/error/parse/missing/end_token/", MissingEndToken },
@@ -18,9 +19,9 @@ public class Error : Exception
         { "/return/", Return },
     };
 
-    public string Type { get; private set; }
+    public string Type { get; }
 
-    public Value Value { get; private set; }
+    public Value Value { get; }
 
     public static string NormalizeType(string original)
     {
@@ -79,6 +80,10 @@ public class Error : Exception
     public static Error Eval(string message) => new EvalError(message);
 
     public static Error Eval(string message, Value _) => Eval(message);
+
+    public static Error Index(string message) => new IndexError(message);
+
+    public static Error Index(string message, Value _) => Index(message);
 
     public static Error Name(string message) => new NameError(message);
 
@@ -191,6 +196,11 @@ public class MissingEndTokenError : ParseError
 public class NameError : Error
 {
     internal NameError(string message) : base("/error/name/", message) {}
+}
+
+public class IndexError : Error
+{
+    internal IndexError(string message) : base("/error/index/", message) {}
 }
 
 public class Return : Error
