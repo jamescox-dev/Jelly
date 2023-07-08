@@ -40,9 +40,9 @@ public class VariableGroupCommandTests
             ReturnValue = "z".ToValue()
         };
         var group = new VariableGroupCommand("test2");
-        group.AddCommand("sub1", subCommand);
+        group.AddCommand("sub3", subCommand);
 
-        var result = group.Invoke(_env, new ListValue(Node.Variable("var"), Node.Literal("SUB1"), "a".ToValue(), "b".ToValue()));
+        var result = group.Invoke(_env, new ListValue(Node.Variable("var"), Node.Literal("SUb3"), "a".ToValue(), "b".ToValue()));
 
         ((Value?)subCommand.ArgsPassedToInvoke).Should().Be(new ListValue(Node.Literal("1"), "a".ToValue(), "b".ToValue()));
         result.Should().Be("z".ToValue());
@@ -54,7 +54,7 @@ public class VariableGroupCommandTests
     {
         var group = new VariableGroupCommand("test1");
 
-        group.Invoking(g => g.Invoke(_env, new ListValue(Node.Literal("hey"), Node.Literal("404"))))
-            .Should().Throw<NameError>().WithMessage("Unknown sub-command '404'.");
+        group.Invoking(g => g.Invoke(_env, new ListValue(Node.Literal("hey"), Node.Literal("Go Away!"))))
+            .Should().Throw<NameError>().WithMessage("Unknown sub-command 'Go Away!'.");
     }
 }

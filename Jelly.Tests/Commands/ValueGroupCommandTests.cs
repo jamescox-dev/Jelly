@@ -68,7 +68,7 @@ public class ValueGroupCommandTests
     {
         var group = new ValueGroupCommand("test1", "stuff");
 
-        group.Invoking(g => g.Invoke(_env, new ListValue(Node.Literal("hey"), Node.Literal("404"))))
-            .Should().Throw<NameError>().WithMessage("Unknown sub-command '404'.");
+        group.Invoking(g => g.Invoke(_env, new ListValue(Node.Literal("hey"), Node.Literal("Not Here"))))
+            .Should().Throw<NameError>().WithMessage("Unknown sub-command 'Not Here'.");
     }
 }

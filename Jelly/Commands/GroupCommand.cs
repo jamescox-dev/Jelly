@@ -22,7 +22,7 @@ public class GroupCommand : CommandBase
             return command;
         }
 
-        throw new NameError("Unknown sub-command '404'.");
+        throw new NameError($"Unknown sub-command '{name}'.");
     }
 
     public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
