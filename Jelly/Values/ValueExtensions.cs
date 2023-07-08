@@ -3,24 +3,41 @@ namespace Jelly.Values;
 public static class ValueExtensions
 {
     public static StringValue ToValue(this string str) =>
-        new StringValue(str);
+        new(str);
 
     public static BooleanValue ToValue(this bool b) => b ? BooleanValue.True : BooleanValue.False;
 
     public static NumberValue ToValue(this double dbl) =>
-        new NumberValue(dbl);
+        new(dbl);
 
     public static NumberValue ToValue(this int i) =>
-        new NumberValue(i);
+        new(i);
 
     public static ListValue ToValue(this IEnumerable<Value> list) =>
-        new ListValue(list);
+        new(list);
 
     public static DictionaryValue ToValue(this IEnumerable<KeyValuePair<Value, Value>> items) =>
-        new DictionaryValue(items);
+        new(items);
 
     public static DictionaryValue ToDictionaryValue(this IEnumerable<Value> items) =>
-        new DictionaryValue(items);
+        new(items);
+
+    public static int ToIndexOf(this Value indexValue, ListValue ofList)
+    {
+        var indexDouble = indexValue.ToDouble();
+
+        if (double.IsFinite(indexDouble))
+        {
+            var index = (int)indexDouble;
+            if (index == 0)
+            {
+                throw new ValueError("index must not be zero.");
+            }
+            return index > 0 ? index - 1 : ofList.Count + index;
+        }
+
+        throw new ValueError("index must be a finite number.");
+    }
 
     public static DictionaryValue ToNode(this Value value) =>
         value.ToDictionaryValue();
