@@ -127,6 +127,19 @@ public class BinOpEvaluatorTests : EvaluatorTestsBase
         result.Should().Be(expected.ToValue());
     }
 
+    [TestCase("strne", "cat", "dog", true)]
+    [TestCase("strne", "cat", "cat", false)]
+    [TestCase("streq", "dog", "cat", false)]
+    [TestCase("streq", "dog", "dog", true)]
+    public void StringComparisonsCanBeEvaluated(string op, string a, string b, bool expected)
+    {
+        var binOp = Node.BinOp(op, Node.Literal(a), Node.Literal(b));
+
+        var result = Evaluate(binOp);
+
+        result.Should().Be(expected.ToValue());
+    }
+
     [TestCase("bitor", 2.0, 5.0, 7.0)]
     [TestCase("bitor", double.NaN, 1.0, 1.0)]
     [TestCase("bitor", 2.0, double.NaN, 2.0)]

@@ -33,17 +33,18 @@ public class ScannerConfig : IScannerConfig
     static readonly Dictionary<string, Operator> _operators = new(StringComparer.InvariantCultureIgnoreCase)
     {
         { "or", Operator.Or }, { "orelse", Operator.OrElse }, { "and", Operator.And }, { "andthen", Operator.AndThen }, { "not", Operator.Not },
+        { "eq", Operator.StrEqual }, { "ne", Operator.StrNotEqual },
         { "<", Operator.LessThan }, { "<=", Operator.LessThanOrEqual },
         { "=", Operator.Equal },
         { ">=", Operator.GreaterThanOrEqual }, { ">", Operator.GreaterThan },
         { "<>", Operator.NotEqual },
         { "|", Operator.BitwiseOr }, { "^", Operator.BitwiseXor }, { "&", Operator.BitwiseAnd },
-        { "<<", Operator.BitshiftLeft }, { ">>", Operator.BitshiftRight },
-        { "+", Operator.Add }, { "-", Operator.Subtract }, { "++", Operator.Concatinate },
+        { "<<", Operator.BitShiftLeft }, { ">>", Operator.BitShiftRight },
+        { "+", Operator.Add }, { "-", Operator.Subtract }, { "++", Operator.Concatenate },
         { "*", Operator.Multiply }, {"/", Operator.Divide }, {"//", Operator.FloorDivide }, {"%", Operator.Modulo }, {"%%", Operator.FloorModulo },
         { "~", Operator.BitwiseNot },
         { "**", Operator.Exponent },
-        { ",", Operator.SubexpressionSeparator },
+        { ",", Operator.SubExpressionSeparator },
     };
 
     public IReadOnlySet<char> ListItemSeparators => _listItemSeparators;

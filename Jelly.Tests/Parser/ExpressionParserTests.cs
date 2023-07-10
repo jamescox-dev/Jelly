@@ -6,7 +6,7 @@ public class ExpressionParserTests
     ExpressionParser _parser = null!;
 
     [Test]
-    public void AnEmptyExpressionHasNoSubexpressions()
+    public void AnEmptyExpressionHasNoSubExpressions()
     {
         var scanner = new Scanner("()");
 
@@ -17,7 +17,7 @@ public class ExpressionParserTests
     }
 
     [Test]
-    public void ACommaIntroducesANewSubexpression()
+    public void ACommaIntroducesANewSubExpression()
     {
         var scanner = new Scanner("(,)");
 
@@ -73,6 +73,8 @@ public class ExpressionParserTests
     [TestCase("*", "mul")]
     [TestCase("<", "lt")]
     [TestCase("<=", "lte")]
+    [TestCase("ne", "strne")]
+    [TestCase("eq", "streq")]
     public void LiteralWordsThatCanBeInterpretedAsBinaryOperatorsReturnTheCorrectorOperator(string op, string expectedOp)
     {
         var scanner = new Scanner($"(1 {op} 2)");

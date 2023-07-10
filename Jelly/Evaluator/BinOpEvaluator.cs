@@ -4,11 +4,13 @@ internal class BinOpEvaluator : IEvaluator
 {
     delegate double ArithmeticOp(double a, double b);
     delegate bool ComparisonOp(double a, double b);
+    delegate bool StringOp(Value a, Value b);
     delegate int BitwiseOp(int a, int b);
 
-    Dictionary<string, ArithmeticOp> _arithmeticOps = new();
-    Dictionary<string, ComparisonOp> _comparisonOps = new();
-    Dictionary<string, BitwiseOp> _bitwiseOps = new();
+    readonly Dictionary<string, ArithmeticOp> _arithmeticOps = new();
+    readonly Dictionary<string, ComparisonOp> _comparisonOps = new();
+    readonly Dictionary<string, StringOp> _stringOps = new();
+    readonly Dictionary<string, BitwiseOp> _bitwiseOps = new();
 
     public BinOpEvaluator()
     {
@@ -28,6 +30,9 @@ internal class BinOpEvaluator : IEvaluator
         _comparisonOps.Add("gt", Gt);
         _comparisonOps.Add("ne", Neq);
 
+        _stringOps.Add("strne", StrNotEqual);
+        _stringOps.Add("streq", StrEqual);
+
         _bitwiseOps.Add("bitor", BitwiseOr);
         _bitwiseOps.Add("bitand", BitwiseAnd);
         _bitwiseOps.Add("bitxor", BitwiseXor);
@@ -38,7 +43,7 @@ internal class BinOpEvaluator : IEvaluator
     public Value Evaluate(IEnvironment env, DictionaryValue node)
     {
         var op = node.GetString(Keywords.Op);
-        
+
         if (_arithmeticOps.TryGetValue(op, out var arithOp))
         {
             EvaluateOperandsAsNumbers(env, node, out var a, out var b);
@@ -48,6 +53,10 @@ internal class BinOpEvaluator : IEvaluator
         {
             EvaluateOperandsAsNumbers(env, node, out var a, out var b);
             return numCompOp(a, b).ToValue();
+        }
+        if (_stringOps.TryGetValue(op, out var stringOp))
+        {
+            return stringOp(env.Evaluate(node.GetNode(Keywords.A)), env.Evaluate(node.GetNode(Keywords.B))).ToValue();
         }
         if (_bitwiseOps.TryGetValue(op, out var bitwiseOp))
         {
@@ -163,6 +172,10 @@ internal class BinOpEvaluator : IEvaluator
     static bool Gt(double a, double b) => a > b;
 
     static bool Neq(double a, double b) => a != b;
+
+    static bool StrNotEqual(Value a, Value b) => !a.Equals(b);
+
+    static bool StrEqual(Value a, Value b) => a.Equals(b);
 
     static int BitwiseOr(int a, int b) => a | b;
 

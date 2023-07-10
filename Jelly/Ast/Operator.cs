@@ -10,8 +10,8 @@ public enum Operator
     AndThen,
     Not,
 
-    // TODO:  StrEqual (eq),
-    // TODO:  StrNotEqual (ne),
+    StrEqual,
+    StrNotEqual,
     // TODO:  StrLike (like),
 
     // TODO:  CaseInsensitiveStrEqual (ieq),
@@ -33,12 +33,12 @@ public enum Operator
     BitwiseXor,
     BitwiseAnd,
 
-    BitshiftLeft,
-    BitshiftRight,
+    BitShiftLeft,
+    BitShiftRight,
 
     Add,
     Subtract,
-    Concatinate,
+    Concatenate,
 
     Multiply,
     Divide,
@@ -52,7 +52,7 @@ public enum Operator
 
     Exponent,
 
-    SubexpressionSeparator,
+    SubExpressionSeparator,
 }
 
 public static class OperatorExtentions
@@ -63,6 +63,8 @@ public static class OperatorExtentions
         Operator.And => "and",
         Operator.AndThen => "andthen",
         Operator.Not => "not",
+        Operator.StrEqual => "streq",
+        Operator.StrNotEqual => "strne",
         Operator.LessThan => "lt",
         Operator.LessThanOrEqual => "lte",
         Operator.Equal => "eq",
@@ -72,11 +74,11 @@ public static class OperatorExtentions
         Operator.BitwiseOr => "bitor",
         Operator.BitwiseXor => "bitxor",
         Operator.BitwiseAnd => "bitand",
-        Operator.BitshiftLeft => "lshift",
-        Operator.BitshiftRight => "rshift",
+        Operator.BitShiftLeft => "lshift",
+        Operator.BitShiftRight => "rshift",
         Operator.Add => "add",
         Operator.Subtract => "sub",
-        Operator.Concatinate => "cat",
+        Operator.Concatenate => "cat",
         Operator.Multiply => "mul",
         Operator.Divide => "div",
         Operator.FloorDivide => "floordiv",
@@ -86,7 +88,7 @@ public static class OperatorExtentions
         Operator.Negative => "neg",
         Operator.BitwiseNot => "bitnot",
         Operator.Exponent => "exp",
-        Operator.SubexpressionSeparator => "sep",
+        Operator.SubExpressionSeparator => "sep",
         _ => "",
     };
 
@@ -97,6 +99,8 @@ public static class OperatorExtentions
         Operator.And => 2,
         Operator.AndThen => 2,
         Operator.Not => 3,
+        Operator.StrEqual => 4,
+        Operator.StrNotEqual => 4,
         Operator.LessThan => 4,
         Operator.LessThanOrEqual => 4,
         Operator.Equal => 4,
@@ -106,11 +110,11 @@ public static class OperatorExtentions
         Operator.BitwiseOr => 5,
         Operator.BitwiseXor => 6,
         Operator.BitwiseAnd => 7,
-        Operator.BitshiftLeft => 8,
-        Operator.BitshiftRight => 8,
+        Operator.BitShiftLeft => 8,
+        Operator.BitShiftRight => 8,
         Operator.Add => 9,
         Operator.Subtract => 9,
-        Operator.Concatinate => 9,
+        Operator.Concatenate => 9,
         Operator.Multiply => 10,
         Operator.Divide => 10,
         Operator.FloorDivide => 10,
@@ -120,7 +124,7 @@ public static class OperatorExtentions
         Operator.Negative => 11,
         Operator.BitwiseNot => 11,
         Operator.Exponent => 12,
-        Operator.SubexpressionSeparator => int.MaxValue,
+        Operator.SubExpressionSeparator => int.MaxValue,
         _ => 0,
     };
 
