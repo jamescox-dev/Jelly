@@ -1,4 +1,4 @@
-﻿namespace Jelly.Experimental;
+﻿namespace Jelly.Experimental.Library;
 
 public class CoreLibrary : ILibrary
 {
@@ -17,4 +17,6 @@ public class CoreLibrary : ILibrary
     {
         return args[0].Escape().ToValue();
     }
+
+    // TODO:  set, get, call
 }

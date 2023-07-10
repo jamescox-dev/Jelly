@@ -1,4 +1,4 @@
-namespace Jelly.Experimental;
+namespace Jelly.Experimental.Library;
 
 using Jelly.Commands.ArgParsers;
 
@@ -11,27 +11,7 @@ public class MathLibrary : ILibrary
     {
         var typeMarshaller = new TypeMarshaller();
 
-        scope.DefineCommand("min", new WrappedCommand(MinCmd, typeMarshaller));
-        scope.DefineCommand("max", new WrappedCommand(MaxCmd, typeMarshaller));
         scope.DefineCommand("inc", new ArgParsedMacro("inc", IncArgParser, IncMacro));
-    }
-
-    public double MinCmd(params double[] numbers)
-    {
-        if (numbers.Length == 0)
-        {
-            return 0.0;
-        }
-        return numbers.Min();
-    }
-
-    public double MaxCmd(params double[] numbers)
-    {
-        if (numbers.Length == 0)
-        {
-            return 0.0;
-        }
-        return numbers.Max();
     }
 
     public Value IncMacro(IEnvironment env, DictionaryValue args)
@@ -40,4 +20,32 @@ public class MathLibrary : ILibrary
         var amount = args.GetNode(Amount);
         return Node.Assignment(name, Node.BinOp("add", Node.Variable(name), amount));
     }
+
+    // TODO:  clamp
+    // TODO:  sign
+    // TODO:  abs
+    // TODO:  acos
+    // TODO:  acosh
+    // TODO:  cos
+    // TODO:  cosh
+    // TODO:  asin
+    // TODO:  asinh
+    // TODO:  sin
+    // TODO:  sinh
+    // TODO:  atan
+    // TODO:  atan2
+    // TODO:  atanh
+    // TODO:  tan
+    // TODO:  tanh
+    // TODO:  exp
+    // TODO:  pow
+    // TODO:  log
+    // TODO:  log2
+    // TODO:  log10
+    // TODO:  sqrt
+    // TODO:  cbrt
+    // TODO:  floor
+    // TODO:  round
+    // TODO:  ceil
+    // TODO:  trunc
 }

@@ -10,6 +10,18 @@ public enum Operator
     AndThen,
     Not,
 
+    // TODO:  StrEqual (eq),
+    // TODO:  StrNotEqual (ne),
+    // TODO:  StrLike (like),
+
+    // TODO:  CaseInsensitiveStrEqual (ieq),
+    // TODO:  CaseInsensitiveStrNotEqual (ine),
+    // TODO:  CaseInsensitiveStrLike (ilike),
+
+    // TODO:  ListIn (in),
+
+    // TODO:  DictHas (has),
+
     LessThan,
     LessThanOrEqual,
     Equal,

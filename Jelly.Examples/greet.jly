@@ -1,0 +1,14 @@
+var $names = []
+
+# Read names from user.
+while 1 {
+    var $name = {input 'Enter name: '}
+    if ($name eq '') {
+        break
+    }
+    list! $names add $name
+}
+
+for $name in $names {
+    print 'Hello, {$name}!'
+}

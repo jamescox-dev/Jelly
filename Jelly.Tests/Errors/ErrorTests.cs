@@ -33,6 +33,7 @@ public class ErrorTests
     [TestCase("/error/arg/missing/", typeof(MissingArgError))]
     [TestCase("/error/eval/", typeof(EvalError))]
     [TestCase("/error/index/", typeof(IndexError))]
+    [TestCase("/error/io/", typeof(IoError))]
     [TestCase("/error/name/", typeof(NameError))]
     [TestCase("/error/parse/", typeof(ParseError))]
     [TestCase("/error/parse/missing/end_token/", typeof(MissingEndTokenError))]

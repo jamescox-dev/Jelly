@@ -11,6 +11,7 @@ public class Error : Exception
         { "/error/arg/unexpected/", UnexpectedArg },
         { "/error/eval/", Eval },
         { "/error/index/", Index },
+        { "/error/io/", Io },
         { "/error/name/", Name },
         { "/error/parse/", Parse },
         { "/error/parse/missing/end_token/", MissingEndToken },
@@ -84,6 +85,10 @@ public class Error : Exception
     public static Error Index(string message) => new IndexError(message);
 
     public static Error Index(string message, Value _) => Index(message);
+
+    public static Error Io(string message) => new IoError(message);
+
+    public static Error Io(string message, Value _) => Io(message);
 
     public static Error Name(string message) => new NameError(message);
 
@@ -218,6 +223,11 @@ public class TypeError : Error
 public class ValueError : Error
 {
     internal ValueError(string message) : base("/error/value/", message) {}
+}
+
+public class IoError : Error
+{
+    internal IoError(string message) : base("/error/io/", message) {}
 }
 
 public class Break : Error

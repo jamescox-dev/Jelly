@@ -75,7 +75,7 @@ public class MathLibraryTests
 
     #endregion
 
-        #region max
+    #region max
 
     [TestFixture]
     public class MinTests : MathLibraryTests
