@@ -9,11 +9,11 @@ public class SimpleMacroTests
     public void TheDelegateIsCalledWithTheCurrentEnvironmentAndEachOfItsArgumentsUnevaluatedAndTheResultEvaluatedAndReturned()
     {
         var macro = new SimpleMacro(TestMacro);
-        var env = new Environment();
+        var env = new Env();
         var args = new ListValue(Node.Literal(1), Node.Literal(2), Node.Literal(3));
-        IEnvironment? passedEnv = null;
+        IEnv? passedEnv = null;
         List<Value>? passedArgs = null;
-        Value TestMacro(IEnvironment env, ListValue args)
+        Value TestMacro(IEnv env, ListValue args)
         {
             passedEnv = env;
             passedArgs = args.ToList();

@@ -6,7 +6,7 @@ using Jelly.Runtime;
 public class MathLibraryTests
 {
     ILibrary _lib = null!;
-    Environment _env = null!;
+    Env _env = null!;
 
     [SetUp]
     public virtual void Setup()

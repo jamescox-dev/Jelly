@@ -5,12 +5,12 @@ using Jelly.Runtime;
 [TestFixture]
 public class ValueGroupCommandTests
 {
-    IEnvironment _env = null!;
+    IEnv _env = null!;
 
     [SetUp]
     public void Setup()
     {
-        _env = new Environment();
+        _env = new Env();
     }
 
     [Test]

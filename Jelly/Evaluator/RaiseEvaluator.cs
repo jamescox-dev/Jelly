@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 internal class RaiseEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         throw Error.Create(
             env.Evaluate(node.GetNode(Keywords.ErrorType)).ToString(),

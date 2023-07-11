@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 public class ForDictEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         var keyIteratorName = GetKeyIteratorName(env, node);
         var valueIteratorName = GetValueIteratorName(env, node);
@@ -14,7 +14,7 @@ public class ForDictEvaluator : IEvaluator
         return RunLoop(env, keyIteratorName, valueIteratorName, dict, body);
     }
 
-    static Value RunLoop(IEnvironment env, string keyIteratorName, string? valueIteratorName, DictionaryValue dict, DictionaryValue body)
+    static Value RunLoop(IEnv env, string keyIteratorName, string? valueIteratorName, DictionaryValue dict, DictionaryValue body)
     {
         var result = Value.Empty;
         foreach (var keyValue in dict.ToEnumerable())
@@ -41,17 +41,17 @@ public class ForDictEvaluator : IEvaluator
         return result;
     }
 
-    static string GetKeyIteratorName(IEnvironment env, DictionaryValue node)
+    static string GetKeyIteratorName(IEnv env, DictionaryValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.ItKey)).ToString();
     }
 
-    static string? GetValueIteratorName(IEnvironment env, DictionaryValue node)
+    static string? GetValueIteratorName(IEnv env, DictionaryValue node)
     {
         return node.ContainsKey(Keywords.ItValue) ? env.Evaluate(node.GetNode(Keywords.ItValue)).ToString() : null;
     }
 
-    static DictionaryValue GetDict(IEnvironment env, DictionaryValue node)
+    static DictionaryValue GetDict(IEnv env, DictionaryValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.Dict)).ToDictionaryValue();
     }
@@ -64,7 +64,7 @@ public class ForDictEvaluator : IEvaluator
         }
     }
 
-    static void PushLoopBodyScope(IEnvironment env, string keyIteratorName, string? valueIteratorName, KeyValuePair<Value, Value> keyValue)
+    static void PushLoopBodyScope(IEnv env, string keyIteratorName, string? valueIteratorName, KeyValuePair<Value, Value> keyValue)
     {
         env.PushScope();
         env.CurrentScope.DefineVariable(keyIteratorName, keyValue.Key);

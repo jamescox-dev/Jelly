@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 internal class TryEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         var body = node.GetNode(Keywords.Body);
         var finallyBody = node.GetNodeOrNull(Keywords.Finally);
@@ -36,7 +36,7 @@ internal class TryEvaluator : IEvaluator
         return result;
     }
 
-    static DictionaryValue? GetErrorHandlerForError(IEnvironment env, ListValue errorHandlers, Error error)
+    static DictionaryValue? GetErrorHandlerForError(IEnv env, ListValue errorHandlers, Error error)
     {
         foreach (var errorHandler in errorHandlers)
         {

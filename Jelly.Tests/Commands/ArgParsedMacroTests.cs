@@ -19,15 +19,15 @@ public class ArgParsedMacroTests
     [Test]
     public void TheMacroDelegateIsCalledWithTheEnvironmentAnTheParsedAndArgumentsAndTheResultEvaluatedReturned()
     {
-        IEnvironment? envPassedToMacro = null;
+        IEnv? envPassedToMacro = null;
         DictionaryValue? argsPassedToMacro = null;
-        Value TestMacroFunc(IEnvironment env, DictionaryValue args)
+        Value TestMacroFunc(IEnv env, DictionaryValue args)
         {
             envPassedToMacro = env;
             argsPassedToMacro = args;
             return Node.Literal("hello, jelly");
         }
-        var env = new Environment();
+        var env = new Env();
         var argParser = new StandardArgParser(new Arg("name"));
         var macro = new ArgParsedMacro("macro", argParser, TestMacroFunc);
 

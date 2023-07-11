@@ -19,15 +19,15 @@ public class ArgParsedCommandTests
     [Test]
     public void TheCommandDelegateIsCalledWithTheEnvironmentAnTheParsedAndEvaluatedArgumentsAndTheResultReturned()
     {
-        IEnvironment? envPassedToCommand = null;
+        IEnv? envPassedToCommand = null;
         DictionaryValue? argsPassedToCommand = null;
-        Value TestCommandFunc(IEnvironment env, DictionaryValue args)
+        Value TestCommandFunc(IEnv env, DictionaryValue args)
         {
             envPassedToCommand = env;
             argsPassedToCommand = args;
             return "hello, jelly".ToValue();
         }
-        var env = new Environment();
+        var env = new Env();
         var argParser = new StandardArgParser(new Arg("name"));
         var command = new ArgParsedCommand("command", argParser, TestCommandFunc);
 

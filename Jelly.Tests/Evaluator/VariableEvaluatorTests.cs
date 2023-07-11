@@ -8,7 +8,7 @@ public class VariableEvaluatorTests
     [Test]
     public void EvaluatingAVariableNodeReturnsTheValueOfTheNamedVariableFromTheGivenScope()
     {
-        var env = new Environment();
+        var env = new Env();
         var evaluator = new VariableEvaluator();
         env.GlobalScope.DefineVariable("answer", "42".ToValue());
         var variable = Node.Variable("answer");

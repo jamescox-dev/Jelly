@@ -6,14 +6,14 @@ public abstract class EvaluatorTestsBase
 {
     protected IEvaluator Evaluator { get; private set; } = null!;
 
-    protected Environment Environment { get; private set; } = null!;
+    protected Env Environment { get; private set; } = null!;
 
     protected Value Evaluate(DictionaryValue node) => Evaluator.Evaluate(Environment, node);
 
     [SetUp]
     public virtual void Setup()
     {
-        Environment = new Environment();
+        Environment = new Env();
         Evaluator = BuildEvaluatorUnderTest();
     }
 

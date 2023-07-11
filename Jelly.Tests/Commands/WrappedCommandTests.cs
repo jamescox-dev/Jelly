@@ -5,7 +5,7 @@ using Jelly.Runtime;
 [TestFixture]
 public class WrappedCommandTests
 {
-    Environment _env = null!;
+    Env _env = null!;
 
     string[] _passedParams = null!;
 
@@ -138,8 +138,8 @@ public class WrappedCommandTests
     [Test]
     public void WhenTheFirstArgumentIsAnIEnvironmentTheEnvironmentGetsPassedToTheWrappedCommand()
     {
-        IEnvironment? passedEnv = null;
-        var func = (IEnvironment env) => { passedEnv = env; };
+        IEnv? passedEnv = null;
+        var func = (IEnv env) => { passedEnv = env; };
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
 
         command.Invoke(_env, new ListValue());

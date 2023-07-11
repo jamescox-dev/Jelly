@@ -7,7 +7,7 @@ public class CoreIoLibraryTest
 {
     ILibrary _library = null!;
 
-    Environment _env = null!;
+    Env _env = null!;
 
     FakeReaderWriter _fakeReaderWriter = null!;
 
@@ -108,7 +108,7 @@ public class CoreIoLibraryTest
     public void Setup()
     {
         _fakeReaderWriter = new FakeReaderWriter();
-        _env = new Environment();
+        _env = new Env();
         _library = new CoreIoLibrary(_fakeReaderWriter, _fakeReaderWriter);
     }
 }

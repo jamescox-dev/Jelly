@@ -51,7 +51,7 @@ public class EvaluatorTests : EvaluatorTestsBase
     public void TheEvaluatorCanEvaluateAScriptNode()
     {
         var command = new Mock<ICommand>();
-        command.Setup(m => m.Invoke(Environment, It.IsAny<ListValue>())).Returns<IEnvironment, ListValue>((_, args) => args[0]);
+        command.Setup(m => m.Invoke(Environment, It.IsAny<ListValue>())).Returns<IEnv, ListValue>((_, args) => args[0]);
         Environment.GlobalScope.DefineCommand("command1", command.Object);
         Environment.GlobalScope.DefineCommand("command2", command.Object);
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue(Node.Literal("1".ToValue())));

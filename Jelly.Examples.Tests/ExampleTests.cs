@@ -20,7 +20,7 @@ public class ExampleTests
         var shell = new Shell(
                 reader,
                 writer,
-                new Environment(),
+                new Env(),
                 new ILibrary[] {
                     new Jelly.Experimental.Library.CollectionsLibrary(),
                     new Jelly.Library.CollectionsLibrary(),

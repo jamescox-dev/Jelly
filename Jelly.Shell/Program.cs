@@ -14,7 +14,7 @@ public static class Program
         var shell = new Shell(
                 reader,
                 writer,
-                new Runtime.Environment(),
+                new Runtime.Env(),
                 new ILibrary[] {
                     new Jelly.Experimental.Library.CollectionsLibrary(),
                     new Jelly.Library.CollectionsLibrary(),

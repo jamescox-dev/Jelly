@@ -25,7 +25,7 @@ public class GroupCommand : CommandBase
         throw new NameError($"Unknown sub-command '{name}'.");
     }
 
-    public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
+    public override Value Invoke(IEnv env, ListValue unevaluatedArgs)
     {
         if (!unevaluatedArgs.Any())
         {

@@ -11,9 +11,9 @@ public class UserCommandTests
     UserCommand _userCommandVarArgs = null!;
     UserCommand _userCommandWithReturn = null!;
 
-    Environment _env = null!;
+    Env _env = null!;
 
-    IEnvironment? _passedEnv = null;
+    IEnv? _passedEnv = null;
     IScope? _passedScope = null;
 
     DictionaryValue _userCommandBody = null!;

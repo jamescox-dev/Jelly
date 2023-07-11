@@ -2,7 +2,7 @@ namespace Jelly.Runtime;
 
 using Jelly.Evaluator;
 
-public class Environment : IEnvironment
+public class Env : IEnv
 {
     public IParser Parser { get; }
 
@@ -12,7 +12,7 @@ public class Environment : IEnvironment
 
     public IScope CurrentScope { get; private set; }
 
-    internal Environment(IScope globalScope, IParser parser, IEvaluator evaluator)
+    internal Env(IScope globalScope, IParser parser, IEvaluator evaluator)
     {
         Parser = parser;
         Evaluator = evaluator;
@@ -20,11 +20,11 @@ public class Environment : IEnvironment
         CurrentScope = GlobalScope;
     }
 
-    internal Environment(IParser parser, IEvaluator evaluator) : this(new Scope(), parser, evaluator) {}
+    internal Env(IParser parser, IEvaluator evaluator) : this(new Scope(), parser, evaluator) {}
 
-    public Environment(IScope globalScope) : this(globalScope, new ScriptParser(), new Evaluator()) {}
+    public Env(IScope globalScope) : this(globalScope, new ScriptParser(), new Evaluator()) {}
 
-    public Environment() : this(new Scope()) {}
+    public Env() : this(new Scope()) {}
 
     public Value Evaluate(string source)
     {

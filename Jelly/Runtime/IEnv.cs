@@ -1,6 +1,6 @@
 namespace Jelly.Runtime;
 
-public interface IEnvironment
+public interface IEnv
 {
     IParser Parser { get; }
     IEvaluator Evaluator { get; }

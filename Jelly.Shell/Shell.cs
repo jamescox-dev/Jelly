@@ -7,7 +7,7 @@ public class Shell
 {
     readonly IReader _reader;
     readonly IWriter _writer;
-    readonly IEnvironment _env;
+    readonly IEnv _env;
     readonly IEnumerable<ILibrary> _libraries;
     readonly ShellConfig _config;
     readonly IHistoryManager _historyManager;
@@ -15,7 +15,7 @@ public class Shell
     public Shell(
         IReader reader,
         IWriter writer,
-        IEnvironment env,
+        IEnv env,
         IEnumerable<ILibrary> libraries,
         ShellConfig config,
         IHistoryManager historyManager)

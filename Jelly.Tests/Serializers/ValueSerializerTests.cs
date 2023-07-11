@@ -39,7 +39,7 @@ public class ValueSerializerTests
     public void ValuesCanBeEscapedSoThatTheirValueCanBeReinterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
         var parser = new WordParser();
-        var env = new Environment();
+        var env = new Env();
 
         var escapedValue = ValueSerializer.Escape(stringValue);
 

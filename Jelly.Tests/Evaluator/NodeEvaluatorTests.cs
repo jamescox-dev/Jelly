@@ -64,11 +64,11 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
 
     public class TestEvaluator : IEvaluator
     {
-        public IEnvironment? EnvironmentPassedToEvaluate { get; private set; }
+        public IEnv? EnvironmentPassedToEvaluate { get; private set; }
         public DictionaryValue? NodeEvaluated { get; private set; }
         public IEvaluator? EvaluatorPassedToEvaluate { get; private set; }
 
-        public Value Evaluate(IEnvironment env, DictionaryValue node)
+        public Value Evaluate(IEnv env, DictionaryValue node)
         {
             EnvironmentPassedToEvaluate = env;
             NodeEvaluated = node;

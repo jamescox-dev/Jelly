@@ -14,7 +14,7 @@ public class MathLibrary : ILibrary
         scope.DefineCommand("inc", new ArgParsedMacro("inc", IncArgParser, IncMacro));
     }
 
-    public Value IncMacro(IEnvironment env, DictionaryValue args)
+    public Value IncMacro(IEnv env, DictionaryValue args)
     {
         var name = env.Evaluate(Node.ToLiteralIfVariable(args.GetNode(Keywords.Variable))).ToString();
         var amount = args.GetNode(Amount);

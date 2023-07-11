@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 internal class IfEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         var condition = node.GetNode(Keywords.Condition);
         var thenBody = node.GetNode(Keywords.Then);

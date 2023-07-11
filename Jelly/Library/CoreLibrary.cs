@@ -64,7 +64,7 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
     }
 
-    Value BreakMacro(IEnvironment env, ListValue args)
+    Value BreakMacro(IEnv env, ListValue args)
     {
         if (args.Count != 0)
         {
@@ -78,7 +78,7 @@ public class CoreLibrary : ILibrary
         );
     }
 
-    Value ContinueMacro(IEnvironment env, ListValue args)
+    Value ContinueMacro(IEnv env, ListValue args)
     {
         if (args.Count != 0)
         {
@@ -92,7 +92,7 @@ public class CoreLibrary : ILibrary
         );
     }
 
-    Value DefMacro(IEnvironment env, ListValue args)
+    Value DefMacro(IEnv env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -162,7 +162,7 @@ public class CoreLibrary : ILibrary
         return Node.IsVariable(nodeDict) ? Node.Literal(nodeDict[Keywords.Name].ToString()) : nodeDict;
     }
 
-    Value ForMacro(IEnvironment env, DictionaryValue args)
+    Value ForMacro(IEnv env, DictionaryValue args)
     {
         var body = args.GetNode(Keywords.Body);
 
@@ -200,7 +200,7 @@ public class CoreLibrary : ILibrary
         return Node.ForDict(key, dict, body);
     }
 
-    Value IfMacro(IEnvironment env, ListValue args)
+    Value IfMacro(IEnv env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -302,19 +302,19 @@ public class CoreLibrary : ILibrary
                 .Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    string[] LsDefCmd(IEnvironment env, bool localOnly = false)
+    string[] LsDefCmd(IEnv env, bool localOnly = false)
     {
         var commands = env.CurrentScope.GetCommandNames(localOnly);
         return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
     }
 
-    string[] LsVarCmd(IEnvironment env, bool localOnly = false)
+    string[] LsVarCmd(IEnv env, bool localOnly = false)
     {
         var commands = env.CurrentScope.GetVariableNames(localOnly);
         return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
     }
 
-    Value RaiseMacro(IEnvironment env, ListValue args)
+    Value RaiseMacro(IEnv env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -332,7 +332,7 @@ public class CoreLibrary : ILibrary
         return Node.Raise(type, message, value);
     }
 
-    Value ReturnMacro(IEnvironment env, ListValue args)
+    Value ReturnMacro(IEnv env, ListValue args)
     {
         var value = Node.Literal(Value.Empty);
 
@@ -351,7 +351,7 @@ public class CoreLibrary : ILibrary
             value);
     }
 
-    Value TryMacro(IEnvironment env, ListValue args)
+    Value TryMacro(IEnv env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -408,7 +408,7 @@ public class CoreLibrary : ILibrary
         );
     }
 
-    Value VarMacro(IEnvironment env, ListValue args)
+    Value VarMacro(IEnv env, ListValue args)
     {
         if (args.Count == 0)
         {
@@ -435,7 +435,7 @@ public class CoreLibrary : ILibrary
         return Node.DefineVariable(varname, args.Count == 3 ? args[2].ToNode() : Node.Literal(Value.Empty));
     }
 
-    Value WhileMacro(IEnvironment env, ListValue args)
+    Value WhileMacro(IEnv env, ListValue args)
     {
         if (args.Count == 0)
         {

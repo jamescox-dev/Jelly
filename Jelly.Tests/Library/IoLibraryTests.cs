@@ -6,7 +6,7 @@ using Jelly.Runtime;
 public class IoLibraryTests
 {
     ILibrary _lib = null!;
-    Environment _env = null!;
+    Env _env = null!;
     Mock<IIoLibraryProvider> _mockIoProvider = null!;
 
     [SetUp]

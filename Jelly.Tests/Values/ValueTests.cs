@@ -125,7 +125,7 @@ public class ValueTests
     public void ValuesCanBeEscapedSoThatTheirValueCanBeReinterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
     {
         var parser = new WordParser();
-        var env = new Runtime.Environment();
+        var env = new Runtime.Env();
         var value = stringValue.ToValue();
 
         var escapedValue = value.Escape();

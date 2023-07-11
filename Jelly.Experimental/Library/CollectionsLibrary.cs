@@ -28,18 +28,18 @@ public class CollectionsLibrary : ILibrary
         scope.DefineCommand("list!", listVarCmd);
     }
 
-    Value ListConvert(IEnvironment env, DictionaryValue args)
+    Value ListConvert(IEnv env, DictionaryValue args)
     {
         return args[Keywords.List].ToListValue();
     }
 
-    Value ListLen(IEnvironment env, DictionaryValue args)
+    Value ListLen(IEnv env, DictionaryValue args)
     {
         var list = args[Keywords.List].ToListValue();
         return list.ToListValue().Count.ToValue();
     }
 
-    Value ListAdd(IEnvironment env, DictionaryValue args)
+    Value ListAdd(IEnv env, DictionaryValue args)
     {
         var list = args[Keywords.List].ToListValue();
         var values = args[Keywords.Values].ToListValue();
@@ -57,7 +57,7 @@ public class CollectionsLibrary : ILibrary
     // TODO:  list sort key?     e.g.  list $l sort {list $$ get 1}
     // TODO:  list reverse
 
-    Value ListGet(IEnvironment env, DictionaryValue args)
+    Value ListGet(IEnv env, DictionaryValue args)
     {
         var list = args[Keywords.List].ToListValue();
         var index = args[Keywords.Index].ToIndexOf(list);
@@ -65,7 +65,7 @@ public class CollectionsLibrary : ILibrary
         return list[index];
     }
 
-    Value ListSet(IEnvironment env, DictionaryValue args)
+    Value ListSet(IEnv env, DictionaryValue args)
     {
         var list = args[Keywords.List].ToListValue();
         var index = args[Keywords.Index].ToIndexOf(list);

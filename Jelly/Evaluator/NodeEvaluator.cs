@@ -9,7 +9,7 @@ internal class NodeEvaluator : IEvaluator
         _evaluators.Add(nodeType, evaluator);
     }
 
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         var type = node.GetStringOrNull(Keywords.Type);
 

@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 public class ForListEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         var iteratorName = GetIteratorName(env, node);
         var indexName = GetIndexName(env, node);
@@ -14,7 +14,7 @@ public class ForListEvaluator : IEvaluator
         return RunLoop(env, iteratorName, indexName, list, body);
     }
 
-    static Value RunLoop(IEnvironment env, string iteratorName, string? indexName, ListValue list, DictionaryValue body)
+    static Value RunLoop(IEnv env, string iteratorName, string? indexName, ListValue list, DictionaryValue body)
     {
         var result = Value.Empty;
         var index = 1;
@@ -42,17 +42,17 @@ public class ForListEvaluator : IEvaluator
         return result;
     }
 
-    static string GetIteratorName(IEnvironment env, DictionaryValue node)
+    static string GetIteratorName(IEnv env, DictionaryValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.ItValue)).ToString();
     }
 
-    static string? GetIndexName(IEnvironment env, DictionaryValue node)
+    static string? GetIndexName(IEnv env, DictionaryValue node)
     {
         return node.ContainsKey(Keywords.ItIndex) ? env.Evaluate(node.GetNode(Keywords.ItIndex)).ToString() : null;
     }
 
-    static ListValue GetList(IEnvironment env, DictionaryValue node)
+    static ListValue GetList(IEnv env, DictionaryValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.List)).ToListValue();
     }
@@ -65,7 +65,7 @@ public class ForListEvaluator : IEvaluator
         }
     }
 
-    static void PushLoopBodyScope(IEnvironment env, string iteratorName, string? indexName, Value value, int index)
+    static void PushLoopBodyScope(IEnv env, string iteratorName, string? indexName, Value value, int index)
     {
         env.PushScope();
         env.CurrentScope.DefineVariable(iteratorName, value);

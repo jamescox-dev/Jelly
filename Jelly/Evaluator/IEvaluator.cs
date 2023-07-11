@@ -2,5 +2,5 @@ namespace Jelly.Evaluator;
 
 public interface IEvaluator
 {
-    Value Evaluate(IEnvironment env, DictionaryValue node);
+    Value Evaluate(IEnv env, DictionaryValue node);
 }

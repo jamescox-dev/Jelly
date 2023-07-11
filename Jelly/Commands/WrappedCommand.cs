@@ -27,7 +27,7 @@ public class WrappedCommand : CommandBase
         var isFirstArg = true;
         foreach (var param in _wrappedDelegate.Method.GetParameters())
         {
-            if (isFirstArg && param.ParameterType == typeof(IEnvironment))
+            if (isFirstArg && param.ParameterType == typeof(IEnv))
             {
                 hasEnvArg = true;
             }
@@ -65,7 +65,7 @@ public class WrappedCommand : CommandBase
     }
 
     // TODO:  In need of some serious refactoring.
-    public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
+    public override Value Invoke(IEnv env, ListValue unevaluatedArgs)
     {
         EnsureArgCountIsValid(env, unevaluatedArgs);
         var args = EvaluateArgs(env, unevaluatedArgs);
@@ -105,7 +105,7 @@ public class WrappedCommand : CommandBase
         return _typeMarshaller.Marshal(result);
     }
 
-    void EnsureArgCountIsValid(IEnvironment env, ListValue unevaluatedArgs)
+    void EnsureArgCountIsValid(IEnv env, ListValue unevaluatedArgs)
     {
         if (unevaluatedArgs.Count < _minPositionalArgCount)
         {
@@ -124,7 +124,7 @@ public class WrappedCommand : CommandBase
     }
 
     // TODO:  This should be a standard error.
-    Error UnexpectedArgError(IEnvironment env, ListValue unevaluatedArgs)
+    Error UnexpectedArgError(IEnv env, ListValue unevaluatedArgs)
     {
         var argValue = env.Evaluate(unevaluatedArgs[_minPositionalArgCount].ToNode());
         throw Error.Arg($"Unexpected argument '{argValue}'.");

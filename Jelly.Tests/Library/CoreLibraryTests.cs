@@ -6,7 +6,7 @@ using Jelly.Runtime;
 public class CoreLibraryTests
 {
     CoreLibrary _lib = null!;
-    Environment _env = null!;
+    Env _env = null!;
 
     [SetUp]
     public virtual void Setup()
@@ -612,7 +612,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
             scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
-            var env = new Environment(scope);
+            var env = new Env(scope);
 
             var result = lsDefCmd.Invoke(env, new ListValue());
 
@@ -629,7 +629,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
             scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
-            var env = new Environment(scope);
+            var env = new Env(scope);
 
             var result = lsDefCmd.Invoke(env, new ListValue(Node.Literal(true)));
 
@@ -654,7 +654,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineVariable("c", Value.Empty);
             scope.DefineVariable("a", Value.Empty);
-            var env = new Environment(scope);
+            var env = new Env(scope);
 
             var result = lsVarCmd.Invoke(env, new ListValue());
 
@@ -671,7 +671,7 @@ public class CoreLibraryTests
             var scope = new Scope(outerScope);
             scope.DefineVariable("c", Value.Empty);
             scope.DefineVariable("a", Value.Empty);
-            var env = new Environment(scope);
+            var env = new Env(scope);
 
             var result = lsVarCmd.Invoke(env, new ListValue(Node.Literal(true)));
 
@@ -690,7 +690,7 @@ public class CoreLibraryTests
         public void WithNoArgumentsAnArgErrorIsThrow()
         {
             var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue();
 
             raiseCmd.Invoking(c => c.Invoke(env, args)).Should()
@@ -701,7 +701,7 @@ public class CoreLibraryTests
         public void WithOneArgumentsARaiseNodeIsReturnedWithTheCorrectType()
         {
             var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(Node.Literal("/error/type"));
 
             var result = raiseCmd.InvokeMacroDelegate(env, args);
@@ -716,7 +716,7 @@ public class CoreLibraryTests
         public void WithTwoArgumentsARaiseNodeIsReturnedWithTheCorrectTypeAndMessage()
         {
             var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."));
 
             var result = raiseCmd.InvokeMacroDelegate(env, args);
@@ -731,7 +731,7 @@ public class CoreLibraryTests
         public void WithThreeArgumentsARaiseNodeIsReturnedWithTheCorrectTypeMessageAndValue()
         {
             var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."), Node.Literal("value"));
 
             var result = raiseCmd.InvokeMacroDelegate(env, args);
@@ -746,7 +746,7 @@ public class CoreLibraryTests
         public void WithMoreThanThreeArgumentsAnArgErrorIsThrow()
         {
             var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(Value.Empty, Value.Empty, Value.Empty, Node.Literal("boo"));
 
             raiseCmd.Invoking(c => c.Invoke(env, args)).Should()
@@ -765,7 +765,7 @@ public class CoreLibraryTests
         public void WithoutArgumentsARaiseNodeWithAnEmptyValueIsReturned()
         {
             var returnCmd = (SimpleMacro)_env.GlobalScope.GetCommand("return");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue();
 
             var result = returnCmd.InvokeMacroDelegate(env, args);
@@ -781,7 +781,7 @@ public class CoreLibraryTests
         public void WithOneArgumentARaiseNodeIsReturnedWithTheCorrectReturnValue()
         {
             var returnCmd = (SimpleMacro)_env.GlobalScope.GetCommand("return");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(Node.Variable("name"));
 
             var result = returnCmd.InvokeMacroDelegate(env, args);
@@ -797,7 +797,7 @@ public class CoreLibraryTests
         public void WithMoreThanOneArgumentAnErrorIsThrown()
         {
             var returnCmd = (SimpleMacro)_env.GlobalScope.GetCommand("return");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(Node.Variable("name"), Node.Literal("boo"));
 
             returnCmd.Invoking(c => c.Invoke(env, args)).Should()
@@ -1032,7 +1032,7 @@ public class CoreLibraryTests
         public void ADefineVariableIsReturnedWithTheCorrectDetails()
         {
             var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(
                 Node.Literal("pi"),
                 Node.Literal("="),
@@ -1047,7 +1047,7 @@ public class CoreLibraryTests
         public void WhenNoValueIsSpecifiedAnEmptyValueIsUsed()
         {
             var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(
                 Node.Literal("pi".ToValue()),
                 Node.Literal("=".ToValue()));
@@ -1061,7 +1061,7 @@ public class CoreLibraryTests
         public void TheVarCommandDefinesAVariableWithTheEmptyValueWhenOneArgumentsIsPassed()
         {
             var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(
                 Node.Literal("pi".ToValue()));
 
@@ -1074,7 +1074,7 @@ public class CoreLibraryTests
         public void WhenTheFirstArgumentIsAVariableNodeItsNotEvaluatedAndItsNameIsUsed()
         {
             var varCmd = (SimpleMacro)_env.GlobalScope.GetCommand("var");
-            var env = new Environment();
+            var env = new Env();
             var args = new ListValue(
                 Node.Variable("pi"),
                 Node.Literal("=".ToValue()),

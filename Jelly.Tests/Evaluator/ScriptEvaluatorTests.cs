@@ -45,7 +45,7 @@ public class ScriptEvaluatorTests : EvaluatorTestsBase
         _output = new();
 
         var command = new Mock<ICommand>();
-        command.Setup(m => m.Invoke(Environment, It.IsAny<ListValue>())).Returns<IEnvironment, ListValue>((env, args) =>
+        command.Setup(m => m.Invoke(Environment, It.IsAny<ListValue>())).Returns<IEnv, ListValue>((env, args) =>
         {
             var value = env.Evaluate(args[0].ToNode());
             _output.Add(value.ToString());

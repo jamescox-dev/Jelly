@@ -6,7 +6,7 @@ public class VariableGroupCommand : GroupCommand
     {
     }
 
-    public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
+    public override Value Invoke(IEnv env, ListValue unevaluatedArgs)
     {
         if (unevaluatedArgs.Count == 0)
         {

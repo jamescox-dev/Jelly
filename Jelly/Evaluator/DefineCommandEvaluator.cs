@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 internal class DefineCommandEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         var name = env.Evaluate(node.GetNode(Keywords.Name)).ToString();
         var argNames = node.GetList(Keywords.ArgNames);
@@ -22,7 +22,7 @@ internal class DefineCommandEvaluator : IEvaluator
     }
 
     static List<string> GetRequiredArgNames(
-        IEnvironment env, ListValue argNames, int numberOfArgsWithDefaults, HashSet<string> usedArgNames)
+        IEnv env, ListValue argNames, int numberOfArgsWithDefaults, HashSet<string> usedArgNames)
     {
         var requiredArgs = new List<string>();
         foreach (var argName in argNames.Take<Value>(argNames.Count - numberOfArgsWithDefaults))
@@ -36,7 +36,7 @@ internal class DefineCommandEvaluator : IEvaluator
     }
 
     static List<(string, Value)> GetOptionalArgs(
-        IEnvironment env, ListValue argNames, ListValue argDefaults, HashSet<string> usedArgNames)
+        IEnv env, ListValue argNames, ListValue argDefaults, HashSet<string> usedArgNames)
     {
         var optionalArgs = new List<(string, Value)>();
         foreach (var (argName, argValue) in argNames.Skip<Value>(argNames.Count - argDefaults.Count).Zip(argDefaults))
@@ -50,7 +50,7 @@ internal class DefineCommandEvaluator : IEvaluator
         return optionalArgs;
     }
 
-    static string? GetRestArgumentName(IEnvironment env, DictionaryValue? restArgNameNode, HashSet<string> usedArgNames)
+    static string? GetRestArgumentName(IEnv env, DictionaryValue? restArgNameNode, HashSet<string> usedArgNames)
     {
         if (restArgNameNode is not null)
         {

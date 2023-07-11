@@ -6,7 +6,7 @@ internal class ScriptEvaluator : IEvaluator
 {
     static readonly StringValue CommandsKeyword = new StringValue("commands");
 
-    public Value Evaluate(IEnvironment env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictionaryValue node)
     {
         var commands = node.GetList(Keywords.Commands);
 

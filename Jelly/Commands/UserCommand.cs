@@ -31,7 +31,7 @@ public class UserCommand : CommandBase
         _body = body;
     }
 
-    public override Value Invoke(IEnvironment env, ListValue unevaluatedArgs)
+    public override Value Invoke(IEnv env, ListValue unevaluatedArgs)
     {
         return env.RunInNestedScope(() =>
         {
@@ -46,7 +46,7 @@ public class UserCommand : CommandBase
         });
     }
 
-    void DefineRequiredArgs(IEnvironment env, ListValue args)
+    void DefineRequiredArgs(IEnv env, ListValue args)
     {
         foreach (var (argName, argValue) in _requiredArgNames.Zip(args.Take(args.Count)))
         {
@@ -54,7 +54,7 @@ public class UserCommand : CommandBase
         }
     }
 
-    void DefineOptionalArgs(IEnvironment env, ListValue args)
+    void DefineOptionalArgs(IEnv env, ListValue args)
     {
         var i = _requiredArgNames.Length;
         foreach (var (argName, defaultValue) in _optionalArgs)
@@ -63,7 +63,7 @@ public class UserCommand : CommandBase
         }
     }
 
-    void DefineRestArg(IEnvironment env, ListValue args)
+    void DefineRestArg(IEnv env, ListValue args)
     {
         if (_restArgName is not null)
         {
@@ -72,7 +72,7 @@ public class UserCommand : CommandBase
         }
     }
 
-    void EnsureArgCountIsValid(IEnvironment env, ListValue args)
+    void EnsureArgCountIsValid(IEnv env, ListValue args)
     {
         if (args.Count < _requiredArgNames.Length)
         {
@@ -91,13 +91,13 @@ public class UserCommand : CommandBase
     }
 
     // TODO:  This should be a standard error.
-    Error UnexpectedArgError(IEnvironment env, ListValue unevaluatedArgs)
+    Error UnexpectedArgError(IEnv env, ListValue unevaluatedArgs)
     {
         var argValue = env.Evaluate(unevaluatedArgs[_requiredArgNames.Length + _optionalArgs.Length].ToNode());
         throw Error.Arg($"Unexpected argument '{argValue}'.");
     }
 
-    Value EvaluateBody(IEnvironment env)
+    Value EvaluateBody(IEnv env)
     {
         try
         {
