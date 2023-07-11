@@ -1,7 +1,6 @@
 var $count = {input "Enter count: "}
 
-var $n = 1
-while ($n <= $count) {
+for $n = 1 to $count {
     if (($n % 3 = 0) and ($n % 5 = 0)) {
         print FizzBuzz
     } elif ($n % 3 = 0) {

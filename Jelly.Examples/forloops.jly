@@ -1,10 +1,47 @@
 print List iteration:
-for index value in [a b c] {
+for $value in [a b c] {
     print $value
 }
 print
 
 print List iteration with index:
-for index value in [one two three] {
-    print "{$index}:  {$value}"
+for $index $value in [one two three] {
+    print '{$index}:  {$value}'
 }
+print
+
+print Dict iteration:
+for $key of [a 1 b 2 c 3] {
+    print $key
+}
+print
+
+print Dict iteration with values:
+for $key $value of [a 1 b 2 c 3] {
+    print '{$key}:  {$value}'
+}
+print
+
+print Range iteration:
+for $i = 1 to 3 {
+    print $i
+}
+print
+
+print Range iteration with step:
+for $i = 2 to 6 step 2{
+    print $i
+}
+print
+
+print Reverse range iteration:
+for $i = 3 to 1 {
+    print $i
+}
+print
+
+print Reverse range iteration with step:
+for $i = 300 to 100 step -100 {
+    print $i
+}
+print

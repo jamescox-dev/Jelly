@@ -48,20 +48,47 @@ public class ExampleTests
     {
         foreach (var scriptFileName in Directory.GetFiles(ExamplesDir))
         {
-            var inFileName = Path.Join(ExamplesDir, "testdata", Path.GetFileName(scriptFileName), "in.txt");
-            var outFileName = Path.Join(ExamplesDir, "testdata", Path.GetFileName(scriptFileName), "out.txt");
-            if (scriptFileName.EndsWith(".jly") && File.Exists(outFileName))
+            var testDataDir = Path.Join(ExamplesDir, "testdata", Path.GetFileName(scriptFileName));
+            if (scriptFileName.EndsWith(".jly") && Directory.Exists(testDataDir))
             {
                 var script = File.ReadAllText(scriptFileName);
-                var input = string.Empty;
-                var expectedOutput = File.ReadAllText(outFileName);
-                if (File.Exists(inFileName))
+
+                if (TryGetTestData(testDataDir, out var input, out var output))
                 {
-                    input = File.ReadAllText(inFileName);
+                    yield return new[] { script, input, output };
                 }
-                yield return new[] { script, input, expectedOutput };
+
+                foreach (var testCaseDirs in Directory.GetDirectories(testDataDir))
+                {
+                    if (TryGetTestData(testCaseDirs, out var testCaseInput, out var testCaseOutput))
+                    {
+                        yield return new[] { script, testCaseInput, testCaseOutput };
+                    }
+                }
             }
         }
+    }
+
+    static bool TryGetTestData(string path, out string input, out string output)
+    {
+        input = string.Empty;
+        output = null!;
+
+        var outFileName = Path.Join(path, "out.txt");
+        if (File.Exists(outFileName))
+        {
+            output = File.ReadAllText(outFileName);
+
+            var inFileName = Path.Join(path, "in.txt");
+            if (File.Exists(inFileName))
+            {
+                input = File.ReadAllText(inFileName);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
 
@@ -91,12 +118,10 @@ class StringShellWriter : IWriter
     public void Write(string message)
     {
         Output.Append(message);
-        //Console.Write(message);
     }
 
     public void WriteLine(string message)
     {
         Output.AppendLine(message);
-        //Console.WriteLine(message);
     }
 }
