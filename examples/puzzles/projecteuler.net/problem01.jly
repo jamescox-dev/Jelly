@@ -1,0 +1,10 @@
+def is_multiple_of_3_or_5 $n ($n % 3 = 0 or $n % 5 = 0)
+
+var $total = 0
+for $n = 1 to 999 {
+    if (is_multiple_of_3_or_5($n)) {
+        inc $total $n
+    }
+}
+
+print $total

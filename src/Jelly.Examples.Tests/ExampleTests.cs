@@ -9,9 +9,11 @@ using Jelly.Shell;
 [TestFixture]
 public class ExampleTests
 {
-    static readonly string ExamplesDir = Path.Join("..", "..", "..", "..", "Jelly.Examples");
+    static readonly string ExamplesDir = Path.Join("..", "..", "..", "..", "..", "examples");
 
-    [TestCaseSource(nameof(Examples))]
+    static readonly string TestCaseDataDir = Path.Join("..", "..", "..", "TestCases");
+
+    [TestCaseSource(nameof(ExampleTestCases))]
     public void TestExample(string script, string input, string expectedOutput)
     {
         var writer = new StringShellWriter();
@@ -44,23 +46,23 @@ public class ExampleTests
         writer.Output.ToString().Should().Be(expectedOutput);
     }
 
-    static IEnumerable<object[]> Examples()
+    static IEnumerable<object[]> ExampleTestCases()
     {
-        foreach (var scriptFileName in Directory.GetFiles(ExamplesDir))
+        foreach (var scriptFileName in Directory.GetFiles(ExamplesDir, "*.jly", SearchOption.AllDirectories))
         {
-            var testDataDir = Path.Join(ExamplesDir, "testdata", Path.GetFileName(scriptFileName));
-            if (scriptFileName.EndsWith(".jly") && Directory.Exists(testDataDir))
+            var testDataDir = Path.Join(TestCaseDataDir, Path.GetRelativePath(ExamplesDir, scriptFileName));
+            if (Directory.Exists(testDataDir))
             {
                 var script = File.ReadAllText(scriptFileName);
 
-                if (TryGetTestData(testDataDir, out var input, out var output))
+                if (TryGetTestCaseData(testDataDir, out var input, out var output))
                 {
                     yield return new[] { script, input, output };
                 }
 
                 foreach (var testCaseDirs in Directory.GetDirectories(testDataDir))
                 {
-                    if (TryGetTestData(testCaseDirs, out var testCaseInput, out var testCaseOutput))
+                    if (TryGetTestCaseData(testCaseDirs, out var testCaseInput, out var testCaseOutput))
                     {
                         yield return new[] { script, testCaseInput, testCaseOutput };
                     }
@@ -69,7 +71,7 @@ public class ExampleTests
         }
     }
 
-    static bool TryGetTestData(string path, out string input, out string output)
+    static bool TryGetTestCaseData(string path, out string input, out string output)
     {
         input = string.Empty;
         output = null!;
@@ -77,12 +79,12 @@ public class ExampleTests
         var outFileName = Path.Join(path, "out.txt");
         if (File.Exists(outFileName))
         {
-            output = File.ReadAllText(outFileName);
+            output = File.ReadAllText(outFileName).ReplaceLineEndings();
 
             var inFileName = Path.Join(path, "in.txt");
             if (File.Exists(inFileName))
             {
-                input = File.ReadAllText(inFileName);
+                input = File.ReadAllText(inFileName).ReplaceLineEndings();
             }
 
             return true;
