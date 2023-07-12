@@ -4,7 +4,35 @@ public class UnsafeIoLibraryProvider : IIoLibraryProvider
 {
     public void Copy(string src, string dst)
     {
-        // TODO:  Implement this...
+        if (Exists(src))
+        {
+            if (IsDir(src))
+            {
+                if (!Exists(dst))
+                {
+                    Directory.CreateDirectory(dst);
+                }
+                foreach (var item in ListDir(src))
+                {
+                    Copy(System.IO.Path.Join(src, item), System.IO.Path.Join(dst, item));
+                }
+            }
+            else
+            {
+                try
+                {
+                    File.Copy(src, dst, true);
+                }
+                catch
+                {
+                    throw Error.Io($"Unable to copy '{src}' to '{dst}'.");
+                }
+            }
+        }
+        else
+        {
+            throw Error.Io($"Unable to copy '{src}' to '{dst}'.");
+        }
     }
 
     public void Delete(string path, bool recursive)
