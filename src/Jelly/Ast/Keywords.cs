@@ -45,6 +45,7 @@ public static class Keywords
     public static readonly StringValue Script = new("script");
     public static readonly StringValue Start = new("start");
     public static readonly StringValue Step = new("step");
+    public static readonly StringValue Str = new("str");
     public static readonly StringValue SubExpressions = new("subexpressions");
     public static readonly StringValue Then = new("then");
     public static readonly StringValue Try = new("try");

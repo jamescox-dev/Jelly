@@ -8,6 +8,9 @@ public class CollectionsLibrary : ILibrary
     readonly static IArgParser ListGetParser = new StandardArgParser(new Arg("list"), new Arg("index"));
     readonly static IArgParser ListSetParser = new StandardArgParser(new Arg("list"), new Arg("index"), new Arg("value"));
 
+    readonly static IArgParser DictConvertArgParser = new StandardArgParser(new Arg("dict"));
+    readonly static IArgParser DictGetArgParser = new StandardArgParser(new Arg("dict"), new Arg("key"));
+    
     public void LoadIntoScope(IScope scope)
     {
         var typeMarshaller = new TypeMarshaller();
@@ -26,6 +29,11 @@ public class CollectionsLibrary : ILibrary
         listVarCmd.AddCommand("set", listSetCmd);
         scope.DefineCommand("list", listValCmd);
         scope.DefineCommand("list!", listVarCmd);
+
+        var dictValCmd = new ValueGroupCommand("dict", "dict", "convert");
+        dictValCmd.AddCommand("convert", new ArgParsedCommand("dict convert", DictConvertArgParser, DictConvert));
+        dictValCmd.AddCommand("get", new ArgParsedCommand("dict get", DictGetArgParser, DictGet));
+        scope.DefineCommand("dict", dictValCmd);
     }
 
     Value ListConvert(IEnv env, DictionaryValue args)
@@ -74,7 +82,11 @@ public class CollectionsLibrary : ILibrary
         return list.SetItem(index, value);
     }
 
-    // TODO: dict convert
+    Value DictConvert(IEnv env, DictionaryValue args)
+    {
+        return args[Keywords.Dict].ToDictionaryValue();
+    }
+
     // TODO: dict len
     // TODO: dict add (key value)...
     // TODO: dict addall dicts...
@@ -82,4 +94,14 @@ public class CollectionsLibrary : ILibrary
     // TODO: dict delval values...
     // TODO: dict contains keys...
     // TODO: dict containsvalue values...
+
+    Value DictGet(IEnv env, DictionaryValue args)
+    {
+        var dict = args[Keywords.Dict].ToDictionaryValue();
+        var key = args[Keywords.Key];
+
+        return dict[key];
+    }
+
+    // TODO: dict set (key value)...
 }

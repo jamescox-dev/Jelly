@@ -22,7 +22,9 @@ public static class ValueExtensions
     public static DictionaryValue ToDictionaryValue(this IEnumerable<Value> items) =>
         new(items);
 
-    public static int ToIndexOf(this Value indexValue, ListValue ofList)
+    public static int ToIndexOf(this Value indexValue, ListValue ofList) => ToIndexOfLength(indexValue, ofList.Count);
+
+    public static int ToIndexOfLength(this Value indexValue, int length)
     {
         var indexDouble = indexValue.ToDouble();
 
@@ -33,7 +35,7 @@ public static class ValueExtensions
             {
                 throw new ValueError("index must not be zero.");
             }
-            return index > 0 ? index - 1 : ofList.Count + index;
+            return index > 0 ? index - 1 : length + index;
         }
 
         throw new ValueError("index must be a finite number.");

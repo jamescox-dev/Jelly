@@ -1,5 +1,24 @@
-var $KEYPAD_LETTERS = [
+var $KEYPAD_LETTERS = {dict [
     2 abc 3 def 4 ghi 5 jkl 6 mno 7 pqrs 8 tuv 9 wxyz 0 ' '
-]
+]}
 
-print {dict $KEYPAD_LETTERS get 2}
+def get_keypad_letter $key $times {
+    var $letters_for_key = {dict $KEYPAD_LETTERS get $key}
+    return {str $letters_for_key get $times}
+}
+
+var $message = []
+
+while true {
+    var $keypress = {input '> '}
+    if ({str $keypress strip} eq '') {
+        break
+    }
+    
+    var $key = {list $keypress get 1}
+    var $times = {list $keypress get 2}
+    
+    list! $message add {get_keypad_letter $key $times}
+}
+
+print {str '' joinall $message}
