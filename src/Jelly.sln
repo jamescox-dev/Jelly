@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly", "src\Jelly\Jelly.csproj", "{20546136-C035-4BD8-B95E-454D5AFA041A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly", "Jelly\Jelly.csproj", "{20546136-C035-4BD8-B95E-454D5AFA041A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Tests", "src\Jelly.Tests\Jelly.Tests.csproj", "{9EAE96C1-B9FB-402B-B2E9-D5595628BF17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Tests", "Jelly.Tests\Jelly.Tests.csproj", "{9EAE96C1-B9FB-402B-B2E9-D5595628BF17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Shell", "src\Jelly.Shell\Jelly.Shell.csproj", "{2C79A2F3-7BDD-4A39-BA90-E0814E478950}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Shell", "Jelly.Shell\Jelly.Shell.csproj", "{2C79A2F3-7BDD-4A39-BA90-E0814E478950}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Shell.Tests", "src\Jelly.Shell.Tests\Jelly.Shell.Tests.csproj", "{0E8A0415-08B8-4AC0-B7B2-47567B1806C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Shell.Tests", "Jelly.Shell.Tests\Jelly.Shell.Tests.csproj", "{0E8A0415-08B8-4AC0-B7B2-47567B1806C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Experimental", "src\Jelly.Experimental\Jelly.Experimental.csproj", "{18A212B9-0140-4D00-A569-43622A27E0B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Experimental", "Jelly.Experimental\Jelly.Experimental.csproj", "{18A212B9-0140-4D00-A569-43622A27E0B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Examples.Tests", "src\Jelly.Examples.Tests\Jelly.Examples.Tests.csproj", "{A10E978A-BEC7-4547-9955-631E4AB195AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jelly.Examples.Tests", "Jelly.Examples.Tests\Jelly.Examples.Tests.csproj", "{A10E978A-BEC7-4547-9955-631E4AB195AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
