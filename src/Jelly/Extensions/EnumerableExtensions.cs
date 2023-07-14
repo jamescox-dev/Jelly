@@ -1,7 +1,6 @@
-namespace Jelly;
+namespace Jelly.Extensions;
 
-
-public static class EnumerableExtensions
+internal static class EnumerableExtensions
 {
     public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? e)
     {

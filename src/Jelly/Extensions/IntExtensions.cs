@@ -1,6 +1,6 @@
-namespace Jelly;
+namespace Jelly.Extensions;
 
-public static class Int32Extensions
+internal static class Int32Extensions
 {
     public static string WasWere(this int i)
     {

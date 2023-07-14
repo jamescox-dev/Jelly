@@ -1,6 +1,6 @@
-namespace Jelly;
+namespace Jelly.Extensions;
 
-public static class DictionaryExtensions
+internal static class DictionaryExtensions
 {
     public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dict, IEnumerable<KeyValuePair<TKey, TValue>> items)
     {
