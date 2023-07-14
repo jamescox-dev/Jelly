@@ -9,12 +9,12 @@ using Jelly.Shell;
 [TestFixture]
 public class ExampleTests
 {
-    static readonly string ExamplesDir = Path.Join("..", "..", "..", "..", "..", "examples");
+    static readonly string ExamplesDir = Path.GetFullPath(Path.Join("..", "..", "..", "..", "..", "examples"));
 
-    static readonly string TestCaseDataDir = Path.Join("..", "..", "..", "TestCases");
+    static readonly string TestCaseDataDir = Path.GetFullPath(Path.Join("..", "..", "..", "TestCases"));
 
     [TestCaseSource(nameof(ExampleTestCases))]
-    public void TestExample(string script, string input, string expectedOutput)
+    public void TestExample(string workingDir, string script, string input, string expectedOutput)
     {
         var writer = new StringShellWriter();
         var reader = new StringShellReader(input, writer);
@@ -40,6 +40,7 @@ public class ExampleTests
                 },
                 new ShellConfig(),
                 historyManager);
+        Directory.SetCurrentDirectory(workingDir);
 
         shell.RunScript(script);
 
@@ -57,14 +58,14 @@ public class ExampleTests
 
                 if (TryGetTestCaseData(testDataDir, out var input, out var output))
                 {
-                    yield return new[] { script, input, output };
+                    yield return new[] { Path.GetDirectoryName(scriptFileName) ?? string.Empty, script, input, output };
                 }
 
                 foreach (var testCaseDirs in Directory.GetDirectories(testDataDir))
                 {
                     if (TryGetTestCaseData(testCaseDirs, out var testCaseInput, out var testCaseOutput))
                     {
-                        yield return new[] { script, testCaseInput, testCaseOutput };
+                        yield return new[] { Path.GetDirectoryName(scriptFileName) ?? string.Empty, script, testCaseInput, testCaseOutput };
                     }
                 }
             }

@@ -7,18 +7,15 @@ def get_keypad_letter $key $times {
     return {str $letters_for_key get $times}
 }
 
-var $message = []
+var $input = {io readall input.txt}
 
-while true {
-    var $keypress = {input '> '}
-    if ({str $keypress strip} eq '') {
-        break
-    }
-    
-    var $key = {list $keypress get 1}
-    var $times = {list $keypress get 2}
-    
-    list! $message add {get_keypad_letter $key $times}
+var $message = []
+for $i = 1 to {list $input len} step 2 {
+    var $key = {list $input get $i}
+    var $times = {list $input get ($i + 1)}
+    var $letter = {get_keypad_letter $key $times}
+
+    list! $message add $letter
 }
 
 print {str '' joinall $message}
