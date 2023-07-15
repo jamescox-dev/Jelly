@@ -135,7 +135,7 @@ public class ForListEvaluatorTests : EvaluatorTestsBase
         _recordedValues = new();
         _testCommand = new TestCommand();
         _testCommand.ReturnValue = "Result!".ToValue();
-        _recordCommand = new SimpleCommand((scope, args) => {
+        _recordCommand = new SimpleCommand((args) => {
             if (args.Count == 1)
             {
                 _recordedValues.Add(args[0]);

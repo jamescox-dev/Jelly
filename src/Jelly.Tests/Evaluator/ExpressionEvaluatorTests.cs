@@ -7,7 +7,7 @@ public class ExpressionEvaluatorTests : EvaluatorTestsBase
     public void AnExpressionEvaluatesEachOfItsSubExpressionsNode()
     {
         var invocations = 0;
-        var testCommand = new SimpleCommand((_, _) => { ++invocations; return invocations.ToValue(); });
+        var testCommand = new SimpleCommand((_) => { ++invocations; return invocations.ToValue(); });
         Environment.GlobalScope.DefineCommand("test", testCommand);
         var expr = Node.Expression
         (Node.Command(Node.Literal("test"), new ListValue()),

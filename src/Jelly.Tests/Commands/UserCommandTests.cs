@@ -120,11 +120,11 @@ public class UserCommandTests
     public void Setup()
     {
         _env = new();
-        var testCommand = new SimpleCommand((env, _) =>
+        var testCommand = new SimpleMacro((env, _) =>
         {
             _passedEnv = env;
             _passedScope = env.CurrentScope;
-            return "test-command-result".ToValue();
+            return Node.Literal("test-command-result");
         });
         _env.GlobalScope.DefineCommand("test", testCommand);
 

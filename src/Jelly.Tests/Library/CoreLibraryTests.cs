@@ -607,11 +607,11 @@ public class CoreLibraryTests
         {
             var lsDefCmd = _env.GlobalScope.GetCommand("lsdef");
             var outerScope = new Scope();
-            outerScope.DefineCommand("d", new SimpleCommand((_, _) => Value.Empty));
-            outerScope.DefineCommand("b", new SimpleCommand((_, _) => Value.Empty));
+            outerScope.DefineCommand("d", new SimpleCommand((_) => Value.Empty));
+            outerScope.DefineCommand("b", new SimpleCommand((_) => Value.Empty));
             var scope = new Scope(outerScope);
-            scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
-            scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
+            scope.DefineCommand("c", new SimpleCommand((_) => Value.Empty));
+            scope.DefineCommand("a", new SimpleCommand((_) => Value.Empty));
             var env = new Env(scope);
 
             var result = lsDefCmd.Invoke(env, new ListValue());
@@ -624,11 +624,11 @@ public class CoreLibraryTests
         {
             var lsDefCmd = _env.GlobalScope.GetCommand("lsdef");
             var outerScope = new Scope();
-            outerScope.DefineCommand("d", new SimpleCommand((_, _) => Value.Empty));
-            outerScope.DefineCommand("b", new SimpleCommand((_, _) => Value.Empty));
+            outerScope.DefineCommand("d", new SimpleCommand((_) => Value.Empty));
+            outerScope.DefineCommand("b", new SimpleCommand((_) => Value.Empty));
             var scope = new Scope(outerScope);
-            scope.DefineCommand("c", new SimpleCommand((_, _) => Value.Empty));
-            scope.DefineCommand("a", new SimpleCommand((_, _) => Value.Empty));
+            scope.DefineCommand("c", new SimpleCommand((_) => Value.Empty));
+            scope.DefineCommand("a", new SimpleCommand((_) => Value.Empty));
             var env = new Env(scope);
 
             var result = lsDefCmd.Invoke(env, new ListValue(Node.Literal(true)));

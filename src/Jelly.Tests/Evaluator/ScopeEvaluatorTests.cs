@@ -17,7 +17,7 @@ public class ScopeEvaluatorTests : EvaluatorTestsBase
     public void EvaluatingAScopeNodeEvaluatesItsBodyWithANewScopeWithTheCurrentScopeSetAsItsOuterScope()
     {
         IScope? passedScope = null;
-        var testCommand = new SimpleCommand((env, _) => { passedScope = env.CurrentScope; return Value.Empty; });
+        var testCommand = new SimpleMacro((env, _) => { passedScope = env.CurrentScope; return Node.Literal(Value.Empty); });
         Environment.GlobalScope.DefineCommand("test", testCommand);
         var scopeNode = Node.Scope(Node.Command(Node.Literal("test"), new ListValue()));
 

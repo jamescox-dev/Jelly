@@ -6,16 +6,14 @@ using Jelly.Runtime;
 public class SimpleCommandTests
 {
     [Test]
-    public void TheDelegateIsCalledWithTheCurrentEnvironmentAndEachOfItsArgumentsEvaluatedAndTheResultIsReturned()
+    public void TheDelegateIsCalledWithTheItsArgumentsEvaluatedAndTheResultIsReturned()
     {
         var command = new SimpleCommand(TestCommand);
         var env = new Env();
         var args = new ListValue(Node.Literal(1), Node.Literal(2), Node.Literal(3));
-        IEnv? passedEnv = null;
         ListValue? passedArgs = null;
-        Value TestCommand(IEnv env, ListValue args)
+        Value TestCommand(ListValue args)
         {
-            passedEnv = env;
             passedArgs = args;
             return 42.ToValue();
         }
@@ -23,7 +21,6 @@ public class SimpleCommandTests
         var result = command.Invoke(env, args);
 
         result.Should().Be(42.ToValue());
-        passedEnv.Should().Be(env);
         ((IEnumerable<Value>?)passedArgs).Should().Equal(1.ToValue(), 2.ToValue(), 3.ToValue());
     }
 }
