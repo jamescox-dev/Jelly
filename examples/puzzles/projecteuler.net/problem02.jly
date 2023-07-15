@@ -1,0 +1,17 @@
+var $evan_value_sum = 0
+
+var $prev1 = 1
+var $prev2 = 1
+var $current = 0
+while ($current <= 4_000_000) {
+    $current = ($prev2 + $prev1)
+
+    if ($current % 2 = 0) {
+        inc $evan_value_sum $current
+    }
+
+    $prev2 = $prev1
+    $prev1 = $current
+}
+
+print $evan_value_sum
