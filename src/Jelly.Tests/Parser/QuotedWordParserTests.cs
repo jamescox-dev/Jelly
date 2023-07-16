@@ -80,7 +80,7 @@ public class QuotedWordParserTests
         var scanner = new Scanner(@"'hello, {whoami} how do you do'");
         var expectedNode = Node.Composite(0, 31,
             Node.Literal("hello, ", 1, 8),
-            Node.Script(Node.Command(Node.Literal("whoami", 9, 15), new ListValue())),
+            Node.Script(Node.Command(Node.Literal("whoami", 9, 15), new ListValue(), 9, 15)),
             Node.Literal(" how do you do", 16, 30));
 
         var node = parser.Parse(scanner);

@@ -64,6 +64,23 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyACommandNodeCanHaveItSourcePositionSpecified()
+    {
+        var name = Node.Literal("greet".ToValue());
+        var args = new ListValue("Vic".ToValue(), "Bob".ToValue());
+
+        var node = Node.Command(name, args, 3, 141);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "command".ToValue(),
+            "name".ToValue(), name,
+            "args".ToValue(), args,
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 3.ToValue(),
+                "end".ToValue(), 141.ToValue())));
+    }
+
+    [Test]
     public void AScriptNodeCanBeCreatedWithTheCorrectAttributes()
     {
         var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue());

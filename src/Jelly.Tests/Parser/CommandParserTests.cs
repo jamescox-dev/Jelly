@@ -4,7 +4,7 @@ namespace Jelly.Parser.Tests;
 public class CommandParserTests
 {
     [Test]
-    public void ACommandIsParsedFromSourceWhenItContainsOnlyOneWords()
+    public void ACommandIsParsedFromSourceWhenItContainsOnlyOneWord()
     {
         var parser = new CommandParser();
         var scanner = new Scanner("go");
@@ -13,7 +13,7 @@ public class CommandParserTests
 
         node.Should().Be(Node.Command(
             Node.Literal("go", 0, 2),
-            new ListValue()));
+            new ListValue(), 0, 2));
     }
 
     [Test]
@@ -26,7 +26,7 @@ public class CommandParserTests
 
         node.Should().Be(Node.Command(
             Node.Literal("go", 0, 2),
-            new ListValue()));
+            new ListValue(), 0, 2));
     }
 
     [Test]
@@ -41,7 +41,7 @@ public class CommandParserTests
             Node.Literal("print", 0, 5),
             new ListValue(
                 Node.Literal("hello,", 6, 12),
-                Node.Literal("world", 13, 18))));
+                Node.Literal("world", 13, 18)), 0, 18));
     }
 
     [Test]
@@ -64,7 +64,7 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Assignment(
-            "name", Node.Literal(Value.Empty)));
+            "name", Node.Literal(Value.Empty))); // TODO:  This need to include positions.
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Assignment(
-            "name", Node.Literal("Vic", 8, 11)));
+            "name", Node.Literal("Vic", 8, 11))); // TODO:  This need to include positions.
     }
 
     [Test]

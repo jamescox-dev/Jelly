@@ -60,7 +60,7 @@ public class WordParserTests
             new ListValue(
                 Node.Literal("1", 5, 6),
                 Node.Literal("2", 7, 8)
-            ))
+            ), 1, 8)
         ));
     }
 

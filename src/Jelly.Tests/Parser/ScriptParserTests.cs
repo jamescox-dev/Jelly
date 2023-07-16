@@ -17,7 +17,7 @@ public class ScriptParserTests
             new ListValue(
                 Node.Literal("jello,", 6, 12),
                 Node.Literal("world", 13, 18)
-            ))
+            ), 0, 18)
         ));
     }
 
@@ -34,7 +34,7 @@ public class ScriptParserTests
             new ListValue(
                 Node.Literal("jello,", 14, 20),
                 Node.Literal("world", 21, 26)
-            ))
+            ), 8, 26)
         ));
     }
 
@@ -64,15 +64,15 @@ public class ScriptParserTests
             Node.Command(Node.Literal("print", 0, 5),
             new ListValue(
                 Node.Literal("one", 6, 9)
-            )),
+            ), 0, 9),
             Node.Command(Node.Literal("print", 10, 15),
             new ListValue(
                 Node.Literal("two", 16, 19)
-            )),
+            ), 10, 19),
             Node.Command(Node.Literal("print", 23, 28),
             new ListValue(
                 Node.Literal("three", 29, 34)
-            ))
+            ), 23, 34)
         ));
     }
 
@@ -89,7 +89,7 @@ public class ScriptParserTests
             Node.Command(Node.Literal("say", 1, 4),
             new ListValue(
                 Node.Literal("hi", 5, 7)
-            ))
+            ), 1, 7)
         ));
     }
 
@@ -116,7 +116,7 @@ public class ScriptParserTests
             Node.Command(Node.Literal("say", 0, 3),
             new ListValue(
                 Node.Literal("hi!}", 4, 8)
-            ))
+            ), 0, 8)
         ));
     }
 

@@ -142,7 +142,8 @@ public class ExpressionParserTests
                                 Node.Literal(1.0, 16, 17),
                                 Node.Literal(2.0, 18, 19),
                                 Node.Literal(3.0, 20, 21)
-                            )
+                            ),
+                            12, 21
                         )
                     )
                 )

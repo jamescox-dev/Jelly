@@ -13,6 +13,7 @@ public class CommandParser : IParser
     {
         var words = new List<DictionaryValue>();
 
+        var start = scanner.Position;
         while (!scanner.IsCommandSeparator)
         {
             scanner.AdvanceWhile(s => s.IsWordSeparator);
@@ -46,7 +47,13 @@ public class CommandParser : IParser
             return Node.Assignment(words[0].GetString(Keywords.Name), value);
         }
 
-        return words.Count > 0 ? Node.Command(words[0], new ListValue(words.Skip(1))) : null;
+        return words.Count > 0 ? BuildCommandNode(words, start) : null;
+    }
+
+    static DictionaryValue BuildCommandNode(List<DictionaryValue> words, int start)
+    {
+        var endOfLastWord = (int)words.Last().ToNode()[Keywords.Position].ToDictionaryValue()[Keywords.End].ToDouble();
+        return Node.Command(words[0], new ListValue(words.Skip(1)), start, endOfLastWord);
     }
 
     static bool IsAssignment(IReadOnlyList<DictionaryValue> words) =>
