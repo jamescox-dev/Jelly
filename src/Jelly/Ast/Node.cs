@@ -8,14 +8,20 @@ public static class Node
     public static DictionaryValue Literal(Value value) =>
         new DictionaryValue(Keywords.Type, Keywords.Literal, Keywords.Value, value);
 
-    public static DictionaryValue Literal(double value) =>
-        new DictionaryValue(Keywords.Type, Keywords.Literal, Keywords.Value, value.ToValue());
+    public static DictionaryValue Literal(Value value, int start, int end) =>
+        new DictionaryValue(Keywords.Type, Keywords.Literal, Keywords.Value, value, Keywords.Position, ParsePosition(start, end));
 
-    public static DictionaryValue Literal(string value) =>
-        new DictionaryValue(Keywords.Type, Keywords.Literal, Keywords.Value, value.ToValue());
+    public static DictionaryValue Literal(double value) => Literal(value.ToValue());
 
-    public static DictionaryValue Literal(bool value) =>
-        new DictionaryValue(Keywords.Type, Keywords.Literal, Keywords.Value, value.ToValue());
+    public static DictionaryValue Literal(double value, int start, int end) => Literal(value.ToValue(), start, end);
+
+    public static DictionaryValue Literal(string value) => Literal(value.ToValue());
+
+    public static DictionaryValue Literal(string value, int start, int end) => Literal(value.ToValue(), start, end);
+
+    public static DictionaryValue Literal(bool value) => Literal(value.ToValue());
+
+    public static DictionaryValue Literal(bool value, int start, int end) => Literal(value.ToValue(), start, end);
 
     public static DictionaryValue Variable(string name) =>
         new DictionaryValue(Keywords.Type, Keywords.Variable, Keywords.Name, name.ToValue());
@@ -175,4 +181,7 @@ public static class Node
         }
         return node;
     }
+
+    static DictionaryValue ParsePosition(int start, int end) =>
+        new DictionaryValue(Keywords.Start, start.ToValue(), Keywords.End, end.ToValue());
 }

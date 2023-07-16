@@ -12,7 +12,7 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Command(
-            Node.Literal("go".ToValue()),
+            Node.Literal("go", 0, 2),
             new ListValue()));
     }
 
@@ -25,7 +25,7 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Command(
-            Node.Literal("go".ToValue()),
+            Node.Literal("go", 0, 2),
             new ListValue()));
     }
 
@@ -38,10 +38,10 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Command(
-            Node.Literal("print".ToValue()),
+            Node.Literal("print", 0, 5),
             new ListValue(
-                Node.Literal("hello,".ToValue()),
-                Node.Literal("world".ToValue()))));
+                Node.Literal("hello,", 6, 12),
+                Node.Literal("world", 13, 18))));
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Assignment(
-            "name", Node.Literal("Vic".ToValue())));
+            "name", Node.Literal("Vic", 8, 11)));
     }
 
     [Test]

@@ -14,6 +14,19 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyTheLiteralNodeCanHaveItSourcePositionSpecified()
+    {
+        var node = Node.Literal("jello, world".ToValue(), 10, 20);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "literal".ToValue(),
+            "value".ToValue(), "jello, world".ToValue(),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 10.ToValue(),
+                "end".ToValue(), 20.ToValue())));
+    }
+
+    [Test]
     public void AVariableNodeCanBeCreatedWithTheCorrectAttributes()
     {
         var node = Node.Variable("answer");

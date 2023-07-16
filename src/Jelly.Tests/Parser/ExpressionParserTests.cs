@@ -55,7 +55,7 @@ public class ExpressionParserTests
 
         var expr = _parser.Parse(scanner);
 
-        expr.Should().Be(Node.Expression(Node.Literal(56.5.ToValue())));
+        expr.Should().Be(Node.Expression(Node.Literal(56.5, 1, 5)));
     }
 
     [Test]
@@ -66,16 +66,16 @@ public class ExpressionParserTests
         var expr = _parser.Parse(scanner);
 
         scanner.Position.Should().Be(12);
-        expr.Should().Be(Node.Expression(Node.Literal(12.0.ToValue())));
+        expr.Should().Be(Node.Expression(Node.Literal(12.0, 5, 7)));
     }
 
-    [TestCase("+", "add")]
-    [TestCase("*", "mul")]
-    [TestCase("<", "lt")]
-    [TestCase("<=", "lte")]
-    [TestCase("ne", "strne")]
-    [TestCase("eq", "streq")]
-    public void LiteralWordsThatCanBeInterpretedAsBinaryOperatorsReturnTheCorrectorOperator(string op, string expectedOp)
+    [TestCase("+", "add", 5)]
+    [TestCase("*", "mul", 5)]
+    [TestCase("<", "lt", 5)]
+    [TestCase("<=", "lte", 6)]
+    [TestCase("ne", "strne", 6)]
+    [TestCase("eq", "streq", 6)]
+    public void LiteralWordsThatCanBeInterpretedAsBinaryOperatorsReturnTheCorrectorOperator(string op, string expectedOp, int secondOperandPosition)
     {
         var scanner = new Scanner($"(1 {op} 2)");
 
@@ -85,15 +85,15 @@ public class ExpressionParserTests
             Node.Expression(
                 Node.BinOp(
                     expectedOp,
-                    Node.Literal(1.0.ToValue()),
-                    Node.Literal(2.0.ToValue()))));
+                    Node.Literal(1.0, 1, 2),
+                    Node.Literal(2.0, secondOperandPosition, secondOperandPosition + 1))));
     }
 
-    [TestCase("~", "bitnot")]
-    [TestCase("not", "not")]
-    [TestCase("+", "pos")]
-    [TestCase("-", "neg")]
-    public void LiteralWordsThatCanBeInterpretedAsUnaryOperatorsReturnTheCorrectorOperator(string op, string expectedOp)
+    [TestCase("~", "bitnot", 3)]
+    [TestCase("not", "not", 5)]
+    [TestCase("+", "pos", 3)]
+    [TestCase("-", "neg", 3)]
+    public void LiteralWordsThatCanBeInterpretedAsUnaryOperatorsReturnTheCorrectorOperator(string op, string expectedOp, int operandPosition)
     {
         var scanner = new Scanner($"({op} 1)");
 
@@ -103,7 +103,7 @@ public class ExpressionParserTests
             Node.Expression(
                 Node.UniOp(
                     expectedOp,
-                    Node.Literal(1.0.ToValue()))));
+                    Node.Literal(1.0, operandPosition, operandPosition + 1))));
     }
 
     [TestCase("(* 1)")]
@@ -131,17 +131,17 @@ public class ExpressionParserTests
                     Node.Expression(
                         Node.BinOp(
                             "add",
-                            Node.Literal(1.0.ToValue()),
-                            Node.Literal(2.0.ToValue())
+                            Node.Literal(1.0, 2, 3),
+                            Node.Literal(2.0, 6, 7)
                         )
                     ),
                     Node.Script(
                         Node.Command(
-                            Node.Literal("avg".ToValue()),
+                            Node.Literal("avg", 12, 15),
                             new ListValue(
-                                Node.Literal(1.0.ToValue()),
-                                Node.Literal(2.0.ToValue()),
-                                Node.Literal(3.0.ToValue())
+                                Node.Literal(1.0, 16, 17),
+                                Node.Literal(2.0, 18, 19),
+                                Node.Literal(3.0, 20, 21)
                             )
                         )
                     )
@@ -201,10 +201,10 @@ public class ExpressionParserTests
                     "add",
                     Node.BinOp(
                         "mul",
-                        Node.Literal(1.0.ToValue()),
-                        Node.Literal(2.0.ToValue())
+                        Node.Literal(1.0, 1, 2),
+                        Node.Literal(2.0, 5, 6)
                     ),
-                    Node.Literal(3.0.ToValue())
+                    Node.Literal(3.0, 9, 10)
                 )
             )
         );
@@ -212,11 +212,11 @@ public class ExpressionParserTests
             Node.Expression(
                 Node.BinOp(
                     "add",
-                    Node.Literal(1.0.ToValue()),
+                    Node.Literal(1.0, 1, 2),
                     Node.BinOp(
                         "mul",
-                        Node.Literal(2.0.ToValue()),
-                        Node.Literal(3.0.ToValue())
+                        Node.Literal(2.0, 5, 6),
+                        Node.Literal(3.0, 9, 10)
                     )
                 )
             )
@@ -232,7 +232,7 @@ public class ExpressionParserTests
 
         expr.Should().Be(Node.Expression(
             Node.Command(
-                Node.Literal("max"),
+                Node.Literal("max", 1, 4),
                 new ListValue(
                     Node.Variable("a"),
                     Node.Variable("b")))));
@@ -256,7 +256,7 @@ public class ExpressionParserTests
 
         expr.Should().Be(Node.Expression(
             Node.Command(
-                Node.Literal("max"),
+                Node.Literal("max", 1, 4),
                 new ListValue())));
     }
 

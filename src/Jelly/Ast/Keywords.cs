@@ -39,6 +39,7 @@ public static class Keywords
     public static readonly StringValue Name = new("name");
     public static readonly StringValue Op = new("op");
     public static readonly StringValue Parts = new("parts");
+    public static readonly StringValue Position = new("position");
     public static readonly StringValue Raise = new("raise");
     public static readonly StringValue RestArgName = new("restargname");
     public static readonly StringValue Scope = new("scope");

@@ -5,6 +5,7 @@ using System.Text;
 public class SimpleWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
+    static readonly StringValue AssignmentOperator = new("=");
 
     readonly char? _terminatingChar;
     readonly bool _terminateAtOperator;
@@ -22,7 +23,7 @@ public class SimpleWordParser : IParser
 
         if (scanner.AdvanceIf(s => s.IsAssignmentOperator))
         {
-            return Node.Literal("=");
+            return Node.Literal(AssignmentOperator, start, scanner.Position);
         }
 
         while (!scanner.IsEof)
@@ -43,7 +44,7 @@ public class SimpleWordParser : IParser
             }
         }
 
-        return start == scanner.Position ? null : Node.Literal(value.ToString().ToValue());
+        return start == scanner.Position ? null : Node.Literal(value.ToString().ToValue(), start, scanner.Position);
     }
 
     public bool IsTerminatingChar(Scanner scanner) =>

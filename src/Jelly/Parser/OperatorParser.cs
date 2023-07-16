@@ -1,7 +1,3 @@
-
-
-
-
 namespace Jelly.Parser;
 
 public class OperatorParser : IParser
@@ -10,8 +6,9 @@ public class OperatorParser : IParser
     {
         if (scanner.TryGetOperatorSymbol(out var op))
         {
+            var start = scanner.Position;
             scanner.Advance(op.Length);
-            return Node.Literal(op.ToValue());
+            return Node.Literal(op.ToValue(), start, scanner.Position);
         }
         return null;
     }

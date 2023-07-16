@@ -24,7 +24,7 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(4);
-        node.Should().Be(Node.Composite(Node.Literal("hi".ToValue())));
+        node.Should().Be(Node.Composite(Node.Literal("hi")));
     }
 
     [Test]
@@ -36,7 +36,7 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(6);
-        node.Should().Be(Node.Composite(Node.Literal(@"\'".ToValue())));
+        node.Should().Be(Node.Composite(Node.Literal(@"\'")));
     }
 
     [Test]
@@ -68,7 +68,7 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Composite(
-            Node.Literal("hello, $name how do you do".ToValue())));
+            Node.Literal("hello, $name how do you do")));
     }
 
     [Test]
@@ -80,9 +80,9 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Composite(
-            Node.Literal("hello, ".ToValue()),
-            Node.Script(Node.Command(Node.Literal("whoami".ToValue()), new ListValue())),
-            Node.Literal(" how do you do".ToValue())));
+            Node.Literal("hello, "),
+            Node.Script(Node.Command(Node.Literal("whoami", 9, 15), new ListValue())),
+            Node.Literal(" how do you do")));
     }
 
     [Test]
@@ -93,7 +93,7 @@ public class QuotedWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello, {whoami} how do you do".ToValue()));
+        node.Should().Be(Node.Literal("hello, {whoami} how do you do"));
     }
 
     [Test]
@@ -116,6 +116,6 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(14);
-        node.Should().Be(Node.Composite(Node.Literal("hello\" world".ToValue())));
+        node.Should().Be(Node.Composite(Node.Literal("hello\" world")));
     }
 }

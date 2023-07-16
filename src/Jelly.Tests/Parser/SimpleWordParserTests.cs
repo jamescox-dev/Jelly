@@ -11,7 +11,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello".ToValue()));
+        node.Should().Be(Node.Literal("hello".ToValue(), 0, 5));
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello".ToValue()));
+        node.Should().Be(Node.Literal("hello".ToValue(), 0, 5));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello".ToValue()));
+        node.Should().Be(Node.Literal("hello".ToValue(), 0, 5));
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("goodbye".ToValue()));
+        node.Should().Be(Node.Literal("goodbye".ToValue(), 7, 14));
     }
 
     [Test]
@@ -66,7 +66,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello,".ToValue()));
+        node.Should().Be(Node.Literal("hello,".ToValue(), 0, 6));
         scanner.Position.Should().Be(6);
     }
 
@@ -83,14 +83,14 @@ public class SimpleWordParserTests
     }
 
     [Test]
-    public void SpecialCharacterThatWouldNormalStopWordParsingAreIncludedInTheWordIfProceededWithAEscapeCharacter()
+    public void SpecialCharacterThatWouldNormallyStopWordParsingAreIncludedInTheWordIfProceededWithAEscapeCharacter()
     {
         var parser = new SimpleWordParser();
         var scanner = new Scanner(@"\ \\");
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal(@" \".ToValue()));
+        node.Should().Be(Node.Literal(@" \".ToValue(), 0, 4));
     }
 
     [Test]
@@ -111,19 +111,19 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hi".ToValue()));
+        node.Should().Be(Node.Literal("hi".ToValue(), 0, 2));
         scanner.Position.Should().Be(2);
     }
 
     [Test]
-    public void IfParsingStartsAtAnAssignmentOperatorItIsReturend()
+    public void IfParsingStartsAtAnAssignmentOperatorItIsReturned()
     {
         var parser = new SimpleWordParser();
         var scanner = new Scanner("hi=", 2);
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("=".ToValue()));
+        node.Should().Be(Node.Literal("=".ToValue(), 2, 3));
         scanner.Position.Should().Be(3);
     }
 }

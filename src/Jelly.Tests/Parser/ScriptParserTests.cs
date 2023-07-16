@@ -13,10 +13,10 @@ public class ScriptParserTests
 
         scanner.Position.Should().Be(18);
         node.Should().Be(Node.Script(
-            Node.Command(Node.Literal("print".ToValue()),
+            Node.Command(Node.Literal("print", 0, 5),
             new ListValue(
-                Node.Literal("jello,".ToValue()),
-                Node.Literal("world".ToValue())
+                Node.Literal("jello,", 6, 12),
+                Node.Literal("world", 13, 18)
             ))
         ));
     }
@@ -30,10 +30,10 @@ public class ScriptParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(
-            Node.Command(Node.Literal("print".ToValue()),
+            Node.Command(Node.Literal("print", 8, 13),
             new ListValue(
-                Node.Literal("jello,".ToValue()),
-                Node.Literal("world".ToValue())
+                Node.Literal("jello,", 14, 20),
+                Node.Literal("world", 21, 26)
             ))
         ));
     }
@@ -61,17 +61,17 @@ public class ScriptParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(
-            Node.Command(Node.Literal("print".ToValue()),
+            Node.Command(Node.Literal("print", 0, 5),
             new ListValue(
-                Node.Literal("one".ToValue())
+                Node.Literal("one", 6, 9)
             )),
-            Node.Command(Node.Literal("print".ToValue()),
+            Node.Command(Node.Literal("print", 10, 15),
             new ListValue(
-                Node.Literal("two".ToValue())
+                Node.Literal("two", 16, 19)
             )),
-            Node.Command(Node.Literal("print".ToValue()),
+            Node.Command(Node.Literal("print", 23, 28),
             new ListValue(
-                Node.Literal("three".ToValue())
+                Node.Literal("three", 29, 34)
             ))
         ));
     }
@@ -86,9 +86,9 @@ public class ScriptParserTests
 
         scanner.Position.Should().Be(8);
         node.Should().Be(Node.Script(
-            Node.Command(Node.Literal("say".ToValue()),
+            Node.Command(Node.Literal("say", 1, 4),
             new ListValue(
-                Node.Literal("hi".ToValue())
+                Node.Literal("hi", 5, 7)
             ))
         ));
     }
@@ -113,9 +113,9 @@ public class ScriptParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(
-            Node.Command(Node.Literal("say".ToValue()),
+            Node.Command(Node.Literal("say", 0, 3),
             new ListValue(
-                Node.Literal("hi!}".ToValue())
+                Node.Literal("hi!}", 4, 8)
             ))
         ));
     }
