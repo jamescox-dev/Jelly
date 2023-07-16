@@ -95,7 +95,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("jelly"));
+        node.Should().Be(Node.Literal("jelly", 0, 7));
     }
 
     [Test]

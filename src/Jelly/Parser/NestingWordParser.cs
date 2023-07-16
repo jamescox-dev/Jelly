@@ -1,8 +1,3 @@
-
-
-
-
-
 namespace Jelly.Parser;
 
 public class NestingWordParser : IParser
@@ -27,7 +22,7 @@ public class NestingWordParser : IParser
                     if (depth == 0)
                     {
                         scanner.Advance();
-                        return Node.Literal(scanner.Source[start .. (scanner.Position - 1)].ToValue());
+                        return Node.Literal(scanner.Source[start .. (scanner.Position - 1)], start - 1, scanner.Position);
                     }
                 }
                 if (scanner.IsEscapeCharacter)
