@@ -12,6 +12,7 @@ public class Error : Exception
         { "/error/eval/", Eval },
         { "/error/index/", Index },
         { "/error/io/", Io },
+        { "/error/key/", Key },
         { "/error/name/", Name },
         { "/error/parse/", Parse },
         { "/error/parse/missing/end_token/", MissingEndToken },
@@ -89,6 +90,10 @@ public class Error : Exception
     public static Error Io(string message) => new IoError(message);
 
     public static Error Io(string message, Value _) => Io(message);
+
+    public static Error Key(string message) => new KeyError(message);
+
+    public static Error Key(string message, Value _) => Key(message);
 
     public static Error Name(string message) => new NameError(message);
 
@@ -228,6 +233,11 @@ public class ValueError : Error
 public class IoError : Error
 {
     internal IoError(string message) : base("/error/io/", message) {}
+}
+
+public class KeyError : Error
+{
+    internal KeyError(string message) : base("/error/key/", message) {}
 }
 
 public class Break : Error

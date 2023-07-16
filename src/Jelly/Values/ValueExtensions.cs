@@ -61,4 +61,19 @@ public static class ValueExtensions
 
     public static ListValue GetList(this DictionaryValue dict, Value key) =>
         dict[key].ToListValue();
+
+    // TODO:  This needs testing, and should be a command line option...
+    public static object? ToClr(this Value? value)
+    {
+        return value switch
+        {
+            BooleanValue boolean => boolean.ToBool(),
+            NumberValue number => number.ToDouble(),
+            StringValue str => str.ToString(),
+            ListValue list => list.Select(v => ToClr(v)).ToList(),
+            DictionaryValue dict => new Dictionary<string, object?>(
+                dict.ToEnumerable().Select(kvp => new KeyValuePair<string, object?>(ToClr(kvp.Key)?.ToString() ?? string.Empty, ToClr(kvp.Value)))),
+            _ => null
+        };
+    }
 }

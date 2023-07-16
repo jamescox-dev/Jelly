@@ -8,7 +8,7 @@ public class DictionaryValue : Value
 {
     public static readonly DictionaryValue EmptyDictionary = new();
 
-    ImmutableSortedDictionary<Value, Value> _items;
+    readonly ImmutableSortedDictionary<Value, Value> _items;
 
     public DictionaryValue()
     {
@@ -71,8 +71,17 @@ public class DictionaryValue : Value
     public override DictionaryValue ToDictionaryValue() => this;
 
     public Value this[Value key] {
-        get => _items[key];
+        get
+        {
+            if (TryGetValue(key, out var value))
+            {
+                return value;
+            }
+            throw Error.Key("key does not exist in dictionary.");
+        }
     }
+
+    public DictionaryValue SetItem(Value key, Value value) => new DictionaryValue(_items.SetItem(key, value));
 
     public bool ContainsKey(Value key) => _items.ContainsKey(key);
 

@@ -2,10 +2,6 @@ namespace Jelly.Parser;
 
 using System.Text;
 
-
-
-
-
 public class QuotedWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
@@ -23,11 +19,13 @@ public class QuotedWordParser : IParser
     {
         var parts = new List<DictionaryValue>();
         var literal = new StringBuilder();
-
+        var literalStart = 0;
         if (scanner.IsQuote)
         {
+            var start = scanner.Position;
             var openingQuote = (char)scanner.CurrentCharacter!;
             scanner.Advance();
+            literalStart = scanner.Position;
             while (!scanner.IsEof)
             {
                 var escapedCh = EscapeCharacterParser.Parse(scanner);
@@ -37,21 +35,22 @@ public class QuotedWordParser : IParser
                 }
                 else if (scanner.IsScriptBegin && _allowSubstitutions)
                 {
-                    FlushCurrentLitral();
+                    FlushCurrentLiteral(scanner.Position);
                     var script = ScriptParser.Parse(scanner);
                     if (script is not null)
                     {
                         parts.Add(script);
+                        literalStart = scanner.Position;
                         continue;
                     }
                     throw new NotImplementedException(); // This should not happen.
                 }
                 else if (scanner.AdvanceIf(s => s.CurrentCharacter == openingQuote))
                 {
-                    FlushCurrentLitral();
+                    FlushCurrentLiteral(scanner.Position - 1);
                     return _allowSubstitutions
-                        ? Node.Composite(parts.ToArray())
-                        : parts[0];
+                        ? Node.Composite(start, scanner.Position, parts.ToArray())
+                        : Node.Reposition(parts[0], start, scanner.Position);
                 }
                 else
                 {
@@ -64,11 +63,12 @@ public class QuotedWordParser : IParser
 
         return null;
 
-        void FlushCurrentLitral()
+        void FlushCurrentLiteral(int literalEnd)
         {
             if (literal.Length != 0)
             {
-                parts.Add(Node.Literal(literal.ToString().ToValue()));
+                parts.Add(Node.Literal(literal.ToString(), literalStart, literalEnd));
+                literalStart = literalEnd;
                 literal.Clear();
             }
         }

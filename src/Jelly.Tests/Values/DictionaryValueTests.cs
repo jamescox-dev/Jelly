@@ -122,7 +122,7 @@ public class DictionaryValueTests
     }
 
     [Test]
-    public void ADictionaryAlwaysConvertsToATureBool()
+    public void ADictionaryAlwaysConvertsToATrueBool()
     {
         var dict1 = new DictionaryValue();
         var dict2 = new DictionaryValue(Value.Empty);
@@ -131,5 +131,33 @@ public class DictionaryValueTests
         dict1.ToBool().Should().BeTrue();
         dict2.ToBool().Should().BeTrue();
         dict3.ToBool().Should().BeTrue();
+    }
+
+    [Test]
+    public void AValueCanBeRetrievedFromADictionaryByKey()
+    {
+        var dict = new DictionaryValue("a".ToValue(), 1.ToValue());
+
+        var value = dict["a".ToValue()];
+
+        value.Should().Be(1.ToValue());
+    }
+
+    [Test]
+    public void WhenRetrievingAValueFromADictionaryByAKeyTheDoesNotExistAnErrorIsThrown()
+    {
+        var dict = new DictionaryValue("a".ToValue(), 1.ToValue());
+
+        // TODO:  Implement this test.
+    }
+
+    [Test]
+    public void AValueCanBeSetByKeyInADictionary()
+    {
+        var dict1 = new DictionaryValue("a".ToValue(), 1.ToValue());
+
+        var dict2 = dict1.SetItem("b".ToValue(), 2.ToValue());
+
+        dict2.Should().Be(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue()));
     }
 }

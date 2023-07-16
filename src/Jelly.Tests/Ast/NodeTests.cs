@@ -92,6 +92,23 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyACompositeNodeCanHaveItSourcePositionSpecified()
+    {
+        var part1 = Node.Literal("hello".ToValue());
+        var part2 = Node.Literal("world".ToValue());
+
+        var node = Node.Composite(100, 120, part1, part2);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "composite".ToValue(),
+            "parts".ToValue(), new ListValue(part1, part2),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 100.ToValue(),
+                "end".ToValue(), 120.ToValue())
+        ));
+    }
+
+    [Test]
     public void AnAssignmentNodeCanBeCreatedWithTheCorrectAttributes()
     {
         var node = Node.Assignment("username", Node.Literal("Bob".ToValue()));
@@ -409,5 +426,28 @@ public class NodeTests
         var value = Node.GetLiteralValue(literal);
 
         value.Should().Be("value".ToValue());
+    }
+
+    [Test]
+    public void ANodeCanBeReposition()
+    {
+        var node = Node.Literal("test", 1, 2);
+
+        var repositionedNode = Node.Reposition(node, 3, 4);
+
+        repositionedNode.Should().Be(Node.Literal("test", 3, 4));
+    }
+
+    [Test]
+    public void ANodeCanBeRepositionEvenWhenItNeverHadAPosition()
+    {
+        var node = new DictionaryValue();
+
+        var repositionedNode = Node.Reposition(node, 10, 11);
+
+        repositionedNode.Should().Be(new DictionaryValue(
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 10.ToValue(),
+                "end".ToValue(), 11.ToValue())));
     }
 }

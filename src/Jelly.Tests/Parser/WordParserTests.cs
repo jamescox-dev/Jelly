@@ -84,7 +84,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Composite(Node.Literal("jelly")));
+        node.Should().Be(Node.Composite(0, 7, Node.Literal("jelly", 1, 6)));
     }
 
     [Test]

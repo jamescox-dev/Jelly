@@ -38,6 +38,9 @@ public static class Node
     public static DictionaryValue Composite(params DictionaryValue[] parts) =>
         new DictionaryValue(Keywords.Type, Keywords.Composite, Keywords.Parts, parts.ToValue());
 
+    public static DictionaryValue Composite(int start, int end, params DictionaryValue[] parts) =>
+        new DictionaryValue(Keywords.Type, Keywords.Composite, Keywords.Parts, parts.ToValue(), Keywords.Position, ParsePosition(start, end));
+
     public static DictionaryValue Assignment(string name, DictionaryValue value) =>
         new DictionaryValue(Keywords.Type, Keywords.Assignment, Keywords.Name, name.ToValue(), Keywords.Value, value);
 
@@ -150,6 +153,8 @@ public static class Node
             Keywords.Dict, dict,
             Keywords.Body, body
         );
+
+    public static DictionaryValue Reposition(DictionaryValue node, int start, int end) => node.SetItem(Keywords.Position, ParsePosition(start, end));
 
     public static bool IsLiteral(DictionaryValue node) => IsType(node, Keywords.Literal);
 
