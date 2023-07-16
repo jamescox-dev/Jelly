@@ -97,7 +97,7 @@ public class CommandParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("name"));
+        node.Should().Be(Node.Variable("name", 0, 5));
     }
 
     [Test]
@@ -108,6 +108,6 @@ public class CommandParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Expression(Node.BinOp("add", Node.Variable("a"), Node.Variable("b"))));
+        node.Should().Be(Node.Expression(Node.BinOp("add", Node.Variable("a", 1, 3), Node.Variable("b", 6, 8))));
     }
 }

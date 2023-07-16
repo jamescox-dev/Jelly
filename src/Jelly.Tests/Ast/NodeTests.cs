@@ -37,6 +37,19 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyAVariableNodeCanHaveItSourcePositionSpecified()
+    {
+        var node = Node.Variable("answer", 1, 2);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "variable".ToValue(),
+            "name".ToValue(), "answer".ToValue(),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 1.ToValue(),
+                "end".ToValue(), 2.ToValue())));
+    }
+
+    [Test]
     public void ACommandNodeCanBeCreatedWithTheCorrectAttributes()
     {
         var name = Node.Literal("greet".ToValue());

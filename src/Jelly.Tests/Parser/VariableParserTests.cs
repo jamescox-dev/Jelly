@@ -22,7 +22,7 @@ public class VariableParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("pi"));
+        node.Should().Be(Node.Variable("pi", 0, 3));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class VariableParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("pi"));
+        node.Should().Be(Node.Variable("pi", 0, 3));
     }
 
     [Test]
@@ -51,11 +51,11 @@ public class VariableParserTests
     public void TheNameOfTheVariableIsAllTheCharactersFollowingTheVariableCharacterUntilASpecialCharacterIsEncountered()
     {
         var parser = new VariableParser();
-        var scanner = new Scanner("$pi ");
+        var scanner = new Scanner("$foo ");
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("pi"));
+        node.Should().Be(Node.Variable("foo", 0, 4));
     }
 
     [Test]
@@ -77,6 +77,6 @@ public class VariableParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(5);
-        node.Should().Be(Node.Variable("pi"));
+        node.Should().Be(Node.Variable("pi", 0, 5));
     }
 }

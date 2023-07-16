@@ -11,7 +11,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("jelly".ToValue(), 0, 5));
+        node.Should().Be(Node.Literal("jelly", 0, 5));
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("jelly".ToValue(), 0, 5));
+        node.Should().Be(Node.Literal("jelly", 0, 5));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("=".ToValue(), 0, 1));
+        node.Should().Be(Node.Literal("=", 0, 1));
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("jelly"));
+        node.Should().Be(Node.Variable("jelly", 0, 6));
     }
 
     [Test]
@@ -56,10 +56,10 @@ public class WordParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(
-            Node.Command(Node.Literal("add".ToValue(), 1, 4),
+            Node.Command(Node.Literal("add", 1, 4),
             new ListValue(
-                Node.Literal("1".ToValue(), 5, 6),
-                Node.Literal("2".ToValue(), 7, 8)
+                Node.Literal("1", 5, 6),
+                Node.Literal("2", 7, 8)
             ))
         ));
     }
@@ -84,7 +84,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Composite(Node.Literal("jelly".ToValue())));
+        node.Should().Be(Node.Composite(Node.Literal("jelly")));
     }
 
     [Test]
@@ -95,7 +95,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("jelly".ToValue()));
+        node.Should().Be(Node.Literal("jelly"));
     }
 
     [Test]

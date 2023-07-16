@@ -26,6 +26,9 @@ public static class Node
     public static DictionaryValue Variable(string name) =>
         new DictionaryValue(Keywords.Type, Keywords.Variable, Keywords.Name, name.ToValue());
 
+    public static DictionaryValue Variable(string name, int start, int end) =>
+        new DictionaryValue(Keywords.Type, Keywords.Variable, Keywords.Name, name.ToValue(), Keywords.Position, ParsePosition(start, end));
+
     public static DictionaryValue Command(DictionaryValue name, ListValue args) =>
         new DictionaryValue(Keywords.Type, Keywords.Command, Keywords.Name, name, Keywords.Args, args);
 

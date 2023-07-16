@@ -161,8 +161,8 @@ public class ExpressionParserTests
             Node.Expression(
                 Node.BinOp(
                     "add",
-                    Node.Variable("a"),
-                    Node.Variable("b")
+                    Node.Variable("a", 1, 3),
+                    Node.Variable("b", 6, 8)
                 )
             )
         );
@@ -179,8 +179,8 @@ public class ExpressionParserTests
             Node.Expression(
                 Node.BinOp(
                     "add",
-                    Node.Variable("a"),
-                    Node.Variable("b")
+                    Node.Variable("a", 1, 3),
+                    Node.Variable("b", 4, 6)
                 )
             )
         );
@@ -234,8 +234,8 @@ public class ExpressionParserTests
             Node.Command(
                 Node.Literal("max", 1, 4),
                 new ListValue(
-                    Node.Variable("a"),
-                    Node.Variable("b")))));
+                    Node.Variable("a", 5, 7),
+                    Node.Variable("b", 9, 11)))));
     }
 
     [TestCase("(max)")]

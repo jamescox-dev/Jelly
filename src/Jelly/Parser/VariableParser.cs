@@ -21,7 +21,7 @@ public class VariableParser : IParser
                 start = scanner.Position;
                 scanner.AdvanceWhile(s => !s.IsVariableEnd);
                 scanner.Advance();
-                return Node.Variable(scanner.Source[start..(scanner.Position - 1)]);
+                return Node.Variable(scanner.Source[start..(scanner.Position - 1)], start - 2, scanner.Position);
             }
             else
             {
@@ -29,7 +29,7 @@ public class VariableParser : IParser
                 scanner.AdvanceWhile(s => !(s.IsSpecialCharacter || IsTerminatingChar(s)));
                 if (scanner.Position > start)
                 {
-                    return Node.Variable(scanner.Source[start..scanner.Position]);
+                    return Node.Variable(scanner.Source[start..scanner.Position], start - 1, scanner.Position);
                 }
                 else
                 {
