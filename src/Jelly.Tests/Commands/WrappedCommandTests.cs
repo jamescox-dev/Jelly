@@ -135,19 +135,6 @@ public class WrappedCommandTests
         _passedParams.SequenceEqual(Array.Empty<string>()).Should().BeTrue();
     }
 
-    [Test]
-    public void WhenTheFirstArgumentIsAnIEnvironmentTheEnvironmentGetsPassedToTheWrappedCommand()
-    {
-        IEnv? passedEnv = null;
-        var func = (IEnv env) => { passedEnv = env; };
-        var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
-
-        command.Invoke(_env, new ListValue());
-
-        passedEnv.Should().Be(_env);
-    }
-
-
     void FuncWithParams(string a, string b = "jelly", params string[] c)
     {
         _passedParams = c;

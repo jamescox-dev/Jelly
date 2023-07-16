@@ -10,7 +10,6 @@ public class WrappedCommand : CommandBase
     readonly int _minPositionalArgCount;
     readonly int _maxPositionalArgsCount;
     readonly Type? _paramsArgType;
-    readonly bool _hasEnvArg;
 
     public WrappedCommand(Delegate wrappedDelegate, ITypeMarshaller typeMarshaller)
     {
@@ -23,37 +22,27 @@ public class WrappedCommand : CommandBase
         var minPositionalArgCount = 0;
         var maxPositionalArgCount = 0;
         Type? paramsArgType = null;
-        var hasEnvArg = false;
-        var isFirstArg = true;
         foreach (var param in _wrappedDelegate.Method.GetParameters())
         {
-            if (isFirstArg && param.ParameterType == typeof(IEnv))
+            argTypes.Add(param.ParameterType);
+            argNames.Add(param.Name ?? string.Empty);
+            if (param.IsOptional)
             {
-                hasEnvArg = true;
+                optionalArgDefaultValues.Add(param.DefaultValue);
+                ++maxPositionalArgCount;
             }
             else
             {
-                argTypes.Add(param.ParameterType);
-                argNames.Add(param.Name ?? string.Empty);
-                if (param.IsOptional)
+                if (Attribute.IsDefined(param, typeof(ParamArrayAttribute)))
                 {
-                    optionalArgDefaultValues.Add(param.DefaultValue);
-                    ++maxPositionalArgCount;
+                    paramsArgType = param.ParameterType.GetElementType();
                 }
                 else
                 {
-                    if (Attribute.IsDefined(param, typeof(ParamArrayAttribute)))
-                    {
-                        paramsArgType = param.ParameterType.GetElementType();
-                    }
-                    else
-                    {
-                        ++maxPositionalArgCount;
-                        ++minPositionalArgCount;
-                    }
+                    ++maxPositionalArgCount;
+                    ++minPositionalArgCount;
                 }
             }
-            isFirstArg = false;
         }
         _argTypes = argTypes.ToArray();
         _argNames = argNames.ToArray();
@@ -61,7 +50,6 @@ public class WrappedCommand : CommandBase
         _minPositionalArgCount = minPositionalArgCount;
         _maxPositionalArgsCount = maxPositionalArgCount;
         _paramsArgType = paramsArgType;
-        _hasEnvArg = hasEnvArg;
     }
 
     // TODO:  In need of some serious refactoring.
@@ -70,21 +58,16 @@ public class WrappedCommand : CommandBase
         EnsureArgCountIsValid(env, unevaluatedArgs);
         var args = EvaluateArgs(env, unevaluatedArgs);
 
-        var scopeOffset = _hasEnvArg ? 1 : 0;
-        var clrArgs = new object?[_maxPositionalArgsCount + (_paramsArgType is not null ? 1 : 0) + scopeOffset];
-        var i = scopeOffset;
-        if (_hasEnvArg)
-        {
-            clrArgs[0] = env;
-        }
+        var clrArgs = new object?[_maxPositionalArgsCount + (_paramsArgType is not null ? 1 : 0)];
+        var i = 0;
         foreach (var arg in args.Take(_maxPositionalArgsCount))
         {
-            clrArgs[i] = _typeMarshaller.Marshal(arg, _argTypes[i - scopeOffset]);
+            clrArgs[i] = _typeMarshaller.Marshal(arg, _argTypes[i]);
             ++i;
         }
         while (i < _maxPositionalArgsCount)
         {
-            clrArgs[i] = _optionalArgDefaultValues[i - _minPositionalArgCount - scopeOffset];
+            clrArgs[i] = _optionalArgDefaultValues[i - _minPositionalArgCount];
             ++i;
         }
         if (_paramsArgType is not null)

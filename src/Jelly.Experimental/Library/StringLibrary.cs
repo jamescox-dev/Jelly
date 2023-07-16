@@ -9,7 +9,7 @@ public class StringLibrary : ILibrary
     static readonly IArgParser StrStripArgParser = new StandardArgParser(new Arg("str"));
     static readonly IArgParser StrJoinArgParser = new StandardArgParser(new Arg("str"), new RestArg("items"));
     static readonly IArgParser StrJoinAllArgParser = new StandardArgParser(new Arg("str"), new RestArg("lists"));
-    
+
     public void LoadIntoScope(IScope scope)
     {
         var strCmd = new ValueGroupCommand("str", "str");
@@ -20,14 +20,14 @@ public class StringLibrary : ILibrary
         scope.DefineCommand("str", strCmd);
     }
 
-    Value StrStrip(IEnv env, DictionaryValue args)
+    Value StrStrip(DictionaryValue args)
     {
         var str = args[Keywords.Str].ToString();
 
         return str.Trim().ToValue();
     }
 
-    Value StrGet(IEnv env, DictionaryValue args)
+    Value StrGet(DictionaryValue args)
     {
         var str = args[Keywords.Str].ToString();
         var index = args[Keywords.Index].ToIndexOfLength(str.Length);
@@ -39,19 +39,19 @@ public class StringLibrary : ILibrary
         throw new IndexError("index out of bounds.");
     }
 
-    Value StrJoin(IEnv env, DictionaryValue args)
+    Value StrJoin(DictionaryValue args)
     {
         var str = args[Keywords.Str].ToString();
         var items = args[ItemsKeyword].ToListValue();
-        
+
         return string.Join(str, items.Select(i => i.ToString())).ToValue();
     }
 
-    Value StrJoinAll(IEnv env, DictionaryValue args)
+    Value StrJoinAll(DictionaryValue args)
     {
         var str = args[Keywords.Str].ToString();
         var lists = args[ListsKeyword].ToListValue();
-        
+
         return string.Join(str, lists.Select(l => string.Join(str, l.ToListValue().Select(i => i.ToString())))).ToValue();
     }
 }

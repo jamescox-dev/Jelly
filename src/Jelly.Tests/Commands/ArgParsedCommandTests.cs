@@ -10,20 +10,18 @@ public class ArgParsedCommandTests
     {
         var mockParser = new Mock<IArgParser>().Object;
 
-        var command = new ArgParsedCommand("test", mockParser, (_, _) => Value.Empty);
+        var command = new ArgParsedCommand("test", mockParser, (_) => Value.Empty);
 
         command.ArgParser.Should().BeSameAs(mockParser);
         command.Name.Should().Be("test");
     }
 
     [Test]
-    public void TheCommandDelegateIsCalledWithTheEnvironmentAnTheParsedAndEvaluatedArgumentsAndTheResultReturned()
+    public void TheCommandDelegateIsCalledWithTheParsedAndEvaluatedArgumentsAndTheResultReturned()
     {
-        IEnv? envPassedToCommand = null;
         DictionaryValue? argsPassedToCommand = null;
-        Value TestCommandFunc(IEnv env, DictionaryValue args)
+        Value TestCommandFunc(DictionaryValue args)
         {
-            envPassedToCommand = env;
             argsPassedToCommand = args;
             return "hello, jelly".ToValue();
         }
@@ -34,7 +32,6 @@ public class ArgParsedCommandTests
         var result = command.Invoke(env, new ListValue(Node.Literal("jelly")));
 
         result.Should().Be("hello, jelly".ToValue());
-        envPassedToCommand.Should().Be(env);
         argsPassedToCommand.Should().Be(new DictionaryValue(
             "name".ToValue(), "jelly".ToValue()
         ));

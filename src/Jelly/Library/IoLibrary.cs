@@ -49,73 +49,73 @@ public class IoLibrary : ILibrary
         scope.DefineCommand("io", ioCmd);
     }
 
-    Value ExistsCmd(IEnv _, DictionaryValue args)
+    Value ExistsCmd(DictionaryValue args)
     {
         return _provider.Exists(args[PathKeyword].ToString()).ToValue();
     }
 
-    Value GetWorkingDirCmd(IEnv _, DictionaryValue args)
+    Value GetWorkingDirCmd(DictionaryValue args)
     {
         return _provider.GetWorkingDir().ToValue();
     }
 
-    Value SetWorkingDirCmd(IEnv _, DictionaryValue args)
+    Value SetWorkingDirCmd(DictionaryValue args)
     {
         _provider.SetWorkingDir(args[PathKeyword].ToString());
         return Value.Empty;
     }
 
-    Value IsDirCmd(IEnv _, DictionaryValue args)
+    Value IsDirCmd(DictionaryValue args)
     {
         return _provider.IsDir(args[PathKeyword].ToString()).ToValue();
     }
 
-    Value ListDirCmd(IEnv _, DictionaryValue args)
+    Value ListDirCmd(DictionaryValue args)
     {
         return _provider.ListDir(args[PathKeyword].ToString()).Select(p => p.ToValue()).ToValue();
     }
 
-    Value IsReadOnlyCmd(IEnv _, DictionaryValue args)
+    Value IsReadOnlyCmd(DictionaryValue args)
     {
         return _provider.IsReadOnly(args[PathKeyword].ToString()).ToValue();
     }
 
-    Value SetReadOnlyCmd(IEnv _, DictionaryValue args)
+    Value SetReadOnlyCmd(DictionaryValue args)
     {
         _provider.SetReadOnly(args[PathKeyword].ToString(), args[ReadOnlyKeyword].ToBool());
         return Value.Empty;
     }
 
-    Value ReadAllCmd(IEnv _, DictionaryValue args)
+    Value ReadAllCmd(DictionaryValue args)
     {
         return _provider.ReadAll(args[FileKeyword].ToString()).ToValue();
     }
 
-    Value WriteAllCmd(IEnv _, DictionaryValue args)
+    Value WriteAllCmd(DictionaryValue args)
     {
         _provider.WriteAll(args[FileKeyword].ToString(), args[TextKeyword].ToString());
         return Value.Empty;
     }
 
-    Value DeleteCmd(IEnv _, DictionaryValue args)
+    Value DeleteCmd(DictionaryValue args)
     {
         _provider.Delete(args[PathKeyword].ToString(), args[RecursiveKeyword].ToBool());
         return Value.Empty;
     }
 
-    Value MoveCmd(IEnv _, DictionaryValue args)
+    Value MoveCmd(DictionaryValue args)
     {
         _provider.Move(args[SrcKeyword].ToString(), args[DstKeyword].ToString());
         return Value.Empty;
     }
 
-    Value CopyCmd(IEnv _, DictionaryValue args)
+    Value CopyCmd(DictionaryValue args)
     {
         _provider.Copy(args[SrcKeyword].ToString(), args[DstKeyword].ToString());
         return Value.Empty;
     }
 
-    Value PathCmd(IEnv _, DictionaryValue args)
+    Value PathCmd(DictionaryValue args)
     {
         return _provider.Path(args[PathsKeyword].ToListValue().Select(p => p.ToString())).ToValue();
     }

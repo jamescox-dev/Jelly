@@ -6,6 +6,8 @@ using System.Collections.Immutable;
 
 public class CoreLibrary : ILibrary
 {
+    static readonly StringValue LocalOnlyKeyword = new("localonly");
+
     static readonly IArgParser ForArgParser = new PatternArgParser(
         new OrPattern(
             new ExactPattern(new SequenceArgPattern(
@@ -48,6 +50,8 @@ public class CoreLibrary : ILibrary
                 new SingleArgPattern("body"))))
             );
 
+    static readonly IArgParser LsScopeItems = new StandardArgParser(new OptArg("localonly", Node.Literal(BooleanValue.False)));
+
     public void LoadIntoScope(IScope scope)
     {
         scope.DefineCommand("break", new SimpleMacro(BreakMacro));
@@ -55,8 +59,8 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("def", new SimpleMacro(DefMacro));
         scope.DefineCommand("for", new ArgParsedMacro("for", ForArgParser, ForMacro));
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
-        scope.DefineCommand("lsdef", new WrappedCommand(LsDefCmd, TypeMarshaller.Shared));
-        scope.DefineCommand("lsvar", new WrappedCommand(LsVarCmd, TypeMarshaller.Shared));
+        scope.DefineCommand("lsdef", new ArgParsedMacro("lsdef", LsScopeItems, LsDefCmd));
+        scope.DefineCommand("lsvar", new ArgParsedMacro("lsvar", LsScopeItems, LsVarCmd));
         scope.DefineCommand("raise", new SimpleMacro(RaiseMacro));
         scope.DefineCommand("return", new SimpleMacro(ReturnMacro));
         scope.DefineCommand("try", new SimpleMacro(TryMacro));
@@ -302,16 +306,18 @@ public class CoreLibrary : ILibrary
                 .Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    string[] LsDefCmd(IEnv env, bool localOnly = false)
+    Value LsDefCmd(IEnv env, DictionaryValue args)
     {
+        var localOnly = env.Evaluate(args[LocalOnlyKeyword].ToNode()).ToBool();
         var commands = env.CurrentScope.GetCommandNames(localOnly);
-        return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
+        return Node.Literal(new ListValue(commands.OrderBy(c => c, StringComparer.InvariantCulture).Select(c => c.ToValue())));
     }
 
-    string[] LsVarCmd(IEnv env, bool localOnly = false)
+    Value LsVarCmd(IEnv env, DictionaryValue args)
     {
-        var commands = env.CurrentScope.GetVariableNames(localOnly);
-        return commands.OrderBy(c => c, StringComparer.InvariantCulture).ToArray();
+        var localOnly = env.Evaluate(args[LocalOnlyKeyword].ToNode()).ToBool();
+        var variable = env.CurrentScope.GetVariableNames(localOnly);
+        return Node.Literal(new ListValue(variable.OrderBy(v => v, StringComparer.InvariantCulture).Select(c => c.ToValue())));
     }
 
     Value RaiseMacro(IEnv env, ListValue args)

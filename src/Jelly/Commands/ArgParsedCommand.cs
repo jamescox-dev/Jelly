@@ -2,7 +2,7 @@ namespace Jelly.Commands;
 
 public class ArgParsedCommand : CommandBase
 {
-    public delegate Value CommandDelegate(IEnv env, DictionaryValue args);
+    public delegate Value CommandDelegate(DictionaryValue args);
 
     public string Name { get; }
 
@@ -21,6 +21,6 @@ public class ArgParsedCommand : CommandBase
     {
         var args = EvaluateArgs(env, unevaluatedArgs);
         var parsedArgs = ArgParser.Parse(Name, args);
-        return _command(env, parsedArgs);
+        return _command(parsedArgs);
     }
 }
