@@ -47,8 +47,11 @@ public static class Node
     public static DictionaryValue Assignment(string name, DictionaryValue value) =>
         new DictionaryValue(Keywords.Type, Keywords.Assignment, Keywords.Name, name.ToValue(), Keywords.Value, value);
 
-    public static DictionaryValue Expression(params DictionaryValue[] subexpressions) =>
-        new DictionaryValue(Keywords.Type, Keywords.Expression, Keywords.SubExpressions, new ListValue(subexpressions));
+    public static DictionaryValue Assignment(string name, DictionaryValue value, int start, int end) =>
+        new DictionaryValue(Keywords.Type, Keywords.Assignment, Keywords.Name, name.ToValue(), Keywords.Value, value, Keywords.Position, ParsePosition(start, end));
+
+    public static DictionaryValue Expression(params DictionaryValue[] subExpressions) =>
+        new DictionaryValue(Keywords.Type, Keywords.Expression, Keywords.SubExpressions, new ListValue(subExpressions));
 
     public static DictionaryValue BinOp(string op, DictionaryValue a, DictionaryValue b) =>
         new DictionaryValue(Keywords.Type, Keywords.BinOp, Keywords.Op, op.ToValue(), Keywords.A, a, Keywords.B, b);

@@ -64,7 +64,7 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Assignment(
-            "name", Node.Literal(Value.Empty))); // TODO:  This need to include positions.
+            "name", Node.Literal(Value.Empty, 7, 7), 0, 7));
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class CommandParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Assignment(
-            "name", Node.Literal("Vic", 8, 11))); // TODO:  This need to include positions.
+            "name", Node.Literal("Vic", 8, 11), 0, 11));
     }
 
     [Test]

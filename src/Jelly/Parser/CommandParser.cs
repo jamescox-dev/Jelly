@@ -43,8 +43,9 @@ public class CommandParser : IParser
             {
                 throw new ParseError($"Unexpected {words[3]["type".ToValue()]} after assignment value.");
             }
-            var value = words.Count > 2 ? words[2] : Node.Literal(Value.Empty);
-            return Node.Assignment(words[0].GetString(Keywords.Name), value);
+            var value = words.Count > 2 ? words[2] : Node.Literal(Value.Empty, scanner.Position, scanner.Position);
+            var endOfValue = (int)value.ToNode()[Keywords.Position].ToDictionaryValue()[Keywords.End].ToDouble();
+            return Node.Assignment(words[0].GetString(Keywords.Name), value, start, endOfValue);
         }
 
         return words.Count > 0 ? BuildCommandNode(words, start) : null;

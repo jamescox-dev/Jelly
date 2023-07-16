@@ -138,6 +138,21 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyAnAssignmentNodeCanHaveItSourcePositionSpecified()
+    {
+        var node = Node.Assignment("username", Node.Literal("Bob".ToValue()), 8, 9);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "assignment".ToValue(),
+            "name".ToValue(), "username".ToValue(),
+            "value".ToValue(), Node.Literal("Bob".ToValue()),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 8.ToValue(),
+                "end".ToValue(), 9.ToValue())
+        ));
+    }
+
+    [Test]
     public void ADefineVariableCanBeCreatedWithTheCorrectAttributes()
     {
         var node = Node.DefineVariable("username", Node.Literal("Bob".ToValue()));
