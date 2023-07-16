@@ -1,4 +1,4 @@
-namespace Jelly.Tests;
+namespace Jelly.Runtime.Tests;
 
 [TestFixture]
 public class ScopeTests

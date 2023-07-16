@@ -1,4 +1,4 @@
-namespace Jelly.Tests;
+namespace Jelly.Tests.TestHelpers;
 
 public class TestCommand : ICommand
 {
