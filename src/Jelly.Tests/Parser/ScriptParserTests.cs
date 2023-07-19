@@ -12,7 +12,7 @@ public class ScriptParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(18);
-        node.Should().Be(Node.Script(
+        node.Should().Be(Node.Script(0, 18,
             Node.Command(Node.Literal("print", 0, 5),
             new ListValue(
                 Node.Literal("jello,", 6, 12),
@@ -29,7 +29,7 @@ public class ScriptParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Script(
+        node.Should().Be(Node.Script(0, 26,
             Node.Command(Node.Literal("print", 8, 13),
             new ListValue(
                 Node.Literal("jello,", 14, 20),
@@ -49,7 +49,7 @@ public class ScriptParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Script());
+        node.Should().Be(Node.Script(0, source.Length));
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class ScriptParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Script(
+        node.Should().Be(Node.Script(0, 34,
             Node.Command(Node.Literal("print", 0, 5),
             new ListValue(
                 Node.Literal("one", 6, 9)
@@ -85,7 +85,7 @@ public class ScriptParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(8);
-        node.Should().Be(Node.Script(
+        node.Should().Be(Node.Script(0, 8,
             Node.Command(Node.Literal("say", 1, 4),
             new ListValue(
                 Node.Literal("hi", 5, 7)
@@ -112,7 +112,7 @@ public class ScriptParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Script(
+        node.Should().Be(Node.Script(0, 8,
             Node.Command(Node.Literal("say", 0, 3),
             new ListValue(
                 Node.Literal("hi!}", 4, 8)

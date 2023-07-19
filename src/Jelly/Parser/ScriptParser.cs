@@ -25,6 +25,7 @@ public class ScriptParser : IParser
 
     public DictionaryValue? Parse(Scanner scanner)
     {
+        var start = scanner.Position;
         var commands = new List<DictionaryValue>();
         var success = true;
 
@@ -74,6 +75,6 @@ public class ScriptParser : IParser
             throw Error.MissingEndToken("Unexpected end-of-file.");
         }
 
-        return Node.Script(commands.ToArray());
+        return Node.Script(start, scanner.Position, commands.ToArray());
     }
 }

@@ -55,7 +55,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Script(
+        node.Should().Be(Node.Script(0, 9,
             Node.Command(Node.Literal("add", 1, 4),
             new ListValue(
                 Node.Literal("1", 5, 6),
@@ -106,6 +106,6 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Expression(Node.Literal(42.0.ToValue(), 1, 3)));
+        node.Should().Be(Node.Expression(0, 4, Node.Literal(42.0.ToValue(), 1, 3)));
     }
 }

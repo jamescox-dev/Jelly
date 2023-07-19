@@ -1,8 +1,3 @@
-
-
-
-
-
 namespace Jelly.Parser;
 
 public class ExpressionParser : IParser
@@ -18,12 +13,13 @@ public class ExpressionParser : IParser
 
     public DictionaryValue? Parse(Scanner scanner)
     {
+        var start = scanner.Position;
         DictionaryValue? functionName = null;
         var subExpressions = new List<DictionaryValue>();
-        var operators = new Stack<Operator>();
+        var operators = new Stack<OperatorAndNode>();
         var operands = new Stack<DictionaryValue>();
 
-        operators.Push(Operator.None);
+        operators.Push(new(Operator.None, Node.Literal(Value.Empty, scanner.Position, scanner.Position)));
 
         var prevWasOperator = true;
         if (scanner.AdvanceIf(s => s.IsExpressionBegin))
@@ -56,11 +52,11 @@ public class ExpressionParser : IParser
                     }
                     else
                     {
-                        while (op.GetPrecedence() < operators.Peek().GetPrecedence())
+                        while (op.GetPrecedence() < operators.Peek().Operator.GetPrecedence())
                         {
                             PopOperator();
                         }
-                        operators.Push(op);
+                        operators.Push(new(op, word));
                     }
                 }
                 else
@@ -95,7 +91,7 @@ public class ExpressionParser : IParser
 
             BuildSubExpression();
 
-            return Node.Expression(subExpressions.ToArray());
+            return Node.Expression(start, scanner.Position, subExpressions.ToArray());
         }
 
         return null;
@@ -110,7 +106,7 @@ public class ExpressionParser : IParser
 
             if (operands.Count == 0 && (subExpressions.Count > 0 || includeEmpty))
             {
-                subExpressions.Add(Node.Literal(Value.Empty));
+                subExpressions.Add(Node.Literal(Value.Empty, scanner.Position - 1, scanner.Position - 1));
             }
             else if (operands.Count > 0)
             {
@@ -128,7 +124,7 @@ public class ExpressionParser : IParser
 
         void PopOperator()
         {
-            var op = operators.Peek();
+            var op = operators.Peek().Operator;
             if (op.IsBinaryOperator())
             {
                 PopBinaryOperator();
@@ -143,15 +139,16 @@ public class ExpressionParser : IParser
         {
             var op = operators.Pop();
             var a = operands.Pop();
-            operands.Push(Node.UniOp(op.GetName(), a));
+            var uniOp = Node.Reposition(Node.UniOp(op.Operator.GetName(), a), op.Node, a);
+            operands.Push(uniOp);
         }
 
         void PopBinaryOperator()
         {
-            var op = operators.Pop();
+            var op = operators.Pop().Operator;
             var b = operands.Pop();
             var a = operands.Pop();
-            operands.Push(Node.BinOp(op.GetName(), a, b));
+            operands.Push(Node.Reposition(Node.BinOp(op.GetName(), a, b), a, b));
         }
     }
 
@@ -188,5 +185,17 @@ public class ExpressionParser : IParser
     static Operator GetOperatorFromLiteral(DictionaryValue word)
     {
         return ScannerConfig.Default.OperatorNames[Node.GetLiteralValue(word).ToString()];
+    }
+
+    class OperatorAndNode
+    {
+        public OperatorAndNode(Operator op, DictionaryValue node)
+        {
+            Operator = op;
+            Node = node;
+        }
+
+        public Operator Operator { get; }
+        public DictionaryValue Node { get; }
     }
 }

@@ -108,6 +108,6 @@ public class CommandParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Expression(Node.BinOp("add", Node.Variable("a", 1, 3), Node.Variable("b", 6, 8))));
+        node.Should().Be(Node.Expression(0, 9, Node.BinOp(1, 8, "add", Node.Variable("a", 1, 3), Node.Variable("b", 6, 8))));
     }
 }

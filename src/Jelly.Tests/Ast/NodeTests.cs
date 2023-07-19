@@ -95,6 +95,23 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyAScriptNodeCanHaveItSourcePositionSpecified()
+    {
+        var command1 = Node.Command(Node.Literal("command1".ToValue()), new ListValue());
+        var command2 = Node.Command(Node.Literal("command2".ToValue()), new ListValue());
+
+        var node = Node.Script(100, 200, command1, command2);
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "script".ToValue(),
+            "commands".ToValue(), new ListValue(command1, command2),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 100.ToValue(),
+                "end".ToValue(), 200.ToValue())
+        ));
+    }
+
+    [Test]
     public void ACompositeNodeCanBeCreatedWithTheCorrectAttributes()
     {
         var part1 = Node.Literal("hello".ToValue());
@@ -175,6 +192,19 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyAnExpressionNodeCanHaveItSourcePositionSpecified()
+    {
+        var node = Node.Expression(0, 1, Node.Literal("a".ToValue()), Node.Literal("b".ToValue()));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "expression".ToValue(),
+            "subexpressions".ToValue(), new ListValue(Node.Literal("a".ToValue()), Node.Literal("b".ToValue())),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 0.ToValue(),
+                "end".ToValue(), 1.ToValue())));
+    }
+
+    [Test]
     public void ABinaryOperatorCanBeCreatedWithTheCorrectAttributes()
     {
         var node = Node.BinOp("add", Node.Variable("a"), Node.Variable("b"));
@@ -188,6 +218,22 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyABinaryOperatorCanHaveItSourcePositionSpecified()
+    {
+        var node = Node.BinOp(5, 6, "add", Node.Variable("a"), Node.Variable("b"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "binop".ToValue(),
+            "op".ToValue(), "add".ToValue(),
+            "a".ToValue(), Node.Variable("a"),
+            "b".ToValue(), Node.Variable("b"),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 5.ToValue(),
+                "end".ToValue(), 6.ToValue())
+        ));
+    }
+
+    [Test]
     public void AUnaryOperatorCanBeCreateWithTheCorrectAttributes()
     {
         var node = Node.UniOp("neg", Node.Variable("a"));
@@ -196,6 +242,21 @@ public class NodeTests
             "type".ToValue(), "uniop".ToValue(),
             "op".ToValue(), "neg".ToValue(),
             "a".ToValue(), Node.Variable("a")
+        ));
+    }
+
+    [Test]
+    public void OptionallyAUnaryOperatorCanHaveItSourcePositionSpecified()
+    {
+        var node = Node.UniOp(7, 8, "neg", Node.Variable("a"));
+
+        node.Should().Be(new DictionaryValue(
+            "type".ToValue(), "uniop".ToValue(),
+            "op".ToValue(), "neg".ToValue(),
+            "a".ToValue(), Node.Variable("a"),
+            "position".ToValue(), new DictionaryValue(
+                "start".ToValue(), 7.ToValue(),
+                "end".ToValue(), 8.ToValue())
         ));
     }
 
@@ -461,13 +522,67 @@ public class NodeTests
     }
 
     [Test]
-    public void ANodeCanBeReposition()
+    public void ANodeCanBeRepositioned()
     {
         var node = Node.Literal("test", 1, 2);
 
         var repositionedNode = Node.Reposition(node, 3, 4);
 
         repositionedNode.Should().Be(Node.Literal("test", 3, 4));
+    }
+
+    [Test]
+    public void ANodeCanBeRepositionedToTheSamePositionAsAnotherNode()
+    {
+        var other = Node.Literal("a", 3, 4);
+        var node = Node.Literal("test", 1, 2);
+
+        var repositionedNode = Node.Reposition(node, other);
+
+        repositionedNode.Should().Be(Node.Literal("test", 3, 4));
+    }
+
+    [Test]
+    public void ANodeIsNotRepositionedToTheSamePositionAsAnotherNodeIfTheOtherNodeDoesNotHaveAPosition()
+    {
+        var other = Node.Literal("a");
+        var node = Node.Literal("test", 1, 2);
+
+        var repositionedNode = Node.Reposition(node, other);
+
+        repositionedNode.Should().Be(Node.Literal("test", 1, 2));
+    }
+
+    [Test]
+    public void ANodeCanBeRepositionedToTheStartOfOneNodeAndTheEndOfAnotherWhenBothNodesHaveAPosition()
+    {
+        var start = Node.Literal("a", 3, 4);
+        var end = Node.Literal("a", 5, 6);
+        var node = Node.Literal("test", 1, 2);
+
+        var repositionedNode = Node.Reposition(node, start, end);
+
+        repositionedNode.Should().Be(Node.Literal("test", 3, 6));
+    }
+
+    [Test]
+    public void ANodeIsNotRepositionedToStartOfOneNodeAndTheEndOfAnotherIfEitherOfTheOtherNodeDoesNotHaveAPosition()
+    {
+        var start1 = Node.Literal("a");
+        var end1 = Node.Literal("a", 5, 6);
+        var node1 = Node.Literal("test", 1, 2);
+
+        var repositionedNode1 = Node.Reposition(node1, start1, end1);
+
+        repositionedNode1.Should().Be(Node.Literal("test", 1, 2));
+
+        var start2 = Node.Literal("a", 3, 4);
+        var end2 = Node.Literal("a");
+        var node2 = Node.Literal("test", 1, 2);
+
+        var repositionedNode2 = Node.Reposition(node2, start2, end2);
+
+        repositionedNode2.Should().Be(Node.Literal("test", 1, 2));
     }
 
     [Test]

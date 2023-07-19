@@ -38,6 +38,9 @@ public static class Node
     public static DictionaryValue Script(params DictionaryValue[] commands) =>
         new DictionaryValue(Keywords.Type, Keywords.Script, Keywords.Commands, commands.ToValue());
 
+    public static DictionaryValue Script(int start, int end, params DictionaryValue[] commands) =>
+        new DictionaryValue(Keywords.Type, Keywords.Script, Keywords.Commands, commands.ToValue(), Keywords.Position, ParsePosition(start, end));
+
     public static DictionaryValue Composite(params DictionaryValue[] parts) =>
         new DictionaryValue(Keywords.Type, Keywords.Composite, Keywords.Parts, parts.ToValue());
 
@@ -53,11 +56,20 @@ public static class Node
     public static DictionaryValue Expression(params DictionaryValue[] subExpressions) =>
         new DictionaryValue(Keywords.Type, Keywords.Expression, Keywords.SubExpressions, new ListValue(subExpressions));
 
+    public static DictionaryValue Expression(int start, int end, params DictionaryValue[] subExpressions) =>
+        new DictionaryValue(Keywords.Type, Keywords.Expression, Keywords.SubExpressions, new ListValue(subExpressions), Keywords.Position, ParsePosition(start, end));
+
     public static DictionaryValue BinOp(string op, DictionaryValue a, DictionaryValue b) =>
         new DictionaryValue(Keywords.Type, Keywords.BinOp, Keywords.Op, op.ToValue(), Keywords.A, a, Keywords.B, b);
 
+    public static DictionaryValue BinOp(int start, int end, string op, DictionaryValue a, DictionaryValue b) =>
+        new DictionaryValue(Keywords.Type, Keywords.BinOp, Keywords.Op, op.ToValue(), Keywords.A, a, Keywords.B, b, Keywords.Position, ParsePosition(start, end));
+
     public static DictionaryValue UniOp(string op, DictionaryValue a) =>
         new DictionaryValue(Keywords.Type, Keywords.UniOp, Keywords.Op, op.ToValue(), Keywords.A, a);
+
+    public static DictionaryValue UniOp(int start, int end, string op, DictionaryValue a) =>
+        new DictionaryValue(Keywords.Type, Keywords.UniOp, Keywords.Op, op.ToValue(), Keywords.A, a, Keywords.Position, ParsePosition(start, end));
 
     public static DictionaryValue DefineVariable(string name, DictionaryValue value) =>
         new DictionaryValue(Keywords.Type, Keywords.DefineVariable, Keywords.Name, name.ToValue(), Keywords.Value, value);
@@ -161,6 +173,40 @@ public static class Node
         );
 
     public static DictionaryValue Reposition(DictionaryValue node, int start, int end) => node.SetItem(Keywords.Position, ParsePosition(start, end));
+
+    public static DictionaryValue Reposition(DictionaryValue node, DictionaryValue other)
+    {
+        var otherPos = GetPosition(other);
+        if (otherPos is not null)
+        {
+            return node.SetItem(Keywords.Position, otherPos);
+        }
+        return node;
+    }
+
+    public static DictionaryValue Reposition(DictionaryValue node, DictionaryValue start, DictionaryValue end)
+    {
+        var startPos = GetPosition(start);
+        var endPos = GetPosition(end);
+        if (startPos is not null && endPos is not null)
+        {
+            return node.SetItem(Keywords.Position, ParsePosition((int)startPos[Keywords.Start].ToDouble(), (int)endPos[Keywords.End].ToDouble()));
+        }
+        return node;
+    }
+
+    public static DictionaryValue? GetPosition(DictionaryValue node)
+    {
+        if (node.TryGetValue(Keywords.Position, out var positionValue))
+        {
+            var positionDictionary = positionValue.ToNode();
+            if (positionDictionary.ContainsKey(Keywords.Start) && positionDictionary.ContainsKey(Keywords.End))
+            {
+                return positionDictionary;
+            }
+        }
+        return null;
+    }
 
     public static bool IsLiteral(DictionaryValue node) => IsType(node, Keywords.Literal);
 
