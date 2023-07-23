@@ -11,13 +11,13 @@ public class ExpressionParser : IParser
         _wordParser = new(ScannerConfig.Default.ExpressionEnd, subscriptParser, this, true);
     }
 
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
         var start = scanner.Position;
-        DictionaryValue? functionName = null;
-        var subExpressions = new List<DictionaryValue>();
+        DictValue? functionName = null;
+        var subExpressions = new List<DictValue>();
         var operators = new Stack<OperatorAndNode>();
-        var operands = new Stack<DictionaryValue>();
+        var operands = new Stack<DictValue>();
 
         operators.Push(new(Operator.None, Node.Literal(Value.Empty, scanner.Position, scanner.Position)));
 
@@ -152,7 +152,7 @@ public class ExpressionParser : IParser
         }
     }
 
-    IEnumerable<DictionaryValue> ParseWords(Scanner scanner)
+    IEnumerable<DictValue> ParseWords(Scanner scanner)
     {
         var endFound = false;
         while (!scanner.IsEof)
@@ -177,25 +177,25 @@ public class ExpressionParser : IParser
         }
     }
 
-    static bool IsOperator(DictionaryValue word)
+    static bool IsOperator(DictValue word)
     {
         return Node.IsLiteral(word) && ScannerConfig.Default.OperatorNames.ContainsKey(Node.GetLiteralValue(word).ToString());
     }
 
-    static Operator GetOperatorFromLiteral(DictionaryValue word)
+    static Operator GetOperatorFromLiteral(DictValue word)
     {
         return ScannerConfig.Default.OperatorNames[Node.GetLiteralValue(word).ToString()];
     }
 
     class OperatorAndNode
     {
-        public OperatorAndNode(Operator op, DictionaryValue node)
+        public OperatorAndNode(Operator op, DictValue node)
         {
             Operator = op;
             Node = node;
         }
 
         public Operator Operator { get; }
-        public DictionaryValue Node { get; }
+        public DictValue Node { get; }
     }
 }

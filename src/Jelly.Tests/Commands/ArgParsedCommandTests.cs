@@ -19,8 +19,8 @@ public class ArgParsedCommandTests
     [Test]
     public void TheCommandDelegateIsCalledWithTheParsedAndEvaluatedArgumentsAndTheResultReturned()
     {
-        DictionaryValue? argsPassedToCommand = null;
-        Value TestCommandFunc(DictionaryValue args)
+        DictValue? argsPassedToCommand = null;
+        Value TestCommandFunc(DictValue args)
         {
             argsPassedToCommand = args;
             return "hello, jelly".ToValue();
@@ -32,7 +32,7 @@ public class ArgParsedCommandTests
         var result = command.Invoke(env, new ListValue(Node.Literal("jelly")));
 
         result.Should().Be("hello, jelly".ToValue());
-        argsPassedToCommand.Should().Be(new DictionaryValue(
+        argsPassedToCommand.Should().Be(new DictValue(
             "name".ToValue(), "jelly".ToValue()
         ));
     }

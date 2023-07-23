@@ -49,73 +49,73 @@ public class IoLibrary : ILibrary
         scope.DefineCommand("io", ioCmd);
     }
 
-    Value ExistsCmd(DictionaryValue args)
+    Value ExistsCmd(DictValue args)
     {
         return _provider.Exists(args[PathKeyword].ToString()).ToValue();
     }
 
-    Value GetWorkingDirCmd(DictionaryValue args)
+    Value GetWorkingDirCmd(DictValue args)
     {
         return _provider.GetWorkingDir().ToValue();
     }
 
-    Value SetWorkingDirCmd(DictionaryValue args)
+    Value SetWorkingDirCmd(DictValue args)
     {
         _provider.SetWorkingDir(args[PathKeyword].ToString());
         return Value.Empty;
     }
 
-    Value IsDirCmd(DictionaryValue args)
+    Value IsDirCmd(DictValue args)
     {
         return _provider.IsDir(args[PathKeyword].ToString()).ToValue();
     }
 
-    Value ListDirCmd(DictionaryValue args)
+    Value ListDirCmd(DictValue args)
     {
         return _provider.ListDir(args[PathKeyword].ToString()).Select(p => p.ToValue()).ToValue();
     }
 
-    Value IsReadOnlyCmd(DictionaryValue args)
+    Value IsReadOnlyCmd(DictValue args)
     {
         return _provider.IsReadOnly(args[PathKeyword].ToString()).ToValue();
     }
 
-    Value SetReadOnlyCmd(DictionaryValue args)
+    Value SetReadOnlyCmd(DictValue args)
     {
         _provider.SetReadOnly(args[PathKeyword].ToString(), args[ReadOnlyKeyword].ToBool());
         return Value.Empty;
     }
 
-    Value ReadAllCmd(DictionaryValue args)
+    Value ReadAllCmd(DictValue args)
     {
         return _provider.ReadAll(args[FileKeyword].ToString()).ToValue();
     }
 
-    Value WriteAllCmd(DictionaryValue args)
+    Value WriteAllCmd(DictValue args)
     {
         _provider.WriteAll(args[FileKeyword].ToString(), args[TextKeyword].ToString());
         return Value.Empty;
     }
 
-    Value DeleteCmd(DictionaryValue args)
+    Value DeleteCmd(DictValue args)
     {
         _provider.Delete(args[PathKeyword].ToString(), args[RecursiveKeyword].ToBool());
         return Value.Empty;
     }
 
-    Value MoveCmd(DictionaryValue args)
+    Value MoveCmd(DictValue args)
     {
         _provider.Move(args[SrcKeyword].ToString(), args[DstKeyword].ToString());
         return Value.Empty;
     }
 
-    Value CopyCmd(DictionaryValue args)
+    Value CopyCmd(DictValue args)
     {
         _provider.Copy(args[SrcKeyword].ToString(), args[DstKeyword].ToString());
         return Value.Empty;
     }
 
-    Value PathCmd(DictionaryValue args)
+    Value PathCmd(DictValue args)
     {
         return _provider.Path(args[PathsKeyword].ToListValue().Select(p => p.ToString())).ToValue();
     }

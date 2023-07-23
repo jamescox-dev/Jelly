@@ -39,7 +39,7 @@ public class PatternMatchingArgParserTest
 
         var result = parser.Parse("test_command", ListValue.EmptyList);
 
-        result.Should().Be(new DictionaryValue(
+        result.Should().Be(new DictValue(
             "one".ToValue(), 1.ToValue(),
             "two".ToValue(), 2.ToValue()
         ));

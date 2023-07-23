@@ -10,7 +10,7 @@ public class StandardArgParserTests
 
         var parsedArgs = parser.Parse("test1", ListValue.EmptyList);
 
-        parsedArgs.Should().Be(DictionaryValue.EmptyDictionary);
+        parsedArgs.Should().Be(DictValue.EmptyDictionary);
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class StandardArgParserTests
 
         var args = parser.Parse("test", new ListValue(Node.Literal("1st"), Node.Literal("2nd")));
 
-        args.Should().Be(new DictionaryValue(
+        args.Should().Be(new DictValue(
             "a".ToValue(), Node.Literal("1st"),
             "b".ToValue(), Node.Literal("2nd")
         ));
@@ -73,7 +73,7 @@ public class StandardArgParserTests
 
         var args = parser.Parse("test_optionals", new ListValue());
 
-        args.Should().Be(new DictionaryValue(
+        args.Should().Be(new DictValue(
             "optional".ToValue(), Value.Empty,
             "also_optional".ToValue(), "DEFAULT".ToValue()
         ));
@@ -86,7 +86,7 @@ public class StandardArgParserTests
 
         var args = parser.Parse("takes_options", new ListValue("this".ToValue()));
 
-        args.Should().Be(new DictionaryValue(
+        args.Should().Be(new DictValue(
             "opt1".ToValue(), "this".ToValue(),
             "opt2".ToValue(), "that".ToValue()
         ));
@@ -110,7 +110,7 @@ public class StandardArgParserTests
 
         var args = parser.Parse("test_the_rest", passedArgs);
 
-        args.Should().Be(new DictionaryValue(
+        args.Should().Be(new DictValue(
             "and_the_rest...".ToValue(), passedArgs
         ));
     }
@@ -123,7 +123,7 @@ public class StandardArgParserTests
 
         var args = parser.Parse("test_the_rest", passedArgs);
 
-        args.Should().Be(new DictionaryValue(
+        args.Should().Be(new DictValue(
             "req".ToValue(), true.ToValue(),
             "opt".ToValue(), 2.ToValue(),
             "rest".ToValue(), new ListValue("three".ToValue())

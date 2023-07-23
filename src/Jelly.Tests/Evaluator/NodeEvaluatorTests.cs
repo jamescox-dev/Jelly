@@ -11,11 +11,11 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
         var test2Interpreter = new TestEvaluator();
         nodeEvaluator.AddEvaluator("type1", test1Interpreter);
         nodeEvaluator.AddEvaluator("type2", test2Interpreter);
-        var test1Node = new DictionaryValue(new KeyValuePair<Value, Value>[] {
+        var test1Node = new DictValue(new KeyValuePair<Value, Value>[] {
             new(new StringValue("type"), new StringValue("type1")),
             new(new StringValue("message"), new StringValue("hi")),
         });
-        var test2Node = new DictionaryValue(new KeyValuePair<Value, Value>[] {
+        var test2Node = new DictValue(new KeyValuePair<Value, Value>[] {
             new(new StringValue("type"), new StringValue("type2")),
             new(new StringValue("message"), new StringValue("bye")),
         });
@@ -37,7 +37,7 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
     public void WhenTheTypeOfTheNodeIsMissingAnErrorIsThrown()
     {
         IEvaluator evaluator = new Evaluator();
-        var invalidNode = new DictionaryValue();
+        var invalidNode = new DictValue();
 
         this.Invoking(e => e.Evaluate(invalidNode))
             .Should().Throw<Error>().WithMessage("Can not evaluate node, no type specified.")
@@ -48,7 +48,7 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
     public void WhenTheTypeOfNodeIsNotKnownToTheEvaluatorAEvaluationErrorIsThrown()
     {
         IEvaluator evaluator = new Evaluator();
-        var invalidNode = new DictionaryValue(
+        var invalidNode = new DictValue(
             "type".ToValue(), "invalid".ToValue()
         );
 
@@ -65,10 +65,10 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
     public class TestEvaluator : IEvaluator
     {
         public IEnv? EnvironmentPassedToEvaluate { get; private set; }
-        public DictionaryValue? NodeEvaluated { get; private set; }
+        public DictValue? NodeEvaluated { get; private set; }
         public IEvaluator? EvaluatorPassedToEvaluate { get; private set; }
 
-        public Value Evaluate(IEnv env, DictionaryValue node)
+        public Value Evaluate(IEnv env, DictValue node)
         {
             EnvironmentPassedToEvaluate = env;
             NodeEvaluated = node;

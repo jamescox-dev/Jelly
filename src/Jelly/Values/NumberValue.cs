@@ -54,7 +54,7 @@ public class NumberValue : Value
 
     public override ListValue ToListValue() => new ListValue(this);
 
-    public override DictionaryValue ToDictionaryValue() => new DictionaryValue(this);
+    public override DictValue ToDictionaryValue() => new DictValue(this);
 
     public override bool ToBool() => double.IsNaN(_value) || _value != 0.0;
 

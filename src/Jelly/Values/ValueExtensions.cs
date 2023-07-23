@@ -16,10 +16,10 @@ public static class ValueExtensions
     public static ListValue ToValue(this IEnumerable<Value> list) =>
         new(list);
 
-    public static DictionaryValue ToValue(this IEnumerable<KeyValuePair<Value, Value>> items) =>
+    public static DictValue ToValue(this IEnumerable<KeyValuePair<Value, Value>> items) =>
         new(items);
 
-    public static DictionaryValue ToDictionaryValue(this IEnumerable<Value> items) =>
+    public static DictValue ToDictionaryValue(this IEnumerable<Value> items) =>
         new(items);
 
     public static int ToIndexOf(this Value indexValue, ListValue ofList) => ToIndexOfLength(indexValue, ofList.Count);
@@ -41,25 +41,25 @@ public static class ValueExtensions
         throw new ValueError("index must be a finite number.");
     }
 
-    public static DictionaryValue ToNode(this Value value) =>
+    public static DictValue ToNode(this Value value) =>
         value.ToDictionaryValue();
 
-    public static DictionaryValue GetNode(this DictionaryValue dict, string key) =>
+    public static DictValue GetNode(this DictValue dict, string key) =>
         dict[key.ToValue()].ToDictionaryValue();
 
-    public static DictionaryValue GetNode(this DictionaryValue dict, Value key) =>
+    public static DictValue GetNode(this DictValue dict, Value key) =>
         dict[key].ToDictionaryValue();
 
-    public static DictionaryValue? GetNodeOrNull(this DictionaryValue dict, Value key) =>
+    public static DictValue? GetNodeOrNull(this DictValue dict, Value key) =>
         dict.TryGetValue(key, out var value) ? value.ToDictionaryValue() : null;
 
-    public static string GetString(this DictionaryValue dict, Value key) =>
+    public static string GetString(this DictValue dict, Value key) =>
         dict[key].ToString();
 
-    public static string? GetStringOrNull(this DictionaryValue dict, Value key) =>
+    public static string? GetStringOrNull(this DictValue dict, Value key) =>
         dict.TryGetValue(key, out var value) ? value.ToString() : null;
 
-    public static ListValue GetList(this DictionaryValue dict, Value key) =>
+    public static ListValue GetList(this DictValue dict, Value key) =>
         dict[key].ToListValue();
 
     // TODO:  This needs testing, and should be a command line option...
@@ -71,7 +71,7 @@ public static class ValueExtensions
             NumberValue number => number.ToDouble(),
             StringValue str => str.ToString(),
             ListValue list => list.Select(v => ToClr(v)).ToList(),
-            DictionaryValue dict => new Dictionary<string, object?>(
+            DictValue dict => new Dictionary<string, object?>(
                 dict.ToEnumerable().Select(kvp => new KeyValuePair<string, object?>(ToClr(kvp.Key)?.ToString() ?? string.Empty, ToClr(kvp.Value)))),
             _ => null
         };

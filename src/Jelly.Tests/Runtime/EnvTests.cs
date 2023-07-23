@@ -7,8 +7,8 @@ public class EnvTests
 {
     IEnv _environment = null!;
 
-    DictionaryValue _testNode = null!;
-    DictionaryValue _errorTestNode = null!;
+    DictValue _testNode = null!;
+    DictValue _errorTestNode = null!;
 
     Mock<IParser> _mockParser = null!;
     Mock<IEvaluator> _mockEvaluator = null!;

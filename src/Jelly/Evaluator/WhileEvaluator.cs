@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 internal class WhileEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         var condition = node.GetNode(Keywords.Condition);
         var body = node.GetNode(Keywords.Body);

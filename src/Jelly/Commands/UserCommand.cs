@@ -4,7 +4,7 @@ using Jelly.Evaluator;
 
 public class UserCommand : CommandBase
 {
-    public DictionaryValue Body => _body;
+    public DictValue Body => _body;
 
     public IReadOnlyCollection<string> RequiredArgNames => _requiredArgNames;
 
@@ -17,13 +17,13 @@ public class UserCommand : CommandBase
     readonly string[] _requiredArgNames;
     readonly (string, Value)[] _optionalArgs;
     readonly string? _restArgName;
-    readonly DictionaryValue _body;
+    readonly DictValue _body;
 
     public UserCommand(
         IEnumerable<string> requiredArgNames,
         IEnumerable<(string, Value)> optionalArgs,
         string? restArgName,
-        DictionaryValue body)
+        DictValue body)
     {
         _requiredArgNames = requiredArgNames.ToArray();
         _optionalArgs = optionalArgs.ToArray();

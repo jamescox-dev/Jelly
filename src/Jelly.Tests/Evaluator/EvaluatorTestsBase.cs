@@ -8,7 +8,7 @@ public abstract class EvaluatorTestsBase
 
     protected Env Environment { get; private set; } = null!;
 
-    protected Value Evaluate(DictionaryValue node) => Evaluator.Evaluate(Environment, node);
+    protected Value Evaluate(DictValue node) => Evaluator.Evaluate(Environment, node);
 
     [SetUp]
     public virtual void Setup()

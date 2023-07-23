@@ -59,8 +59,8 @@ public class TypeMarshallerTests
 
         var jellyValue = _marshaller.Marshal(clrValue);
 
-        jellyValue.GetType().Should().Be(typeof(DictionaryValue));
-        jellyValue.Should().Be(new DictionaryValue(
+        jellyValue.GetType().Should().Be(typeof(DictValue));
+        jellyValue.Should().Be(new DictValue(
             NumberValue.One, 2.0.ToValue(),
             BoolValue.True, "false".ToValue(),
             "this".ToValue(), new ListValue("that".ToValue())

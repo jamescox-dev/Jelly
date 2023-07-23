@@ -5,7 +5,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
 {
     List<double> _recordedIterators = null!;
     TestCommand _testCommand = null!;
-    DictionaryValue _testBody = null!;
+    DictValue _testBody = null!;
     SimpleCommand _recordCommand = null!;
 
     [Test]

@@ -292,7 +292,7 @@ public class CoreLibraryTests
             var result = forCmd.Invoke(_env, new ListValue(
                 Node.Literal("k"),
                 Node.Literal("of"),
-                Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
+                Node.Literal(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
                 Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("k"))))
             ));
 
@@ -313,7 +313,7 @@ public class CoreLibraryTests
                 Node.Literal("k"),
                 Node.Literal("v"),
                 Node.Literal("of"),
-                Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
+                Node.Literal(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
                 Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("k"), Node.Variable("v"))))
             ));
 
@@ -334,7 +334,7 @@ public class CoreLibraryTests
                 Node.Variable("kv"),
                 Node.Variable("vv"),
                 Node.Literal("of"),
-                Node.Literal(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
+                Node.Literal(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())),
                 Node.Script(Node.Command(Node.Literal("bodyCommand"), new ListValue(Node.Variable("kv"), Node.Variable("vv"))))
             ));
 

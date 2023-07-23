@@ -6,7 +6,7 @@ public class ShellTests
     Shell _shell = null!;
 
     ShellConfig _config = null!;
-    DictionaryValue _expectedParsedScript = null!;
+    DictValue _expectedParsedScript = null!;
 
     FakeReaderWriter _fakeReaderWriter = null!;
     Mock<IEnv> _mockEnv = null!;
@@ -71,7 +71,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _mockEnv.Verify(m => m.Evaluate(It.IsAny<DictionaryValue>()), Times.Never);
+        _mockEnv.Verify(m => m.Evaluate(It.IsAny<DictValue>()), Times.Never);
     }
 
     [Test]
@@ -102,7 +102,7 @@ public class ShellTests
     public void IfEvaluatingTheInputThrowsAnErrorTheErrorIsWritten()
     {
         _fakeReaderWriter.EnqueueInput("print jello, world");
-        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictionaryValue>()))
+        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictValue>()))
             .Throws(Error.Name("Unknown variable!"));
 
         _shell.Repl();
@@ -116,7 +116,7 @@ public class ShellTests
     public void IfEvaluatingTheInputThrowsAnErrorWithAStartAndEndPositionTheErrorIsWrittenWithPositionInformation()
     {
         _fakeReaderWriter.EnqueueInput("print hello, world\nprint jello, world");
-        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictionaryValue>()))
+        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictValue>()))
             .Throws(new Error("/error/wobbly/", "Wobbly!") { StartPosition = 25, EndPosition = 30 });
 
         _shell.Repl();
@@ -248,13 +248,13 @@ public class ShellTests
     {
         _shell.RunScript("print jello, world");
 
-        _mockEnv.Verify(m => m.Evaluate(It.IsAny<DictionaryValue>()), Times.Once);
+        _mockEnv.Verify(m => m.Evaluate(It.IsAny<DictValue>()), Times.Once);
     }
 
     [Test]
     public void IfAErrorIsThrownItIsDisplayedToTheUserAndAnErrorCodeIsReturned()
     {
-        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictionaryValue>()))
+        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictValue>()))
             .Throws(Error.Name("Unknown variable!"));
 
         var result = _shell.RunScript("print jello, world");
@@ -297,10 +297,10 @@ public class ShellTests
             .Throws(Error.MissingEndToken("Oh!  No!"));
 
         _mockEnv.Setup(m => m.Parse("noop"))
-            .Returns(new DictionaryValue());
+            .Returns(new DictValue());
 
         _mockEnv.Setup(m => m.Evaluate(_expectedParsedScript)).Returns("the result!".ToValue());
-        _mockEnv.Setup(m => m.Evaluate(new DictionaryValue())).Returns(Value.Empty);
+        _mockEnv.Setup(m => m.Evaluate(new DictValue())).Returns(Value.Empty);
 
         _shell = new Shell(
             _fakeReaderWriter,

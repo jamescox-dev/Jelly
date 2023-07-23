@@ -8,7 +8,7 @@ public class NodeTests
     {
         var node = Node.Literal("jello, world".ToValue());
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "literal".ToValue(),
             "value".ToValue(), "jello, world".ToValue()));
     }
@@ -18,10 +18,10 @@ public class NodeTests
     {
         var node = Node.Literal("jello, world".ToValue(), 10, 20);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "literal".ToValue(),
             "value".ToValue(), "jello, world".ToValue(),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 10.ToValue(),
                 "end".ToValue(), 20.ToValue())));
     }
@@ -31,7 +31,7 @@ public class NodeTests
     {
         var node = Node.Variable("answer");
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "variable".ToValue(),
             "name".ToValue(), "answer".ToValue()));
     }
@@ -41,10 +41,10 @@ public class NodeTests
     {
         var node = Node.Variable("answer", 1, 2);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "variable".ToValue(),
             "name".ToValue(), "answer".ToValue(),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 1.ToValue(),
                 "end".ToValue(), 2.ToValue())));
     }
@@ -57,7 +57,7 @@ public class NodeTests
 
         var node = Node.Command(name, args);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "command".ToValue(),
             "name".ToValue(), name,
             "args".ToValue(), args));
@@ -71,11 +71,11 @@ public class NodeTests
 
         var node = Node.Command(name, args, 3, 141);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "command".ToValue(),
             "name".ToValue(), name,
             "args".ToValue(), args,
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 3.ToValue(),
                 "end".ToValue(), 141.ToValue())));
     }
@@ -88,7 +88,7 @@ public class NodeTests
 
         var node = Node.Script(command1, command2);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "script".ToValue(),
             "commands".ToValue(), new ListValue(command1, command2)
         ));
@@ -102,10 +102,10 @@ public class NodeTests
 
         var node = Node.Script(100, 200, command1, command2);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "script".ToValue(),
             "commands".ToValue(), new ListValue(command1, command2),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 100.ToValue(),
                 "end".ToValue(), 200.ToValue())
         ));
@@ -119,7 +119,7 @@ public class NodeTests
 
         var node = Node.Composite(part1, part2);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "composite".ToValue(),
             "parts".ToValue(), new ListValue(part1, part2)
         ));
@@ -133,10 +133,10 @@ public class NodeTests
 
         var node = Node.Composite(100, 120, part1, part2);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "composite".ToValue(),
             "parts".ToValue(), new ListValue(part1, part2),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 100.ToValue(),
                 "end".ToValue(), 120.ToValue())
         ));
@@ -147,7 +147,7 @@ public class NodeTests
     {
         var node = Node.Assignment("username", Node.Literal("Bob".ToValue()));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "assignment".ToValue(),
             "name".ToValue(), "username".ToValue(),
             "value".ToValue(), Node.Literal("Bob".ToValue())
@@ -159,11 +159,11 @@ public class NodeTests
     {
         var node = Node.Assignment("username", Node.Literal("Bob".ToValue()), 8, 9);
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "assignment".ToValue(),
             "name".ToValue(), "username".ToValue(),
             "value".ToValue(), Node.Literal("Bob".ToValue()),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 8.ToValue(),
                 "end".ToValue(), 9.ToValue())
         ));
@@ -174,7 +174,7 @@ public class NodeTests
     {
         var node = Node.DefineVariable("username", Node.Literal("Bob".ToValue()));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "defvariable".ToValue(),
             "name".ToValue(), "username".ToValue(),
             "value".ToValue(), Node.Literal("Bob".ToValue())
@@ -186,7 +186,7 @@ public class NodeTests
     {
         var node = Node.Expression(Node.Literal("a".ToValue()), Node.Literal("b".ToValue()));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "expression".ToValue(),
             "subexpressions".ToValue(), new ListValue(Node.Literal("a".ToValue()), Node.Literal("b".ToValue()))));
     }
@@ -196,10 +196,10 @@ public class NodeTests
     {
         var node = Node.Expression(0, 1, Node.Literal("a".ToValue()), Node.Literal("b".ToValue()));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "expression".ToValue(),
             "subexpressions".ToValue(), new ListValue(Node.Literal("a".ToValue()), Node.Literal("b".ToValue())),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 0.ToValue(),
                 "end".ToValue(), 1.ToValue())));
     }
@@ -209,7 +209,7 @@ public class NodeTests
     {
         var node = Node.BinOp("add", Node.Variable("a"), Node.Variable("b"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "binop".ToValue(),
             "op".ToValue(), "add".ToValue(),
             "a".ToValue(), Node.Variable("a"),
@@ -222,12 +222,12 @@ public class NodeTests
     {
         var node = Node.BinOp(5, 6, "add", Node.Variable("a"), Node.Variable("b"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "binop".ToValue(),
             "op".ToValue(), "add".ToValue(),
             "a".ToValue(), Node.Variable("a"),
             "b".ToValue(), Node.Variable("b"),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 5.ToValue(),
                 "end".ToValue(), 6.ToValue())
         ));
@@ -238,7 +238,7 @@ public class NodeTests
     {
         var node = Node.UniOp("neg", Node.Variable("a"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "uniop".ToValue(),
             "op".ToValue(), "neg".ToValue(),
             "a".ToValue(), Node.Variable("a")
@@ -250,11 +250,11 @@ public class NodeTests
     {
         var node = Node.UniOp(7, 8, "neg", Node.Variable("a"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "uniop".ToValue(),
             "op".ToValue(), "neg".ToValue(),
             "a".ToValue(), Node.Variable("a"),
-            "position".ToValue(), new DictionaryValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 7.ToValue(),
                 "end".ToValue(), 8.ToValue())
         ));
@@ -265,7 +265,7 @@ public class NodeTests
     {
         var node = Node.If(Node.Literal(true), Node.Variable("thenbody"), Node.Variable("elsebody"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "if".ToValue(),
             "condition".ToValue(), Node.Literal(true),
             "then".ToValue(), Node.Variable("thenbody"),
@@ -278,7 +278,7 @@ public class NodeTests
     {
         var node = Node.If(Node.Literal(true), Node.Variable("thenbody"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "if".ToValue(),
             "condition".ToValue(), Node.Literal(true),
             "then".ToValue(), Node.Variable("thenbody")
@@ -290,7 +290,7 @@ public class NodeTests
     {
         var node = Node.While(Node.Literal(true), Node.Variable("dothis"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "while".ToValue(),
             "condition".ToValue(), Node.Literal(true),
             "body".ToValue(), Node.Variable("dothis")
@@ -302,7 +302,7 @@ public class NodeTests
     {
         var node = Node.Scope(Node.Literal("body"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "scope".ToValue(),
             "body".ToValue(), Node.Literal("body")
         ));
@@ -313,7 +313,7 @@ public class NodeTests
     {
         var node = Node.Raise(Node.Literal("/return"), Node.Literal("Unexpected return"), Node.Literal("returnValue"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "raise".ToValue(),
             "errortype".ToValue(), Node.Literal("/return"),
             "message".ToValue(), Node.Literal("Unexpected return"),
@@ -330,7 +330,7 @@ public class NodeTests
             (Node.Literal("/error1"), Node.Literal("errorBody1")),
             (Node.Literal("/error2"), Node.Literal("errorBody2")));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "try".ToValue(),
             "body".ToValue(), Node.Literal("body"),
             "errorhandlers".ToValue(), new ListValue(
@@ -350,7 +350,7 @@ public class NodeTests
             (Node.Literal("/error1"), Node.Literal("errorBody1")),
             (Node.Literal("/error2"), Node.Literal("errorBody2")));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "try".ToValue(),
             "body".ToValue(), Node.Literal("body"),
             "errorhandlers".ToValue(), new ListValue(
@@ -368,7 +368,7 @@ public class NodeTests
             Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
             new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue(Node.Literal(1)), Node.Literal("c"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             Keywords.Type, Keywords.DefineCommand,
             Keywords.Name, Node.Literal("greet"),
             Keywords.Body, Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
@@ -386,7 +386,7 @@ public class NodeTests
             Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
             new ListValue(Node.Literal("a"), Node.Literal("b")), new ListValue(Node.Literal(1)));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             Keywords.Type, Keywords.DefineCommand,
             Keywords.Name, Node.Literal("greet"),
             Keywords.Body, Node.Script(Node.Command(Node.Literal("sum"), new ListValue(Node.Variable("a"), Node.Variable("b")))),
@@ -405,7 +405,7 @@ public class NodeTests
             Node.Literal(2),
             Node.Literal("body"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "forrange".ToValue(),
             "it".ToValue(), Node.Literal("i"),
             "start".ToValue(), Node.Literal(2),
@@ -424,7 +424,7 @@ public class NodeTests
             Node.Literal(new ListValue("a".ToValue(), "b".ToValue())),
             Node.Literal("body"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "forlist".ToValue(),
             "it_index".ToValue(), Node.Literal("i"),
             "it_value".ToValue(), Node.Literal("j"),
@@ -441,7 +441,7 @@ public class NodeTests
             Node.Literal(new ListValue("a".ToValue(), "b".ToValue())),
             Node.Literal("body"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "forlist".ToValue(),
             "it_value".ToValue(), Node.Literal("j"),
             "list".ToValue(), Node.Literal(new ListValue("a".ToValue(), "b".ToValue())),
@@ -455,14 +455,14 @@ public class NodeTests
         var node = Node.ForDict(
             Node.Literal("k"),
             Node.Literal("v"),
-            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
+            Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
             Node.Literal("body"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "fordict".ToValue(),
             "it_key".ToValue(), Node.Literal("k"),
             "it_value".ToValue(), Node.Literal("v"),
-            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
+            "dict".ToValue(),Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
             "body".ToValue(), Node.Literal("body")
         ));
     }
@@ -472,13 +472,13 @@ public class NodeTests
     {
         var node = Node.ForDict(
             Node.Literal("k"),
-            Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
+            Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
             Node.Literal("body"));
 
-        node.Should().Be(new DictionaryValue(
+        node.Should().Be(new DictValue(
             "type".ToValue(), "fordict".ToValue(),
             "it_key".ToValue(), Node.Literal("k"),
-            "dict".ToValue(),Node.Literal(new DictionaryValue("a".ToValue(), "1".ToValue())),
+            "dict".ToValue(),Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
             "body".ToValue(), Node.Literal("body")
         ));
     }
@@ -588,12 +588,12 @@ public class NodeTests
     [Test]
     public void ANodeCanBeRepositionEvenWhenItNeverHadAPosition()
     {
-        var node = new DictionaryValue();
+        var node = new DictValue();
 
         var repositionedNode = Node.Reposition(node, 10, 11);
 
-        repositionedNode.Should().Be(new DictionaryValue(
-            "position".ToValue(), new DictionaryValue(
+        repositionedNode.Should().Be(new DictValue(
+            "position".ToValue(), new DictValue(
                 "start".ToValue(), 10.ToValue(),
                 "end".ToValue(), 11.ToValue())));
     }

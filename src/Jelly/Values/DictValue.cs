@@ -4,27 +4,27 @@ using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
 
-public class DictionaryValue : Value
+public class DictValue : Value
 {
-    public static readonly DictionaryValue EmptyDictionary = new();
+    public static readonly DictValue EmptyDictionary = new();
 
     readonly ImmutableSortedDictionary<Value, Value> _items;
 
-    public DictionaryValue()
+    public DictValue()
     {
         _items = ImmutableSortedDictionary<Value, Value>.Empty;
     }
 
-    public DictionaryValue(params Value[] list) : this((IEnumerable<Value>)list)
+    public DictValue(params Value[] list) : this((IEnumerable<Value>)list)
     {
     }
 
-    public DictionaryValue(ImmutableSortedDictionary<Value, Value> dict)
+    public DictValue(ImmutableSortedDictionary<Value, Value> dict)
     {
         _items = dict;
     }
 
-    public DictionaryValue(IEnumerable<Value> list)
+    public DictValue(IEnumerable<Value> list)
     {
         var items = ImmutableSortedDictionary.CreateBuilder<Value, Value>();
 
@@ -50,7 +50,7 @@ public class DictionaryValue : Value
         _items = items.ToImmutable();
     }
 
-    public DictionaryValue(IEnumerable<KeyValuePair<Value, Value>> items)
+    public DictValue(IEnumerable<KeyValuePair<Value, Value>> items)
     {
         _items = ImmutableSortedDictionary.CreateRange(items);
     }
@@ -68,7 +68,7 @@ public class DictionaryValue : Value
         return new ListValue(items);
     }
 
-    public override DictionaryValue ToDictionaryValue() => this;
+    public override DictValue ToDictionaryValue() => this;
 
     public Value this[Value key] {
         get
@@ -81,7 +81,7 @@ public class DictionaryValue : Value
         }
     }
 
-    public DictionaryValue SetItem(Value key, Value value) => new DictionaryValue(_items.SetItem(key, value));
+    public DictValue SetItem(Value key, Value value) => new DictValue(_items.SetItem(key, value));
 
     public bool ContainsKey(Value key) => _items.ContainsKey(key);
 

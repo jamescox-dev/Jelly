@@ -9,12 +9,12 @@ public class PatternArgParser : IArgParser
         _pattern = pattern;
     }
 
-    public DictionaryValue Parse(string commandName, ListValue args)
+    public DictValue Parse(string commandName, ListValue args)
     {
         var result = _pattern.Match(0, args);
 
         return result switch {
-            ArgPatternSuccess success => new DictionaryValue(success.ArgValues.Select(kvp => new KeyValuePair<Value, Value>(kvp.Key.ToValue(), kvp.Value))),
+            ArgPatternSuccess success => new DictValue(success.ArgValues.Select(kvp => new KeyValuePair<Value, Value>(kvp.Key.ToValue(), kvp.Value))),
             ArgPatternResultMissing missing => throw MissingArgError.FromPossibleArgs(commandName, missing.MissingArgs),
             ArgPatternResultUnexpected unexpected => throw new UnexpectedArgError(commandName, unexpected.LastArg),
             _ => throw new ArgumentOutOfRangeException()

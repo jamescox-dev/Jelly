@@ -203,7 +203,7 @@ public class EvaluatorTests : EvaluatorTestsBase
     public void TheEvaluatorCanEvaluateAForDict()
     {
         IEvaluator evaluator = new Evaluator();
-        var node = Node.ForDict(Node.Literal("v"), Node.Literal(DictionaryValue.EmptyDictionary), Node.Script());
+        var node = Node.ForDict(Node.Literal("v"), Node.Literal(DictValue.EmptyDictionary), Node.Script());
 
         var result = Evaluate(node);
 

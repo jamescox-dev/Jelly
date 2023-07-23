@@ -25,7 +25,7 @@ public class WordParser : IParser
         _parsers = parsers;
     }
 
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
         foreach (var parser in _parsers)
         {

@@ -6,7 +6,7 @@ public class DictionaryValueTests
     [Test]
     public void WhenADictionaryValueHasNoItemsItsStringRepresentationIsAnEmptyString()
     {
-        var dict = new DictionaryValue();
+        var dict = new DictValue();
 
         var str = dict.ToString();
 
@@ -16,7 +16,7 @@ public class DictionaryValueTests
     [Test]
     public void ADictionaryValuesStringRepresentationContainsTheStringRepresentationOfEachOfItsKeysAndAssociatedValueSeparatedBySpacesInAlphabeticalOrderByWithEachPairSeparatedByNewlines()
     {
-        var dict = new DictionaryValue(
+        var dict = new DictValue(
             "zProp".ToValue(), "26".ToValue(),
             "aProp".ToValue(), "1".ToValue());
 
@@ -28,7 +28,7 @@ public class DictionaryValueTests
     [Test]
     public void EachKeyAndValueIsEscapedInTheDictionariesStringRepresentation()
     {
-        var dict = new DictionaryValue(
+        var dict = new DictValue(
             "friendly greeting".ToValue(), "jello, world".ToValue());
 
         var str = dict.ToString();
@@ -39,7 +39,7 @@ public class DictionaryValueTests
     [Test]
     public void AValueFromTheDictionaryCanBeRetrievedWithAKey()
     {
-        var dict = new DictionaryValue(
+        var dict = new DictValue(
             "name".ToValue(), "James".ToValue(),
             "age".ToValue(), "38".ToValue());
 
@@ -53,7 +53,7 @@ public class DictionaryValueTests
     [Test]
     public void WhenTryingToGetAValueWithAKeyThatExistsTrueIsReturnedAndTheValueIsSet()
     {
-        var dict = new DictionaryValue(
+        var dict = new DictValue(
             "name".ToValue(), "James".ToValue(),
             "age".ToValue(), "38".ToValue());
 
@@ -66,7 +66,7 @@ public class DictionaryValueTests
     [Test]
     public void WhenTryingToGetAValueWithAKeyThatDoesNotExistsFalseIsReturnedAndTheValueIsSetToEmpty()
     {
-        var dict = new DictionaryValue(
+        var dict = new DictValue(
             "name".ToValue(), "James".ToValue(),
             "age".ToValue(), "38".ToValue());
 
@@ -79,7 +79,7 @@ public class DictionaryValueTests
     [Test]
     public void ADictionaryValueReturnsItselfWhenAskedToConvertToADictionary()
     {
-        Value value = new DictionaryValue();
+        Value value = new DictValue();
 
         var dict = value.ToDictionaryValue();
 
@@ -90,7 +90,7 @@ public class DictionaryValueTests
     [TestCase("height", false)]
     public void TheDictionaryValueCanBeQueriedForAKeysExistence(string key, bool expected)
     {
-        var dict = new DictionaryValue(
+        var dict = new DictValue(
             "name".ToValue(), "James".ToValue(),
             "age".ToValue(), "38".ToValue());
 
@@ -102,7 +102,7 @@ public class DictionaryValueTests
     [Test]
     public void DictionaryValuesCanBeConvertedToListValues()
     {
-        var value = new DictionaryValue("a".ToValue(), "b".ToValue(), "c".ToValue());
+        var value = new DictValue("a".ToValue(), "b".ToValue(), "c".ToValue());
 
         var list = value.ToListValue();
 
@@ -112,9 +112,9 @@ public class DictionaryValueTests
     [Test]
     public void ADictionaryDoesNotConvertToANumber()
     {
-        var dict1 = new DictionaryValue();
-        var dict2 = new DictionaryValue(Value.Empty);
-        var dict3 = new DictionaryValue(new NumberValue(1.0), " ".ToValue());
+        var dict1 = new DictValue();
+        var dict2 = new DictValue(Value.Empty);
+        var dict3 = new DictValue(new NumberValue(1.0), " ".ToValue());
 
         double.IsNaN(dict1.ToDouble()).Should().BeTrue();
         double.IsNaN(dict2.ToDouble()).Should().BeTrue();
@@ -124,9 +124,9 @@ public class DictionaryValueTests
     [Test]
     public void ADictionaryAlwaysConvertsToATrueBool()
     {
-        var dict1 = new DictionaryValue();
-        var dict2 = new DictionaryValue(Value.Empty);
-        var dict3 = new DictionaryValue(new NumberValue(1.0), " ".ToValue());
+        var dict1 = new DictValue();
+        var dict2 = new DictValue(Value.Empty);
+        var dict3 = new DictValue(new NumberValue(1.0), " ".ToValue());
 
         dict1.ToBool().Should().BeTrue();
         dict2.ToBool().Should().BeTrue();
@@ -136,7 +136,7 @@ public class DictionaryValueTests
     [Test]
     public void AValueCanBeRetrievedFromADictionaryByKey()
     {
-        var dict = new DictionaryValue("a".ToValue(), 1.ToValue());
+        var dict = new DictValue("a".ToValue(), 1.ToValue());
 
         var value = dict["a".ToValue()];
 
@@ -146,7 +146,7 @@ public class DictionaryValueTests
     [Test]
     public void WhenRetrievingAValueFromADictionaryByAKeyTheDoesNotExistAnErrorIsThrown()
     {
-        var dict = new DictionaryValue("a".ToValue(), 1.ToValue());
+        var dict = new DictValue("a".ToValue(), 1.ToValue());
 
         // TODO:  Implement this test.
     }
@@ -154,10 +154,10 @@ public class DictionaryValueTests
     [Test]
     public void AValueCanBeSetByKeyInADictionary()
     {
-        var dict1 = new DictionaryValue("a".ToValue(), 1.ToValue());
+        var dict1 = new DictValue("a".ToValue(), 1.ToValue());
 
         var dict2 = dict1.SetItem("b".ToValue(), 2.ToValue());
 
-        dict2.Should().Be(new DictionaryValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue()));
+        dict2.Should().Be(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue()));
     }
 }

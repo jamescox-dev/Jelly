@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 internal class DefineCommandEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         var name = env.Evaluate(node.GetNode(Keywords.Name)).ToString();
         var argNames = node.GetList(Keywords.ArgNames);
@@ -50,7 +50,7 @@ internal class DefineCommandEvaluator : IEvaluator
         return optionalArgs;
     }
 
-    static string? GetRestArgumentName(IEnv env, DictionaryValue? restArgNameNode, HashSet<string> usedArgNames)
+    static string? GetRestArgumentName(IEnv env, DictValue? restArgNameNode, HashSet<string> usedArgNames)
     {
         if (restArgNameNode is not null)
         {

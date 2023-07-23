@@ -23,10 +23,10 @@ public class ScriptParser : IParser
         _commandParser = (_subscriptParser ? TopLevelCommandParser : SubscriptCommandParser)!;
     }
 
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
         var start = scanner.Position;
-        var commands = new List<DictionaryValue>();
+        var commands = new List<DictValue>();
         var success = true;
 
         if (_subscriptParser)

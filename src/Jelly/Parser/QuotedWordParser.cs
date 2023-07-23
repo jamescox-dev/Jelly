@@ -15,9 +15,9 @@ public class QuotedWordParser : IParser
         _allowSubstitutions = allowSubstitutions;
     }
 
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
-        var parts = new List<DictionaryValue>();
+        var parts = new List<DictValue>();
         var literal = new StringBuilder();
         var literalStart = 0;
         if (scanner.IsQuote)

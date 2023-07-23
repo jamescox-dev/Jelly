@@ -16,7 +16,7 @@ public class UserCommandTests
     IEnv? _passedEnv = null;
     IScope? _passedScope = null;
 
-    DictionaryValue _userCommandBody = null!;
+    DictValue _userCommandBody = null!;
 
     [Test]
     public void TheBodyIsEvaluatedTheResultIsReturned()

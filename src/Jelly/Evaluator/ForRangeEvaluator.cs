@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 public class ForRangeEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         var iteratorName = env.Evaluate(node.GetNode(Keywords.It)).ToString();
         var start = env.Evaluate(node.GetNode(Keywords.Start)).ToDouble();
@@ -14,7 +14,7 @@ public class ForRangeEvaluator : IEvaluator
         return RunLoop(env, iteratorName, start, end, step, body);
     }
 
-    static double GetStep(IEnv env, DictionaryValue node, double start, double end)
+    static double GetStep(IEnv env, DictValue node, double start, double end)
     {
         if (node.ContainsKey(Keywords.Step))
         {
@@ -24,7 +24,7 @@ public class ForRangeEvaluator : IEvaluator
     }
 
     static Value RunLoop(
-        IEnv env, string iteratorName, double start, double end, double step, DictionaryValue body)
+        IEnv env, string iteratorName, double start, double end, double step, DictValue body)
     {
         var result = Value.Empty;
         for (var i = start; IndexIsBeforeOrAtEnd(i, start, end); i += step)

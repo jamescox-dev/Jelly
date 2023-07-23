@@ -2,7 +2,7 @@ namespace Jelly.Commands;
 
 public class ArgParsedCommand : CommandBase
 {
-    public delegate Value CommandDelegate(DictionaryValue args);
+    public delegate Value CommandDelegate(DictValue args);
 
     public string Name { get; }
 

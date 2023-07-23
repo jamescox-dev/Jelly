@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 public class ForDictEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         var keyIteratorName = GetKeyIteratorName(env, node);
         var valueIteratorName = GetValueIteratorName(env, node);
@@ -14,7 +14,7 @@ public class ForDictEvaluator : IEvaluator
         return RunLoop(env, keyIteratorName, valueIteratorName, dict, body);
     }
 
-    static Value RunLoop(IEnv env, string keyIteratorName, string? valueIteratorName, DictionaryValue dict, DictionaryValue body)
+    static Value RunLoop(IEnv env, string keyIteratorName, string? valueIteratorName, DictValue dict, DictValue body)
     {
         var result = Value.Empty;
         foreach (var keyValue in dict.ToEnumerable())
@@ -41,17 +41,17 @@ public class ForDictEvaluator : IEvaluator
         return result;
     }
 
-    static string GetKeyIteratorName(IEnv env, DictionaryValue node)
+    static string GetKeyIteratorName(IEnv env, DictValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.ItKey)).ToString();
     }
 
-    static string? GetValueIteratorName(IEnv env, DictionaryValue node)
+    static string? GetValueIteratorName(IEnv env, DictValue node)
     {
         return node.ContainsKey(Keywords.ItValue) ? env.Evaluate(node.GetNode(Keywords.ItValue)).ToString() : null;
     }
 
-    static DictionaryValue GetDict(IEnv env, DictionaryValue node)
+    static DictValue GetDict(IEnv env, DictValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.Dict)).ToDictionaryValue();
     }

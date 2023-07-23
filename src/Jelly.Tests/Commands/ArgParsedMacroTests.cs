@@ -20,8 +20,8 @@ public class ArgParsedMacroTests
     public void TheMacroDelegateIsCalledWithTheEnvironmentAnTheParsedAndArgumentsAndTheResultEvaluatedReturned()
     {
         IEnv? envPassedToMacro = null;
-        DictionaryValue? argsPassedToMacro = null;
-        Value TestMacroFunc(IEnv env, DictionaryValue args)
+        DictValue? argsPassedToMacro = null;
+        Value TestMacroFunc(IEnv env, DictValue args)
         {
             envPassedToMacro = env;
             argsPassedToMacro = args;
@@ -35,7 +35,7 @@ public class ArgParsedMacroTests
 
         result.Should().Be("hello, jelly".ToValue());
         envPassedToMacro.Should().Be(env);
-        argsPassedToMacro.Should().Be(new DictionaryValue(
+        argsPassedToMacro.Should().Be(new DictValue(
             "name".ToValue(), Node.Literal("jelly")
         ));
     }

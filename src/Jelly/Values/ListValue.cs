@@ -59,7 +59,7 @@ public class ListValue : Value, IEnumerable<Value>
 
     public override ListValue ToListValue() => this;
 
-    public override DictionaryValue ToDictionaryValue() => new((IEnumerable<Value>)this);
+    public override DictValue ToDictionaryValue() => new((IEnumerable<Value>)this);
 
     public IEnumerator<Value> GetEnumerator() => _items.GetEnumerator();
 

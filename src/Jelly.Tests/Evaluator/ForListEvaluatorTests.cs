@@ -146,7 +146,7 @@ public class ForListEvaluatorTests : EvaluatorTestsBase
         Environment.GlobalScope.DefineCommand("record", _recordCommand);
     }
 
-    static DictionaryValue CreateLoopBody(string iteratorName)
+    static DictValue CreateLoopBody(string iteratorName)
     {
         return Node.Script(
             Node.Command(Node.Literal("record"), new ListValue(Node.Variable(iteratorName))),

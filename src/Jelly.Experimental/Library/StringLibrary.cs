@@ -20,14 +20,14 @@ public class StringLibrary : ILibrary
         scope.DefineCommand("str", strCmd);
     }
 
-    Value StrStrip(DictionaryValue args)
+    Value StrStrip(DictValue args)
     {
         var str = args[Keywords.Str].ToString();
 
         return str.Trim().ToValue();
     }
 
-    Value StrGet(DictionaryValue args)
+    Value StrGet(DictValue args)
     {
         var str = args[Keywords.Str].ToString();
         var index = args[Keywords.Index].ToIndexOfLength(str.Length);
@@ -39,7 +39,7 @@ public class StringLibrary : ILibrary
         throw new IndexError("index out of bounds.");
     }
 
-    Value StrJoin(DictionaryValue args)
+    Value StrJoin(DictValue args)
     {
         var str = args[Keywords.Str].ToString();
         var items = args[ItemsKeyword].ToListValue();
@@ -47,7 +47,7 @@ public class StringLibrary : ILibrary
         return string.Join(str, items.Select(i => i.ToString())).ToValue();
     }
 
-    Value StrJoinAll(DictionaryValue args)
+    Value StrJoinAll(DictValue args)
     {
         var str = args[Keywords.Str].ToString();
         var lists = args[ListsKeyword].ToListValue();

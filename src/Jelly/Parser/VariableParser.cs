@@ -11,7 +11,7 @@ public class VariableParser : IParser
         _terminateAtOperator = terminateAtOperator;
     }
 
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
         if (scanner.AdvanceIf(s => s.IsVariableMarker))
         {

@@ -14,7 +14,7 @@ public class BoolValue : Value
 
     public override ListValue ToListValue() => new(this);
 
-    public override DictionaryValue ToDictionaryValue() => new(this);
+    public override DictValue ToDictionaryValue() => new(this);
 
     public override bool ToBool() => _value;
 

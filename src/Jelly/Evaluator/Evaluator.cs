@@ -28,7 +28,7 @@ public class Evaluator : IEvaluator
         _evaluator.AddEvaluator(Keywords.ForRange.ToString(), new ForRangeEvaluator());
     }
 
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         return _evaluator.Evaluate(env, node);
     }

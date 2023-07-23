@@ -16,6 +16,6 @@ public class SimpleMacro : ICommand
         return env.Evaluate(InvokeMacroDelegate(env, unevaluatedArgs));
     }
 
-    internal DictionaryValue InvokeMacroDelegate(IEnv env, ListValue unevaluatedArgs) =>
+    internal DictValue InvokeMacroDelegate(IEnv env, ListValue unevaluatedArgs) =>
         _macro(env, unevaluatedArgs).ToNode();
 }

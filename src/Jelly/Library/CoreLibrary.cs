@@ -113,8 +113,8 @@ public class CoreLibrary : ILibrary
         var requireArg = true;
         var expectDefault = false;
         var expectEquals = false;
-        var argNames = ImmutableList.CreateBuilder<DictionaryValue>();
-        var argDefaults = ImmutableList.CreateBuilder<DictionaryValue>();
+        var argNames = ImmutableList.CreateBuilder<DictValue>();
+        var argDefaults = ImmutableList.CreateBuilder<DictValue>();
         foreach (var arg in args.Skip(1).Take(args.Count - 2))
         {
             var argDict = arg.ToDictionaryValue();
@@ -149,7 +149,7 @@ public class CoreLibrary : ILibrary
             throw Error.Arg($"Argument '{env.Evaluate(argNames[argNames.Count - 1].ToNode())}' must have a default value.");
         }
 
-        DictionaryValue? restArg = null;
+        DictValue? restArg = null;
         if (expectDefault)
         {
             restArg = argNames[argNames.Count - 1];
@@ -159,14 +159,14 @@ public class CoreLibrary : ILibrary
         return Node.DefineCommand(name, body, new ListValue(argNames.ToImmutable()), new ListValue(argDefaults.ToImmutable()), restArg);
     }
 
-    static DictionaryValue TryConvertVariableToLiteral(Value node)
+    static DictValue TryConvertVariableToLiteral(Value node)
     {
         var nodeDict = node.ToDictionaryValue();
 
         return Node.IsVariable(nodeDict) ? Node.Literal(nodeDict[Keywords.Name].ToString()) : nodeDict;
     }
 
-    Value ForMacro(IEnv env, DictionaryValue args)
+    Value ForMacro(IEnv env, DictValue args)
     {
         var body = args.GetNode(Keywords.Body);
 
@@ -215,9 +215,9 @@ public class CoreLibrary : ILibrary
             throw Error.Arg("Expected 'then_body'.");
         }
 
-        var conditions = new List<DictionaryValue> { args[0].ToNode() };
-        var thenBodies = new List<DictionaryValue> { args[1].ToNode() };
-        DictionaryValue? elseBody = null;
+        var conditions = new List<DictValue> { args[0].ToNode() };
+        var thenBodies = new List<DictValue> { args[1].ToNode() };
+        DictValue? elseBody = null;
 
         var expectElse = false;
         var i = 2;
@@ -275,7 +275,7 @@ public class CoreLibrary : ILibrary
             throw Error.Arg("Expected 'else_body'.");
         }
 
-        DictionaryValue? ifNode = null;
+        DictValue? ifNode = null;
 
         foreach ((var condition, var thenBody) in conditions.Zip(thenBodies).Reverse())
         {
@@ -299,21 +299,21 @@ public class CoreLibrary : ILibrary
         return ifNode!;
     }
 
-    static bool IsKeyword(DictionaryValue word, string keyword)
+    static bool IsKeyword(DictValue word, string keyword)
     {
         return Node.IsLiteral(word)
             && Node.GetLiteralValue(word).ToString()
                 .Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    Value LsDefCmd(IEnv env, DictionaryValue args)
+    Value LsDefCmd(IEnv env, DictValue args)
     {
         var localOnly = env.Evaluate(args[LocalOnlyKeyword].ToNode()).ToBool();
         var commands = env.CurrentScope.GetCommandNames(localOnly);
         return Node.Literal(new ListValue(commands.OrderBy(c => c, StringComparer.InvariantCulture).Select(c => c.ToValue())));
     }
 
-    Value LsVarCmd(IEnv env, DictionaryValue args)
+    Value LsVarCmd(IEnv env, DictValue args)
     {
         var localOnly = env.Evaluate(args[LocalOnlyKeyword].ToNode()).ToBool();
         var variable = env.CurrentScope.GetVariableNames(localOnly);
@@ -365,8 +365,8 @@ public class CoreLibrary : ILibrary
         }
 
         var body = Node.Scope(args[0].ToNode());
-        var errorHandlers = new List<(DictionaryValue, DictionaryValue)>();
-        DictionaryValue? finallyBody = null;
+        var errorHandlers = new List<(DictValue, DictValue)>();
+        DictValue? finallyBody = null;
         for (var i = 1; i < args.Count;)
         {
             var arg = args[i].ToNode();

@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 public class ForListEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         var iteratorName = GetIteratorName(env, node);
         var indexName = GetIndexName(env, node);
@@ -14,7 +14,7 @@ public class ForListEvaluator : IEvaluator
         return RunLoop(env, iteratorName, indexName, list, body);
     }
 
-    static Value RunLoop(IEnv env, string iteratorName, string? indexName, ListValue list, DictionaryValue body)
+    static Value RunLoop(IEnv env, string iteratorName, string? indexName, ListValue list, DictValue body)
     {
         var result = Value.Empty;
         var index = 1;
@@ -42,17 +42,17 @@ public class ForListEvaluator : IEvaluator
         return result;
     }
 
-    static string GetIteratorName(IEnv env, DictionaryValue node)
+    static string GetIteratorName(IEnv env, DictValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.ItValue)).ToString();
     }
 
-    static string? GetIndexName(IEnv env, DictionaryValue node)
+    static string? GetIndexName(IEnv env, DictValue node)
     {
         return node.ContainsKey(Keywords.ItIndex) ? env.Evaluate(node.GetNode(Keywords.ItIndex)).ToString() : null;
     }
 
-    static ListValue GetList(IEnv env, DictionaryValue node)
+    static ListValue GetList(IEnv env, DictValue node)
     {
         return env.Evaluate(node.GetNode(Keywords.List)).ToListValue();
     }

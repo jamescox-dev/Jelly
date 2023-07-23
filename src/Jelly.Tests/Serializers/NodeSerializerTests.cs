@@ -6,7 +6,7 @@ public class NodeSerializerTests
     [Test]
     public void AEmptyNodeIsRepresentedByTwoEmptyBrackets()
     {
-        var node = new DictionaryValue();
+        var node = new DictValue();
 
         var str = NodeSerializer.Serialize(node);
 

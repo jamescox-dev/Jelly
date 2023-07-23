@@ -40,7 +40,7 @@ internal class BinOpEvaluator : IEvaluator
         _bitwiseOps.Add("rshift", RightShift);
     }
 
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         var op = node.GetString(Keywords.Op);
 
@@ -88,13 +88,13 @@ internal class BinOpEvaluator : IEvaluator
         throw Error.BuildValue("Invalid binary operator.");
     }
 
-    static Value And(IEnv env, DictionaryValue node)
+    static Value And(IEnv env, DictValue node)
     {
         EvaluateOperandsAsBooleans(env, node, out var a, out var b);
         return (a && b).ToValue();
     }
 
-    static Value AndThen(IEnv env, DictionaryValue node)
+    static Value AndThen(IEnv env, DictValue node)
     {
         var a = env.Evaluate(node.GetNode(Keywords.A));
         if (!a.ToBool())
@@ -104,13 +104,13 @@ internal class BinOpEvaluator : IEvaluator
         return env.Evaluate(node.GetNode(Keywords.B));
     }
 
-    static Value Or(IEnv env, DictionaryValue node)
+    static Value Or(IEnv env, DictValue node)
     {
         EvaluateOperandsAsBooleans(env, node, out var a, out var b);
         return (a || b).ToValue();
     }
 
-    static Value OrElse(IEnv env, DictionaryValue node)
+    static Value OrElse(IEnv env, DictValue node)
     {
         var a = env.Evaluate(node.GetNode(Keywords.A));
         if (a.ToBool())
@@ -120,26 +120,26 @@ internal class BinOpEvaluator : IEvaluator
         return env.Evaluate(node.GetNode(Keywords.B));
     }
 
-    static void EvaluateOperandsAsNumbers(IEnv env, DictionaryValue node, out double a, out double b)
+    static void EvaluateOperandsAsNumbers(IEnv env, DictValue node, out double a, out double b)
     {
         a = env.Evaluate(node.GetNode(Keywords.A)).ToDouble();
         b = env.Evaluate(node.GetNode(Keywords.B)).ToDouble();
     }
 
-    static void EvaluateOperandsAsInt32s(IEnv env, DictionaryValue node, out int a, out int b)
+    static void EvaluateOperandsAsInt32s(IEnv env, DictValue node, out int a, out int b)
     {
         EvaluateOperandsAsNumbers(env, node, out var aDbl, out var bDbl);
         a = (int) (uint) aDbl;
         b = (int) (uint) bDbl;
     }
 
-    static void EvaluateOperandsAsBooleans(IEnv env, DictionaryValue node, out bool a, out bool b)
+    static void EvaluateOperandsAsBooleans(IEnv env, DictValue node, out bool a, out bool b)
     {
         a = env.Evaluate(node.GetNode(Keywords.A)).ToBool();
         b = env.Evaluate(node.GetNode(Keywords.B)).ToBool();
     }
 
-    static void EvaluateOperandsAsStrings(IEnv env, DictionaryValue node, out string a, out string b)
+    static void EvaluateOperandsAsStrings(IEnv env, DictValue node, out string a, out string b)
     {
         a = env.Evaluate(node.GetNode(Keywords.A)).ToString();
         b = env.Evaluate(node.GetNode(Keywords.B)).ToString();

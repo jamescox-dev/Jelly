@@ -2,7 +2,7 @@ namespace Jelly.Commands;
 
 public class ArgParsedMacro : CommandBase
 {
-    public delegate Value MacroDelegate(IEnv env, DictionaryValue args);
+    public delegate Value MacroDelegate(IEnv env, DictValue args);
 
     public string Name { get; }
 

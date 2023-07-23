@@ -33,7 +33,7 @@ public class StandardArgParser : IArgParser
         _maxArgs = _restArg is not null ? int.MaxValue : _minArgs + _optionalArgs.Length;
     }
 
-    public DictionaryValue Parse(string commandName, ListValue args)
+    public DictValue Parse(string commandName, ListValue args)
     {
         EnsureCorrectArgumentCount(commandName, args);
 
@@ -43,7 +43,7 @@ public class StandardArgParser : IArgParser
         ParseOptionalArguments(args, parsedArgs);
         ParseRestArguments(args, parsedArgs);
 
-        return new DictionaryValue(parsedArgs.ToImmutable());
+        return new DictValue(parsedArgs.ToImmutable());
     }
 
     void ParseRequiredArguments(ListValue args, ImmutableSortedDictionary<Value, Value>.Builder parsedArgs)

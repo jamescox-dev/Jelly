@@ -2,7 +2,7 @@ namespace Jelly.Parser;
 
 public class OperatorParser : IParser
 {
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
         if (scanner.TryGetOperatorSymbol(out var op))
         {

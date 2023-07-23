@@ -36,18 +36,18 @@ public class CollectionsLibrary : ILibrary
         scope.DefineCommand("dict", dictValCmd);
     }
 
-    Value ListConvert(DictionaryValue args)
+    Value ListConvert(DictValue args)
     {
         return args[Keywords.List].ToListValue();
     }
 
-    Value ListLen(DictionaryValue args)
+    Value ListLen(DictValue args)
     {
         var list = args[Keywords.List].ToListValue();
         return list.ToListValue().Count.ToValue();
     }
 
-    Value ListAdd(DictionaryValue args)
+    Value ListAdd(DictValue args)
     {
         var list = args[Keywords.List].ToListValue();
         var values = args[Keywords.Values].ToListValue();
@@ -65,7 +65,7 @@ public class CollectionsLibrary : ILibrary
     // TODO:  list sort key?     e.g.  list $l sort {list $$ get 1}
     // TODO:  list reverse
 
-    Value ListGet(DictionaryValue args)
+    Value ListGet(DictValue args)
     {
         var list = args[Keywords.List].ToListValue();
         var index = args[Keywords.Index].ToIndexOf(list);
@@ -73,7 +73,7 @@ public class CollectionsLibrary : ILibrary
         return list[index];
     }
 
-    Value ListSet(DictionaryValue args)
+    Value ListSet(DictValue args)
     {
         var list = args[Keywords.List].ToListValue();
         var index = args[Keywords.Index].ToIndexOf(list);
@@ -82,7 +82,7 @@ public class CollectionsLibrary : ILibrary
         return list.SetItem(index, value);
     }
 
-    Value DictConvert(DictionaryValue args)
+    Value DictConvert(DictValue args)
     {
         return args[Keywords.Dict].ToDictionaryValue();
     }
@@ -95,7 +95,7 @@ public class CollectionsLibrary : ILibrary
     // TODO: dict contains keys...
     // TODO: dict containsvalue values...
 
-    Value DictGet(DictionaryValue args)
+    Value DictGet(DictValue args)
     {
         var dict = args[Keywords.Dict].ToDictionaryValue();
         var key = args[Keywords.Key];

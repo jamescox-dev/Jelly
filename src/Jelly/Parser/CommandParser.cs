@@ -9,9 +9,9 @@ public class CommandParser : IParser
         _wordParser = new(terminatingChar, subscriptParser);
     }
 
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
-        var words = new List<DictionaryValue>();
+        var words = new List<DictValue>();
 
         var start = scanner.Position;
         while (!scanner.IsCommandSeparator)
@@ -51,13 +51,13 @@ public class CommandParser : IParser
         return words.Count > 0 ? BuildCommandNode(words, start) : null;
     }
 
-    static DictionaryValue BuildCommandNode(List<DictionaryValue> words, int start)
+    static DictValue BuildCommandNode(List<DictValue> words, int start)
     {
         var endOfLastWord = (int)words.Last().ToNode()[Keywords.Position].ToDictionaryValue()[Keywords.End].ToDouble();
         return Node.Command(words[0], new ListValue(words.Skip(1)), start, endOfLastWord);
     }
 
-    static bool IsAssignment(IReadOnlyList<DictionaryValue> words) =>
+    static bool IsAssignment(IReadOnlyList<DictValue> words) =>
         words.Count >= 2
         && Node.IsVariable(words[0])
         && Node.IsLiteral(words[1])

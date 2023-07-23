@@ -41,7 +41,7 @@ public class Shell
             var source = string.Empty;
             try
             {
-                DictionaryValue script;
+                DictValue script;
                 (source, script) = Read();
                 PrintResult(Evaluate(script));
             }
@@ -71,7 +71,7 @@ public class Shell
         }
     }
 
-    (string, DictionaryValue) Read()
+    (string, DictValue) Read()
     {
         var script = Node.Script();
 
@@ -107,7 +107,7 @@ public class Shell
         }
     }
 
-    Value Evaluate(DictionaryValue script)
+    Value Evaluate(DictValue script)
     {
         return _env.Evaluate(script);
     }

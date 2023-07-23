@@ -16,7 +16,7 @@ public class SimpleWordParser : IParser
         _terminateAtOperator = terminateAtOperator;
     }
 
-    public DictionaryValue? Parse(Scanner scanner)
+    public DictValue? Parse(Scanner scanner)
     {
         var start = scanner.Position;
         var value = new StringBuilder();

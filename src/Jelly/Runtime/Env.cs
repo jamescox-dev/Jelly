@@ -26,7 +26,7 @@ public class Env : IEnv
 
     public Env() : this(new Scope()) {}
 
-    public DictionaryValue? Parse(string source) => Parser.Parse(new Scanner(source));
+    public DictValue? Parse(string source) => Parser.Parse(new Scanner(source));
 
     public Value Evaluate(string source)
     {
@@ -38,7 +38,7 @@ public class Env : IEnv
         return Value.Empty;
     }
 
-    public Value Evaluate(DictionaryValue node)
+    public Value Evaluate(DictValue node)
     {
         try
         {

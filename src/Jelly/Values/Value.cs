@@ -8,7 +8,7 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
 
     public abstract ListValue ToListValue();
 
-    public abstract DictionaryValue ToDictionaryValue();
+    public abstract DictValue ToDictionaryValue();
 
     public abstract override string ToString();
 

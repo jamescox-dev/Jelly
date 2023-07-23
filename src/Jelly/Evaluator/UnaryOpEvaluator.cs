@@ -2,7 +2,7 @@ namespace Jelly.Evaluator;
 
 internal class UnaryOpEvaluator : IEvaluator
 {
-    public Value Evaluate(IEnv env, DictionaryValue node)
+    public Value Evaluate(IEnv env, DictValue node)
     {
         var op = node.GetString(Keywords.Op);
         var a = env.Evaluate(node.GetNode(Keywords.A));

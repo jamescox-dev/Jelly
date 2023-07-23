@@ -22,12 +22,12 @@ public class StringValue : Value
         }
     }
 
-    public override DictionaryValue ToDictionaryValue()
+    public override DictValue ToDictionaryValue()
     {
         var listParser = new ListParser();
         try
         {
-            return new DictionaryValue((IEnumerable<Value>)listParser.Parse(new Scanner(ToString())));
+            return new DictValue((IEnumerable<Value>)listParser.Parse(new Scanner(ToString())));
         }
         catch (ParseError)
         {

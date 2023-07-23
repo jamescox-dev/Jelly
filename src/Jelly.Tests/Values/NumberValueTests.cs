@@ -211,6 +211,6 @@ public class NumberValueTests
 
         var dict = num.ToDictionaryValue();
 
-        dict.Should().Be(new DictionaryValue(num, Value.Empty));
+        dict.Should().Be(new DictValue(num, Value.Empty));
     }
 }

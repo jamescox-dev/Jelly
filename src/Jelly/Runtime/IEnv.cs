@@ -16,8 +16,8 @@ public interface IEnv
     IScope PopScope();
     Value RunInNestedScope(Func<Value> action);
 
-    DictionaryValue? Parse(string source);
+    DictValue? Parse(string source);
 
     Value Evaluate(string source);
-    Value Evaluate(DictionaryValue node);
+    Value Evaluate(DictValue node);
 }
