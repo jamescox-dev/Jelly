@@ -108,7 +108,7 @@ public class CoreLibrary : ILibrary
         }
 
         var name = args[0].ToNode();
-        var body = args[args.Count - 1].ToNode();
+        var body = args[^1].ToNode();
 
         var requireArg = true;
         var expectDefault = false;

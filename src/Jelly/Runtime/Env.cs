@@ -55,7 +55,7 @@ public class Env : IEnv
                     error.StartPosition = (int)pos[Keywords.Start].ToDouble();
                 }
             }
-            throw error;
+            throw;
         }
     }
 
