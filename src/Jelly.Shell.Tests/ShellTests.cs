@@ -61,7 +61,7 @@ public class ShellTests
 
         _shell.Repl();
 
-        _mockParser.Verify(m => m.Parse(new Scanner("print jello, world")), Times.Once);
+        _mockEnv.Verify(m => m.Parse("print jello, world"), Times.Once);
     }
 
     [Test]
@@ -78,12 +78,14 @@ public class ShellTests
     public void IfParsingTheInputThrowsAnErrorTheErrorIsWritten()
     {
         _fakeReaderWriter.EnqueueInput("this throws an error");
-        _mockParser.Setup(m => m.Parse(new Scanner("this throws an error")))
+        _mockEnv.Setup(m => m.Parse("this throws an error"))
             .Throws(Error.Parse("Bad input!"));
 
         _shell.Repl();
 
-        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/parse/:  Bad input!"));
+        _fakeReaderWriter.VerifyIoOpsContains(
+            new WriteLineOp("  ERROR: /error/parse/"),
+            new WriteLineOp("    Bad input!"));
     }
 
     [Test]
@@ -105,7 +107,25 @@ public class ShellTests
 
         _shell.Repl();
 
-        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/name/:  Unknown variable!"));
+        _fakeReaderWriter.VerifyIoOpsContains(
+            new WriteLineOp("  ERROR: /error/name/"),
+            new WriteLineOp("    Unknown variable!"));
+    }
+
+    [Test]
+    public void IfEvaluatingTheInputThrowsAnErrorWithAStartAndEndPositionTheErrorIsWrittenWithPositionInformation()
+    {
+        _fakeReaderWriter.EnqueueInput("print hello, world\nprint jello, world");
+        _mockEnv.Setup(m => m.Evaluate(It.IsAny<DictionaryValue>()))
+            .Throws(new Error("/error/wobbly/", "Wobbly!") { StartPosition = 25, EndPosition = 30 });
+
+        _shell.Repl();
+
+        _fakeReaderWriter.VerifyIoOpsContains(
+            new WriteLineOp("  ERROR: /error/wobbly/ @ Ln: 2, Col: 7"),
+            new WriteLineOp("    print jello, world"),
+            new WriteLineOp("          ^^^^^"),
+            new WriteLineOp("    Wobbly!"));
     }
 
     [Test]
@@ -220,7 +240,7 @@ public class ShellTests
     {
         _shell.RunScript("print jello, world");
 
-        _mockParser.Verify(m => m.Parse(new Scanner("print jello, world")), Times.Once);
+        _mockEnv.Verify(m => m.Parse("print jello, world"), Times.Once);
     }
 
     [Test]
@@ -240,7 +260,9 @@ public class ShellTests
         var result = _shell.RunScript("print jello, world");
 
         result.Should().Be(-1);
-        _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("ERROR:  /error/name/:  Unknown variable!"));
+        _fakeReaderWriter.VerifyIoOpsContains(
+            new WriteLineOp("  ERROR: /error/name/"),
+            new WriteLineOp("    Unknown variable!"));
     }
 
     [SetUp]
@@ -262,16 +284,19 @@ public class ShellTests
                 Node.Literal("jello,".ToValue()), Node.Literal("world".ToValue())
             )));
 
-        _mockParser.Setup(m => m.Parse(new Scanner("print jello, world")))
+        _mockEnv.Setup(m => m.Parse("print jello, world"))
             .Returns(_expectedParsedScript);
 
-        _mockParser.Setup(m => m.Parse(new Scanner("print 'jello,\nworld'")))
+        _mockEnv.Setup(m => m.Parse("print 'jello,\nworld'"))
             .Returns(_expectedParsedScript);
 
-        _mockParser.Setup(m => m.Parse(new Scanner("print 'jello,")))
+        _mockEnv.Setup(m => m.Parse("print hello, world\nprint jello, world"))
+            .Returns(_expectedParsedScript);
+
+        _mockEnv.Setup(m => m.Parse("print 'jello,"))
             .Throws(Error.MissingEndToken("Oh!  No!"));
 
-        _mockParser.Setup(m => m.Parse(new Scanner("noop")))
+        _mockEnv.Setup(m => m.Parse("noop"))
             .Returns(new DictionaryValue());
 
         _mockEnv.Setup(m => m.Evaluate(_expectedParsedScript)).Returns("the result!".ToValue());

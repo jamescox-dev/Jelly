@@ -6,5 +6,6 @@ global using Jelly.Library;
 global using Jelly.Parser;
 global using Jelly.Parser.Scanning;
 global using Jelly.Runtime;
+global using Jelly.Shell.Extensions;
 global using Jelly.Shell.Io;
 global using Jelly.Values;

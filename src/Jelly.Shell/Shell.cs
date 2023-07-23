@@ -38,14 +38,16 @@ public class Shell
 
         for (;;)
         {
+            var source = string.Empty;
             try
             {
-                var command = Read();
-                PrintResult(Evaluate(command));
+                DictionaryValue script;
+                (source, script) = Read();
+                PrintResult(Evaluate(script));
             }
             catch (Error error)
             {
-                PrintError(error);
+                PrintError(source, error);
             }
             catch (Exception)
             {
@@ -69,7 +71,7 @@ public class Shell
         }
     }
 
-    DictionaryValue Read()
+    (string, DictionaryValue) Read()
     {
         var script = Node.Script();
 
@@ -83,15 +85,11 @@ public class Shell
             input += (input.Length > 0 ? "\n" : "") + line;
             try
             {
-                script = _env.Parser.Parse(new Scanner(input));
+                script = _env.Parse(input);
                 if (script is not null)
                 {
                     AddHistory(input);
-                    // TODO:  This should be a command line option.
-                    // Console.WriteLine(JsonSerializer.Serialize(ToClr(script), new JsonSerializerOptions {
-                    //     WriteIndented = true
-                    // }));
-                    return script;
+                    return (input, script);
                 }
             }
             catch (MissingEndTokenError)
@@ -122,9 +120,24 @@ public class Shell
         }
     }
 
-    void PrintError(Error error)
+    void PrintError(string source, Error error)
     {
-        _writer.WriteLine($"ERROR:  {error.Type}:  {error.Message}");
+        var hasPosition = error.StartPosition >= 0;
+        if (hasPosition)
+        {
+            var (ln, col) = source.IndexToLineAndColumn(error.StartPosition);
+            _writer.WriteLine($"  ERROR: {error.Type} @ Ln: {ln}, Col: {col}");
+            foreach (var underlinedText in source.Underline(error.StartPosition, error.EndPosition))
+            {
+                _writer.WriteLine($"    {underlinedText.Text}");
+                _writer.WriteLine($"    {underlinedText.Underline}");
+            }
+        }
+        else
+        {
+            _writer.WriteLine($"  ERROR: {error.Type}");
+        }
+        _writer.WriteLine($"    {error.Message}");
     }
 
     public int RunScript(string source)
@@ -133,29 +146,14 @@ public class Shell
 
         try
         {
-            var script = _env.Parser.Parse(new Scanner(source))!;
+            var script = _env.Parse(source)!;
             _env.Evaluate(script);
             return 0;
         }
         catch (Error error)
         {
-            PrintError(error);
+            PrintError(source, error);
             return -1;
         }
     }
-
-    // TODO:  This needs moving, and testing, and should be a command line option...
-    // public object? ToClr(Value value)
-    // {
-    //     return value switch
-    //     {
-    //         BooleanValue boolean => boolean.ToBool(),
-    //         NumberValue number => number.ToDouble(),
-    //         StringValue str => str.ToString(),
-    //         ListValue list => list.Select(v => ToClr(v)).ToList(),
-    //         DictionaryValue dict => new Dictionary<string, object?>(
-    //             dict.ToEnumerable().Select(kvp => new KeyValuePair<string, object?>(ToClr(kvp.Key)?.ToString() ?? string.Empty, ToClr(kvp.Value)))),
-    //         _ => null
-    //     };
-    // }
 }

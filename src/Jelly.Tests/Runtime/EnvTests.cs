@@ -8,6 +8,7 @@ public class EnvTests
     IEnv _environment = null!;
 
     DictionaryValue _testNode = null!;
+    DictionaryValue _errorTestNode = null!;
 
     Mock<IParser> _mockParser = null!;
     Mock<IEvaluator> _mockEvaluator = null!;
@@ -104,10 +105,22 @@ public class EnvTests
         result.Should().Be(Value.Empty);
     }
 
+    [Test]
+    public void WhenEvaluatingAScriptRaisesAnErrorWithoutAPositionThePositionOfTheNodeIsAttacheToTheError()
+    {
+        _environment.Invoking(e => e.Evaluate("boo!"))
+            .Should().Throw<Error>().Where(e =>
+                e.Type == "/test/"
+                && e.Message == "Boo!"
+                && e.StartPosition == 1
+                && e.EndPosition == 5);
+    }
+
     [SetUp]
     public void Setup()
     {
         _testNode = Node.Literal("test");
+        _errorTestNode = Node.Literal("boo!", 1, 5);
 
         _mockParser = new();
         _mockEvaluator = new();
@@ -115,8 +128,12 @@ public class EnvTests
         _environment = new Env(_mockParser.Object, _mockEvaluator.Object);
 
         _mockParser.Setup(m => m.Parse(It.Is<Scanner>(s => s.Source == "test"))).Returns(_testNode);
+        _mockParser.Setup(m => m.Parse(It.Is<Scanner>(s => s.Source == "boo!"))).Returns(_errorTestNode);
 
         _mockEvaluator.Setup(m => m.Evaluate(_environment, _testNode))
             .Returns("RESULT!".ToValue());
+
+        _mockEvaluator.Setup(m => m.Evaluate(_environment, _errorTestNode))
+            .Throws(new Error("/test/", "Boo!"));
     }
 }

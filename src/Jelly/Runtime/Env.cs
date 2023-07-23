@@ -26,9 +26,11 @@ public class Env : IEnv
 
     public Env() : this(new Scope()) {}
 
+    public DictionaryValue? Parse(string source) => Parser.Parse(new Scanner(source));
+
     public Value Evaluate(string source)
     {
-        var node = Parser.Parse(new Scanner(source));
+        var node = Parse(source);
         if (node is not null)
         {
             return Evaluate(node);
@@ -38,7 +40,23 @@ public class Env : IEnv
 
     public Value Evaluate(DictionaryValue node)
     {
-        return Evaluator.Evaluate(this, node);
+        try
+        {
+            return Evaluator.Evaluate(this, node);
+        }
+        catch (Error error)
+        {
+            if (error.StartPosition < 0 && error.EndPosition < 0)
+            {
+                var pos = Node.GetPosition(node);
+                if (pos is not null)
+                {
+                    error.EndPosition = (int)pos[Keywords.End].ToDouble();
+                    error.StartPosition = (int)pos[Keywords.Start].ToDouble();
+                }
+            }
+            throw error;
+        }
     }
 
     public IScope PopScope()

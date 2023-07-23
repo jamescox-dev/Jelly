@@ -25,6 +25,10 @@ public class Error : Exception
 
     public Value Value { get; }
 
+    public int StartPosition { get; internal set; } = -1;
+
+    public int EndPosition { get; internal set; } = -1;
+
     public static string NormalizeType(string original)
     {
         var slashRunsRemoved = string.Join("/", original.Split('/', StringSplitOptions.RemoveEmptyEntries));
