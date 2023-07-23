@@ -47,7 +47,7 @@ internal class BinOpEvaluator : IEvaluator
         if (_arithmeticOps.TryGetValue(op, out var arithOp))
         {
             EvaluateOperandsAsNumbers(env, node, out var a, out var b);
-            return new NumberValue(arithOp(a, b));
+            return new NumValue(arithOp(a, b));
         }
         if (_comparisonOps.TryGetValue(op, out var numCompOp))
         {

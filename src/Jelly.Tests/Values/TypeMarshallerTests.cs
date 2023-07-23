@@ -14,13 +14,13 @@ public class TypeMarshallerTests
     [TestCase(null, typeof(StringValue), "")]
     [TestCase(true, typeof(BoolValue), "true")]
     [TestCase(false, typeof(BoolValue), "false")]
-    [TestCase(-1, typeof(NumberValue), "-1")]
-    [TestCase(0, typeof(NumberValue), "0")]
-    [TestCase(1, typeof(NumberValue), "1")]
-    [TestCase(double.NegativeInfinity, typeof(NumberValue), "-inf")]
-    [TestCase(double.NaN, typeof(NumberValue), "nan")]
-    [TestCase(double.PositiveInfinity, typeof(NumberValue), "inf")]
-    [TestCase(3.25, typeof(NumberValue), "3.25")]
+    [TestCase(-1, typeof(NumValue), "-1")]
+    [TestCase(0, typeof(NumValue), "0")]
+    [TestCase(1, typeof(NumValue), "1")]
+    [TestCase(double.NegativeInfinity, typeof(NumValue), "-inf")]
+    [TestCase(double.NaN, typeof(NumValue), "nan")]
+    [TestCase(double.PositiveInfinity, typeof(NumValue), "inf")]
+    [TestCase(3.25, typeof(NumValue), "3.25")]
     [TestCase("jello", typeof(StringValue), "jello")]
     public void SimpleClrTypesMarshalToTheExpectedJellyValueAndTypes(object? clrValue, Type expectedJellyType, string expectedJellyValue)
     {
@@ -40,9 +40,9 @@ public class TypeMarshallerTests
         jellyValue.GetType().Should().Be(typeof(ListValue));
         jellyValue.Should().Be(new ListValue(
             Value.Empty,
-            NumberValue.One,
+            NumValue.One,
             BoolValue.True,
-            NumberValue.One,
+            NumValue.One,
             "hi".ToValue(),
             new ListValue("bye".ToValue())));
     }
@@ -61,7 +61,7 @@ public class TypeMarshallerTests
 
         jellyValue.GetType().Should().Be(typeof(DictValue));
         jellyValue.Should().Be(new DictValue(
-            NumberValue.One, 2.0.ToValue(),
+            NumValue.One, 2.0.ToValue(),
             BoolValue.True, "false".ToValue(),
             "this".ToValue(), new ListValue("that".ToValue())
         ));

@@ -49,7 +49,7 @@ public class MathLibraryTests
 
             var result = maxCmd.Invoke(_env, new ListValue());
 
-            result.Should().Be(NumberValue.Zero);
+            result.Should().Be(NumValue.Zero);
         }
 
         [Test]
@@ -69,7 +69,7 @@ public class MathLibraryTests
 
             var result = maxCmd.Invoke(_env, new ListValue(Node.Literal(-1), Node.Literal("Boo!"), Node.Literal(10)));
 
-            result.Should().Be(NumberValue.NaN);
+            result.Should().Be(NumValue.NaN);
         }
     }
 
@@ -87,7 +87,7 @@ public class MathLibraryTests
 
             var result = minCmd.Invoke(_env, new ListValue());
 
-            result.Should().Be(NumberValue.Zero);
+            result.Should().Be(NumValue.Zero);
         }
 
         [Test]
@@ -107,7 +107,7 @@ public class MathLibraryTests
 
             var result = minCmd.Invoke(_env, new ListValue(Node.Literal(-1), Node.Literal("Boo!"), Node.Literal(10)));
 
-            result.Should().Be(NumberValue.NaN);
+            result.Should().Be(NumValue.NaN);
         }
     }
 

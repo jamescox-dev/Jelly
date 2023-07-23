@@ -10,7 +10,7 @@ public class NumberValueTests
     [TestCase(double.NegativeInfinity)]
     public void ANumberValuesStringRepresentationCanBeUsedToConstructAnIdenticalNumberValue(double number)
     {
-        var num = new NumberValue(number);
+        var num = new NumValue(number);
 
         var str = num.ToString();
 
@@ -20,7 +20,7 @@ public class NumberValueTests
     [TestCase(double.NaN)]
     public void ANumbersStringRepresentationShouldBeInLowerCase(double value)
     {
-        var num = new NumberValue(value);
+        var num = new NumValue(value);
 
         var str = num.ToString();
 
@@ -51,7 +51,7 @@ public class NumberValueTests
     [TestCase("e")]
     public void ParsingANumberResultsInANaNWhenTheStringIsNotInAValidFormat(string numberString)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         double.IsNaN(number).Should().BeTrue();
     }
@@ -70,7 +70,7 @@ public class NumberValueTests
     [TestCase("-InF", double.NegativeInfinity)]
     public void SpecialWordsAreParsedIntoThereCorrectValue(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -80,7 +80,7 @@ public class NumberValueTests
     [TestCase("false\t\t", 0.0)]
     public void LeadingAndTrailingSpacesAreIgnoredWhenParsingANumber(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -94,7 +94,7 @@ public class NumberValueTests
     [TestCase("-99999999999999999999999", -99999999999999999999999.0)]
     public void IntegerCanBeParsed(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -106,7 +106,7 @@ public class NumberValueTests
     [TestCase("1.98676876876876", 1.98676876876876)]
     public void DecimalNumbersCanBeParsed(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -121,7 +121,7 @@ public class NumberValueTests
     [TestCase("-0xf", -15)]
     public void HexadecimalNumbersCanBeParsed(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -134,7 +134,7 @@ public class NumberValueTests
     [TestCase("-1.7976931348623159e308", -1)]
     public void WhenTheNumberIsOutOfTheRangeOfADoubleFloatAInfinityIsReturned(string numberString, int expectedSign)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         Math.Sign(number).Should().Be(expectedSign);
         double.IsInfinity(number).Should().BeTrue();
@@ -151,7 +151,7 @@ public class NumberValueTests
     [TestCase("0xffff_ffff", 0xffff_ffff)]
     public void UnderscoresAreIgnoredBetweenGroupsOfDigits(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -162,7 +162,7 @@ public class NumberValueTests
     [TestCase("-0b1", -1)]
     public void BinaryNumbersCanBeParsed(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -173,7 +173,7 @@ public class NumberValueTests
     [TestCase("-0o7", -7)]
     public void OctalNumbersCanBeParsed(string numberString, double expected)
     {
-        var number = NumberValue.ParseNumber(numberString);
+        var number = NumValue.ParseNumber(numberString);
 
         number.Should().Be(expected);
     }
@@ -187,7 +187,7 @@ public class NumberValueTests
     [TestCase(0.0, false)]
     public void ANumberCanBeConvertedToABool(double d, bool expected)
     {
-        var number = new NumberValue(d);
+        var number = new NumValue(d);
 
         var b = number.ToBool();
 
@@ -197,7 +197,7 @@ public class NumberValueTests
     [Test]
     public void ANumberConvertsToAListWithTheNumberAsItsOnlyItem()
     {
-        var num = new NumberValue(42);
+        var num = new NumValue(42);
 
         var list = num.ToListValue();
 
@@ -207,7 +207,7 @@ public class NumberValueTests
     [Test]
     public void ANumberIsConvertedToADictionaryWithItsFirstItemWithTheNumberAsItsKeyAndAnEmptyValue()
     {
-        var num = new NumberValue(42);
+        var num = new NumValue(42);
 
         var dict = num.ToDictionaryValue();
 

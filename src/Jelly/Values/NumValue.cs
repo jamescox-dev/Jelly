@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
-public class NumberValue : Value
+public class NumValue : Value
 {
-    public static readonly NumberValue Zero = new(0.0);
-    public static readonly NumberValue One = new(1.0);
-    public static readonly NumberValue NaN = new(double.NaN);
+    public static readonly NumValue Zero = new(0.0);
+    public static readonly NumValue One = new(1.0);
+    public static readonly NumValue NaN = new(double.NaN);
 
     static readonly BigInteger DoubleMaxValueAsBigInt = new(double.MaxValue);
     static readonly Regex NumberPattern = new(@"
@@ -47,7 +47,7 @@ public class NumberValue : Value
 
     readonly double _value;
 
-    public NumberValue(double value)
+    public NumValue(double value)
     {
         _value = value;
     }

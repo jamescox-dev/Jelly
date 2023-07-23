@@ -114,7 +114,7 @@ public class DictionaryValueTests
     {
         var dict1 = new DictValue();
         var dict2 = new DictValue(Value.Empty);
-        var dict3 = new DictValue(new NumberValue(1.0), " ".ToValue());
+        var dict3 = new DictValue(new NumValue(1.0), " ".ToValue());
 
         double.IsNaN(dict1.ToDouble()).Should().BeTrue();
         double.IsNaN(dict2.ToDouble()).Should().BeTrue();
@@ -126,7 +126,7 @@ public class DictionaryValueTests
     {
         var dict1 = new DictValue();
         var dict2 = new DictValue(Value.Empty);
-        var dict3 = new DictValue(new NumberValue(1.0), " ".ToValue());
+        var dict3 = new DictValue(new NumValue(1.0), " ".ToValue());
 
         dict1.ToBool().Should().BeTrue();
         dict2.ToBool().Should().BeTrue();

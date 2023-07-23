@@ -14,7 +14,7 @@ public class ValueExtensionsTests
     [Test]
     public void ConvertingAValueFromAOneBasedIndexToANativeIndexResultsInAZeroBasedIndex()
     {
-        var jellyIndex = new NumberValue(2);
+        var jellyIndex = new NumValue(2);
 
         var index = jellyIndex.ToIndexOf(testList);
 
@@ -24,7 +24,7 @@ public class ValueExtensionsTests
     [Test]
     public void ConvertingAValueFromANegativeOneBasedIndex_OrReverseIndex_ToANativeIndexResultsInAZeroBasedIndex()
     {
-        var jellyIndex = new NumberValue(-1);
+        var jellyIndex = new NumValue(-1);
 
         var index = jellyIndex.ToIndexOf(testList);
 
@@ -41,7 +41,7 @@ public class ValueExtensionsTests
     [TestCase(2.75, 1)]
     public void IndexesWithDecimalDigitsAreTruncated(double jellyIndexDouble, int expectedIndex)
     {
-        var jellyIndex = new NumberValue(jellyIndexDouble);
+        var jellyIndex = new NumValue(jellyIndexDouble);
 
         var index = jellyIndex.ToIndexOf(testList);
 
@@ -51,7 +51,7 @@ public class ValueExtensionsTests
     [Test]
     public void ZeroIndexesCanNotBeConvertedToIndexes()
     {
-        var jellyIndex = NumberValue.Zero;
+        var jellyIndex = NumValue.Zero;
 
         jellyIndex.Invoking(i => i.ToIndexOf(testList))
             .Should().Throw<ValueError>().WithMessage("index must not be zero.");
@@ -62,7 +62,7 @@ public class ValueExtensionsTests
     [TestCase(double.NaN)]
     public void InfiniteOrNonNumericValuesCanNotBeConvertedToIndexes(double jellyIndexDouble)
     {
-        var jellyIndex = new NumberValue(jellyIndexDouble);
+        var jellyIndex = new NumValue(jellyIndexDouble);
 
         jellyIndex.Invoking(i => i.ToIndexOf(testList))
             .Should().Throw<ValueError>().WithMessage("index must be a finite number.");

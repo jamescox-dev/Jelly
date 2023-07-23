@@ -44,5 +44,5 @@ public class StringValue : Value
         return double.IsNaN(num) || num != 0.0;
     }
 
-    public override double ToDouble() => NumberValue.ParseNumber(ToString());
+    public override double ToDouble() => NumValue.ParseNumber(ToString());
 }
