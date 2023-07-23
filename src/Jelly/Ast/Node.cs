@@ -225,7 +225,7 @@ public static class Node
     public static bool IsKeyword(DictValue node, string keyword) =>
         IsLiteral(node) && GetLiteralValue(node).ToString().Equals(keyword, StringComparison.InvariantCultureIgnoreCase);
 
-    static bool IsType(DictValue node, StringValue type) =>
+    static bool IsType(DictValue node, StrValue type) =>
         node.TryGetValue(Keywords.Type, out var typeValue) && typeValue == type;
 
     public static Value GetLiteralValue(DictValue literal)

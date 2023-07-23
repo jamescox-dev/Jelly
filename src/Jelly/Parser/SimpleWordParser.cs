@@ -5,7 +5,7 @@ using System.Text;
 public class SimpleWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
-    static readonly StringValue AssignmentOperator = new("=");
+    static readonly StrValue AssignmentOperator = new("=");
 
     readonly char? _terminatingChar;
     readonly bool _terminateAtOperator;

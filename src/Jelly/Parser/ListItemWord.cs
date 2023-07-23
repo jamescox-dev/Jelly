@@ -2,7 +2,7 @@ namespace Jelly.Parser;
 
 public class ListItemParser
 {
-    static readonly StringValue ValueKeyword = new StringValue("value");
+    static readonly StrValue ValueKeyword = new StrValue("value");
 
     static readonly IParser[] Parsers = new IParser[]
     {

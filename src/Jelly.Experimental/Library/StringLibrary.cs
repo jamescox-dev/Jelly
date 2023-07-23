@@ -2,8 +2,8 @@ namespace Jelly.Experimental.Library;
 
 public class StringLibrary : ILibrary
 {
-    static readonly StringValue ItemsKeyword = new("items");
-    static readonly StringValue ListsKeyword = new("lists");
+    static readonly StrValue ItemsKeyword = new("items");
+    static readonly StrValue ListsKeyword = new("lists");
 
     static readonly IArgParser StrGetArgParser = new StandardArgParser(new Arg("str"), new Arg("index"));
     static readonly IArgParser StrStripArgParser = new StandardArgParser(new Arg("str"));

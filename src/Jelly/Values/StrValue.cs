@@ -1,10 +1,10 @@
 namespace Jelly.Values;
 
-public class StringValue : Value
+public class StrValue : Value
 {
     readonly string _value;
 
-    public StringValue(string value)
+    public StrValue(string value)
     {
         _value = value;
     }

@@ -14,7 +14,7 @@ public class ValueTests
 
     static readonly IReadOnlyList<TestCaseData> AllValuesAreStringsTestCaseData = new List<TestCaseData>
     {
-        new(new StringValue("hello, world"), "hello, world"),
+        new(new StrValue("hello, world"), "hello, world"),
     };
 
     [TestCase("a", "A", -1)]
@@ -136,7 +136,7 @@ public class ValueTests
     [Test]
     public void ValuesCanBeConvertedToListValues()
     {
-        var value = new StringValue("a b c");
+        var value = new StrValue("a b c");
 
         var list = value.ToListValue();
 
@@ -146,7 +146,7 @@ public class ValueTests
     [Test]
     public void IfTheValueCanNotBeParsedIntoAListValueAnTypeErrorIsThrown()
     {
-        var value = new StringValue("{");
+        var value = new StrValue("{");
 
         value.Invoking(v => v.ToListValue()).Should().Throw<TypeError>().WithMessage("Value is not a list.");
     }
@@ -154,7 +154,7 @@ public class ValueTests
     [Test]
     public void ValuesCanBeConvertedToDictionaryValues()
     {
-        var value = new StringValue("a b c d");
+        var value = new StrValue("a b c d");
 
         var dict = value.ToDictionaryValue();
 
@@ -164,7 +164,7 @@ public class ValueTests
     [Test]
     public void ValuesCanBeConvertedToDictionaryValueIfTheLastValueIsMissingItIsLeftEmpty()
     {
-        var value = new StringValue("a b c");
+        var value = new StrValue("a b c");
 
         var dict = value.ToDictionaryValue();
 
@@ -174,7 +174,7 @@ public class ValueTests
     [Test]
     public void IfTheValueCanNotBeParsedIntoADictionaryValueAnTypeErrorIsThrown()
     {
-        var value = new StringValue("{");
+        var value = new StrValue("{");
 
         value.Invoking(v => v.ToDictionaryValue()).Should().Throw<TypeError>().WithMessage("Value is not a dictionary.");
     }

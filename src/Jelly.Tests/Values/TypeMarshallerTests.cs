@@ -11,7 +11,7 @@ public class TypeMarshallerTests
         _marshaller = new TypeMarshaller();
     }
 
-    [TestCase(null, typeof(StringValue), "")]
+    [TestCase(null, typeof(StrValue), "")]
     [TestCase(true, typeof(BoolValue), "true")]
     [TestCase(false, typeof(BoolValue), "false")]
     [TestCase(-1, typeof(NumValue), "-1")]
@@ -21,7 +21,7 @@ public class TypeMarshallerTests
     [TestCase(double.NaN, typeof(NumValue), "nan")]
     [TestCase(double.PositiveInfinity, typeof(NumValue), "inf")]
     [TestCase(3.25, typeof(NumValue), "3.25")]
-    [TestCase("jello", typeof(StringValue), "jello")]
+    [TestCase("jello", typeof(StrValue), "jello")]
     public void SimpleClrTypesMarshalToTheExpectedJellyValueAndTypes(object? clrValue, Type expectedJellyType, string expectedJellyValue)
     {
         var jellyValue = _marshaller.Marshal(clrValue);
@@ -82,7 +82,7 @@ public class TypeMarshallerTests
     [TestCase("", true)]
     public void JellyValuesCanBeMarshalledToClrBools(string jellyValue, bool expectedBool)
     {
-        var b = _marshaller.Marshal(new StringValue(jellyValue), typeof(bool));
+        var b = _marshaller.Marshal(new StrValue(jellyValue), typeof(bool));
 
         b.GetType().Should().Be(typeof(bool));
         b.Should().Be(expectedBool);
@@ -95,7 +95,7 @@ public class TypeMarshallerTests
     [TestCase("-1000", -1000)]
     public void JellyValuesCanBeMarshalledToClrInt32s(string jellyValue, int expectedInt32)
     {
-        var i = _marshaller.Marshal(new StringValue(jellyValue), typeof(int));
+        var i = _marshaller.Marshal(new StrValue(jellyValue), typeof(int));
 
         i.GetType().Should().Be(typeof(int));
         i.Should().Be(expectedInt32);
@@ -106,7 +106,7 @@ public class TypeMarshallerTests
     [TestCase("inf")]
     public void NaNOrInfinityJellyValuesThrowExceptionsWhenMarshalledToClrInt32s(string jellyValue)
     {
-        _marshaller.Invoking(m => m.Marshal(new StringValue(jellyValue), typeof(int)))
+        _marshaller.Invoking(m => m.Marshal(new StrValue(jellyValue), typeof(int)))
             .Should().Throw<TypeError>("Invalid integer.");
     }
 
@@ -117,7 +117,7 @@ public class TypeMarshallerTests
     [TestCase("-inf", double.NegativeInfinity)]
     public void JellyValuesCanBeMarshalledToClrDoubles(string jellyValue, double expectedDouble)
     {
-        var d = _marshaller.Marshal(new StringValue(jellyValue), typeof(double));
+        var d = _marshaller.Marshal(new StrValue(jellyValue), typeof(double));
 
         d.GetType().Should().Be(typeof(double));
         d.Should().Be(expectedDouble);
@@ -126,7 +126,7 @@ public class TypeMarshallerTests
     [Test]
     public void JellyValuesCanBeMarshalledToClrString()
     {
-        var jellyValue = new StringValue("hello");
+        var jellyValue = new StrValue("hello");
 
         var s = _marshaller.Marshal(jellyValue, typeof(string));
 
@@ -189,7 +189,7 @@ public class TypeMarshallerTests
 
     public void IfAJellyValueIsMarshalledToAnUnsuportedTypeAnErrorIsThrown()
     {
-        _marshaller.Invoking(m => m.Marshal(new StringValue("hi"), typeof(FileStream))).Should()
+        _marshaller.Invoking(m => m.Marshal(new StrValue("hi"), typeof(FileStream))).Should()
             .Throw<TypeError>().WithMessage("Unsupported CLR type.");
     }
 }

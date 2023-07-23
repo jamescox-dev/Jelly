@@ -2,7 +2,7 @@ namespace Jelly.Parser;
 
 public class ExpressionParser : IParser
 {
-    public static readonly Value SubExpressionsKeyword = new StringValue("subexpressions");
+    public static readonly Value SubExpressionsKeyword = new StrValue("subexpressions");
 
     readonly WordParser _wordParser;
 

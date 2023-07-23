@@ -4,7 +4,7 @@ namespace Jelly.Evaluator;
 
 internal class ScriptEvaluator : IEvaluator
 {
-    static readonly StringValue CommandsKeyword = new StringValue("commands");
+    static readonly StrValue CommandsKeyword = new StrValue("commands");
 
     public Value Evaluate(IEnv env, DictValue node)
     {

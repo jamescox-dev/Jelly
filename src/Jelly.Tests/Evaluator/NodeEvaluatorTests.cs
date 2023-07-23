@@ -12,22 +12,22 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
         nodeEvaluator.AddEvaluator("type1", test1Interpreter);
         nodeEvaluator.AddEvaluator("type2", test2Interpreter);
         var test1Node = new DictValue(new KeyValuePair<Value, Value>[] {
-            new(new StringValue("type"), new StringValue("type1")),
-            new(new StringValue("message"), new StringValue("hi")),
+            new(new StrValue("type"), new StrValue("type1")),
+            new(new StrValue("message"), new StrValue("hi")),
         });
         var test2Node = new DictValue(new KeyValuePair<Value, Value>[] {
-            new(new StringValue("type"), new StringValue("type2")),
-            new(new StringValue("message"), new StringValue("bye")),
+            new(new StrValue("type"), new StrValue("type2")),
+            new(new StrValue("message"), new StrValue("bye")),
         });
 
         var test1result = nodeEvaluator.Evaluate(Environment, test1Node);
         var test2result = nodeEvaluator.Evaluate(Environment, test2Node);
 
-        test1result.Should().Be(new StringValue("hi"));
+        test1result.Should().Be(new StrValue("hi"));
         test1Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
         test1Interpreter.NodeEvaluated.Should().Be(test1Node);
         test1Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
-        test2result.Should().Be(new StringValue("bye"));
+        test2result.Should().Be(new StrValue("bye"));
         test2Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
         test2Interpreter.NodeEvaluated.Should().Be(test2Node);
         test2Interpreter.EnvironmentPassedToEvaluate.Should().Be(Environment);
@@ -73,7 +73,7 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
             EnvironmentPassedToEvaluate = env;
             NodeEvaluated = node;
 
-            return node[new StringValue("message")];
+            return node[new StrValue("message")];
         }
     }
 }

@@ -4,7 +4,7 @@ using Jelly.Commands.ArgParsers;
 
 public class MathLibrary : ILibrary
 {
-    static readonly StringValue Amount = new("amount");
+    static readonly StrValue Amount = new("amount");
     readonly IArgParser IncArgParser = new StandardArgParser(new Arg("variable"), new OptArg("amount", Node.Literal(1)));
 
     public void LoadIntoScope(IScope scope)

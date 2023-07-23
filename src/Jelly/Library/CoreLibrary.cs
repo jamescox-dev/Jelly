@@ -6,7 +6,7 @@ using System.Collections.Immutable;
 
 public class CoreLibrary : ILibrary
 {
-    static readonly StringValue LocalOnlyKeyword = new("localonly");
+    static readonly StrValue LocalOnlyKeyword = new("localonly");
 
     static readonly IArgParser ForArgParser = new PatternArgParser(
         new OrPattern(

@@ -15,6 +15,6 @@ public class VariableEvaluatorTests
 
         var result = evaluator.Evaluate(env, variable);
 
-        result.Should().Be(new StringValue("42"));
+        result.Should().Be(new StrValue("42"));
     }
 }

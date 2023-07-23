@@ -2,7 +2,7 @@ namespace Jelly.Values;
 
 public abstract class Value : IEquatable<Value>, IComparable<Value>
 {
-    public static readonly Value Empty = new StringValue(string.Empty);
+    public static readonly Value Empty = new StrValue(string.Empty);
 
     public string Escape() => ValueSerializer.Escape(ToString());
 

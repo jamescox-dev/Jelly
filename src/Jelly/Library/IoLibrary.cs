@@ -2,14 +2,14 @@ namespace Jelly.Library;
 
 public class IoLibrary : ILibrary
 {
-    static readonly StringValue DstKeyword = new("dst");
-    static readonly StringValue FileKeyword = new("file");
-    static readonly StringValue PathKeyword = new("path");
-    static readonly StringValue PathsKeyword = new("paths");
-    static readonly StringValue ReadOnlyKeyword = new("readonly");
-    static readonly StringValue RecursiveKeyword = new("recursive");
-    static readonly StringValue SrcKeyword = new("src");
-    static readonly StringValue TextKeyword = new("text");
+    static readonly StrValue DstKeyword = new("dst");
+    static readonly StrValue FileKeyword = new("file");
+    static readonly StrValue PathKeyword = new("path");
+    static readonly StrValue PathsKeyword = new("paths");
+    static readonly StrValue ReadOnlyKeyword = new("readonly");
+    static readonly StrValue RecursiveKeyword = new("recursive");
+    static readonly StrValue SrcKeyword = new("src");
+    static readonly StrValue TextKeyword = new("text");
 
     static readonly IArgParser DeleteArgParser = new StandardArgParser(new Arg("path"), new OptArg("recursive", BoolValue.False));
     static readonly IArgParser FileArgParser = new StandardArgParser(new Arg("file"));

@@ -2,8 +2,8 @@ namespace Jelly.Evaluator;
 
 internal class CommandEvaluator : IEvaluator
 {
-    static readonly StringValue NameKey = new StringValue("name");
-    static readonly StringValue ArgsKey = new StringValue("args");
+    static readonly StrValue NameKey = new StrValue("name");
+    static readonly StrValue ArgsKey = new StrValue("args");
 
     public Value Evaluate(IEnv env, DictValue node)
     {

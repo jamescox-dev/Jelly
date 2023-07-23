@@ -11,6 +11,6 @@ public class LiteralEvaluatorTests
 
         var result = evaluator.Evaluate(null!, literal);
 
-        result.Should().Be(new StringValue("hello, world"));
+        result.Should().Be(new StrValue("hello, world"));
     }
 }

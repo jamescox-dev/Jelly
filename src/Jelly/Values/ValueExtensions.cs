@@ -2,7 +2,7 @@ namespace Jelly.Values;
 
 public static class ValueExtensions
 {
-    public static StringValue ToValue(this string str) =>
+    public static StrValue ToValue(this string str) =>
         new(str);
 
     public static BoolValue ToValue(this bool b) => b ? BoolValue.True : BoolValue.False;
@@ -69,7 +69,7 @@ public static class ValueExtensions
         {
             BoolValue boolean => boolean.ToBool(),
             NumValue number => number.ToDouble(),
-            StringValue str => str.ToString(),
+            StrValue str => str.ToString(),
             ListValue list => list.Select(v => ToClr(v)).ToList(),
             DictValue dict => new Dictionary<string, object?>(
                 dict.ToEnumerable().Select(kvp => new KeyValuePair<string, object?>(ToClr(kvp.Key)?.ToString() ?? string.Empty, ToClr(kvp.Value)))),
