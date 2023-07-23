@@ -58,7 +58,7 @@ public class IoLibraryTests
         var result = cmd.Invoke(_env, new ListValue(Node.Literal("/test.txt")));
 
         pathArg.Should().Be("/test.txt");
-        result.Should().Be(BooleanValue.True);
+        result.Should().Be(BoolValue.True);
     }
 
     [Test]
@@ -103,7 +103,7 @@ public class IoLibraryTests
         var result = cmd.Invoke(_env, new ListValue(Node.Literal("/dir/")));
 
         pathArg.Should().Be("/dir/");
-        result.Should().Be(BooleanValue.True);
+        result.Should().Be(BoolValue.True);
     }
 
     [Test]
@@ -143,7 +143,7 @@ public class IoLibraryTests
         var result = cmd.Invoke(_env, new ListValue(Node.Literal("/mission")));
 
         pathArg.Should().Be("/mission");
-        result.Should().Be(BooleanValue.True);
+        result.Should().Be(BoolValue.True);
     }
 
     [Test]

@@ -12,8 +12,8 @@ public class TypeMarshallerTests
     }
 
     [TestCase(null, typeof(StringValue), "")]
-    [TestCase(true, typeof(BooleanValue), "true")]
-    [TestCase(false, typeof(BooleanValue), "false")]
+    [TestCase(true, typeof(BoolValue), "true")]
+    [TestCase(false, typeof(BoolValue), "false")]
     [TestCase(-1, typeof(NumberValue), "-1")]
     [TestCase(0, typeof(NumberValue), "0")]
     [TestCase(1, typeof(NumberValue), "1")]
@@ -41,7 +41,7 @@ public class TypeMarshallerTests
         jellyValue.Should().Be(new ListValue(
             Value.Empty,
             NumberValue.One,
-            BooleanValue.True,
+            BoolValue.True,
             NumberValue.One,
             "hi".ToValue(),
             new ListValue("bye".ToValue())));
@@ -62,7 +62,7 @@ public class TypeMarshallerTests
         jellyValue.GetType().Should().Be(typeof(DictionaryValue));
         jellyValue.Should().Be(new DictionaryValue(
             NumberValue.One, 2.0.ToValue(),
-            BooleanValue.True, "false".ToValue(),
+            BoolValue.True, "false".ToValue(),
             "this".ToValue(), new ListValue("that".ToValue())
         ));
     }

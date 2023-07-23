@@ -11,13 +11,13 @@ public class IoLibrary : ILibrary
     static readonly StringValue SrcKeyword = new("src");
     static readonly StringValue TextKeyword = new("text");
 
-    static readonly IArgParser DeleteArgParser = new StandardArgParser(new Arg("path"), new OptArg("recursive", BooleanValue.False));
+    static readonly IArgParser DeleteArgParser = new StandardArgParser(new Arg("path"), new OptArg("recursive", BoolValue.False));
     static readonly IArgParser FileArgParser = new StandardArgParser(new Arg("file"));
     static readonly IArgParser NoArgParser = new StandardArgParser();
     static readonly IArgParser PathArgParser = new StandardArgParser(new Arg("path"));
     static readonly IArgParser PathsArgParser = new StandardArgParser(new RestArg("paths"));
     static readonly IArgParser LsDirArgParser = new StandardArgParser(new OptArg("path", ".".ToValue()));
-    static readonly IArgParser SetReadOnlyArgParser = new StandardArgParser(new Arg("path"), new OptArg("readonly", BooleanValue.True));
+    static readonly IArgParser SetReadOnlyArgParser = new StandardArgParser(new Arg("path"), new OptArg("readonly", BoolValue.True));
     static readonly IArgParser SrcDstArgParser = new StandardArgParser(new Arg("src"), new Arg("dst"));
     static readonly IArgParser WriteAllArgParser = new StandardArgParser(new Arg("file"), new Arg("text"));
 

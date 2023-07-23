@@ -1,13 +1,13 @@
 namespace Jelly.Values;
 
-public class BooleanValue : Value
+public class BoolValue : Value
 {
-    public static readonly BooleanValue True = new BooleanValue(true);
-    public static readonly BooleanValue False = new BooleanValue(false);
+    public static readonly BoolValue True = new BoolValue(true);
+    public static readonly BoolValue False = new BoolValue(false);
 
     bool _value;
 
-    private BooleanValue(bool value)
+    private BoolValue(bool value)
     {
         _value = value;
     }

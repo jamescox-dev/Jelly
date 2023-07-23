@@ -5,7 +5,7 @@ public static class ValueExtensions
     public static StringValue ToValue(this string str) =>
         new(str);
 
-    public static BooleanValue ToValue(this bool b) => b ? BooleanValue.True : BooleanValue.False;
+    public static BoolValue ToValue(this bool b) => b ? BoolValue.True : BoolValue.False;
 
     public static NumberValue ToValue(this double dbl) =>
         new(dbl);
@@ -67,7 +67,7 @@ public static class ValueExtensions
     {
         return value switch
         {
-            BooleanValue boolean => boolean.ToBool(),
+            BoolValue boolean => boolean.ToBool(),
             NumberValue number => number.ToDouble(),
             StringValue str => str.ToString(),
             ListValue list => list.Select(v => ToClr(v)).ToList(),

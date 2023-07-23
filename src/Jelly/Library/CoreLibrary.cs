@@ -50,7 +50,7 @@ public class CoreLibrary : ILibrary
                 new SingleArgPattern("body"))))
             );
 
-    static readonly IArgParser LsScopeItems = new StandardArgParser(new OptArg("localonly", Node.Literal(BooleanValue.False)));
+    static readonly IArgParser LsScopeItems = new StandardArgParser(new OptArg("localonly", Node.Literal(BoolValue.False)));
 
     public void LoadIntoScope(IScope scope)
     {

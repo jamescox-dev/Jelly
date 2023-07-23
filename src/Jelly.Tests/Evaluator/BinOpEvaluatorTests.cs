@@ -228,9 +228,9 @@ public class BinOpEvaluatorTests : EvaluatorTestsBase
     public void AndThensSecondArgumentIsNotEvaluatedIfTheFirstArgumentEvaluatesToFalse()
     {
         var evaluated = false;
-        Environment.GlobalScope.DefineCommand("a", new SimpleCommand((args) => BooleanValue.False));
+        Environment.GlobalScope.DefineCommand("a", new SimpleCommand((args) => BoolValue.False));
         Environment.GlobalScope.DefineCommand("b", new SimpleCommand((args) => {
-            evaluated = true; return BooleanValue.True;
+            evaluated = true; return BoolValue.True;
         }));
         var binOp = Node.BinOp(
             "andthen",
@@ -261,8 +261,8 @@ public class BinOpEvaluatorTests : EvaluatorTestsBase
     public void OrElsesSecondArgumentIsNotEvaluatedIfTheFirstArgumentEvaluatesToTrue()
     {
         var evaluated = false;
-        Environment.GlobalScope.DefineCommand("a", new SimpleCommand((args) => BooleanValue.True));
-        Environment.GlobalScope.DefineCommand("b", new SimpleCommand((args) => { evaluated = true; return BooleanValue.False; }));
+        Environment.GlobalScope.DefineCommand("a", new SimpleCommand((args) => BoolValue.True));
+        Environment.GlobalScope.DefineCommand("b", new SimpleCommand((args) => { evaluated = true; return BoolValue.False; }));
         var binOp = Node.BinOp(
             "orelse",
             Node.Command(Node.Literal("a"), new ListValue()),
