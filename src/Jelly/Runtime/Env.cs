@@ -42,7 +42,10 @@ public class Env : IEnv
     {
         try
         {
-            return Evaluator.Evaluate(this, node);
+            Value result = null!;
+            Error.RethrowUnhandledClrExceptionsAsJellyErrors(() =>
+                result = Evaluator.Evaluate(this, node));
+            return result;
         }
         catch (Error error)
         {

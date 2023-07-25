@@ -99,4 +99,25 @@ public class ErrorTests
 
         isType.Should().Be(expected);
     }
+
+    [TestCase(typeof(Exception), "I'm an exception", "/error/sys/exception/")]
+    [TestCase(typeof(ArgumentException), "Bad argument!", "/error/sys/argument_exception/")]
+    [TestCase(typeof(NotImplementedException), "I am really implemented!", "/error/sys/not_implemented_exception/")]
+    public void AnNativeClrErrorCanBeCaughtAnConvertedToAJellyError(
+        Type clrExceptionType, string message, string expectedJellyType)
+    {
+        var action = () => Error.RethrowUnhandledClrExceptionsAsJellyErrors(() =>
+            throw (Exception)Activator.CreateInstance(clrExceptionType, message)!);
+
+        action.Invoking(a => a()).Should().Throw<Error>().WithMessage(message).Where(e => e.Type == expectedJellyType);
+    }
+
+    [Test]
+    public void AnJellyErrorIsNotCaughtAnnConvertedToAJellyError()
+    {
+        var action = () => Error.RethrowUnhandledClrExceptionsAsJellyErrors(() =>
+            throw new Error("/error/", "Boo!"));
+
+        action.Invoking(a => a()).Should().Throw<Error>().WithMessage("Boo!").Where(e => e.Type == "/error/");
+    }
 }

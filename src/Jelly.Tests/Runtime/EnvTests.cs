@@ -9,6 +9,7 @@ public class EnvTests
 
     DictValue _testNode = null!;
     DictValue _errorTestNode = null!;
+    DictValue _clrErrorTestNode = null!;
 
     Mock<IParser> _mockParser = null!;
     Mock<IEvaluator> _mockEvaluator = null!;
@@ -116,11 +117,23 @@ public class EnvTests
                 && e.EndPosition == 5);
     }
 
+    [Test]
+    public void WhenEvaluatingAScriptRaisesAClrExceptionItIsTranslatedToAJellyErrorWithThePositionOfTheNode()
+    {
+        _environment.Invoking(e => e.Evaluate("sys"))
+            .Should().Throw<Error>().Where(e =>
+                e.Type == "/error/sys/exception/"
+                && e.Message == "CLR Error"
+                && e.StartPosition == 10
+                && e.EndPosition == 50);
+    }
+
     [SetUp]
     public void Setup()
     {
         _testNode = Node.Literal("test");
         _errorTestNode = Node.Literal("boo!", 1, 5);
+        _clrErrorTestNode = Node.Literal("sys", 10, 50);
 
         _mockParser = new();
         _mockEvaluator = new();
@@ -129,11 +142,15 @@ public class EnvTests
 
         _mockParser.Setup(m => m.Parse(It.Is<Scanner>(s => s.Source == "test"))).Returns(_testNode);
         _mockParser.Setup(m => m.Parse(It.Is<Scanner>(s => s.Source == "boo!"))).Returns(_errorTestNode);
+        _mockParser.Setup(m => m.Parse(It.Is<Scanner>(s => s.Source == "sys"))).Returns(_clrErrorTestNode);
 
         _mockEvaluator.Setup(m => m.Evaluate(_environment, _testNode))
             .Returns("RESULT!".ToValue());
 
         _mockEvaluator.Setup(m => m.Evaluate(_environment, _errorTestNode))
             .Throws(new Error("/test/", "Boo!"));
+
+        _mockEvaluator.Setup(m => m.Evaluate(_environment, _clrErrorTestNode))
+            .Throws(new Exception("CLR Error"));
     }
 }

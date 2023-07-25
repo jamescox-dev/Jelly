@@ -1,5 +1,7 @@
 namespace Jelly.Errors;
 
+using Humanizer;
+
 public class Error : Exception
 {
     static readonly SortedDictionary<string, Func<string, Value, Error>> ErrorConstructors = new(StringComparer.InvariantCultureIgnoreCase)
@@ -28,6 +30,22 @@ public class Error : Exception
     public int StartPosition { get; internal set; } = -1;
 
     public int EndPosition { get; internal set; } = -1;
+
+    public static void RethrowUnhandledClrExceptionsAsJellyErrors(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (Error)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new Error($"/error/sys/{ex.GetType().Name.Underscore()}/", ex.Message);
+        }
+    }
 
     public static string NormalizeType(string original)
     {
