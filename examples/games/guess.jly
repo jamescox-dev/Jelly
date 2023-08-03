@@ -1,0 +1,15 @@
+var $number = {random int 1 100}
+
+print "I'm thinking of a number between 1 and 100."
+
+var $guess = 0
+while ($guess <> $number) {
+  $guess = {input 'Enter your guess: '}
+  if ($guess < $number) {
+    print Higher!
+  } elif ($guess > $number) {
+    print Lower!
+  }
+}
+
+print 'Well done!  My number was {$number}!'

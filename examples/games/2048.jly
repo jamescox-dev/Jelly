@@ -1,0 +1,157 @@
+var $DIRECTION_NAMES = [
+  left  1 l 1 < 1
+  right 2 r 2 > 2
+  up    3 u 3 ^ 3
+  down  4 d 4 v 4
+]
+
+var $LEFT = 1
+var $RIGHT = 2
+var $UP = 3
+var $DOWN = 4
+
+def input_direction {
+  var $dir = 0
+  while ($dir < 1 or $dir > 4) {
+    var $dirname = {input 'Enter direction (left, right, up, down): '}
+    $dir = {dict $DIRECTION_NAMES get {str $dirname lower} 0}
+  }
+}
+
+var $grid = [
+  [0 0 0 0]
+  [0 0 0 0]
+  [0 0 0 0]
+  [0 0 0 0]
+]
+
+def set_cell $x $y $value {
+  list! $grid set $y {list {list $grid get $y} set $x $value}
+}
+
+def get_cell $x $y {
+  list {list $grid get $y} get $x
+}
+
+def score {
+  var $score = 0
+  for $row in $grid {
+    for $cell in $row {
+      inc $score $cell
+    }
+  }
+}
+
+def format_cell $x $y {
+  var $cell_value = {get_cell $x $y}
+  if ($cell_value = 0) '       ' else {str $cell_value center 7}
+}
+
+def print_grid {
+  for $y $row in $grid {
+    print '+-------+-------+-------+-------+'
+    print '|       |       |       |       |'
+    for $x = 1 to {list $row len} {
+        print... '|{format_cell $x $y}'
+    }
+    print '|'
+    print '|       |       |       |       |'
+  }
+  print '+-------+-------+-------+-------+'
+  print 'SCORE:  {score}'
+}
+
+def left {
+}
+
+def right {
+  for $y $row in $grid {
+    for $x = 1 to ({list $row len} - 1) {
+      var $value = {get_cell $x $y}
+      if ($value > 0) {
+        var $next_value = {get_cell ($x + 1) $y}
+        if ($value = $next_value) {
+          set_cell $x $y 0
+          set_cell ($x + 1) $y ($value * 2)
+        } elif ($next_value = 0) {
+          set_cell $x $y 0
+          set_cell ($x + 1) $y $value
+        }
+      }
+    }
+  }
+}
+
+def up {
+}
+
+def down {
+  for $y $row in $grid {
+    for $x = 1 to ({list $row len} - 1) {
+      var $value = {get_cell $x $y}
+      if ($value > 0) {
+        var $next_value = {get_cell ($x + 1) $y}
+        if ($value = $next_value) {
+          set_cell $x $y 0
+          set_cell ($x + 1) $y ($value * 2)
+        } elif ($next_value = 0) {
+          set_cell $x $y 0
+          set_cell ($x + 1) $y $value
+        }
+      }
+    }
+  }
+}
+
+def empty_cells {
+  var $empty_cells
+  for $y $row in $grid {
+    for $x $cell in $row {
+      if ($cell = 0) {
+        list! $empty_cells add {list [] add $x $y}
+      }
+    }
+  }
+  return $empty_cells
+}
+
+def spawn {
+  var $empty_cells = {empty_cells}
+  var $coord = {list $empty_cells get {random int 1 {list $empty_cells len}}}
+  var $x = {list $coord get 1}
+  var $y = {list $coord get 2}
+
+  set_cell $x $y ({random int 2} * 2)
+}
+
+def game_over? {
+  var $empty_cells = {list {empty_cells} len}
+  ($empty_cells <= 0)
+}
+
+def step {
+  print_grid
+
+  var $dir = {input_direction}
+  if ($dir = $LEFT) {
+    left
+  } elif ($dir = $RIGHT) {
+    right
+  } elif ($dir = $UP) {
+    up
+  } elif ($dir = $DOWN) {
+    down
+  }
+
+  #spawn
+}
+
+spawn
+spawn
+
+while (not game_over?()) {
+  step
+}
+
+print_grid
+print '*********** GAME OVER ***********'
