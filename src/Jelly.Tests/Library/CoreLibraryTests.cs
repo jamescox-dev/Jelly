@@ -28,8 +28,8 @@ public class CoreLibraryTests
             _env.GlobalScope.Invoking(s => s.GetCommand("def")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("for")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
-            _env.GlobalScope.Invoking(s => s.GetCommand("lsdef")).Should().NotThrow();
-            _env.GlobalScope.Invoking(s => s.GetCommand("lsvar")).Should().NotThrow();
+            _env.GlobalScope.Invoking(s => s.GetCommand("defs")).Should().NotThrow();
+            _env.GlobalScope.Invoking(s => s.GetCommand("vars")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("raise")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("return")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("try")).Should().NotThrow();
@@ -597,7 +597,7 @@ public class CoreLibraryTests
 
     #endregion
 
-    #region lsdef
+    #region defs
 
     [TestFixture]
     public class LsDefTests : CoreLibraryTests
@@ -605,7 +605,7 @@ public class CoreLibraryTests
         [Test]
         public void ReturnsAListOfEachCommandDefinedInTheCurrentScopeAnSurroundingScope()
         {
-            var lsDefCmd = _env.GlobalScope.GetCommand("lsdef");
+            var lsDefCmd = _env.GlobalScope.GetCommand("defs");
             var outerScope = new Scope();
             outerScope.DefineCommand("d", new SimpleCommand((_) => Value.Empty));
             outerScope.DefineCommand("b", new SimpleCommand((_) => Value.Empty));
@@ -622,7 +622,7 @@ public class CoreLibraryTests
         [Test]
         public void ReturnsAListOfEachCommandDefinedInTheCurrentScopeOnlyWhenSpecified()
         {
-            var lsDefCmd = _env.GlobalScope.GetCommand("lsdef");
+            var lsDefCmd = _env.GlobalScope.GetCommand("defs");
             var outerScope = new Scope();
             outerScope.DefineCommand("d", new SimpleCommand((_) => Value.Empty));
             outerScope.DefineCommand("b", new SimpleCommand((_) => Value.Empty));
@@ -639,7 +639,7 @@ public class CoreLibraryTests
 
     #endregion
 
-    #region lsvar
+    #region vars
 
     [TestFixture]
     public class LsVarTests : CoreLibraryTests
@@ -647,7 +647,7 @@ public class CoreLibraryTests
         [Test]
         public void ReturnsAListOfEachVariableDefinedInTheCurrentScopeAnSurroundingScope()
         {
-            var lsVarCmd = _env.GlobalScope.GetCommand("lsvar");
+            var lsVarCmd = _env.GlobalScope.GetCommand("vars");
             var outerScope = new Scope();
             outerScope.DefineVariable("d", Value.Empty);
             outerScope.DefineVariable("b", Value.Empty);
@@ -664,7 +664,7 @@ public class CoreLibraryTests
         [Test]
         public void ReturnsAListOfEachVariableDefinedInTheCurrentScopeOnlyWhenSpecified()
         {
-            var lsVarCmd = _env.GlobalScope.GetCommand("lsvar");
+            var lsVarCmd = _env.GlobalScope.GetCommand("vars");
             var outerScope = new Scope();
             outerScope.DefineVariable("d", Value.Empty);
             outerScope.DefineVariable("b", Value.Empty);

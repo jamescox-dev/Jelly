@@ -27,12 +27,13 @@ public class IoLibraryTests
         {
             _env.GlobalScope.Invoking(s => s.GetCommand("io")).Should().NotThrow();
             var ioCmd = (GroupCommand)_env.GlobalScope.GetCommand("io");
-            ioCmd.Invoking(g => g.GetCommand("exists")).Should().NotThrow();
+            ioCmd.Invoking(g => g.GetCommand("exists?")).Should().NotThrow();
+            // TODO:  Maybe combine getcwd setcwd into one command.
             ioCmd.Invoking(g => g.GetCommand("getcwd")).Should().NotThrow();
             ioCmd.Invoking(g => g.GetCommand("setcwd")).Should().NotThrow();
-            ioCmd.Invoking(g => g.GetCommand("isdir")).Should().NotThrow();
+            ioCmd.Invoking(g => g.GetCommand("dir?")).Should().NotThrow();
             ioCmd.Invoking(g => g.GetCommand("lsdir")).Should().NotThrow();
-            ioCmd.Invoking(g => g.GetCommand("isreadonly")).Should().NotThrow();
+            ioCmd.Invoking(g => g.GetCommand("readonly?")).Should().NotThrow();
             ioCmd.Invoking(g => g.GetCommand("setreadonly")).Should().NotThrow();
             ioCmd.Invoking(g => g.GetCommand("readall")).Should().NotThrow();
             ioCmd.Invoking(g => g.GetCommand("writeall")).Should().NotThrow();
@@ -53,7 +54,7 @@ public class IoLibraryTests
                     pathArg = path;
                     return true;
                 });
-        var cmd = ((GroupCommand)_env.GlobalScope.GetCommand("io")).GetCommand("exists");
+        var cmd = ((GroupCommand)_env.GlobalScope.GetCommand("io")).GetCommand("exists?");
 
         var result = cmd.Invoke(_env, new ListValue(Node.Literal("/test.txt")));
 
@@ -98,7 +99,7 @@ public class IoLibraryTests
                     pathArg = path;
                     return true;
                 });
-        var cmd = ((GroupCommand)_env.GlobalScope.GetCommand("io")).GetCommand("isdir");
+        var cmd = ((GroupCommand)_env.GlobalScope.GetCommand("io")).GetCommand("dir?");
 
         var result = cmd.Invoke(_env, new ListValue(Node.Literal("/dir/")));
 
@@ -138,7 +139,7 @@ public class IoLibraryTests
                     pathArg = path;
                     return true;
                 });
-        var cmd = ((GroupCommand)_env.GlobalScope.GetCommand("io")).GetCommand("isreadonly");
+        var cmd = ((GroupCommand)_env.GlobalScope.GetCommand("io")).GetCommand("readonly?");
 
         var result = cmd.Invoke(_env, new ListValue(Node.Literal("/mission")));
 

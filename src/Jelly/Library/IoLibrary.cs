@@ -32,12 +32,12 @@ public class IoLibrary : ILibrary
     {
         var ioCmd = new GroupCommand("io");
 
-        ioCmd.AddCommand("exists", new ArgParsedCommand("exists", PathArgParser, ExistsCmd));
+        ioCmd.AddCommand("exists?", new ArgParsedCommand("exists?", PathArgParser, ExistsCmd));
         ioCmd.AddCommand("getcwd", new ArgParsedCommand("getcwd", NoArgParser, GetWorkingDirCmd));
         ioCmd.AddCommand("setcwd", new ArgParsedCommand("setcwd", PathArgParser, SetWorkingDirCmd));
-        ioCmd.AddCommand("isdir", new ArgParsedCommand("isdir", PathArgParser, IsDirCmd));
+        ioCmd.AddCommand("dir?", new ArgParsedCommand("dir?", PathArgParser, IsDirCmd));
         ioCmd.AddCommand("lsdir", new ArgParsedCommand("lsdir", LsDirArgParser, ListDirCmd));
-        ioCmd.AddCommand("isreadonly", new ArgParsedCommand("isreadonly", PathArgParser, IsReadOnlyCmd));
+        ioCmd.AddCommand("readonly?", new ArgParsedCommand("readonly?", PathArgParser, IsReadOnlyCmd));
         ioCmd.AddCommand("setreadonly", new ArgParsedCommand("setreadonly", SetReadOnlyArgParser, SetReadOnlyCmd));
         ioCmd.AddCommand("readall", new ArgParsedCommand("readall", FileArgParser, ReadAllCmd));
         ioCmd.AddCommand("writeall", new ArgParsedCommand("writeall", WriteAllArgParser, WriteAllCmd));

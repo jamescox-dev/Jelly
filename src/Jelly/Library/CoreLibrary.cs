@@ -59,8 +59,8 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("def", new SimpleMacro(DefMacro));
         scope.DefineCommand("for", new ArgParsedMacro("for", ForArgParser, ForMacro));
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
-        scope.DefineCommand("lsdef", new ArgParsedMacro("lsdef", LsScopeItems, LsDefCmd));
-        scope.DefineCommand("lsvar", new ArgParsedMacro("lsvar", LsScopeItems, LsVarCmd));
+        scope.DefineCommand("defs", new ArgParsedMacro("defs", LsScopeItems, LsDefCmd));
+        scope.DefineCommand("vars", new ArgParsedMacro("vars", LsScopeItems, LsVarCmd));
         scope.DefineCommand("raise", new SimpleMacro(RaiseMacro));
         scope.DefineCommand("return", new SimpleMacro(ReturnMacro));
         scope.DefineCommand("try", new SimpleMacro(TryMacro));
