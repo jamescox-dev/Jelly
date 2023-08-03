@@ -1,6 +1,5 @@
 namespace Jelly.Parser;
 
-// TODO:  Remove delimited variable name.
 // TODO:  Add list item indexer ()
 // TODO:  Add dict item indexer @()
 public class VariableParser : IParser
@@ -18,26 +17,15 @@ public class VariableParser : IParser
     {
         if (scanner.AdvanceIf(s => s.IsVariableMarker))
         {
-            int start;
-            if (scanner.AdvanceIf(s => s.IsVariableBegin))
+            int start = scanner.Position;
+            scanner.AdvanceWhile(s => !(s.IsSpecialCharacter || IsTerminatingChar(s)));
+            if (scanner.Position > start)
             {
-                start = scanner.Position;
-                scanner.AdvanceWhile(s => !s.IsVariableEnd);
-                scanner.Advance();
-                return Node.Variable(scanner.Source[start..(scanner.Position - 1)], start - 2, scanner.Position);
+                return Node.Variable(scanner.Source[start..scanner.Position], start - 1, scanner.Position);
             }
             else
             {
-                start = scanner.Position;
-                scanner.AdvanceWhile(s => !(s.IsSpecialCharacter || IsTerminatingChar(s)));
-                if (scanner.Position > start)
-                {
-                    return Node.Variable(scanner.Source[start..scanner.Position], start - 1, scanner.Position);
-                }
-                else
-                {
-                    throw new ParseError("A variable must have a name.");
-                }
+                throw new ParseError("A variable must have a name.");
             }
         }
         return null;
