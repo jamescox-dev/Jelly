@@ -1,5 +1,8 @@
 namespace Jelly.Parser;
 
+// TODO:  Remove delimited variable name.
+// TODO:  Add list item indexer ()
+// TODO:  Add dict item indexer @()
 public class VariableParser : IParser
 {
     readonly char? _terminatingChar;

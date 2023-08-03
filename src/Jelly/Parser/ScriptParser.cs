@@ -1,5 +1,6 @@
 namespace Jelly.Parser;
 
+// TODO:  Add assignment parsing.
 public class ScriptParser : IParser
 {
     static CommandParser? TopLevelCommandParser;
@@ -14,11 +15,11 @@ public class ScriptParser : IParser
         _subscriptParser = subscriptParser;
         if (subscriptParser)
         {
-            TopLevelCommandParser = TopLevelCommandParser ?? new(ScannerConfig.Default.ScriptEnd, this);
+            TopLevelCommandParser ??= new(ScannerConfig.Default.ScriptEnd, this);
         }
         else
         {
-            SubscriptCommandParser = SubscriptCommandParser ?? new();
+            SubscriptCommandParser ??= new();
         }
         _commandParser = (_subscriptParser ? TopLevelCommandParser : SubscriptCommandParser)!;
     }

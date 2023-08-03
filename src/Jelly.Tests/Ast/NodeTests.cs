@@ -50,6 +50,51 @@ public class NodeTests
     }
 
     [Test]
+    public void OptionallyAVariableNodeCanHaveIndexersSpecified()
+    {
+        var node = Node.Variable(
+            0, 1, "answer",
+            Node.ListIndexer(2, 3, Node.Expression()),
+            Node.DictIndexer(4, 5, Node.Expression()));
+
+        node.Should().Be(new DictValue(
+            "type".ToValue(), "variable".ToValue(),
+            "name".ToValue(), "answer".ToValue(),
+            "indexers".ToValue(), new ListValue(
+                Node.ListIndexer(2, 3, Node.Expression()),
+                Node.DictIndexer(4, 5, Node.Expression())),
+            "position".ToValue(), new DictValue(
+                "start".ToValue(), 0.ToValue(),
+                "end".ToValue(), 1.ToValue())));
+    }
+
+    [Test]
+    public void AListIndexerNodeCanBeCreatedWithTheCorrectAttributes()
+    {
+        var node = Node.ListIndexer(1, 2, Node.Expression(3, 4));
+
+        node.Should().Be(new DictValue(
+            "type".ToValue(), "listindexer".ToValue(),
+            "expression".ToValue(), Node.Expression(3, 4),
+            "position".ToValue(), new DictValue(
+                "start".ToValue(), 1.ToValue(),
+                "end".ToValue(), 2.ToValue())));
+    }
+
+    [Test]
+    public void ADictIndexerNodeCanBeCreatedWithTheCorrectAttributes()
+    {
+        var node = Node.DictIndexer(1, 2, Node.Expression(3, 4));
+
+        node.Should().Be(new DictValue(
+            "type".ToValue(), "dictindexer".ToValue(),
+            "expression".ToValue(), Node.Expression(3, 4),
+            "position".ToValue(), new DictValue(
+                "start".ToValue(), 1.ToValue(),
+                "end".ToValue(), 2.ToValue())));
+    }
+
+    [Test]
     public void ACommandNodeCanBeCreatedWithTheCorrectAttributes()
     {
         var name = Node.Literal("greet".ToValue());
@@ -163,6 +208,26 @@ public class NodeTests
             "type".ToValue(), "assignment".ToValue(),
             "name".ToValue(), "username".ToValue(),
             "value".ToValue(), Node.Literal("Bob".ToValue()),
+            "position".ToValue(), new DictValue(
+                "start".ToValue(), 8.ToValue(),
+                "end".ToValue(), 9.ToValue())
+        ));
+    }
+
+    [Test]
+    public void OptionallyAnAssignmentNodeCanHaveIndexersSpecified()
+    {
+        var node = Node.Assignment(8, 9, "username", Node.Literal("Bob".ToValue()),
+            Node.ListIndexer(2, 3, Node.Expression()),
+            Node.DictIndexer(4, 5, Node.Expression()));
+
+        node.Should().Be(new DictValue(
+            "type".ToValue(), "assignment".ToValue(),
+            "name".ToValue(), "username".ToValue(),
+            "value".ToValue(), Node.Literal("Bob".ToValue()),
+            "indexers".ToValue(), new ListValue(
+                Node.ListIndexer(2, 3, Node.Expression()),
+                Node.DictIndexer(4, 5, Node.Expression())),
             "position".ToValue(), new DictValue(
                 "start".ToValue(), 8.ToValue(),
                 "end".ToValue(), 9.ToValue())

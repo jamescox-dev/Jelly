@@ -1,5 +1,8 @@
 namespace Jelly.Parser;
 
+// TODO:  Separate assignment parsing
+// TODO:   *  Add list indexer assignment.
+// TODO:   *  Add dict item assignment.
 public class CommandParser : IParser
 {
     readonly WordParser _wordParser;

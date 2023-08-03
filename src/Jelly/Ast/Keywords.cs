@@ -17,6 +17,7 @@ public static class Keywords
     public static readonly StrValue DefineVariable = new("defvariable");
     public static readonly StrValue DefineCommand = new("defcommand");
     public static readonly StrValue Dict = new("dict");
+    public static readonly StrValue DictIndexer = new("dictindexer");
     public static readonly StrValue Else = new("else");
     public static readonly StrValue End = new("end");
     public static readonly StrValue ErrorType = new("errortype");
@@ -28,12 +29,14 @@ public static class Keywords
     public static readonly StrValue ForDict = new("fordict");
     public static readonly StrValue If = new("if");
     public static readonly StrValue Index = new("index");
+    public static readonly StrValue Indexers = new("indexers");
     public static readonly StrValue It = new("it");
     public static readonly StrValue ItIndex = new("it_index");
     public static readonly StrValue ItKey = new("it_key");
     public static readonly StrValue ItValue = new("it_value");
     public static readonly StrValue Key = new("key");
     public static readonly StrValue List = new("list");
+    public static readonly StrValue ListIndexer = new("listindexer");
     public static readonly StrValue Literal = new("literal");
     public static readonly StrValue Message = new("message");
     public static readonly StrValue Name = new("name");
