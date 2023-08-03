@@ -4,21 +4,13 @@ using Jelly.Commands.ArgParsers;
 
 public class MathLibrary : ILibrary
 {
-    static readonly StrValue Amount = new("amount");
-    readonly IArgParser IncArgParser = new StandardArgParser(new Arg("variable"), new OptArg("amount", Node.Literal(1)));
 
     public void LoadIntoScope(IScope scope)
     {
         var typeMarshaller = new TypeMarshaller();
 
-        scope.DefineCommand("inc", new ArgParsedMacro("inc", IncArgParser, IncMacro));
-    }
-
-    public Value IncMacro(IEnv env, DictValue args)
-    {
-        var name = env.Evaluate(Node.ToLiteralIfVariable(args.GetNode(Keywords.Variable))).ToString();
-        var amount = args.GetNode(Amount);
-        return Node.Assignment(name, Node.BinOp("add", Node.Variable(name), amount));
+        var mathCmd = scope.GetGroupCommandOrDefineEmpty("math");
+        mathCmd.AddCommand("clamp", new WrappedCommand((Func<double, double, double, double>)Math.Clamp, typeMarshaller));
     }
 
     // TODO:  clamp

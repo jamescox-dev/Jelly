@@ -2,6 +2,8 @@ namespace Jelly.Experimental.Library;
 
 public class CollectionsLibrary : ILibrary
 {
+    readonly static StrValue DefaultKeyword = new("default");
+
     readonly static IArgParser ListConvertArgParser = new StandardArgParser(new Arg("list"));
     readonly static IArgParser ListLenParser = new StandardArgParser(new Arg("list"));
     readonly static IArgParser ListAddParser = new StandardArgParser(new Arg("list"), new RestArg("values"));
@@ -9,13 +11,16 @@ public class CollectionsLibrary : ILibrary
     readonly static IArgParser ListSetParser = new StandardArgParser(new Arg("list"), new Arg("index"), new Arg("value"));
 
     readonly static IArgParser DictConvertArgParser = new StandardArgParser(new Arg("dict"));
-    readonly static IArgParser DictGetArgParser = new StandardArgParser(new Arg("dict"), new Arg("key"));
+    readonly static IArgParser DictGetArgParser = new PatternArgParser(new OrPattern(
+        new ExactPattern(new SequenceArgPattern(new SingleArgPattern("dict"), new SingleArgPattern("key"), new SingleArgPattern("default"))),
+        new ExactPattern(new SequenceArgPattern(new SingleArgPattern("dict"), new SingleArgPattern("key")))
+    ));
 
     public void LoadIntoScope(IScope scope)
     {
         var typeMarshaller = new TypeMarshaller();
 
-
+        // TODO:  list?
         var listValCmd = new ValueGroupCommand("list", "list", "convert");
         var listVarCmd = new VariableGroupCommand("list!");
         listValCmd.AddCommand("convert", new ArgParsedCommand("list convert", ListConvertArgParser, ListConvert));
@@ -99,7 +104,14 @@ public class CollectionsLibrary : ILibrary
     {
         var dict = args[Keywords.Dict].ToDictionaryValue();
         var key = args[Keywords.Key];
-
+        if (args.ContainsKey(DefaultKeyword))
+        {
+            if (dict.TryGetValue(key, out var value))
+            {
+                return value;
+            }
+            return args[DefaultKeyword];
+        }
         return dict[key];
     }
 

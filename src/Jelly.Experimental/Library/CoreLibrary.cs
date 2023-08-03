@@ -12,5 +12,5 @@ public class CoreLibrary : ILibrary
         return args[0].Escape().ToValue();
     }
 
-    // TODO:  set, get, call
+    // TODO:  set, get, call, def?, var?
 }
