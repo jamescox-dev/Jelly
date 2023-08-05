@@ -1,0 +1,1 @@
+ - [ ] Combine `Variable/ValueGroupCommands` into one `ValueGroupCommand` using a new signature such as `list $name = add Vic Bob`.
