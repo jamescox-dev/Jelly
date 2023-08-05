@@ -2,6 +2,8 @@ namespace Jelly.Experimental.Library;
 
 public class RandomLibrary : ILibrary
 {
+    // TODO:  Add IRandomSource/seed.
+
     public void LoadIntoScope(IScope scope)
     {
         var typeMarshaller = new TypeMarshaller();
@@ -19,4 +21,6 @@ public class RandomLibrary : ILibrary
         var max = Math.Max(a, b) + 1;
         return Random.Shared.Next(min, max);
     }
+
+    // TODO:  Random Choice
 }
