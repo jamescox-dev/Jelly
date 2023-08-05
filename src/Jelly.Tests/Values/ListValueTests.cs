@@ -181,6 +181,16 @@ public class ListValueTests
     }
 
     [Test]
+    public void AnListCanBeInsertedInToAList()
+    {
+        var list = new ListValue("a".ToValue(), "c".ToValue());
+
+        var newList = list.InsertRange(1, new ListValue("b".ToValue()));
+
+        ((Value)newList).Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue()));
+    }
+
+    [Test]
     public void IfAnIndexIsBelowZeroWhenSettingAnItemAnIndexErrorIsRaised()
     {
         var list = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue());

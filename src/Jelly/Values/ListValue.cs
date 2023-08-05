@@ -57,6 +57,8 @@ public class ListValue : Value, IEnumerable<Value>
 
     public ListValue AddRange(ListValue list) => new(_items.AddRange(list));
 
+    public ListValue InsertRange(int index, ListValue list) => new(_items.InsertRange(index, list));
+
     public override ListValue ToListValue() => this;
 
     public override DictValue ToDictionaryValue() => new((IEnumerable<Value>)this);

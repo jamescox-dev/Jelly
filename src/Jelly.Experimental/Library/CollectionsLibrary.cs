@@ -5,8 +5,9 @@ public class CollectionsLibrary : ILibrary
     readonly static StrValue DefaultKeyword = new("default");
 
     readonly static IArgParser ListConvertArgParser = new StandardArgParser(new Arg("list"));
-    readonly static IArgParser ListLenParser = new StandardArgParser(new Arg("list"));
+    readonly static IArgParser ListParser = new StandardArgParser(new Arg("list"));
     readonly static IArgParser ListAddParser = new StandardArgParser(new Arg("list"), new RestArg("values"));
+    readonly static IArgParser ListInsertParser = new StandardArgParser(new Arg("list"), new Arg("index"), new RestArg("values"));
     readonly static IArgParser ListGetParser = new StandardArgParser(new Arg("list"), new Arg("index"));
     readonly static IArgParser ListSetParser = new StandardArgParser(new Arg("list"), new Arg("index"), new Arg("value"));
 
@@ -24,10 +25,16 @@ public class CollectionsLibrary : ILibrary
         var listValCmd = new ValueGroupCommand("list", "list", "convert");
         var listVarCmd = new VariableGroupCommand("list!");
         listValCmd.AddCommand("convert", new ArgParsedCommand("list convert", ListConvertArgParser, ListConvert));
-        listValCmd.AddCommand("len", new ArgParsedCommand("list len", ListLenParser, ListLen));
+        listValCmd.AddCommand("len", new ArgParsedCommand("list len", ListParser, ListLen));
         var listAddCmd = new ArgParsedCommand("list add", ListAddParser, ListAdd);
         listValCmd.AddCommand("add", listAddCmd);
         listVarCmd.AddCommand("add", listAddCmd);
+        var listReverseCmd = new ArgParsedCommand("list reverse", ListParser, ListReverse);
+        listValCmd.AddCommand("reverse", listReverseCmd);
+        listVarCmd.AddCommand("reverse", listReverseCmd);
+        var listInsertCmd = new ArgParsedCommand("list insert", ListInsertParser, ListInsert);
+        listValCmd.AddCommand("insert", listInsertCmd);
+        listVarCmd.AddCommand("insert", listInsertCmd);
         listValCmd.AddCommand("get", new ArgParsedCommand("list get", ListGetParser, ListGet));
         var listSetCmd = new ArgParsedCommand("list set", ListSetParser, ListSet);
         listValCmd.AddCommand("set", listSetCmd);
@@ -60,8 +67,23 @@ public class CollectionsLibrary : ILibrary
         return list.AddRange(values);
     }
 
+    Value ListInsert(DictValue args)
+    {
+        var list = args[Keywords.List].ToListValue();
+        var index = args[Keywords.Index].ToIndexOf(list);
+        var values = args[Keywords.Values].ToListValue();
+
+        return list.InsertRange(index, values);
+    }
+
+    Value ListReverse(DictValue args)
+    {
+        var list = args[Keywords.List].ToListValue();
+
+        return new ListValue(list.Reverse());
+    }
+
     // TODO:  list addall lists...
-    // TODO:  list insert index value...
     // TODO:  list insertall index lists...
     // TODO:  list del indexes...
     // TODO:  list delval values...

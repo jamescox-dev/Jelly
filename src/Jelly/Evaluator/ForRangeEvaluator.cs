@@ -20,7 +20,8 @@ public class ForRangeEvaluator : IEvaluator
         {
             return env.Evaluate(node.GetNode(Keywords.Step)).ToDouble();
         }
-        return Math.Sign(end - start);
+        var step = Math.Sign(end - start);
+        return step != 0 ? step : 1;
     }
 
     static Value RunLoop(

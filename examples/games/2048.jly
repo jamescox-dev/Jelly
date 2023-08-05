@@ -1,3 +1,4 @@
+# Dictionary used to look up direction numbers from direction "names".
 var $DIRECTION_NAMES = [
   left  1 l 1 < 1
   right 2 r 2 > 2
@@ -5,11 +6,13 @@ var $DIRECTION_NAMES = [
   down  4 d 4 v 4
 ]
 
+# Directions.
 var $LEFT = 1
 var $RIGHT = 2
 var $UP = 3
 var $DOWN = 4
 
+# Read a direction from the user.
 def input_direction {
   var $dir = 0
   while ($dir < 1 or $dir > 4) {
@@ -18,6 +21,7 @@ def input_direction {
   }
 }
 
+# The game grid, 0 represents and empty grid cell.
 var $grid = [
   [0 0 0 0]
   [0 0 0 0]
@@ -25,84 +29,117 @@ var $grid = [
   [0 0 0 0]
 ]
 
+var $score = 0
+
+var $GRID_SIZE = 4
+
 def set_cell $x $y $value {
-  list! $grid set $y {list {list $grid get $y} set $x $value}
+  $grid($y)($x) = $value
 }
 
 def get_cell $x $y {
-  list {list $grid get $y} get $x
+  $grid($y)($x)
 }
 
-def score {
-  var $score = 0
-  for $row in $grid {
-    for $cell in $row {
-      inc $score $cell
+def get_row $n $dir {
+  if ($dir = $RIGHT) {
+    return $grid($n)
+  } elif ($dir = $LEFT) {
+    return {list $grid($n) reverse}
+  } elif ($dir = $DOWN) {
+    var $col = []
+    for $y = 1 to $GRID_SIZE {
+      var $value = {get_cell $n $y}
+      list! $col add $value
     }
+    return $col
+  } else {
+    return {list {get_row $n $DOWN} reverse}
   }
 }
 
+def set_row $n $row $dir {
+  if ($dir = $RIGHT) {
+    $grid($n) = $row
+  } elif ($dir = $LEFT) {
+    $grid($n) = {list $row reverse}
+  } elif ($dir = $DOWN) {
+    for $y $value in $row {
+      set_cell $n $y $value
+    }
+  } else {
+    set_row $n {list $row reverse} $DOWN
+  }
+}
+
+def compress_row $row {
+  var $compressed_row = []
+  for $i = {list $row len} to 1 {
+    var $value = $row($i)
+    if ($value <> 0) {
+      list! $compressed_row insert 1 $value
+    }
+  }
+  var $remaining = ({list $row len} - {list $compressed_row len})
+  if $remaining {
+    for $i = 1 to $remaining {
+      list! $compressed_row insert 1 0
+    }
+  }
+  $compressed_row
+}
+
+def merge_row $row {
+  var $i = 1
+  while ($i < {list $row len}) {
+    var $value = $row($i)
+    if ($value <> 0) {
+      var $next_value = $row($i + 1)
+      if ($value = $next_value) {
+        var $new_value = ($next_value * 2)
+        inc $score $new_value
+        $row($i) = 0
+        $row($i + 1) = $new_value
+        inc $i
+      }
+    }
+    inc $i
+  }
+  $row
+}
+
+# Prepares a grid cell value for display on screen.
 def format_cell $x $y {
   var $cell_value = {get_cell $x $y}
   if ($cell_value = 0) '       ' else {str $cell_value center 7}
 }
 
+# Displays the current grid on screen.
 def print_grid {
   for $y $row in $grid {
     print '+-------+-------+-------+-------+'
     print '|       |       |       |       |'
-    for $x = 1 to {list $row len} {
+    for $x = 1 to $GRID_SIZE {
         print... '|{format_cell $x $y}'
     }
     print '|'
     print '|       |       |       |       |'
   }
   print '+-------+-------+-------+-------+'
-  print 'SCORE:  {score}'
+  print 'SCORE:  {$score}'
 }
 
-def left {
-}
-
-def right {
-  for $y $row in $grid {
-    for $x = 1 to ({list $row len} - 1) {
-      var $value = {get_cell $x $y}
-      if ($value > 0) {
-        var $next_value = {get_cell ($x + 1) $y}
-        if ($value = $next_value) {
-          set_cell $x $y 0
-          set_cell ($x + 1) $y ($value * 2)
-        } elif ($next_value = 0) {
-          set_cell $x $y 0
-          set_cell ($x + 1) $y $value
-        }
-      }
-    }
+# Move gird tiles in a direction.
+def move_grid $dir {
+  for $n = 1 to $GRID_SIZE {
+    var $row = {get_row $n $dir}
+    $row = {compress_row $row}
+    $row = {merge_row $row}
+    set_row $n $row $dir
   }
 }
 
-def up {
-}
-
-def down {
-  for $y $row in $grid {
-    for $x = 1 to ({list $row len} - 1) {
-      var $value = {get_cell $x $y}
-      if ($value > 0) {
-        var $next_value = {get_cell ($x + 1) $y}
-        if ($value = $next_value) {
-          set_cell $x $y 0
-          set_cell ($x + 1) $y ($value * 2)
-        } elif ($next_value = 0) {
-          set_cell $x $y 0
-          set_cell ($x + 1) $y $value
-        }
-      }
-    }
-  }
-}
-
+# Return the co-ordinates of all the empty cells on the grid.
 def empty_cells {
   var $empty_cells
   for $y $row in $grid {
@@ -115,6 +152,7 @@ def empty_cells {
   return $empty_cells
 }
 
+# Fill one of the grids empty cells with either a 2 or 4 tile.
 def spawn {
   var $empty_cells = {empty_cells}
   var $coord = {list $empty_cells get {random int 1 {list $empty_cells len}}}
@@ -124,34 +162,45 @@ def spawn {
   set_cell $x $y ({random int 2} * 2)
 }
 
+# Returns weather or not all the grid cells are full.
 def game_over? {
   var $empty_cells = {list {empty_cells} len}
   ($empty_cells <= 0)
 }
 
+# Returns if the player has reached 2048.
+def winner? {
+  for $row in $grid {
+    for $value in $row {
+      if ($value >= 2048) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+# One iteration of the game-loop, display grid, get move, spawn new tile.
 def step {
   print_grid
 
   var $dir = {input_direction}
-  if ($dir = $LEFT) {
-    left
-  } elif ($dir = $RIGHT) {
-    right
-  } elif ($dir = $UP) {
-    up
-  } elif ($dir = $DOWN) {
-    down
+  if ($dir <> 0) {
+    move_grid $dir
   }
 
-  #spawn
+  spawn
 }
 
+# Initialize game.
 spawn
 spawn
 
-while (not game_over?()) {
+# Run game loop.
+while (not (game_over?() or winner?())) {
   step
 }
 
+# Game Over.
 print_grid
-print '*********** GAME OVER ***********'
+print '*********** {if (winner?()) 'WINNER!!!' else 'GAME OVER'} ***********'

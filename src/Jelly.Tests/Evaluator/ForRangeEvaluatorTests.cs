@@ -9,9 +9,19 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     SimpleCommand _recordCommand = null!;
 
     [Test]
-    public void WhenTheStartAndEndValuesAreTheSameResultsIsTheResultOfEvaluatingTheBody()
+    public void WhenTheStartAndEndValuesAreTheSameTheResultIsTheResultOfEvaluatingTheBody()
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(0), Node.Literal(1), _testBody);
+
+        var result = Evaluate(node);
+
+        result.Should().Be("Result!".ToValue());
+    }
+
+    [Test]
+    public void WhenTheStartAndEndValuesAreTheSameAndNoStepIsGivenTheResultIsTheResultOfEvaluatingTheBody()
+    {
+        var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(0), _testBody);
 
         var result = Evaluate(node);
 
