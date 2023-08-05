@@ -6,13 +6,13 @@ public class WordParser : IParser
 
     public WordParser(char? terminatingChar = null, ScriptParser? subscriptParser = null, ExpressionParser? expressionParser = null, bool terminateAtOperator = false)
     {
-        subscriptParser = subscriptParser ?? new ScriptParser(true);
-        expressionParser = expressionParser ?? new ExpressionParser(subscriptParser);
+        subscriptParser ??= new ScriptParser(true);
+        expressionParser ??= new ExpressionParser(subscriptParser);
         var parsers = new List<IParser>
         {
             new SimpleWordParser(terminatingChar, terminateAtOperator),
             new QuotedWordParser(),
-            new VariableParser(terminatingChar, terminateAtOperator),
+            new VariableParser(expressionParser, terminatingChar, terminateAtOperator),
             subscriptParser,
             new CommentParser(),
             new NestingWordParser(),

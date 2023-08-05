@@ -28,9 +28,7 @@ public interface IScannerConfig
 
     char VariableMarker { get; }
 
-    char VariableBegin { get; }
-
-    char VariableEnd { get; }
+    char DictIndexer { get; }
 
     char ScriptBegin { get; }
 

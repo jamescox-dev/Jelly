@@ -108,9 +108,7 @@ public class Scanner
 
     public bool IsVariableMarker => CurrentCharacter == Config.VariableMarker;
 
-    public bool IsVariableBegin => CurrentCharacter == Config.VariableBegin;
-
-    public bool IsVariableEnd => CurrentCharacter == Config.VariableEnd;
+    public bool IsDictIndexer => CurrentCharacter == Config.DictIndexer;
 
     public bool IsAssignmentOperator => CurrentCharacter == Config.AssignmentOperator;
 

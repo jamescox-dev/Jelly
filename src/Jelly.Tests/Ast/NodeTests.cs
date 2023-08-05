@@ -662,4 +662,46 @@ public class NodeTests
                 "start".ToValue(), 10.ToValue(),
                 "end".ToValue(), 11.ToValue())));
     }
+
+    [Test]
+    public void AVariableNodeCanBeConvertedToALiteralNode()
+    {
+        var variable = Node.Variable("test");
+
+        var literal = Node.ToLiteralIfVariable(variable);
+
+        literal.Should().Be(Node.Literal("test"));
+    }
+
+    [Test]
+    public void AVariableNodeCanBeConvertedToALiteralNodeAndThePositionCopied()
+    {
+        var variable = Node.Variable("test2", 1, 2);
+
+        var literal = Node.ToLiteralIfVariable(variable);
+
+        literal.Should().Be(Node.Literal("test2", 1, 2));
+    }
+
+    [Test]
+    public void AVariableNodeWithAnIndexerCanNotBeConvertedToALiteralNodeAndAnErrorIsThrown()
+    {
+        var variable = Node.Variable(1, 2, "test2", Node.ListIndexer(2, 3, Node.Literal(1)), Node.ListIndexer(3, 4, Node.Literal(1)));
+        var action = () => Node.ToLiteralIfVariable(variable);
+
+        action.Invoking(a => a())
+            .Should().Throw<ArgError>()
+            .WithMessage("variable name must not include indexers.")
+            .Where(e => e.StartPosition == 2 && e.EndPosition == 4);
+    }
+
+    [Test]
+    public void ANonVariableNodeIsNotConvertedToALiteralNode()
+    {
+        var variable = Node.UniOp("-", Node.Literal(1));
+
+        var output = Node.ToLiteralIfVariable(variable);
+
+        output.Should().Be(Node.UniOp("-", Node.Literal(1)));
+    }
 }

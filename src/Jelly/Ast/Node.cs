@@ -247,9 +247,17 @@ public static class Node
 
     public static DictValue ToLiteralIfVariable(DictValue node)
     {
-        if (Node.IsVariable(node))
+        if (IsVariable(node))
         {
-            return Node.Literal(node.GetString(Keywords.Name));
+            if (node.ContainsKey(Keywords.Indexers))
+            {
+                var indexers = node[Keywords.Indexers].ToListValue();
+                var error = Error.Arg("variable name must not include indexers.");
+                error.StartPosition = (int)GetPosition(indexers[0].ToNode())![Keywords.Start].ToDouble();
+                error.EndPosition = (int)GetPosition(indexers[^1].ToNode())![Keywords.End].ToDouble();
+                throw error;
+            }
+            return Reposition(Literal(node.GetString(Keywords.Name)), node);
         }
         return node;
     }

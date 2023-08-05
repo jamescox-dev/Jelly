@@ -1,8 +1,5 @@
 namespace Jelly.Parser;
 
-// TODO:  Separate assignment parsing
-// TODO:   *  Add list indexer assignment.
-// TODO:   *  Add dict item assignment.
 public class CommandParser : IParser
 {
     readonly WordParser _wordParser;
@@ -46,9 +43,16 @@ public class CommandParser : IParser
             {
                 throw new ParseError($"Unexpected {words[3]["type".ToValue()]} after assignment value.");
             }
+            var variable = words[0];
             var value = words.Count > 2 ? words[2] : Node.Literal(Value.Empty, scanner.Position, scanner.Position);
             var endOfValue = (int)value.ToNode()[Keywords.Position].ToDictionaryValue()[Keywords.End].ToDouble();
-            return Node.Assignment(words[0].GetString(Keywords.Name), value, start, endOfValue);
+
+            if (variable.ContainsKey(Keywords.Indexers))
+            {
+                var indexers = variable[Keywords.Indexers].ToListValue().Select(v => v.ToNode()).ToArray();
+                return Node.Assignment(start, endOfValue, variable.GetString(Keywords.Name), value, indexers);
+            }
+            return Node.Assignment(variable.GetString(Keywords.Name), value, start, endOfValue);
         }
 
         return words.Count > 0 ? BuildCommandNode(words, start) : null;
@@ -63,6 +67,5 @@ public class CommandParser : IParser
     static bool IsAssignment(IReadOnlyList<DictValue> words) =>
         words.Count >= 2
         && Node.IsVariable(words[0])
-        && Node.IsLiteral(words[1])
-        && words[1]["value".ToValue()].ToString() == "=";
+        && Node.IsKeyword(words[1], "=");
 }

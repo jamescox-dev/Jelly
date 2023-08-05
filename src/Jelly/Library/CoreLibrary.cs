@@ -136,7 +136,7 @@ public class CoreLibrary : ILibrary
                 }
                 else
                 {
-                    argNames.Add(TryConvertVariableToLiteral(argDict));
+                    argNames.Add(Node.ToLiteralIfVariable(argDict));
                     requireArg = false;
                     expectEquals = argDefaults.Count > 0;
                 }
@@ -157,13 +157,6 @@ public class CoreLibrary : ILibrary
         }
 
         return Node.DefineCommand(name, body, new ListValue(argNames.ToImmutable()), new ListValue(argDefaults.ToImmutable()), restArg);
-    }
-
-    static DictValue TryConvertVariableToLiteral(Value node)
-    {
-        var nodeDict = node.ToDictionaryValue();
-
-        return Node.IsVariable(nodeDict) ? Node.Literal(nodeDict[Keywords.Name].ToString()) : nodeDict;
     }
 
     Value ForMacro(IEnv env, DictValue args)
@@ -434,9 +427,8 @@ public class CoreLibrary : ILibrary
             throw new ArgError($"Unexpected value '{unexpected}'.");
         }
 
-        var varnameNode = args[0].ToNode();
-        var isVariable = varnameNode.ContainsKey(Keywords.Type) && varnameNode[Keywords.Type].Equals(Keywords.Variable);
-        var varname = isVariable ? varnameNode[Keywords.Name].ToString() : env.Evaluate(varnameNode).ToString();
+        var varnameNode = Node.ToLiteralIfVariable(args[0].ToNode());
+        var varname = env.Evaluate(varnameNode).ToString();
 
         return Node.DefineVariable(varname, args.Count == 3 ? args[2].ToNode() : Node.Literal(Value.Empty));
     }

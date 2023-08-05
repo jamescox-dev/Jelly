@@ -326,22 +326,13 @@ public class ScannerTests
         scanner.IsVariableMarker.Should().Be(expected);
     }
 
-    [TestCase("{", true)]
-    [TestCase("boo", false)]
-    public void AVariableBeginIsReportedWhenTheCurrentCharacterMatchesTheConfiguredVariableBegin(string source, bool expected)
+    [TestCase("@", true)]
+    [TestCase("foo", false)]
+    public void ADictIndexerIsReportedWhenTheCurrentCharacterMatchesTheConfiguredDictIndexer(string source, bool expected)
     {
         var scanner = new Scanner(source);
 
-        scanner.IsVariableBegin.Should().Be(expected);
-    }
-
-    [TestCase("}", true)]
-    [TestCase("boo", false)]
-    public void AVariableEndIsReportedWhenTheCurrentCharacterMatchesTheConfiguredVariableEnd(string source, bool expected)
-    {
-        var scanner = new Scanner(source);
-
-        scanner.IsVariableEnd.Should().Be(expected);
+        scanner.IsDictIndexer.Should().Be(expected);
     }
 
     [TestCase("$", true)]

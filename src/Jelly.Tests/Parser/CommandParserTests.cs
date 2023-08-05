@@ -80,6 +80,20 @@ public class CommandParserTests
     }
 
     [Test]
+    public void WhenTheCommandIsParsedAsAnAssignmentAndTheVariableHasIndexersTheseIndexersAreUsedInTheAssignment()
+    {
+        var parser = new CommandParser();
+        var scanner = new Scanner("$test(1) = Bob");
+
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Assignment(0, 14,
+            "test",
+            Node.Literal("Bob", 11, 14),
+            Node.ListIndexer(5, 8, Node.Expression(5, 8, Node.Literal("1", 6, 7)))));
+    }
+
+    [Test]
     public void WhenAnAssignmentHasMoreThanOneAParseErrorIsThrown()
     {
         var parser = new CommandParser();

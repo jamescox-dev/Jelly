@@ -5,9 +5,7 @@ using System.Text;
 public class QuotedWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();
-    static readonly VariableParser VariableParser = new();
     static readonly ScriptParser ScriptParser = new(true);
-
     readonly bool _allowSubstitutions;
 
     public QuotedWordParser(bool allowSubstitutions=true)

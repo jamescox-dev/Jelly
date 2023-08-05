@@ -1,16 +1,16 @@
 namespace Jelly.Parser;
 
-// TODO:  Add list item indexer ()
-// TODO:  Add dict item indexer @()
 public class VariableParser : IParser
 {
     readonly char? _terminatingChar;
     readonly bool _terminateAtOperator;
+    readonly IParser _expressionParser;
 
-    public VariableParser(char? terminatingChar = null, bool terminateAtOperator = false)
+    public VariableParser(IParser expressionParser, char? terminatingChar = null, bool terminateAtOperator = false)
     {
         _terminatingChar = terminatingChar;
         _terminateAtOperator = terminateAtOperator;
+        _expressionParser = expressionParser;
     }
 
     public DictValue? Parse(Scanner scanner)
@@ -19,9 +19,26 @@ public class VariableParser : IParser
         {
             int start = scanner.Position;
             scanner.AdvanceWhile(s => !(s.IsSpecialCharacter || IsTerminatingChar(s)));
-            if (scanner.Position > start)
+            var nameEnd = scanner.Position;
+            var name = scanner.Source[start..nameEnd];
+            if (IsIndexer(scanner))
             {
-                return Node.Variable(scanner.Source[start..scanner.Position], start - 1, scanner.Position);
+                var indexers = new List<DictValue>();
+                while (IsIndexer(scanner))
+                {
+                    var indexerStart = scanner.Position;
+                    var isDictIndexer = scanner.AdvanceIf(s => s.IsDictIndexer);
+                    var indexerExpression = _expressionParser.Parse(scanner)!;
+                    var indexer = isDictIndexer
+                        ? Node.DictIndexer(indexerStart, scanner.Position, indexerExpression)
+                        : Node.ListIndexer(indexerStart, scanner.Position, indexerExpression);
+                    indexers.Add(indexer);
+                }
+                return Node.Variable(start - 1, scanner.Position, name, indexers.ToArray());
+            }
+            else if (nameEnd > start)
+            {
+                return Node.Variable(name, start - 1, nameEnd);
             }
             else
             {
@@ -31,7 +48,13 @@ public class VariableParser : IParser
         return null;
     }
 
-    public bool IsTerminatingChar(Scanner scanner) =>
-        scanner.CurrentCharacter == _terminatingChar
+    static bool IsIndexer(Scanner scanner)
+    {
+        return scanner.IsExpressionBegin || scanner.IsDictIndexer;
+    }
+
+    bool IsTerminatingChar(Scanner scanner) =>
+        scanner.IsDictIndexer
+        || scanner.CurrentCharacter == _terminatingChar
         || (_terminateAtOperator && scanner.TryGetOperatorSymbol(out var _));
 }
