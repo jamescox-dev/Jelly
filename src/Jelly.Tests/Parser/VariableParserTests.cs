@@ -65,7 +65,8 @@ public class VariableParserTests
         var scanner = new Scanner("$$");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("A variable must have a name.");
+            .Throw<ParseError>().WithMessage("A variable must have a name.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == 1);
     }
 
     [Test]

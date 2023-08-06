@@ -45,7 +45,8 @@ public class ExpressionParserTests
 
         _parser.Invoking(p => p.Parse(scanner))
             .Should().Throw<MissingEndTokenError>()
-            .WithMessage("Unexpected end-of-file.");
+            .WithMessage("Unexpected end-of-file.")
+            .Where(e => e.StartPosition == 1 && e.EndPosition == 1);
     }
 
     [Test]
@@ -106,15 +107,17 @@ public class ExpressionParserTests
                     Node.Literal(1.0, operandPosition, operandPosition + 1))));
     }
 
-    [TestCase("(* 1)")]
-    [TestCase("(1 * * 1)")]
-    [TestCase("(1 1)")]
-    [TestCase("(1 *)")]
-    public void InvalidExpressionsThrowParseErrors(string expression)
+    [TestCase("(* 1)", 1, 2, "Unexpected operator in expression.")]
+    [TestCase("(1 * * 1)", 5, 6, "Unexpected operator in expression.")]
+    [TestCase("(1 10)", 3, 5, "Unexpected value in expression.")]
+    [TestCase("(1 *)", 4, 4, "Missing value after operator in expression.")]
+    public void InvalidExpressionsThrowParseErrors(string expression, int expectedStart, int expectedEnd, string expectedMessage)
     {
         var scanner = new Scanner(expression);
 
-        _parser.Invoking(p => p.Parse(scanner)).Should().Throw<ParseError>("Invalid expression.");
+        _parser.Invoking(p => p.Parse(scanner)).Should()
+            .Throw<ParseError>().WithMessage(expectedMessage)
+            .Where(e => e.StartPosition == expectedStart && e.EndPosition == expectedEnd);
     }
 
     [Test]

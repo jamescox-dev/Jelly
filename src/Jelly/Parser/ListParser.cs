@@ -21,7 +21,11 @@ public class ListParser
             }
             else
             {
-                throw new ParseError("Unexpected input.");
+                throw new ParseError("Unexpected input.")
+                {
+                    StartPosition = scanner.Position,
+                    EndPosition = scanner.Position
+                };
             }
 
             scanner.AdvanceWhile(s => s.IsListItemSeparator);

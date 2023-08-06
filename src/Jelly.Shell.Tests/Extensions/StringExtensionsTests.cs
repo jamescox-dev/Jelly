@@ -64,13 +64,33 @@ public class StringExtensions
     }
 
     [Test]
-    public void AnSectionOfAStringCanBeUnderlined()
+    public void ASectionOfAStringCanBeUnderlined()
     {
         var str = "jello, world";
 
         var underlines = str.Underline(5, 7);
 
         underlines.Single().Should().Be(new UnderlinedText("jello, world", "     ^^"));
+    }
+
+    [Test]
+    public void ASectionOfAStringCanBeUnderlinedEvenWhenTheLengthOfTheSelectionIsZero()
+    {
+        var str = "jello, world";
+
+        var underlines = str.Underline(5, 5);
+
+        underlines.Single().Should().Be(new UnderlinedText("jello, world", "     ^"));
+    }
+
+    [Test]
+    public void TheSectionOfAStringCanBeSetToTheEndOfAString()
+    {
+        var str = "jello, world";
+
+        var underlines = str.Underline(12, 12);
+
+        underlines.Single().Should().Be(new UnderlinedText("jello, world", "            ^"));
     }
 
     [Test]

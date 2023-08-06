@@ -36,7 +36,11 @@ public class NestingWordParser : IParser
                 scanner.Advance();
             }
 
-            throw Error.MissingEndToken("Unexpected end-of-input in nesting-word.");
+            throw new MissingEndTokenError("Unexpected end-of-input in nesting-word.")
+            {
+                StartPosition = scanner.Position,
+                EndPosition = scanner.Position
+            };
         }
         return null;
     }

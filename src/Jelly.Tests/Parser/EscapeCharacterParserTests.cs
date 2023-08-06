@@ -37,7 +37,8 @@ public class EscapeCharacterParserTests
         var scanner = new Scanner(@"\");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.");
+            .Throw<ParseError>().WithMessage("Unexpected end-of-input after escape-character.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == 1);
     }
 
     [Test]
@@ -60,7 +61,8 @@ public class EscapeCharacterParserTests
         var scanner = new Scanner(source);
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected end-of-input after 8bit escape-character.");
+            .Throw<ParseError>().WithMessage("Unexpected end-of-input after 8bit escape-character.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == source.Length);
     }
 
     [Test]
@@ -70,7 +72,8 @@ public class EscapeCharacterParserTests
         var scanner = new Scanner(@"\xhi");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Invalid 8bit escape-character.");
+            .Throw<ParseError>().WithMessage("Invalid 8bit escape-character.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == 4);
     }
 
     [Test]
@@ -95,7 +98,8 @@ public class EscapeCharacterParserTests
         var scanner = new Scanner(source);
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected end-of-input after 16bit escape-character.");
+            .Throw<ParseError>().WithMessage("Unexpected end-of-input after 16bit escape-character.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == source.Length);
     }
 
     [Test]
@@ -105,7 +109,8 @@ public class EscapeCharacterParserTests
         var scanner = new Scanner(@"\uhelo");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Invalid 16bit escape-character.");
+            .Throw<ParseError>().WithMessage("Invalid 16bit escape-character.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == 6);
     }
 
     [Test]
@@ -132,7 +137,8 @@ public class EscapeCharacterParserTests
         var scanner = new Scanner(source);
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected end-of-input after 24bit escape-character.");
+            .Throw<ParseError>().WithMessage("Unexpected end-of-input after 24bit escape-character.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == source.Length);
     }
 
     [Test]
@@ -142,7 +148,8 @@ public class EscapeCharacterParserTests
         var scanner = new Scanner(@"\phello!");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Invalid 24bit escape-character.");
+            .Throw<ParseError>().WithMessage("Invalid 24bit escape-character.")
+            .Where(e => e.StartPosition == 0 && e.EndPosition == 8);
     }
 
     [Test]

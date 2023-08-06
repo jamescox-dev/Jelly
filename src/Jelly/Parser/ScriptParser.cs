@@ -1,6 +1,5 @@
 namespace Jelly.Parser;
 
-// TODO:  Add assignment parsing.
 public class ScriptParser : IParser
 {
     static CommandParser? TopLevelCommandParser;
@@ -66,14 +65,19 @@ public class ScriptParser : IParser
                 }
                 else if (scanner.Position == startPosition)
                 {
-                    throw new ParseError($"Unexpected input '{scanner.Source[scanner.Position]}'.");
+                    // This should never happen...
+                    throw new NotImplementedException();
                 }
             }
         }
 
         if (!success)
         {
-            throw Error.MissingEndToken("Unexpected end-of-file.");
+            throw new MissingEndTokenError("Unexpected end-of-file.")
+            {
+                StartPosition = scanner.Position,
+                EndPosition = scanner.Position
+            };
         }
 
         return Node.Script(start, scanner.Position, commands.ToArray());

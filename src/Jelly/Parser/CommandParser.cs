@@ -41,7 +41,10 @@ public class CommandParser : IParser
         {
             if (words.Count > 3)
             {
-                throw new ParseError($"Unexpected {words[3]["type".ToValue()]} after assignment value.");
+                var error = new ParseError($"Unexpected {words[3]["type".ToValue()]} after assignment value.");
+                error.StartPosition = Node.GetStartPosition(words[3]);
+                error.EndPosition = Node.GetEndPosition(words[^1]);
+                throw error;
             }
             var variable = words[0];
             var value = words.Count > 2 ? words[2] : Node.Literal(Value.Empty, scanner.Position, scanner.Position);

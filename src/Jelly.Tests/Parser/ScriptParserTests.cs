@@ -127,6 +127,7 @@ public class ScriptParserTests
         var scanner = new Scanner("{say hi!");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-file.");
+            .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-file.")
+            .Where(e => e.StartPosition == 8 && e.EndPosition == 8);
     }
 }

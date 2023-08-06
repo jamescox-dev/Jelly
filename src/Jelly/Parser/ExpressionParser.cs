@@ -21,6 +21,7 @@ public class ExpressionParser : IParser
 
         operators.Push(new(Operator.None, Node.Literal(Value.Empty, scanner.Position, scanner.Position)));
 
+        DictValue? prevWord = null;
         var prevWasOperator = true;
         if (scanner.AdvanceIf(s => s.IsExpressionBegin))
         {
@@ -42,7 +43,10 @@ public class ExpressionParser : IParser
                         }
                         if (op.IsBinaryOperator() && op != Operator.SubExpressionSeparator)
                         {
-                            throw Error.Parse("Invalid expression.");
+                            throw new ParseError("Unexpected operator in expression.") {
+                                StartPosition = Node.GetStartPosition(word),
+                                EndPosition = Node.GetEndPosition(word)
+                            };
                         }
                     }
 
@@ -70,7 +74,11 @@ public class ExpressionParser : IParser
                         }
                         else
                         {
-                            throw Error.Parse("Invalid expression.");
+                            throw new ParseError("Unexpected value in expression.")
+                            {
+                                StartPosition = Node.GetStartPosition(word),
+                                EndPosition = Node.GetEndPosition(word)
+                            };
                         }
                     }
                     else
@@ -87,6 +95,7 @@ public class ExpressionParser : IParser
                 }
 
                 prevWasOperator = isOperator;
+                prevWord = word;
             }
 
             BuildSubExpression();
@@ -100,7 +109,11 @@ public class ExpressionParser : IParser
         {
             if ((prevWasOperator && operators.Count > 1) || functionName is not null)
             {
-                throw Error.Parse("Invalid expression.");
+                throw new ParseError("Missing value after operator in expression.")
+                {
+                    StartPosition = prevWord is not null ? Node.GetEndPosition(prevWord) : -1,
+                    EndPosition = prevWord is not null ? Node.GetEndPosition(prevWord) : -1,
+                };
             }
             PopRemainingOperators();
 
@@ -173,7 +186,11 @@ public class ExpressionParser : IParser
 
         if (!endFound)
         {
-            throw new MissingEndTokenError("Unexpected end-of-file.");
+            throw new MissingEndTokenError("Unexpected end-of-file.")
+            {
+                StartPosition = scanner.Position,
+                EndPosition = scanner.Position
+            };
         }
     }
 

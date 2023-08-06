@@ -56,7 +56,11 @@ public class QuotedWordParser : IParser
                     scanner.Advance();
                 }
             }
-            throw Error.MissingEndToken($"Unexpected end-of-input in quoted-word.");
+            throw new MissingEndTokenError($"Unexpected end-of-input in quoted-word.")
+            {
+                StartPosition = scanner.Position,
+                EndPosition = scanner.Position
+            };
         }
 
         return null;

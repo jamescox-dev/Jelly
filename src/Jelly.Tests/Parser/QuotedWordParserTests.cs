@@ -58,7 +58,8 @@ public class QuotedWordParserTests
         var scanner = new Scanner(@"'this never ends!");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-input in quoted-word.");
+            .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-input in quoted-word.")
+            .Where(e => e.StartPosition == 17 && e.EndPosition == 17);
     }
 
     [Test]

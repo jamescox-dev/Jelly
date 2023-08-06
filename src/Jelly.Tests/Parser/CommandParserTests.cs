@@ -100,7 +100,8 @@ public class CommandParserTests
         var scanner = new Scanner("$name = Vic & Bob");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<ParseError>().WithMessage("Unexpected literal after assignment value.");
+            .Throw<ParseError>().WithMessage("Unexpected literal after assignment value.")
+            .Where(e => e.StartPosition == 12 && e.EndPosition == 17);
     }
 
     [Test]

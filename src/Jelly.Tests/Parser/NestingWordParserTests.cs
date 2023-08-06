@@ -58,7 +58,8 @@ public class NestingWordParserTests
         var scanner = new Scanner("[this [never [ends]]...");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
-            .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-input in nesting-word.");
+            .Throw<MissingEndTokenError>().WithMessage("Unexpected end-of-input in nesting-word.")
+            .Where(e => e.StartPosition == 23 && e.EndPosition == 23);
     }
 
     [Test]

@@ -33,22 +33,34 @@ public static class StringExtensions
     {
         start = Math.Max(start, 0);
         end = Math.Min(end, str.Length);
-
-        foreach (var line in str.SplitLines())
+        if (start == end)
         {
-            if (line.Start < start && line.End < start)
+            ++end;
+        }
+
+        if (start == str.Length)
+        {
+            var line = str.SplitLines().Last().ToString();
+            yield return new UnderlinedText(line, new string(' ', line.Length) + "^");
+        }
+        else
+        {
+            foreach (var line in str.SplitLines())
             {
-                continue;
+                if (line.Start < start && line.End < start)
+                {
+                    continue;
+                }
+                else if (line.Start >= end && line.End >= end)
+                {
+                    break;
+                }
+                var underlineStart = Math.Max(start - line.Start, 0);
+                var underlineEnd = Math.Min(end - line.Start, line.End - line.Start);
+                var indent = new string(' ', underlineStart);
+                var underline = new string('^', underlineEnd - underlineStart);
+                yield return new UnderlinedText(line.ToString(), indent + underline);
             }
-            else if (line.Start >= end && line.End >= end)
-            {
-                break;
-            }
-            var underlineStart = Math.Max(start - line.Start, 0);
-            var underlineEnd = Math.Min(end - line.Start, line.End - line.Start);
-            var indent = new string(' ', underlineStart);
-            var underline = new string('^', underlineEnd - underlineStart);
-            yield return new UnderlinedText(line.ToString(), indent + underline);
         }
     }
 

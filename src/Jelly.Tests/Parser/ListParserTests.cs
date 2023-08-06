@@ -8,7 +8,7 @@ public class ListParserTests
     [TestCase("")]
     [TestCase("  ")]
     [TestCase("\t\r\n")]
-    public void AEmptyStringOrListItemSeparatorOnlyStringIsPasredToAnEmptyList(string listString)
+    public void AEmptyStringOrListItemSeparatorOnlyStringIsParsedToAnEmptyList(string listString)
     {
         var list = parser.Parse(new Scanner(listString));
 
@@ -34,10 +34,20 @@ public class ListParserTests
     }
 
     [TestCase("[")]
-    [TestCase("{")]
+    [TestCase("(")]
     public void IfAItemCanNotBeParsedAErrorIsThrown(string listString)
     {
         parser.Invoking(p => p.Parse(new Scanner(listString))).Should().Throw<ParseError>();
+    }
+
+    [Test]
+    public void IfAnInvalidListItemIsEncounteredAnErrorIsThrown()
+    {
+        string listString = "1 2 {}";
+
+        parser.Invoking(p => p.Parse(new Scanner(listString))).Should()
+            .Throw<ParseError>().WithMessage("Unexpected input.")
+            .Where(e => e.StartPosition == 4 && e.EndPosition == 4);
     }
 
     [SetUp]

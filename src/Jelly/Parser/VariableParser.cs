@@ -42,7 +42,10 @@ public class VariableParser : IParser
             }
             else
             {
-                throw new ParseError("A variable must have a name.");
+                throw new ParseError("A variable must have a name.")
+                {
+                    StartPosition = start - 1, EndPosition = start
+                };
             }
         }
         return null;

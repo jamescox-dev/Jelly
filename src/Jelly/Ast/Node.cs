@@ -220,6 +220,26 @@ public static class Node
         return null;
     }
 
+    public static int GetStartPosition(DictValue node)
+    {
+        var position = GetPosition(node);
+        if (position is not null)
+        {
+            return (int)position[Keywords.Start].ToDouble();
+        }
+        return -1;
+    }
+
+    public static int GetEndPosition(DictValue node)
+    {
+        var position = GetPosition(node);
+        if (position is not null)
+        {
+            return (int)position[Keywords.End].ToDouble();
+        }
+        return -1;
+    }
+
     public static bool IsLiteral(DictValue node) => IsType(node, Keywords.Literal);
 
     public static bool IsVariable(DictValue node) => IsType(node, Keywords.Variable);

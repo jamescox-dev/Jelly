@@ -42,7 +42,7 @@ public class Shell
             try
             {
                 DictValue script;
-                (source, script) = Read();
+                script = Read(ref source);
                 PrintResult(Evaluate(script));
             }
             catch (Error error)
@@ -71,7 +71,7 @@ public class Shell
         }
     }
 
-    (string, DictValue) Read()
+    DictValue Read(ref string source)
     {
         var script = Node.Script();
 
@@ -83,13 +83,14 @@ public class Shell
             _writer.Write(prompt);
             var line = _reader.ReadLine();
             input += (input.Length > 0 ? "\n" : "") + line;
+            source = input;
             try
             {
                 script = _env.Parse(input);
                 if (script is not null)
                 {
                     AddHistory(input);
-                    return (input, script);
+                    return script;
                 }
             }
             catch (MissingEndTokenError)
