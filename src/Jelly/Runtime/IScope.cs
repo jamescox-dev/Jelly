@@ -10,7 +10,11 @@ public interface IScope
 
     Value GetVariable(string name);
 
+    Value GetVariable(string name, ValueIndexer indexer);
+
     void SetVariable(string name, Value value);
+
+    void SetVariable(string name, ValueIndexer indexer, Value value);
 
     IEnumerable<string> GetCommandNames(bool localOnly = false);
 

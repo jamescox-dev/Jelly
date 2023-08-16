@@ -50,6 +50,11 @@ public class Scope : IScope
         throw new NameError($"Variable '{name}' not defined.");
     }
 
+    public Value GetVariable(string name, ValueIndexer indexer)
+    {
+        return indexer.GetItemOf(GetVariable(name));
+    }
+
     public void SetVariable(string name, Value value)
     {
         if (_variables.ContainsKey(name))
@@ -64,6 +69,11 @@ public class Scope : IScope
         {
             throw new NameError($"Variable '{name}' not defined.");
         }
+    }
+
+    public void SetVariable(string name, ValueIndexer indexer, Value value)
+    {
+        SetVariable(name, indexer.SetItemOf(GetVariable(name), value));
     }
 
     public IEnumerable<string> GetCommandNames(bool localOnly = false)

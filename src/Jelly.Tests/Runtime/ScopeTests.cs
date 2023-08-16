@@ -38,6 +38,17 @@ public class ScopeTests
     }
 
     [Test]
+    public void AVariableCanBeReadFromAScopeWithAnOptionalValueIndexer()
+    {
+        var scope = new Scope();
+        scope.DefineVariable("Album", "Abbey Road".ToValue());
+
+        var value = scope.GetVariable("Album", new DictIndexer("Abbey".ToValue()));
+
+        value.Should().Be("Road".ToValue());
+    }
+
+    [Test]
     public void AVariableCanSetInAScope()
     {
         var scope = new Scope();
@@ -48,6 +59,19 @@ public class ScopeTests
         var value = scope.GetVariable("name");
 
         value.Should().Be("Bob".ToValue());
+    }
+
+    [Test]
+    public void AVariableCanSetWithAnOptionalIndexerInAScope()
+    {
+        var scope = new Scope();
+        scope.DefineVariable("test", "a b z".ToValue());
+
+        scope.SetVariable("test", new ListIndexer(3.ToValue()), "c".ToValue());
+
+        var value = scope.GetVariable("test");
+
+        value.Should().Be(new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue()).ToValue());
     }
 
     [Test]
