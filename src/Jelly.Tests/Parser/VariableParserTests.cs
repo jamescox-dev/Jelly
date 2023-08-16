@@ -122,6 +122,18 @@ public class VariableParserTests
     }
 
     [Test]
+    public void ADictIndexerCharacterImmediatelyFollowingTheVariableNameButNotImmediatelyFollowedByAnExpressionThrowsAnException()
+    {
+        var expressionParser = new ExpressionParser();
+        var parser = new VariableParser(expressionParser);
+        var scanner = new Scanner("$bar@ ('a')");
+
+        parser.Invoking(p => p.Parse(scanner)).Should()
+            .Throw<ParseError>().WithMessage("dict indexer missing key expression.")
+            .Where(e => e.StartPosition == 4 && e.EndPosition == 5);
+    }
+
+    [Test]
     public void ASeriesOfListAndDictIndexerCanBeGiven()
     {
         var count = 0;

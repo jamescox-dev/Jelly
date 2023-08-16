@@ -28,11 +28,22 @@ public class VariableParser : IParser
                 {
                     var indexerStart = scanner.Position;
                     var isDictIndexer = scanner.AdvanceIf(s => s.IsDictIndexer);
-                    var indexerExpression = _expressionParser.Parse(scanner)!;
-                    var indexer = isDictIndexer
-                        ? Node.DictIndexer(indexerStart, scanner.Position, indexerExpression)
-                        : Node.ListIndexer(indexerStart, scanner.Position, indexerExpression);
-                    indexers.Add(indexer);
+                    var indexerExpression = _expressionParser.Parse(scanner);
+                    if (indexerExpression is not null)
+                    {
+                        var indexer = isDictIndexer
+                            ? Node.DictIndexer(indexerStart, scanner.Position, indexerExpression)
+                            : Node.ListIndexer(indexerStart, scanner.Position, indexerExpression);
+                        indexers.Add(indexer);
+                    }
+                    else
+                    {
+                        throw new ParseError("dict indexer missing key expression.")
+                        {
+                            StartPosition = scanner.Position - 1,
+                            EndPosition = scanner.Position
+                        };
+                    }
                 }
                 return Node.Variable(start - 1, scanner.Position, name, indexers.ToArray());
             }
