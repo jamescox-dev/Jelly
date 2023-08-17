@@ -23,24 +23,14 @@ public class CollectionsLibrary : ILibrary
 
         // TODO:  list?
         var listValCmd = new ValueGroupCommand("list", "list", "convert");
-        var listVarCmd = new VariableGroupCommand("list!");
         listValCmd.AddCommand("convert", new ArgParsedCommand("list convert", ListConvertArgParser, ListConvert));
         listValCmd.AddCommand("len", new ArgParsedCommand("list len", ListParser, ListLen));
-        var listAddCmd = new ArgParsedCommand("list add", ListAddParser, ListAdd);
-        listValCmd.AddCommand("add", listAddCmd);
-        listVarCmd.AddCommand("add", listAddCmd);
-        var listReverseCmd = new ArgParsedCommand("list reverse", ListParser, ListReverse);
-        listValCmd.AddCommand("reverse", listReverseCmd);
-        listVarCmd.AddCommand("reverse", listReverseCmd);
-        var listInsertCmd = new ArgParsedCommand("list insert", ListInsertParser, ListInsert);
-        listValCmd.AddCommand("insert", listInsertCmd);
-        listVarCmd.AddCommand("insert", listInsertCmd);
+        listValCmd.AddMutatorCommand("add", new ArgParsedCommand("list add", ListAddParser, ListAdd));
+        listValCmd.AddMutatorCommand("reverse", new ArgParsedCommand("list reverse", ListParser, ListReverse));
+        listValCmd.AddMutatorCommand("insert", new ArgParsedCommand("list insert", ListInsertParser, ListInsert));
         listValCmd.AddCommand("get", new ArgParsedCommand("list get", ListGetParser, ListGet));
-        var listSetCmd = new ArgParsedCommand("list set", ListSetParser, ListSet);
-        listValCmd.AddCommand("set", listSetCmd);
-        listVarCmd.AddCommand("set", listSetCmd);
+        listValCmd.AddMutatorCommand("set", new ArgParsedCommand("list set", ListSetParser, ListSet));
         scope.DefineCommand("list", listValCmd);
-        scope.DefineCommand("list!", listVarCmd);
 
         var dictValCmd = new ValueGroupCommand("dict", "dict", "convert");
         dictValCmd.AddCommand("convert", new ArgParsedCommand("dict convert", DictConvertArgParser, DictConvert));
