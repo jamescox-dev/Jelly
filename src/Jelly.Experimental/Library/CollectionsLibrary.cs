@@ -24,7 +24,7 @@ public class CollectionsLibrary : ILibrary
         // TODO:  list?
         var listValCmd = new ValueGroupCommand("list", "list", "convert");
         listValCmd.AddCommand("convert", new ArgParsedCommand("list convert", ListConvertArgParser, ListConvert));
-        listValCmd.AddCommand("len", new ArgParsedCommand("list len", ListParser, ListLen));
+        listValCmd.AddCommand("len", new WrappedCommand(ListLen, typeMarshaller));
         listValCmd.AddMutatorCommand("add", new ArgParsedCommand("list add", ListAddParser, ListAdd));
         listValCmd.AddMutatorCommand("reverse", new ArgParsedCommand("list reverse", ListParser, ListReverse));
         listValCmd.AddMutatorCommand("insert", new ArgParsedCommand("list insert", ListInsertParser, ListInsert));
@@ -43,10 +43,9 @@ public class CollectionsLibrary : ILibrary
         return args[Keywords.List].ToListValue();
     }
 
-    Value ListLen(DictValue args)
+    Value ListLen(ListValue list)
     {
-        var list = args[Keywords.List].ToListValue();
-        return list.ToListValue().Count.ToValue();
+        return list.Count.ToValue();
     }
 
     Value ListAdd(DictValue args)

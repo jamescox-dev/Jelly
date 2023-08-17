@@ -8,6 +8,10 @@ public class TypeMarshaller : ITypeMarshaller
 
     public Value Marshal(object? clrValue)
     {
+        if (clrValue is Value value)
+        {
+            return value;
+        }
         if (clrValue is null)
         {
             return Value.Empty;
@@ -62,6 +66,30 @@ public class TypeMarshaller : ITypeMarshaller
         if (clrType == typeof(string))
         {
             return jellyValue.ToString();
+        }
+        if (clrType == typeof(Value))
+        {
+            return jellyValue;
+        }
+        if (clrType == typeof(BoolValue))
+        {
+            return jellyValue.ToBool() ? BoolValue.True : BoolValue.False;
+        }
+        if (clrType == typeof(NumValue))
+        {
+            return new NumValue(jellyValue.ToDouble());
+        }
+        if (clrType == typeof(StrValue))
+        {
+            return new StrValue(jellyValue.ToString());
+        }
+        if (clrType == typeof(ListValue))
+        {
+            return jellyValue.ToListValue();
+        }
+        if (clrType == typeof(DictValue))
+        {
+            return jellyValue.ToDictionaryValue();
         }
         if (TryMarshalToEnumerable(jellyValue, clrType, (v) => v.ToBool(), out var enumerableOfBoolValue))
         {

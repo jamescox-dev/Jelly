@@ -11,6 +11,45 @@ public class TypeMarshallerTests
         _marshaller = new TypeMarshaller();
     }
 
+    [Test]
+    public void JellyValuesAreMarshalledToJellyValuesBySimplyReturningTheInstancePassedIn()
+    {
+        var jellyValueIn = "test".ToValue();
+        var jellyBoolIn = BoolValue.True;
+        var jellyNumIn = NumValue.One;
+        var jellyStrIn = "Jelly".ToValue();
+        var jellyListIn = new ListValue();
+        var jellyDictIn = new DictValue();
+
+        var jellyValueOut = _marshaller.Marshal(jellyValueIn, typeof(Value));
+        var jellyBoolOut = _marshaller.Marshal((object?)jellyBoolIn);
+        var jellyNumOut = _marshaller.Marshal((object?)jellyNumIn);
+        var jellyStrOut = _marshaller.Marshal((object?)jellyStrIn);
+        var jellyListOut = _marshaller.Marshal((object?)jellyListIn);
+        var jellyDictOut = _marshaller.Marshal((object?)jellyDictIn);
+
+        jellyValueOut.Should().BeSameAs(jellyValueIn);
+        jellyBoolOut.Should().BeSameAs(jellyBoolIn);
+        jellyNumOut.Should().BeSameAs(jellyNumIn);
+        jellyStrOut.Should().BeSameAs(jellyStrIn);
+        jellyListOut.Should().BeSameAs(jellyListIn);
+        jellyDictOut.Should().BeSameAs(jellyDictIn);
+    }
+
+    [TestCase("0", typeof(BoolValue), "false")]
+    [TestCase("1", typeof(BoolValue), "true")]
+    [TestCase("42", typeof(NumValue), "42")]
+    [TestCase("Jelly", typeof(StrValue), "Jelly")]
+    [TestCase("1 2", typeof(ListValue), "1\n2")]
+    [TestCase("a b", typeof(DictValue), "a b")]
+    public void JellyValuesCanBeExplicitlyConvertedIntoJellyValuesByReturningTheInstancePassedIn(string jellyValueString, Type jellyType, string expectedJellyValue)
+    {
+        var jellyValue = _marshaller.Marshal(jellyValueString.ToValue(), jellyType);
+
+        jellyValue.GetType().Should().Be(jellyType);
+        jellyValue.ToString().Should().Be(expectedJellyValue);
+    }
+
     [TestCase(null, typeof(StrValue), "")]
     [TestCase(true, typeof(BoolValue), "true")]
     [TestCase(false, typeof(BoolValue), "false")]
@@ -31,7 +70,7 @@ public class TypeMarshallerTests
     }
 
     [Test]
-    public void IfAClrTypeIsEnumerableAJellyListValueIsReturnedWithEachOfTheEnumeratedItemsMarshelledToJellyValues()
+    public void IfAClrTypeIsEnumerableAJellyListValueIsReturnedWithEachOfTheEnumeratedItemsMarshalledToJellyValues()
     {
         var clrValue = new object?[] { null, 1, true, 1.0, "hi", new object[] { "bye" } };
 
@@ -48,7 +87,7 @@ public class TypeMarshallerTests
     }
 
     [Test]
-    public void IfAClrTypeIsADictionaryAJellyDictionaryValueIsReturnedWithEachOfItsKeyValueParisMarshelledToJellyValues()
+    public void IfAClrTypeIsADictionaryAJellyDictionaryValueIsReturnedWithEachOfItsKeyValueParisMarshalledToJellyValues()
     {
         var clrValue = new Dictionary<object, object?>
         {
