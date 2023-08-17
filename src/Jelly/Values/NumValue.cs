@@ -130,7 +130,7 @@ public class NumValue : Value
             number = number.Substring(1);
             negative = true;
         }
-        if (number.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+        if (number.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
         {
             number = $"0{number.Substring(2)}";
             if (BigInteger.TryParse(number, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var parsedBigInt))
@@ -169,7 +169,7 @@ public class NumValue : Value
             number = number.Substring(1);
             negative = true;
         }
-        if (number.StartsWith($"0{prefix}", StringComparison.CurrentCultureIgnoreCase))
+        if (number.StartsWith($"0{prefix}", StringComparison.InvariantCultureIgnoreCase))
         {
             number = number.Substring(2);
             var parsedBigInt = BigInteger.Zero;

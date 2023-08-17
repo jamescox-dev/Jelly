@@ -10,7 +10,7 @@ internal class DefineCommandEvaluator : IEvaluator
         var body = node.GetNode(Keywords.Body);
         var restArgNameNode = node.GetNodeOrNull(Keywords.RestArgName);
 
-        var usedArgNames = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
+        var usedArgNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
         var requiredArgNames = GetRequiredArgNames(env, argNames, argDefaults.Count, usedArgNames);
         var optionalArgs = GetOptionalArgs(env, argNames, argDefaults, usedArgNames);

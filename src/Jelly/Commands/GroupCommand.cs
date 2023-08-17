@@ -3,7 +3,7 @@ namespace Jelly.Commands;
 public class GroupCommand : CommandBase
 {
     protected readonly string _commandName;
-    readonly Dictionary<string, ICommand> _subCommands = new(StringComparer.CurrentCultureIgnoreCase);
+    readonly Dictionary<string, ICommand> _subCommands = new(StringComparer.InvariantCultureIgnoreCase);
 
     public GroupCommand(string commandName)
     {
