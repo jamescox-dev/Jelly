@@ -3,7 +3,7 @@ var $KEYPAD_LETTERS = {dict [
 ]}
 
 def get_keypad_letter $key $times {
-    var $letters_for_key = {dict $KEYPAD_LETTERS get $key}
+    var $letters_for_key = $KEYPAD_LETTERS@($key)
     return {str $letters_for_key get $times}
 }
 
@@ -15,7 +15,7 @@ for $i = 1 to {list $input len} step 2 {
     var $times = {list $input get ($i + 1)}
     var $letter = {get_keypad_letter $key $times}
 
-    list! $message add $letter
+    list $message = add $letter
 }
 
 print {str '' joinall $message}

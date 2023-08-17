@@ -50,7 +50,7 @@ def get_row $n $dir {
     var $col = []
     for $y = 1 to $GRID_SIZE {
       var $value = {get_cell $n $y}
-      list! $col add $value
+      list $col = add $value
     }
     return $col
   } else {
@@ -77,13 +77,13 @@ def compress_row $row {
   for $i = {list $row len} to 1 {
     var $value = $row($i)
     if ($value <> 0) {
-      list! $compressed_row insert 1 $value
+      list $compressed_row = insert 1 $value
     }
   }
   var $remaining = ({list $row len} - {list $compressed_row len})
   if $remaining {
     for $i = 1 to $remaining {
-      list! $compressed_row insert 1 0
+      list $compressed_row = insert 1 0
     }
   }
   $compressed_row
@@ -145,7 +145,7 @@ def empty_cells {
   for $y $row in $grid {
     for $x $cell in $row {
       if ($cell = 0) {
-        list! $empty_cells add {list [] add $x $y}
+        list $empty_cells = add {list [] add $x $y}
       }
     }
   }
