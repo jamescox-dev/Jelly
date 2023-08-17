@@ -81,7 +81,7 @@ public class DictValue : Value
         }
     }
 
-    public DictValue SetItem(Value key, Value value) => new DictValue(_items.SetItem(key, value));
+    public DictValue SetItem(Value key, Value value) => new(_items.SetItem(key, value));
 
     public bool ContainsKey(Value key) => _items.ContainsKey(key);
 

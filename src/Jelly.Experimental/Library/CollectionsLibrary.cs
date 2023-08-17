@@ -2,45 +2,28 @@ namespace Jelly.Experimental.Library;
 
 public class CollectionsLibrary : ILibrary
 {
-    readonly static StrValue DefaultKeyword = new("default");
-
-    readonly static IArgParser ListConvertArgParser = new StandardArgParser(new Arg("list"));
-    readonly static IArgParser ListParser = new StandardArgParser(new Arg("list"));
-    readonly static IArgParser ListAddParser = new StandardArgParser(new Arg("list"), new RestArg("values"));
-    readonly static IArgParser ListInsertParser = new StandardArgParser(new Arg("list"), new Arg("index"), new RestArg("values"));
-    readonly static IArgParser ListGetParser = new StandardArgParser(new Arg("list"), new Arg("index"));
-    readonly static IArgParser ListSetParser = new StandardArgParser(new Arg("list"), new Arg("index"), new Arg("value"));
-
-    readonly static IArgParser DictConvertArgParser = new StandardArgParser(new Arg("dict"));
-    readonly static IArgParser DictGetArgParser = new PatternArgParser(new OrPattern(
-        new ExactPattern(new SequenceArgPattern(new SingleArgPattern("dict"), new SingleArgPattern("key"), new SingleArgPattern("default"))),
-        new ExactPattern(new SequenceArgPattern(new SingleArgPattern("dict"), new SingleArgPattern("key")))
-    ));
-
     public void LoadIntoScope(IScope scope)
     {
-        var typeMarshaller = new TypeMarshaller();
-
         // TODO:  list?
         var listValCmd = new ValueGroupCommand("list", "list", "convert");
-        listValCmd.AddCommand("convert", new ArgParsedCommand("list convert", ListConvertArgParser, ListConvert));
-        listValCmd.AddCommand("len", new WrappedCommand(ListLen, typeMarshaller));
-        listValCmd.AddMutatorCommand("add", new ArgParsedCommand("list add", ListAddParser, ListAdd));
-        listValCmd.AddMutatorCommand("reverse", new ArgParsedCommand("list reverse", ListParser, ListReverse));
-        listValCmd.AddMutatorCommand("insert", new ArgParsedCommand("list insert", ListInsertParser, ListInsert));
-        listValCmd.AddCommand("get", new ArgParsedCommand("list get", ListGetParser, ListGet));
-        listValCmd.AddMutatorCommand("set", new ArgParsedCommand("list set", ListSetParser, ListSet));
+        listValCmd.AddCommand("convert", new WrappedCommand(ListConvert, TypeMarshaller.Shared));
+        listValCmd.AddCommand("len", new WrappedCommand(ListLen, TypeMarshaller.Shared));
+        listValCmd.AddMutatorCommand("add", new WrappedCommand(ListAdd, TypeMarshaller.Shared));
+        listValCmd.AddMutatorCommand("reverse", new WrappedCommand(ListReverse, TypeMarshaller.Shared));
+        listValCmd.AddMutatorCommand("insert", new WrappedCommand(ListInsert, TypeMarshaller.Shared));
+        listValCmd.AddCommand("get", new WrappedCommand(ListGet, TypeMarshaller.Shared));
+        listValCmd.AddMutatorCommand("set", new WrappedCommand(ListSet, TypeMarshaller.Shared));
         scope.DefineCommand("list", listValCmd);
 
         var dictValCmd = new ValueGroupCommand("dict", "dict", "convert");
-        dictValCmd.AddCommand("convert", new ArgParsedCommand("dict convert", DictConvertArgParser, DictConvert));
-        dictValCmd.AddCommand("get", new ArgParsedCommand("dict get", DictGetArgParser, DictGet));
+        dictValCmd.AddCommand("convert", new WrappedCommand(DictConvert, TypeMarshaller.Shared));
+        dictValCmd.AddCommand("get", new WrappedCommand(DictGet, TypeMarshaller.Shared));
         scope.DefineCommand("dict", dictValCmd);
     }
 
-    Value ListConvert(DictValue args)
+    Value ListConvert(ListValue list)
     {
-        return args[Keywords.List].ToListValue();
+        return list;
     }
 
     Value ListLen(ListValue list)
@@ -48,27 +31,18 @@ public class CollectionsLibrary : ILibrary
         return list.Count.ToValue();
     }
 
-    Value ListAdd(DictValue args)
+    Value ListAdd(ListValue list, params Value[] values)
     {
-        var list = args[Keywords.List].ToListValue();
-        var values = args[Keywords.Values].ToListValue();
-
-        return list.AddRange(values);
+        return list.AddRange(values.ToValue());
     }
 
-    Value ListInsert(DictValue args)
+    Value ListInsert(ListValue list, NumValue index, params Value[] values)
     {
-        var list = args[Keywords.List].ToListValue();
-        var index = args[Keywords.Index].ToIndexOf(list);
-        var values = args[Keywords.Values].ToListValue();
-
-        return list.InsertRange(index, values);
+        return list.InsertRange(index.ToIndexOf(list), new ListValue(values));
     }
 
-    Value ListReverse(DictValue args)
+    Value ListReverse(ListValue list)
     {
-        var list = args[Keywords.List].ToListValue();
-
         return new ListValue(list.Reverse());
     }
 
@@ -81,26 +55,19 @@ public class CollectionsLibrary : ILibrary
     // TODO:  list sort key?     e.g.  list $l sort {list $$ get 1}
     // TODO:  list reverse
 
-    Value ListGet(DictValue args)
+    Value ListGet(ListValue list, NumValue index)
     {
-        var list = args[Keywords.List].ToListValue();
-        var index = args[Keywords.Index].ToIndexOf(list);
-
-        return list[index];
+        return list[index.ToIndexOf(list)];
     }
 
-    Value ListSet(DictValue args)
+    Value ListSet(ListValue list, NumValue index, Value value)
     {
-        var list = args[Keywords.List].ToListValue();
-        var index = args[Keywords.Index].ToIndexOf(list);
-        var value = args[Keywords.Value];
-
-        return list.SetItem(index, value);
+        return list.SetItem(index.ToIndexOf(list), value);
     }
 
-    Value DictConvert(DictValue args)
+    Value DictConvert(DictValue dict)
     {
-        return args[Keywords.Dict].ToDictionaryValue();
+        return dict;
     }
 
     // TODO: dict len
@@ -111,17 +78,15 @@ public class CollectionsLibrary : ILibrary
     // TODO: dict contains keys...
     // TODO: dict containsvalue values...
 
-    Value DictGet(DictValue args)
+    Value DictGet(DictValue dict, Value key, Value? @default=null)
     {
-        var dict = args[Keywords.Dict].ToDictionaryValue();
-        var key = args[Keywords.Key];
-        if (args.ContainsKey(DefaultKeyword))
+        if (@default is not null)
         {
             if (dict.TryGetValue(key, out var value))
             {
                 return value;
             }
-            return args[DefaultKeyword];
+            return @default;
         }
         return dict[key];
     }
