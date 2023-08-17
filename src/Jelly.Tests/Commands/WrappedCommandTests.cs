@@ -32,6 +32,16 @@ public class WrappedCommandTests
     }
 
     [Test]
+    public void IfTheWrappedFunctionThrowsAnExceptionTheExceptionIsReThrownByTheCommand()
+    {
+        var exception = new InvalidOperationException();
+        Action func = () => throw exception;
+        var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
+
+        command.Invoking(c => c.Invoke(_env, new ListValue())).Should().Throw<InvalidOperationException>().Where(e => e == exception);
+    }
+
+    [Test]
     public void WhenTheWrappedFunctionsReturnValueIsMarshalledToAJellyValue()
     {
         var returnValue = 42;

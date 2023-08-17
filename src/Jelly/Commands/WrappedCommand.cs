@@ -1,5 +1,7 @@
 namespace Jelly.Commands;
 
+using System.Reflection;
+
 public class WrappedCommand : CommandBase
 {
     readonly ITypeMarshaller _typeMarshaller;
@@ -84,8 +86,15 @@ public class WrappedCommand : CommandBase
             clrArgs[_maxPositionalArgsCount] = extraParams;
         }
 
-        var result = _wrappedDelegate.DynamicInvoke(clrArgs);
-        return _typeMarshaller.Marshal(result);
+        try
+        {
+            var result = _wrappedDelegate.DynamicInvoke(clrArgs);
+            return _typeMarshaller.Marshal(result);
+        }
+        catch (TargetInvocationException ex)
+        {
+            throw ex.InnerException!;
+        }
     }
 
     void EnsureArgCountIsValid(IEnv env, ListValue unevaluatedArgs)
