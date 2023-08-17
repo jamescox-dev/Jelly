@@ -1,7 +1,7 @@
 namespace Jelly.Values.Tests;
 
 [TestFixture]
-public class NumberValueTests
+public class NumValueTests
 {
     [TestCase(0.0)]
     [TestCase(0.84551240822557006)]
@@ -209,7 +209,7 @@ public class NumberValueTests
     {
         var num = new NumValue(42);
 
-        var dict = num.ToDictionaryValue();
+        var dict = num.ToDictValue();
 
         dict.Should().Be(new DictValue(num, Value.Empty));
     }

@@ -48,7 +48,7 @@ public class CommandParser : IParser
             }
             var variable = words[0];
             var value = words.Count > 2 ? words[2] : Node.Literal(Value.Empty, scanner.Position, scanner.Position);
-            var endOfValue = (int)value.ToNode()[Keywords.Position].ToDictionaryValue()[Keywords.End].ToDouble();
+            var endOfValue = (int)value.ToNode()[Keywords.Position].ToDictValue()[Keywords.End].ToDouble();
 
             if (variable.ContainsKey(Keywords.Indexers))
             {
@@ -63,7 +63,7 @@ public class CommandParser : IParser
 
     static DictValue BuildCommandNode(List<DictValue> words, int start)
     {
-        var endOfLastWord = (int)words.Last().ToNode()[Keywords.Position].ToDictionaryValue()[Keywords.End].ToDouble();
+        var endOfLastWord = (int)words.Last().ToNode()[Keywords.Position].ToDictValue()[Keywords.End].ToDouble();
         return Node.Command(words[0], new ListValue(words.Skip(1)), start, endOfLastWord);
     }
 

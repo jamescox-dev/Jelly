@@ -1,7 +1,7 @@
 namespace Jelly.Values.Tests;
 
 [TestFixture]
-public class DictionaryValueTests
+public class DictValueTests
 {
     [Test]
     public void WhenADictionaryValueHasNoItemsItsStringRepresentationIsAnEmptyString()
@@ -81,7 +81,7 @@ public class DictionaryValueTests
     {
         Value value = new DictValue();
 
-        var dict = value.ToDictionaryValue();
+        var dict = value.ToDictValue();
 
         dict.Should().BeSameAs(value);
     }

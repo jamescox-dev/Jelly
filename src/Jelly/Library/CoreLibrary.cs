@@ -117,7 +117,7 @@ public class CoreLibrary : ILibrary
         var argDefaults = ImmutableList.CreateBuilder<DictValue>();
         foreach (var arg in args.Skip(1).Take(args.Count - 2))
         {
-            var argDict = arg.ToDictionaryValue();
+            var argDict = arg.ToDictValue();
             if (expectEquals && !IsKeyword(argDict, "="))
             {
                 throw Error.Arg($"Argument '{env.Evaluate(argNames[argNames.Count - 1].ToNode())}' must have a default value.");

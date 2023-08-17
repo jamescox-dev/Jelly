@@ -89,7 +89,7 @@ public class TypeMarshaller : ITypeMarshaller
         }
         if (clrType == typeof(DictValue))
         {
-            return jellyValue.ToDictionaryValue();
+            return jellyValue.ToDictValue();
         }
         if (TryMarshalToEnumerable(jellyValue, clrType, (v) => v.ToBool(), out var enumerableOfBoolValue))
         {

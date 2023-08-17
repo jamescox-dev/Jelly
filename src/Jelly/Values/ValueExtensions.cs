@@ -42,16 +42,16 @@ public static class ValueExtensions
     }
 
     public static DictValue ToNode(this Value value) =>
-        value.ToDictionaryValue();
+        value.ToDictValue();
 
     public static DictValue GetNode(this DictValue dict, string key) =>
-        dict[key.ToValue()].ToDictionaryValue();
+        dict[key.ToValue()].ToDictValue();
 
     public static DictValue GetNode(this DictValue dict, Value key) =>
-        dict[key].ToDictionaryValue();
+        dict[key].ToDictValue();
 
     public static DictValue? GetNodeOrNull(this DictValue dict, Value key) =>
-        dict.TryGetValue(key, out var value) ? value.ToDictionaryValue() : null;
+        dict.TryGetValue(key, out var value) ? value.ToDictValue() : null;
 
     public static string GetString(this DictValue dict, Value key) =>
         dict[key].ToString();

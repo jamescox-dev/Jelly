@@ -22,7 +22,7 @@ public class StrValue : Value
         }
     }
 
-    public override DictValue ToDictionaryValue()
+    public override DictValue ToDictValue()
     {
         var listParser = new ListParser();
         try

@@ -98,13 +98,13 @@ public record class DictIndexer(Value Index, ValueIndexer? Next=null) : ValueInd
 {
     protected override Value GetItemOfImpl(Value collection)
     {
-        var dict = collection.ToDictionaryValue();
+        var dict = collection.ToDictValue();
         return dict[Index];
     }
 
     protected override Value SetItemOfImpl(Value collection, Value value)
     {
-        var dict = collection.ToDictionaryValue();
+        var dict = collection.ToDictValue();
         return dict.SetItem(Index, value);
     }
 }

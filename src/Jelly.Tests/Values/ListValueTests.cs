@@ -95,7 +95,7 @@ public class ListValueTests
     {
         var value = new ListValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue());
 
-        var dict = value.ToDictionaryValue();
+        var dict = value.ToDictValue();
 
         ((Value)dict).Should().Be(new DictValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
     }

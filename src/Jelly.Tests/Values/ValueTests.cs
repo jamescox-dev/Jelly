@@ -156,7 +156,7 @@ public class ValueTests
     {
         var value = new StrValue("a b c d");
 
-        var dict = value.ToDictionaryValue();
+        var dict = value.ToDictValue();
 
         ((Value)dict).Should().Be(new DictValue("a".ToValue(), "b".ToValue(), "c".ToValue(), "d".ToValue()));
     }
@@ -166,7 +166,7 @@ public class ValueTests
     {
         var value = new StrValue("a b c");
 
-        var dict = value.ToDictionaryValue();
+        var dict = value.ToDictValue();
 
         ((Value)dict).Should().Be(new DictValue("a".ToValue(), "b".ToValue(), "c".ToValue(), Value.Empty));
     }
@@ -176,6 +176,6 @@ public class ValueTests
     {
         var value = new StrValue("{");
 
-        value.Invoking(v => v.ToDictionaryValue()).Should().Throw<TypeError>().WithMessage("Value is not a dictionary.");
+        value.Invoking(v => v.ToDictValue()).Should().Throw<TypeError>().WithMessage("Value is not a dictionary.");
     }
 }

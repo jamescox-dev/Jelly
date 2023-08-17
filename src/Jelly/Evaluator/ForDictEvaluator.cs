@@ -53,7 +53,7 @@ public class ForDictEvaluator : IEvaluator
 
     static DictValue GetDict(IEnv env, DictValue node)
     {
-        return env.Evaluate(node.GetNode(Keywords.Dict)).ToDictionaryValue();
+        return env.Evaluate(node.GetNode(Keywords.Dict)).ToDictValue();
     }
 
     static void AssertIteratorNamesAreUnique(string iteratorName, string? keyName)

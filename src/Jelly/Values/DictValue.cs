@@ -68,7 +68,7 @@ public class DictValue : Value
         return new ListValue(items);
     }
 
-    public override DictValue ToDictionaryValue() => this;
+    public override DictValue ToDictValue() => this;
 
     public Value this[Value key] {
         get

@@ -1,7 +1,7 @@
 namespace Jelly.Values.Tests;
 
 [TestFixture]
-public class BooleanValueTests
+public class BoolValueTests
 {
     [TestCase(true, "true")]
     [TestCase(false, "false")]
@@ -53,7 +53,7 @@ public class BooleanValueTests
     {
         var boolValue = b.ToValue();
 
-        var dict = boolValue.ToDictionaryValue();
+        var dict = boolValue.ToDictValue();
 
         dict[boolValue].Should().Be(Value.Empty);
     }
