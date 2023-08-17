@@ -112,6 +112,17 @@ public class QuotedWordParserTests
     }
 
     [Test]
+    public void AQuoteFollowedByAQuoteReturnsAnEmptyLiteralWhenSubstitutionsAreDisabled()
+    {
+        var parser = new QuotedWordParser(false);
+        var scanner = new Scanner("''");
+
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Literal("", 0, 2));
+    }
+
+    [Test]
     public void AQuotesWordMustBeginAndEndWithTheSameQuote()
     {
         var parser = new QuotedWordParser();

@@ -48,7 +48,7 @@ public class QuotedWordParser : IParser
                     FlushCurrentLiteral(scanner.Position - 1);
                     return _allowSubstitutions
                         ? Node.Composite(start, scanner.Position, parts.ToArray())
-                        : Node.Reposition(parts[0], start, scanner.Position);
+                        : Node.Reposition(parts.Any() ? parts[0] : Node.Literal(string.Empty), start, scanner.Position);
                 }
                 else
                 {
