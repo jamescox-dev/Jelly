@@ -28,7 +28,9 @@ public class VariableParser : IParser
                 {
                     var indexerStart = scanner.Position;
                     var isDictIndexer = scanner.AdvanceIf(s => s.IsDictIndexer);
-                    var indexerExpression = _expressionParser.Parse(scanner);
+                    var indexerExpression = isDictIndexer && !scanner.IsExpressionBegin
+                        ? ParseDictIndexerKey(scanner)
+                        : _expressionParser.Parse(scanner);
                     if (indexerExpression is not null)
                     {
                         var indexer = isDictIndexer
@@ -58,6 +60,16 @@ public class VariableParser : IParser
                     StartPosition = start - 1, EndPosition = start
                 };
             }
+        }
+        return null;
+    }
+
+    DictValue? ParseDictIndexerKey(Scanner scanner)
+    {
+        var start = scanner.Position;
+        if (scanner.AdvanceWhile(s => !(s.IsSpecialCharacter || IsTerminatingChar(s))) > 0)
+        {
+            return Node.Literal(scanner.Source[start..scanner.Position], start, scanner.Position);
         }
         return null;
     }

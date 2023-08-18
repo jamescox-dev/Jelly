@@ -122,6 +122,18 @@ public class VariableParserTests
     }
 
     [Test]
+    public void ADictIndexerCharacterImmediatelyFollowingTheVariableNameImmediatelyByNonSpecialCharactersInInterpretedAsADictIndexer()
+    {
+        var expressionParser = new ExpressionParser();
+        var parser = new VariableParser(expressionParser);
+        var scanner = new Scanner("$bar.foo#");
+
+        var node = parser.Parse(scanner);
+
+        node.Should().Be(Node.Variable(0, 8, "bar", Node.DictIndexer(4, 8, Node.Literal("foo", 5, 8))));
+    }
+
+    [Test]
     public void ADictIndexerCharacterImmediatelyFollowingTheVariableNameButNotImmediatelyFollowedByAnExpressionThrowsAnException()
     {
         var expressionParser = new ExpressionParser();
