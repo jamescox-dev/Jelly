@@ -3,7 +3,7 @@ var $KEYPAD_LETTERS = {dict [
 ]}
 
 def get_keypad_letter $key $times {
-    var $letters_for_key = $KEYPAD_LETTERS@($key)
+    var $letters_for_key = $KEYPAD_LETTERS.($key)
     return {str $letters_for_key get $times}
 }
 

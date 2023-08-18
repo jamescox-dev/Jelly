@@ -114,7 +114,7 @@ public class VariableParserTests
             return Node.Literal("a");
         });
         var parser = new VariableParser(expressionParser.Object);
-        var scanner = new Scanner("$bar@('a')");
+        var scanner = new Scanner("$bar.('a')");
 
         var node = parser.Parse(scanner);
 
@@ -126,7 +126,7 @@ public class VariableParserTests
     {
         var expressionParser = new ExpressionParser();
         var parser = new VariableParser(expressionParser);
-        var scanner = new Scanner("$bar@ ('a')");
+        var scanner = new Scanner("$bar. ('a')");
 
         parser.Invoking(p => p.Parse(scanner)).Should()
             .Throw<ParseError>().WithMessage("dict indexer missing key expression.")
@@ -143,7 +143,7 @@ public class VariableParserTests
             return Node.Literal(++count);
         });
         var parser = new VariableParser(expressionParser.Object);
-        var scanner = new Scanner("$foo(1)@(2)(3)@(4)");
+        var scanner = new Scanner("$foo(1).(2)(3).(4)");
 
         var node = parser.Parse(scanner);
 

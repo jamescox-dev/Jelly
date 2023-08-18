@@ -73,7 +73,7 @@ public class ScannerConfig : IScannerConfig
 
     public char VariableMarker => '$';
 
-    public char DictIndexer => '@';
+    public char DictIndexer => '.';
 
     public char ScriptBegin => '{';
 

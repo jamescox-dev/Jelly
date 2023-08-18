@@ -326,7 +326,7 @@ public class ScannerTests
         scanner.IsVariableMarker.Should().Be(expected);
     }
 
-    [TestCase("@", true)]
+    [TestCase(".", true)]
     [TestCase("foo", false)]
     public void ADictIndexerIsReportedWhenTheCurrentCharacterMatchesTheConfiguredDictIndexer(string source, bool expected)
     {
