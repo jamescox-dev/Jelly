@@ -73,15 +73,15 @@ public class TypeMarshaller : ITypeMarshaller
         }
         if (clrType == typeof(BoolValue))
         {
-            return jellyValue.ToBool() ? BoolValue.True : BoolValue.False;
+            return jellyValue.ToBoolValue();
         }
         if (clrType == typeof(NumValue))
         {
-            return new NumValue(jellyValue.ToDouble());
+            return jellyValue.ToNumValue();
         }
         if (clrType == typeof(StrValue))
         {
-            return new StrValue(jellyValue.ToString());
+            return jellyValue.ToStrValue();
         }
         if (clrType == typeof(ListValue))
         {

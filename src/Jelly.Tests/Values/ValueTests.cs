@@ -8,8 +8,10 @@ public class ValueTests
     public void AllValuesAreStrings(Value value, string expectedString)
     {
         var str = value.ToString();
+        var jellyStr = value.ToStrValue();
 
         str.Should().Be(expectedString);
+        jellyStr.Should().Be(expectedString.ToValue());
     }
 
     static readonly IReadOnlyList<TestCaseData> AllValuesAreStringsTestCaseData = new List<TestCaseData>
@@ -96,6 +98,21 @@ public class ValueTests
         Value.Empty.ToString().Should().Be(string.Empty);
     }
 
+    [TestCase("0", false)]
+    [TestCase("1", true)]
+    [TestCase("-10000", true)]
+    [TestCase("false", false)]
+    public void ValuesCanBeConvertedParsedIntoBools(string str, bool expected)
+    {
+        var value = str.ToValue();
+
+        var clrBool = value.ToBool();
+        var boolValue = value.ToBoolValue();
+
+        clrBool.Should().Be(expected);
+        boolValue.Should().Be(expected.ToValue());
+    }
+
     [TestCase("0", 0)]
     [TestCase("1", 1)]
     [TestCase("+2", 2)]
@@ -106,14 +123,17 @@ public class ValueTests
         var value = str.ToValue();
 
         var d = value.ToDouble();
+        var num = value.ToNumValue();
 
         if (double.IsNaN(expected))
         {
             double.IsNaN(d).Should().BeTrue();
+            num.Should().Be(NumValue.NaN);
         }
         else
         {
             d.Should().Be(expected);
+            num.Should().Be(expected.ToValue());
         }
     }
 

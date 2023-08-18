@@ -45,4 +45,6 @@ public class StrValue : Value
     }
 
     public override double ToDouble() => NumValue.ParseNumber(ToString());
+
+    public override StrValue ToStrValue() => this;
 }

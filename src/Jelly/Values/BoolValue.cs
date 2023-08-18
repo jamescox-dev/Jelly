@@ -12,6 +12,8 @@ public class BoolValue : Value
         _value = value;
     }
 
+    public override BoolValue ToBoolValue() => this;
+
     public override ListValue ToListValue() => new(this);
 
     public override DictValue ToDictValue() => new(this);

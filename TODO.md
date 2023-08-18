@@ -11,4 +11,4 @@ Commands
 
 Values
 ------
- - [ ] Add Value.ToBoolValue(), Value.ToNumValue(), Value.ToStrValue(), and rename Value.ToDictionaryValue() to ToDictValue().
+ - [x] Add Value.ToBoolValue(), Value.ToNumValue(), Value.ToStrValue() and make TypeMarshaller use new methods.

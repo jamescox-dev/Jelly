@@ -52,6 +52,8 @@ public class NumValue : Value
         _value = value;
     }
 
+    public override NumValue ToNumValue() => this;
+
     public override ListValue ToListValue() => new ListValue(this);
 
     public override DictValue ToDictValue() => new DictValue(this);
