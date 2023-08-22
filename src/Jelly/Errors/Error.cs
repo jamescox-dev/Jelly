@@ -43,7 +43,7 @@ public class Error : Exception
         }
         catch (Exception ex)
         {
-            throw new Error($"/error/sys/{ex.GetType().Name.Underscore()}/", ex.Message);
+            throw new Error($"/wobbly/{ex.GetType().Name.Underscore()}/", ex.Message);
         }
     }
 

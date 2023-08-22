@@ -100,9 +100,9 @@ public class ErrorTests
         isType.Should().Be(expected);
     }
 
-    [TestCase(typeof(Exception), "I'm an exception", "/error/sys/exception/")]
-    [TestCase(typeof(ArgumentException), "Bad argument!", "/error/sys/argument_exception/")]
-    [TestCase(typeof(NotImplementedException), "I am really implemented!", "/error/sys/not_implemented_exception/")]
+    [TestCase(typeof(Exception), "I'm an exception", "/wobbly/exception/")]
+    [TestCase(typeof(ArgumentException), "Bad argument!", "/wobbly/argument_exception/")]
+    [TestCase(typeof(NotImplementedException), "I am really implemented!", "/wobbly/not_implemented_exception/")]
     public void AnNativeClrErrorCanBeCaughtAnConvertedToAJellyError(
         Type clrExceptionType, string message, string expectedJellyType)
     {

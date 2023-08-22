@@ -122,7 +122,7 @@ public class EnvTests
     {
         _environment.Invoking(e => e.Evaluate("sys"))
             .Should().Throw<Error>().Where(e =>
-                e.Type == "/error/sys/exception/"
+                e.Type == "/wobbly/exception/"
                 && e.Message == "CLR Error"
                 && e.StartPosition == 10
                 && e.EndPosition == 50);
