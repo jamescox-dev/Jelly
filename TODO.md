@@ -15,4 +15,4 @@ Commands
 
 Library
 -------
- - [ ] Add PackageLibrary that is used to group related libraries together.
+ - [x] Add LibraryGroup that is used to group related libraries together.
