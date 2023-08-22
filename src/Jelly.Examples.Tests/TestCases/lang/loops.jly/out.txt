@@ -1,0 +1,62 @@
+'range' for loop:
+1
+2
+3
+4
+
+'reverse range' for loop:
+4
+3
+2
+1
+
+'single item range' for loop:
+2
+
+'stepped range' for loop:
+2
+4
+6
+8
+
+'reversed stepped range' for loop:
+20
+15
+10
+5
+
+'list' for loop:
+A
+B
+C
+D
+
+'list with index' for loop:
+1: A
+2: B
+3: C
+4: D
+
+'dict' for loop:
+bit
+now
+odd
+this
+
+'dict with index' for loop:
+bit: bob
+now: then
+odd: sod
+this: that
+
+while loop
+2
+4
+8
+16
+32
+64
+128
+256
+512
+1024

@@ -1,0 +1,64 @@
+print "'range' for loop:"
+for $i = 1 to 4 {
+    print $i
+}
+print
+
+print "'reverse range' for loop:"
+for $i = 4 to 1 {
+    print $i
+}
+print
+
+print "'single item range' for loop:"
+for $i = 2 to 2 {
+    print $i
+}
+print
+
+print "'stepped range' for loop:"
+for $i = 2 to 8 step 2 {
+    print $i
+}
+print
+
+print "'reversed stepped range' for loop:"
+for $i = 20 to 5 step -5 {
+    print $i
+}
+print
+
+var $list = [A B C D]
+
+print "'list' for loop:"
+for $v in $list {
+    print $v
+}
+print
+
+print "'list with index' for loop:"
+for $i $v in $list {
+    print '{$i}: {$v}'
+}
+print
+
+var $dict = [this that bit bob odd sod now then]
+
+print "'dict' for loop:"
+for $k of $dict {
+    print $k
+}
+print
+
+print "'dict with index' for loop:"
+for $k $v of $dict {
+    print '{$k}: {$v}'
+}
+print
+
+print 'while loop'
+var $n = 1
+while ($n < 1000) {
+    inc $n $n
+    print $n
+}
