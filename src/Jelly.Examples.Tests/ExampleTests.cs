@@ -49,7 +49,7 @@ public class ExampleTests
 
     static IEnumerable<object[]> ExampleTestCases()
     {
-        foreach (var scriptFileName in Directory.GetFiles(ExamplesDir, "*.jly", SearchOption.AllDirectories))
+        foreach (var scriptFileName in Directory.GetFiles(ExamplesDir, "*.jel", SearchOption.AllDirectories))
         {
             var testDataDir = Path.Join(TestCaseDataDir, Path.GetRelativePath(ExamplesDir, scriptFileName));
             if (Directory.Exists(testDataDir))

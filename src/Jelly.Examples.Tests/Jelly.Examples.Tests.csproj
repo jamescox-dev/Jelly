@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Watch Include="..\Jelly.Examples\**\*.jly;..\Jelly.Examples\**\out.txt;..\Jelly.Examples\**\in.txt" />
+    <Watch Include="..\Jelly.Examples\**\*.jel;..\Jelly.Examples\**\out.txt;..\Jelly.Examples\**\in.txt" />
   </ItemGroup>
 
 </Project>
