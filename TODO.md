@@ -11,8 +11,4 @@ Parser
 
 Commands
 --------
- - [ ] Add position to errors thrown by argument parsers.
-
-Library
--------
- - [x] Add LibraryGroup that is used to group related libraries together.
+ - [ ] Add position to errors thrown by argument parsers
