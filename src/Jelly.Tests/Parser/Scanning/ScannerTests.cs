@@ -7,13 +7,13 @@ public class ScannerTests
     [TestCase(0)]
     [TestCase(1)]
     [TestCase(4)]
-    public void TheScannerCanBeAdvancedByTheGivenNumberOfCharacters(int ammount)
+    public void TheScannerCanBeAdvancedByTheGivenNumberOfCharacters(int amount)
     {
         var scanner = new Scanner("scan me!", 2);
 
-        scanner.Advance(ammount);
+        scanner.Advance(amount);
 
-        scanner.Position.Should().Be(2 + ammount);
+        scanner.Position.Should().Be(2 + amount);
     }
 
     [Test]
@@ -55,7 +55,7 @@ public class ScannerTests
     }
 
     [Test]
-    public void IfTheScannerStopsAdvanceingOnceTheEndOfTheInputIsReachedDispiteWeatherThePredicateRemainsTrue()
+    public void IfTheScannerStopsAdvancingOnceTheEndOfTheInputIsReachedDespiteWeatherThePredicateRemainsTrue()
     {
         var i = 0;
         var scanner = new Scanner("this is all good!", 4);
@@ -94,7 +94,7 @@ public class ScannerTests
     [TestCase(7, 'w')]
     [TestCase(11, 'd')]
     [TestCase(12, null)]
-    public void TheCurrentCharacterAtCurrentPositionCanBeRetrivedOrNullIfOutOfBounds(int position, char? expected)
+    public void TheCurrentCharacterAtCurrentPositionCanBeRetrievedOrNullIfOutOfBounds(int position, char? expected)
     {
         var scanner = new Scanner("hello, world", position);
 
@@ -108,7 +108,7 @@ public class ScannerTests
     [TestCase("choo-choo", 6, 10, "hoo")]
     [TestCase("test", 4, 1, "")]
     [TestCase("egg and chips", 0, 13, "egg and chips")]
-    public void ASubstringOfAGivenLengthCanBeExtractedFromTheCurrentPositionAndIsTrucatedIfLongerThanTheSource(string source, int position, int length, string expected)
+    public void ASubstringOfAGivenLengthCanBeExtractedFromTheCurrentPositionAndIsTruncatedIfLongerThanTheSource(string source, int position, int length, string expected)
     {
         var scanner = new Scanner(source, position);
 
@@ -171,11 +171,11 @@ public class ScannerTests
     [TestCase(@"\r", '\r')]
     [TestCase(@"\t", '\t')]
     [TestCase(@"\z", 'z')]
-    public void AnEscapeCharactersSubstitutionCanBeRetrievedForTheGivenPositionBasedOnConfigurationIfNoSubstitionExistsTheCurrentCharacterIsReturned(string source, char? expected)
+    public void AnEscapeCharactersSubstitutionCanBeRetrievedForTheGivenPositionBasedOnConfigurationIfNoSubstitutionExistsTheCurrentCharacterIsReturned(string source, char? expected)
     {
         var scanner = new Scanner(source, 1);
 
-        var ch = scanner.SubstitedEscapeCharacter;
+        var ch = scanner.SubstitutedEscapeCharacter;
 
         ch.Should().Be(expected);
     }
@@ -186,7 +186,7 @@ public class ScannerTests
     {
         var scanner = new Scanner("test", position);
 
-        var ch = scanner.SubstitedEscapeCharacter;
+        var ch = scanner.SubstitutedEscapeCharacter;
 
         ch.Should().BeNull();
     }
@@ -283,7 +283,7 @@ public class ScannerTests
 
     [TestCase("(", true)]
     [TestCase("boo", false)]
-    public void AExpressionBeginIsReportedWhenTheCurrentCharacterMatchesTheConfiguredExpresionBegin(string source, bool expected)
+    public void AExpressionBeginIsReportedWhenTheCurrentCharacterMatchesTheConfiguredExpressionBegin(string source, bool expected)
     {
         var scanner = new Scanner(source);
 
@@ -292,7 +292,7 @@ public class ScannerTests
 
     [TestCase(")", true)]
     [TestCase("boo", false)]
-    public void AExpressionEndIsReportedWhenTheCurrentCharacterMatchesTheConfiguredExpresionEnd(string source, bool expected)
+    public void AExpressionEndIsReportedWhenTheCurrentCharacterMatchesTheConfiguredExpressionEnd(string source, bool expected)
     {
         var scanner = new Scanner(source);
 
@@ -369,7 +369,7 @@ public class ScannerTests
     [TestCase("Source1", 5)]
     [TestCase("Something", 3)]
     [TestCase("Else", 3)]
-    public void AUniqueHashCodeIsGeneratedForEachSourcePostionCombination(string source, int position)
+    public void AUniqueHashCodeIsGeneratedForEachSourcePositionCombination(string source, int position)
     {
         var scanner1 = new Scanner(source, position);
         var scanner2 = new Scanner("Unique", 1);

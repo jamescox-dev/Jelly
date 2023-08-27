@@ -144,23 +144,23 @@ public class Error : Exception
 
 public class ArgError : Error
 {
-    internal ArgError(string message) : base("/error/arg/", message) {}
+    internal ArgError(string message) : base("/error/arg/", message) { }
 
-    internal ArgError(string type, string message) : base(type, message) {}
+    internal ArgError(string type, string message) : base(type, message) { }
 }
 
 public class UnexpectedArgError : ArgError
 {
     internal UnexpectedArgError(string commandName, Arg? lastArg)
-        : this(BuildStandardUnexpectedMessage(commandName, lastArg)) {}
+        : this(BuildStandardUnexpectedMessage(commandName, lastArg)) { }
 
     internal UnexpectedArgError(string commandName, int expectedArgCount, int actualArgCount)
-        : this(BuildStandardMessage(commandName, expectedArgCount, actualArgCount)) {}
+        : this(BuildStandardMessage(commandName, expectedArgCount, actualArgCount)) { }
 
     internal UnexpectedArgError(string commandName, int expectedMinArgCount, int expectedMaxArgCount, int actualArgCount)
-        : this(BuildStandardRangeMessage(commandName, expectedMinArgCount, expectedMaxArgCount, actualArgCount)) {}
+        : this(BuildStandardRangeMessage(commandName, expectedMinArgCount, expectedMaxArgCount, actualArgCount)) { }
 
-    internal UnexpectedArgError(string message) : base("/error/arg/unexpected/", message) {}
+    internal UnexpectedArgError(string message) : base("/error/arg/unexpected/", message) { }
 
     static string BuildStandardUnexpectedMessage(string commandName, Arg? lastArg)
     {
@@ -184,9 +184,9 @@ public class UnexpectedArgError : ArgError
 public class MissingArgError : ArgError
 {
     internal MissingArgError(string commandName, IEnumerable<Arg> expectedArg)
-        : this(BuildStandardMessage(commandName, expectedArg.ToList())) {}
+        : this(BuildStandardMessage(commandName, expectedArg.ToList())) { }
 
-    internal MissingArgError(string message) : base("/error/arg/missing/", message) {}
+    internal MissingArgError(string message) : base("/error/arg/missing/", message) { }
 
     public static MissingArgError FromPossibleArgs(string commandName, IReadOnlySet<Arg> possibleArgs)
     {
@@ -211,63 +211,63 @@ public class MissingArgError : ArgError
 
 public class EvalError : Error
 {
-    internal EvalError(string message) : base("/error/eval/", message) {}
+    internal EvalError(string message) : base("/error/eval/", message) { }
 }
 
 public class ParseError : Error
 {
-    internal ParseError(string message) : base("/error/parse/", message) {}
-    internal ParseError(string type, string message) : base(type, message) {}
+    internal ParseError(string message) : base("/error/parse/", message) { }
+    internal ParseError(string type, string message) : base(type, message) { }
 }
 
 public class MissingEndTokenError : ParseError
 {
-    internal MissingEndTokenError(string message) : base("/error/parse/missing/end_token/", message) {}
+    internal MissingEndTokenError(string message) : base("/error/parse/missing/end_token/", message) { }
 }
 
 public class NameError : Error
 {
-    internal NameError(string message) : base("/error/name/", message) {}
+    internal NameError(string message) : base("/error/name/", message) { }
 }
 
 public class IndexError : Error
 {
-    internal IndexError(string message) : base("/error/index/", message) {}
+    internal IndexError(string message) : base("/error/index/", message) { }
 }
 
 public class Return : Error
 {
-    internal Return() : this(Value.Empty) {}
+    internal Return() : this(Value.Empty) { }
 
-    internal Return(Value value) : base("/return/", "Unexpected 'return' outside of def.", value) {}
+    internal Return(Value value) : base("/return/", "Unexpected 'return' outside of def.", value) { }
 }
 
 public class TypeError : Error
 {
-    internal TypeError(string message) : base("/error/type/", message) {}
+    internal TypeError(string message) : base("/error/type/", message) { }
 }
 
 public class ValueError : Error
 {
-    internal ValueError(string message) : base("/error/value/", message) {}
+    internal ValueError(string message) : base("/error/value/", message) { }
 }
 
 public class IoError : Error
 {
-    internal IoError(string message) : base("/error/io/", message) {}
+    internal IoError(string message) : base("/error/io/", message) { }
 }
 
 public class KeyError : Error
 {
-    internal KeyError(string message) : base("/error/key/", message) {}
+    internal KeyError(string message) : base("/error/key/", message) { }
 }
 
 public class Break : Error
 {
-    public Break() : base("/break/", "Unexpected 'break' outside of loop.") {}
+    public Break() : base("/break/", "Unexpected 'break' outside of loop.") { }
 }
 
 public class Continue : Error
 {
-    public Continue() : base("/continue/", "Unexpected 'continue' outside of loop.") {}
+    public Continue() : base("/continue/", "Unexpected 'continue' outside of loop.") { }
 }

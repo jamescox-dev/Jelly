@@ -27,7 +27,7 @@ public class Scanner
         Position += amount;
     }
 
-    public bool AdvanceIf(Func<Scanner, bool> condtion, int amount = 1)
+    public bool AdvanceIf(Func<Scanner, bool> condition, int amount = 1)
     {
         var result = condtion(this);
 
@@ -76,7 +76,7 @@ public class Scanner
 
     public bool IsEscapeSubstitutableCharacter => Config.EscapeCharacterSubstitutions.ContainsKey(CurrentCharacter ?? '\0');
 
-    public char? SubstitedEscapeCharacter => CurrentCharacter is not null
+    public char? SubstitutedEscapeCharacter => CurrentCharacter is not null
         ? Config.EscapeCharacterSubstitutions.GetValueOrDefault((char)CurrentCharacter!, (char)CurrentCharacter!)
         : null;
 

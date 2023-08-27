@@ -4,7 +4,7 @@ namespace Jelly.Evaluator.Tests;
 public class DefineCommandEvaluatorTests : EvaluatorTestsBase
 {
     [Test]
-    public void TheNameOfTheCommandIsEvaluatedAndACoomandWithThatNameIsDefinedInTheCurrentScope()
+    public void TheNameOfTheCommandIsEvaluatedAndACommandWithThatNameIsDefinedInTheCurrentScope()
     {
         var defNode = Node.DefineCommand(Node.Literal("test"), Node.Literal("hi"), new ListValue(), new ListValue());
 

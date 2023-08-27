@@ -107,7 +107,7 @@ public class EnvTests
     }
 
     [Test]
-    public void WhenEvaluatingAScriptRaisesAnErrorWithoutAPositionThePositionOfTheNodeIsAttacheToTheError()
+    public void WhenEvaluatingAScriptRaisesAnErrorWithoutAPositionThePositionOfTheNodeIsAttachToTheError()
     {
         _environment.Invoking(e => e.Evaluate("boo!"))
             .Should().Throw<Error>().Where(e =>

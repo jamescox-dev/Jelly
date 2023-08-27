@@ -63,7 +63,7 @@ public class ErrorTests
     [Test]
     public void AContinueCanBeCreated()
     {
-         var error = Error.Create("/continue", string.Empty, "test".ToValue());
+        var error = Error.Create("/continue", string.Empty, "test".ToValue());
 
         error.Type.Should().Be(Error.NormalizeType("/continue").ToLowerInvariant());
         error.Message.Should().Be("Unexpected 'continue' outside of loop.");

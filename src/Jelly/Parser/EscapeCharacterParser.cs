@@ -13,7 +13,7 @@ public class EscapeCharacterParser
         {
             if (!scanner.IsEof)
             {
-                var ch = (char)scanner.SubstitedEscapeCharacter!;
+                var ch = (char)scanner.SubstitutedEscapeCharacter!;
                 if (scanner.AdvanceIf(s => s.IsEscapeCharacter8bit))
                 {
                     return ParseHexCode(scanner, 2, start);

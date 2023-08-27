@@ -20,11 +20,11 @@ public class Env : IEnv
         CurrentScope = GlobalScope;
     }
 
-    internal Env(IParser parser, IEvaluator evaluator) : this(new Scope(), parser, evaluator) {}
+    internal Env(IParser parser, IEvaluator evaluator) : this(new Scope(), parser, evaluator) { }
 
-    public Env(IScope globalScope) : this(globalScope, new ScriptParser(), new Evaluator()) {}
+    public Env(IScope globalScope) : this(globalScope, new ScriptParser(), new Evaluator()) { }
 
-    public Env() : this(new Scope()) {}
+    public Env() : this(new Scope()) { }
 
     public DictValue? Parse(string source) => Parser.Parse(new Scanner(source));
 

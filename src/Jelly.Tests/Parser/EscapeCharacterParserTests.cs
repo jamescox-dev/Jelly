@@ -42,7 +42,7 @@ public class EscapeCharacterParserTests
     }
 
     [Test]
-    public void IfTheCharacterFollowingTheEscapeCharacterIsA8BitEscapeTheFollowing2CharactersAreInterpretedAsA8BitHexedecimalCodepoint()
+    public void IfTheCharacterFollowingTheEscapeCharacterIsA8BitEscapeTheFollowing2CharactersAreInterpretedAsA8BitHexadecimalCodePoint()
     {
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\x4C");
@@ -77,7 +77,7 @@ public class EscapeCharacterParserTests
     }
 
     [Test]
-    public void IfTheCharacterFollowingTheEscapeCharacterIsA16BitEscapeTheFollowing4CharactersAreInterpretedAsA8BitHexedecimalCodepoint()
+    public void IfTheCharacterFollowingTheEscapeCharacterIsA16BitEscapeTheFollowing4CharactersAreInterpretedAsA8BitHexadecimalCodePoint()
     {
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\u013f");
@@ -114,7 +114,7 @@ public class EscapeCharacterParserTests
     }
 
     [Test]
-    public void IfTheCharacterFollowingTheEscapeCharacterIsA24BitEscapeTheFollowing6CharactersAreInterpretedAsA8BitHexedecimalCodepoint()
+    public void IfTheCharacterFollowingTheEscapeCharacterIsA24BitEscapeTheFollowing6CharactersAreInterpretedAsA8BitHexadecimalCodePoint()
     {
         var parser = new EscapeCharacterParser();
         var scanner = new Scanner(@"\p01d473");

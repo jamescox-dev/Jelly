@@ -28,7 +28,7 @@ public class ForListEvaluatorTests : EvaluatorTestsBase
     }
 
     [Test]
-    public void AVairableWithTheNameOfTheIteratorIsDefinedInTheScopePassedToTheBody()
+    public void AVariableWithTheNameOfTheIteratorIsDefinedInTheScopePassedToTheBody()
     {
         var node = Node.ForList(Node.Literal("c"), Node.Literal(new ListValue(1.ToValue())), CreateLoopBody("c"));
 

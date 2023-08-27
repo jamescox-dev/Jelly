@@ -499,7 +499,7 @@ public class NodeTests
     }
 
     [Test]
-    public void AForListNodeCanBeCreateWithoutAnIndexInterator()
+    public void AForListNodeCanBeCreateWithoutAnIndexIterator()
     {
         var node = Node.ForList(
             Node.Literal("j"),
@@ -527,7 +527,7 @@ public class NodeTests
             "type".ToValue(), "fordict".ToValue(),
             "it_key".ToValue(), Node.Literal("k"),
             "it_value".ToValue(), Node.Literal("v"),
-            "dict".ToValue(),Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
+            "dict".ToValue(), Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
             "body".ToValue(), Node.Literal("body")
         ));
     }
@@ -543,7 +543,7 @@ public class NodeTests
         node.Should().Be(new DictValue(
             "type".ToValue(), "fordict".ToValue(),
             "it_key".ToValue(), Node.Literal("k"),
-            "dict".ToValue(),Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
+            "dict".ToValue(), Node.Literal(new DictValue("a".ToValue(), "1".ToValue())),
             "body".ToValue(), Node.Literal("body")
         ));
     }

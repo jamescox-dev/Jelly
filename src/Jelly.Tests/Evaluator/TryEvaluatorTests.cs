@@ -42,7 +42,7 @@ public class TryEvaluatorTests : EvaluatorTestsBase
 
     [TestCase(true)]
     [TestCase(false)]
-    public void IfAFinallyBodyIsProvidedItIsEvaluatedAndItsResultIsReturnedWeatherAnErrorIsRaisedAndExcpetedOrNot(bool raiseError)
+    public void IfAFinallyBodyIsProvidedItIsEvaluatedAndItsResultIsReturnedWeatherAnErrorIsRaisedAndExceptedOrNot(bool raiseError)
     {
         var tryNode = Node.Try(
             raiseError

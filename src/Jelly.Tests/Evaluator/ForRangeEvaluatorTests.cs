@@ -40,7 +40,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     }
 
     [Test]
-    public void EachIterationOfTheBodyIsEvaluatedInAScopeContainingAVariableSetToTheCurrentValueOfTheIterationWithTheOuterScopeSetCorrectyly()
+    public void EachIterationOfTheBodyIsEvaluatedInAScopeContainingAVariableSetToTheCurrentValueOfTheIterationWithTheOuterScopeSetCorrectly()
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(8), Node.Literal(10), Node.Literal(1), _testBody);
 

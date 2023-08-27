@@ -33,7 +33,7 @@ public class WhileEvaluatorTests : EvaluatorTestsBase
     }
 
     [Test]
-    public void TheWhileNodeEvaluatesTpAnEmptyValueIfTheBodyNeverRuns()
+    public void TheWhileNodeEvaluatesToAnEmptyValueIfTheBodyNeverRuns()
     {
         _condCmd.Count = 1;
 
@@ -71,7 +71,7 @@ public class WhileEvaluatorTests : EvaluatorTestsBase
     }
 
     [Test]
-    public void TheExecutionOfTheLoopBodyEndsAfterAContinueIsThrownAndTheConditionIsReavaluatedAndTheLoopContinues()
+    public void TheExecutionOfTheLoopBodyEndsAfterAContinueIsThrownAndTheConditionIsReevaluatedAndTheLoopContinues()
     {
         _condCmd.Count = 4;
         Environment.GlobalScope.DefineVariable("count", 0.ToValue());

@@ -581,7 +581,7 @@ public class CoreLibraryTests
         }
 
         [Test]
-        public void IfThereIsNotArgumentForAThenBodyAfterTheElIfKeywordAndCondtionAnErrorIsThrown()
+        public void IfThereIsNotArgumentForAThenBodyAfterTheElIfKeywordAndConditionAnErrorIsThrown()
         {
             var ifCmd = (SimpleMacro)_env.GlobalScope.GetCommand("if");
             var args = new ListValue(
@@ -907,7 +907,7 @@ public class CoreLibraryTests
         }
 
         [Test]
-        public void MultipleExceptClausesCanBeParesed()
+        public void MultipleExceptClausesCanBeParsed()
         {
             var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
@@ -947,7 +947,7 @@ public class CoreLibraryTests
         }
 
         [Test]
-        public void AnErrorIsThrownIfAnotherValueOtherThanTheExcpetOrFinallyKeywordsAreFoundWhenOneOfTheKeywordWouldHaveBeenExpected()
+        public void AnErrorIsThrownIfAnotherValueOtherThanTheExceptOrFinallyKeywordsAreFoundWhenOneOfTheKeywordWouldHaveBeenExpected()
         {
             var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
