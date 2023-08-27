@@ -21,27 +21,27 @@ public class CollectionsLibrary : ILibrary
         scope.DefineCommand("dict", dictValCmd);
     }
 
-    Value ListConvert(ListValue list)
+    static Value ListConvert(ListValue list)
     {
         return list;
     }
 
-    Value ListLen(ListValue list)
+    static Value ListLen(ListValue list)
     {
         return list.Count.ToValue();
     }
 
-    Value ListAdd(ListValue list, params Value[] values)
+    static Value ListAdd(ListValue list, params Value[] values)
     {
         return list.AddRange(values.ToValue());
     }
 
-    Value ListInsert(ListValue list, NumValue index, params Value[] values)
+    static Value ListInsert(ListValue list, NumValue index, params Value[] values)
     {
         return list.InsertRange(index.ToIndexOf(list), new ListValue(values));
     }
 
-    Value ListReverse(ListValue list)
+    static Value ListReverse(ListValue list)
     {
         return new ListValue(list.Reverse());
     }
@@ -55,17 +55,17 @@ public class CollectionsLibrary : ILibrary
     // TODO:  list sort key?     e.g.  list $l sort {list $$ get 1}
     // TODO:  list reverse
 
-    Value ListGet(ListValue list, NumValue index)
+    static Value ListGet(ListValue list, NumValue index)
     {
         return list[index.ToIndexOf(list)];
     }
 
-    Value ListSet(ListValue list, NumValue index, Value value)
+    static Value ListSet(ListValue list, NumValue index, Value value)
     {
         return list.SetItem(index.ToIndexOf(list), value);
     }
 
-    Value DictConvert(DictValue dict)
+    static Value DictConvert(DictValue dict)
     {
         return dict;
     }
@@ -78,7 +78,7 @@ public class CollectionsLibrary : ILibrary
     // TODO: dict contains keys...
     // TODO: dict containsvalue values...
 
-    Value DictGet(DictValue dict, Value key, Value? @default=null)
+    static Value DictGet(DictValue dict, Value key, Value? @default = null)
     {
         if (@default is not null)
         {
