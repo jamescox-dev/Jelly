@@ -29,7 +29,7 @@ public class SingleArgPatternTests
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(0);
         result.Should().BeOfType<ArgPatternResultMissing>()
-            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg>{ new Arg("another_test") });
+            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg> { new("another_test") });
     }
 
     [Test]
@@ -42,7 +42,7 @@ public class SingleArgPatternTests
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(1);
         result.Should().BeOfType<ArgPatternResultMissing>()
-            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg>{ new Arg("yet_another") });
+            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg> { new("yet_another") });
     }
 
     [TestCase(0, "one")]

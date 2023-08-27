@@ -2,13 +2,13 @@ namespace Jelly.Commands;
 
 public class ValueGroupCommand : GroupCommand
 {
-    HashSet<string> _mutatorCommands = new(StringComparer.InvariantCultureIgnoreCase);
+    readonly HashSet<string> _mutatorCommands = new(StringComparer.InvariantCultureIgnoreCase);
 
     public string ValueArgName { get; }
 
     public string? DefaultSubCommand { get; }
 
-    public ValueGroupCommand(string name, string valueArgName, string? defaultSubCommand=null) : base(name)
+    public ValueGroupCommand(string name, string valueArgName, string? defaultSubCommand = null) : base(name)
     {
         ValueArgName = valueArgName;
         DefaultSubCommand = defaultSubCommand;

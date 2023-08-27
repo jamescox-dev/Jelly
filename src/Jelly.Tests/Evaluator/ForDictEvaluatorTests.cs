@@ -32,7 +32,7 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForDict(Node.Literal("key"), Node.Literal(new DictValue(1.ToValue())), CreateLoopBody("key"));
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _testCommand.ScopePassedToInvoke?.Invoking(s => s.GetVariable("key")).Should().NotThrow();
     }
@@ -42,7 +42,7 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForDict(Node.Literal("name"), Node.Literal(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("name"));
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _testCommand.Invocations.Should().Be(2);
     }
@@ -52,7 +52,7 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForDict(Node.Literal("b"), Node.Literal(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("b"));
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _recordedValues.Should().Equal("a".ToValue(), "b".ToValue());
     }
@@ -62,7 +62,7 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("v"));
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _recordedValues.Should().Equal(1.ToValue(), 2.ToValue());
     }
@@ -72,7 +72,7 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForDict(Node.Literal("k"), Node.Literal("v"), Node.Literal(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue())), CreateLoopBody("k"));
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
     }
@@ -134,9 +134,12 @@ public class ForDictEvaluatorTests : EvaluatorTestsBase
         base.Setup();
 
         _recordedValues = new();
-        _testCommand = new TestCommand();
-        _testCommand.ReturnValue = "Result!".ToValue();
-        _recordCommand = new SimpleCommand((args) => {
+        _testCommand = new TestCommand
+        {
+            ReturnValue = "Result!".ToValue()
+        };
+        _recordCommand = new SimpleCommand((args) =>
+        {
             if (args.Count == 1)
             {
                 _recordedValues.Add(args[0]);

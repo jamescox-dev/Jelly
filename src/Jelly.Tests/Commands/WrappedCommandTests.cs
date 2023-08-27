@@ -26,7 +26,7 @@ public class WrappedCommandTests
         var func = () => { called = true; };
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
 
-        var result = command.Invoke(_env, new ListValue());
+        command.Invoke(_env, new ListValue());
 
         called.Should().BeTrue();
     }
@@ -48,7 +48,7 @@ public class WrappedCommandTests
         var func = () => returnValue;
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
 
-        var result = command.Invoke(_env, new ListValue());
+        command.Invoke(_env, new ListValue());
 
         _mockTypeMarshaller.Verify(m => m.Marshal(returnValue));
     }
@@ -85,7 +85,7 @@ public class WrappedCommandTests
     [Test]
     public void WhenNotEnoughArgumentsArePassedToTheCommandAnErrorIsThrown()
     {
-        var func = (int a, int b) => {};
+        var func = (int a, int b) => { };
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
         var args = new ListValue(8.ToValue());
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(int))).Returns(0);
@@ -97,7 +97,7 @@ public class WrappedCommandTests
     [Test]
     public void WhenTooManyArgumentsArePassedToTheCommandAnErrorIsThrown()
     {
-        var func = (int a) => {};
+        var func = (int a) => { };
         var command = new WrappedCommand(func, _mockTypeMarshaller.Object);
         var args = new ListValue(Node.Literal(8), Node.Literal(16));
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(int))).Returns(0);
@@ -131,7 +131,7 @@ public class WrappedCommandTests
         _mockTypeMarshaller.Setup(m => m.Marshal(It.IsAny<Value>(), typeof(string))).Returns<Value, Type>((v, _) => v.ToString());
 
         command.Invoke(_env, args);
-        _passedParams.SequenceEqual(new[] {"a", "b", "c"}).Should().BeTrue();
+        _passedParams.SequenceEqual(new[] { "a", "b", "c" }).Should().BeTrue();
     }
 
     [Test]

@@ -1,7 +1,5 @@
 namespace Jelly.Library;
 
-using Jelly.Evaluator;
-
 using System.Collections.Immutable;
 
 public class CoreLibrary : ILibrary
@@ -120,7 +118,7 @@ public class CoreLibrary : ILibrary
             var argDict = arg.ToDictValue();
             if (expectEquals && !IsKeyword(argDict, "="))
             {
-                throw Error.Arg($"Argument '{env.Evaluate(argNames[argNames.Count - 1].ToNode())}' must have a default value.");
+                throw Error.Arg($"Argument '{env.Evaluate(argNames[^1].ToNode())}' must have a default value.");
             }
             if (argNames.Count > 0 && IsKeyword(argDict, "=") && !expectDefault && !requireArg)
             {
@@ -146,13 +144,13 @@ public class CoreLibrary : ILibrary
 
         if (expectEquals)
         {
-            throw Error.Arg($"Argument '{env.Evaluate(argNames[argNames.Count - 1].ToNode())}' must have a default value.");
+            throw Error.Arg($"Argument '{env.Evaluate(argNames[^1].ToNode())}' must have a default value.");
         }
 
         DictValue? restArg = null;
         if (expectDefault)
         {
-            restArg = argNames[argNames.Count - 1];
+            restArg = argNames[^1];
             argNames.RemoveAt(argNames.Count - 1);
         }
 

@@ -1,6 +1,5 @@
 ﻿namespace Jelly.Shell;
 
-using System.Text.Json;
 using System.Collections.Generic;
 
 public class Shell
@@ -36,7 +35,7 @@ public class Shell
 
         LoadLibraries();
 
-        for (;;)
+        for (; ; )
         {
             var source = string.Empty;
             try
@@ -73,12 +72,10 @@ public class Shell
 
     DictValue Read(ref string source)
     {
-        var script = Node.Script();
-
         var input = "";
         var prompt = _config.Prompt;
 
-        for (;;)
+        for (; ; )
         {
             _writer.Write(prompt);
             var line = _reader.ReadLine();
@@ -86,7 +83,7 @@ public class Shell
             source = input;
             try
             {
-                script = _env.Parse(input);
+                var script = _env.Parse(input);
                 if (script is not null)
                 {
                     AddHistory(input);

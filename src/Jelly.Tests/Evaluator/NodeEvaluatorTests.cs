@@ -36,7 +36,6 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
     [Test]
     public void WhenTheTypeOfTheNodeIsMissingAnErrorIsThrown()
     {
-        IEvaluator evaluator = new Evaluator();
         var invalidNode = new DictValue();
 
         this.Invoking(e => e.Evaluate(invalidNode))
@@ -47,7 +46,6 @@ public class NodeEvaluatorTests : EvaluatorTestsBase
     [Test]
     public void WhenTheTypeOfNodeIsNotKnownToTheEvaluatorAEvaluationErrorIsThrown()
     {
-        IEvaluator evaluator = new Evaluator();
         var invalidNode = new DictValue(
             "type".ToValue(), "invalid".ToValue()
         );

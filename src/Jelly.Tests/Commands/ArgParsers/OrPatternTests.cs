@@ -41,8 +41,8 @@ public class OrPatternTests
     [Test]
     public void IfAllSubPatternsReturnAMissingResultTheMissingArgsAreCombinedInTheResultFromTheOrPattern()
     {
-        var subPattern1 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg>{ new Arg("a") }));
-        var subPattern2 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg>{ new Arg("b") }));
+        var subPattern1 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg> { new("a") }));
+        var subPattern2 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg> { new("b") }));
         var pattern = new OrPattern(subPattern1, subPattern2);
 
         var result = pattern.Match(1, new ListValue(1.ToValue(), 2.ToValue()));
@@ -55,9 +55,9 @@ public class OrPatternTests
     [Test]
     public void NonMatchingSubPatternsTheMovedThePatternTheFurthestAreCombinedAndReturned()
     {
-        var subPattern1 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg>{ new Arg("a") }));
-        var subPattern2 = new TestArgPattern(new ArgPatternResultMissing(2, new HashSet<Arg>{ new Arg("b") }));
-        var subPattern3 = new TestArgPattern(new ArgPatternResultMissing(2, new HashSet<Arg>{ new Arg("c") }));
+        var subPattern1 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg> { new("a") }));
+        var subPattern2 = new TestArgPattern(new ArgPatternResultMissing(2, new HashSet<Arg> { new("b") }));
+        var subPattern3 = new TestArgPattern(new ArgPatternResultMissing(2, new HashSet<Arg> { new("c") }));
         var pattern = new OrPattern(subPattern1, subPattern2, subPattern3);
 
         var result = pattern.Match(1, new ListValue(1.ToValue(), 2.ToValue()));
@@ -70,8 +70,8 @@ public class OrPatternTests
     [Test]
     public void NonMatchingSubPatternsThatDoNotReturnMissingResultsAreReturnedIfTheyMoveThePatternAlongFurther()
     {
-        var subPattern1 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg>{ new Arg("a") }));
-        var subPattern2 = new TestArgPattern(new ArgPatternResultMissing(2, new HashSet<Arg>{ new Arg("b") }));
+        var subPattern1 = new TestArgPattern(new ArgPatternResultMissing(1, new HashSet<Arg> { new("a") }));
+        var subPattern2 = new TestArgPattern(new ArgPatternResultMissing(2, new HashSet<Arg> { new("b") }));
         var subPattern3 = new TestArgPattern(new ArgPatternResultUnexpected(3));
         var pattern = new OrPattern(subPattern1, subPattern2, subPattern3);
 

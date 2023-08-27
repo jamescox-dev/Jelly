@@ -21,7 +21,7 @@ public class ScopeEvaluatorTests : EvaluatorTestsBase
         Environment.GlobalScope.DefineCommand("test", testCommand);
         var scopeNode = Node.Scope(Node.Command(Node.Literal("test"), new ListValue()));
 
-        var result = Evaluate(scopeNode);
+        Evaluate(scopeNode);
 
         passedScope.Should().NotBeNull();
         passedScope!.OuterScope.Should().Be(Environment.GlobalScope);

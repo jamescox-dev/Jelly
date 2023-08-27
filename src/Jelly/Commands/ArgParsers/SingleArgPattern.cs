@@ -20,6 +20,6 @@ public class SingleArgPattern : IArgPattern
             });
         }
 
-        return new ArgPatternResultMissing(position, new HashSet<Arg>{ new Arg(_argName) });
+        return new ArgPatternResultMissing(position, new HashSet<Arg> { new(_argName) });
     }
 }

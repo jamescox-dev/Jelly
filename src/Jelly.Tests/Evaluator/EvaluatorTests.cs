@@ -6,7 +6,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateALiteralNode()
     {
-        IEvaluator evaluator = new Evaluator();
         var node = Node.Literal("Hi".ToValue());
 
         var result = Evaluate(node);
@@ -17,7 +16,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateACompositeNode()
     {
-        IEvaluator evaluator = new Evaluator();
         var node = Node.Composite(Node.Literal("Hi".ToValue()));
 
         var result = Evaluate(node);
@@ -39,11 +37,11 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateACommandNode()
     {
-        Mock<ICommand> command = new Mock<ICommand>();
+        var command = new Mock<ICommand>();
         Environment.GlobalScope.DefineCommand("Foo", command.Object);
         var node = Node.Command(Node.Literal("Foo".ToValue()), new ListValue());
 
-        var result = Evaluate(node);
+        Evaluate(node);
         command.Verify(m => m.Invoke(Environment, new ListValue()), Times.Once);
     }
 
@@ -69,7 +67,7 @@ public class EvaluatorTests : EvaluatorTestsBase
         Environment.GlobalScope.DefineVariable("answer", 0.ToValue());
         var node = Node.Assignment("answer", Node.Literal("42".ToValue()));
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         Environment.GlobalScope.GetVariable("answer").Should().Be(42.ToValue());
     }
@@ -88,8 +86,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAExpressionNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.Expression(Node.Literal(8));
 
         var result = Evaluate(node);
@@ -100,8 +96,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateABinOpNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.BinOp("add", Node.Literal(1), Node.Literal(2));
 
         var result = Evaluate(node);
@@ -112,8 +106,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAUniOpNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.UniOp("not", Node.Literal(false.ToValue()));
 
         var result = Evaluate(node);
@@ -124,8 +116,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAnIfNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.If(Node.Literal(false), Node.Literal("yes"), Node.Literal("no"));
 
         var result = Evaluate(node);
@@ -136,8 +126,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAWhileNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.While(Node.Literal(false), Node.Literal("I never run!"));
 
         var result = Evaluate(node);
@@ -148,7 +136,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAScopeNode()
     {
-        var scope = new Mock<IScope>();
         var node = Node.Scope(Node.Literal("boo"));
 
         var result = Evaluate(node);
@@ -159,7 +146,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateARaiseNode()
     {
-        var scope = new Mock<IScope>();
         var node = Node.Raise(Node.Literal("/error/test"), Node.Literal("Test message."), Node.Literal("testvalue"));
 
         this.Invoking(e => e.Evaluate(node)).Should()
@@ -169,8 +155,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateATryNode()
     {
-        IEvaluator evaluator = new Evaluator();
-        var scope = new Mock<IScope>();
         var node = Node.Try(Node.Literal("hello"), null);
 
         var result = Evaluate(node);
@@ -191,7 +175,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAForList()
     {
-        IEvaluator evaluator = new Evaluator();
         var node = Node.ForList(Node.Literal("v"), Node.Literal(ListValue.EmptyList), Node.Script());
 
         var result = Evaluate(node);
@@ -202,7 +185,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAForDict()
     {
-        IEvaluator evaluator = new Evaluator();
         var node = Node.ForDict(Node.Literal("v"), Node.Literal(DictValue.EmptyDictionary), Node.Script());
 
         var result = Evaluate(node);
@@ -213,7 +195,6 @@ public class EvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheEvaluatorCanEvaluateAForRange()
     {
-        IEvaluator evaluator = new Evaluator();
         var node = Node.ForRange(Node.Literal("i"), Node.Literal(0), Node.Literal(0), Node.Literal(1), Node.Script());
 
         var result = Evaluate(node);

@@ -18,7 +18,6 @@ public class CompositeEvaluatorTests : EvaluatorTestsBase
     [Test]
     public void TheResultOfEvaluatingACompositeNodeThatHasNoPartsIsAnEmptyValue()
     {
-        var compositeEvaluator = new CompositeEvaluator();
         var composite = Node.Composite();
 
         var result = Evaluate(composite);

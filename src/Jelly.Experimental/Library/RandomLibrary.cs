@@ -15,7 +15,7 @@ public class RandomLibrary : ILibrary
         scope.DefineCommand("random", randomCmd);
     }
 
-    public int RandomIntCmd(int a, int b=1)
+    public static int RandomIntCmd(int a, int b = 1)
     {
         var min = Math.Min(a, b);
         var max = Math.Max(a, b) + 1;

@@ -859,7 +859,7 @@ public class CoreLibraryTests
         {
             var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
-            var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue(finallyKeyword.ToValue())));
+            Node.Script(Node.Command(Node.Literal("print"), new ListValue(finallyKeyword.ToValue())));
 
             tryCmd.Invoking(c => c.Invoke(_env, new ListValue(
                 body, Node.Literal("finally".ToValue())))).Should()
@@ -976,7 +976,7 @@ public class CoreLibraryTests
         {
             var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
-            var excepetBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
+            Node.Script(Node.Command(Node.Literal("print"), new ListValue()));
             var finallyBody = Node.Script(Node.Command(Node.Literal("print"), new ListValue("finally".ToValue())));
 
             tryCmd.Invoking(c => c.Invoke(_env, new ListValue(

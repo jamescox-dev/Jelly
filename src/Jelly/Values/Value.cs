@@ -8,9 +8,9 @@ public abstract class Value : IEquatable<Value>, IComparable<Value>
 
     public virtual BoolValue ToBoolValue() => ToBool() ? BoolValue.True : BoolValue.False;
 
-    public virtual NumValue ToNumValue() => new NumValue(ToDouble());
+    public virtual NumValue ToNumValue() => new(ToDouble());
 
-    public virtual StrValue ToStrValue() => new StrValue(ToString());
+    public virtual StrValue ToStrValue() => new(ToString());
 
     public abstract ListValue ToListValue();
 

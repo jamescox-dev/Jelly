@@ -78,11 +78,11 @@ public static class ValueSerializer
         var lastPos = 0;
         foreach (var pos in specialCharacterPositions.Keys)
         {
-            escapedStr.Append(str.Substring(lastPos, pos - lastPos));
+            escapedStr.Append(str[lastPos..pos]);
             escapedStr.Append(ScannerConfig.Default.EscapeCharacter);
             lastPos = pos;
         }
-        escapedStr.Append(str.Substring(lastPos));
+        escapedStr.Append(str[lastPos..]);
 
         return escapedStr.ToString();
     }
@@ -101,13 +101,14 @@ public static class ValueSerializer
         foreach (var pos in specialCharacterPositions.Keys)
         {
             var ch = specialCharacterPositions[pos];
-            if (ch == ScannerConfig.Default.ScriptBegin || ch == ScannerConfig.Default.EscapeCharacter || ch == quote) {
-                escapedStr.Append(str.Substring(lastPos, pos - lastPos));
+            if (ch == ScannerConfig.Default.ScriptBegin || ch == ScannerConfig.Default.EscapeCharacter || ch == quote)
+            {
+                escapedStr.Append(str[lastPos..pos]);
                 escapedStr.Append(ScannerConfig.Default.EscapeCharacter);
                 lastPos = pos;
             }
         }
-        escapedStr.Append(str.Substring(lastPos));
+        escapedStr.Append(str[lastPos..]);
 
         escapedStr.Append(quote);
         return escapedStr.ToString();

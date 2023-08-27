@@ -44,7 +44,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(8), Node.Literal(10), Node.Literal(1), _testBody);
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
         _recordedIterators.Should().Equal(8.0, 9.0, 10.0);
@@ -55,7 +55,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(8), Node.Literal(10), _testBody);
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
         _recordedIterators.Should().Equal(8.0, 9.0, 10.0);
@@ -66,7 +66,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(10), Node.Literal(8), _testBody);
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _testCommand.ScopePassedToInvoke?.OuterScope.Should().Be(Environment.GlobalScope);
         _recordedIterators.Should().Equal(10.0, 9.0, 8.0);
@@ -77,7 +77,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(2), _testBody);
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _recordedIterators.Should().Equal(0.0, 2.0, 4.0, 6.0, 8.0, 10.0);
     }
@@ -87,7 +87,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(0), _testBody);
 
-        this.Invoking(e =>e.Evaluate(node)).Should()
+        this.Invoking(e => e.Evaluate(node)).Should()
             .Throw<ArgError>().WithMessage("step can not be zero.");
     }
 
@@ -96,7 +96,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(5), Node.Literal(1), Node.Literal(-1), _testBody);
 
-        var result = Evaluate(node);
+        Evaluate(node);
 
         _recordedIterators.Should().Equal(5.0, 4.0, 3.0, 2.0, 1.0);
     }
@@ -106,7 +106,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(0), Node.Literal(10), Node.Literal(-2), _testBody);
 
-        this.Invoking(e =>e.Evaluate(node)).Should()
+        this.Invoking(e => e.Evaluate(node)).Should()
             .Throw<ArgError>().WithMessage("step must be positive when start is less than end.");
     }
 
@@ -115,7 +115,7 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
     {
         var node = Node.ForRange(Node.Literal("a"), Node.Literal(10), Node.Literal(0), Node.Literal(2), _testBody);
 
-        this.Invoking(e =>e.Evaluate(node)).Should()
+        this.Invoking(e => e.Evaluate(node)).Should()
             .Throw<ArgError>().WithMessage("step must be negative when start is greater than end.");
     }
 
@@ -167,8 +167,10 @@ public class ForRangeEvaluatorTests : EvaluatorTestsBase
         base.Setup();
 
         _recordedIterators = new();
-        _testCommand = new TestCommand();
-        _testCommand.ReturnValue = "Result!".ToValue();
+        _testCommand = new TestCommand
+        {
+            ReturnValue = "Result!".ToValue()
+        };
         _recordCommand = new SimpleCommand((args) => { _recordedIterators.Add(args[0].ToDouble()); return Value.Empty; });
         Environment.GlobalScope.DefineCommand("test", _testCommand);
         Environment.GlobalScope.DefineCommand("record", _recordCommand);

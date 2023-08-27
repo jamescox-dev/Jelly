@@ -4,8 +4,6 @@ namespace Jelly.Evaluator;
 
 internal class CompositeEvaluator : IEvaluator
 {
-    static readonly StrValue PartsKeyword = new StrValue("parts");
-
     public Value Evaluate(IEnv env, DictValue node)
     {
         return new StrValue(string.Join("", GetParts(env, node)));

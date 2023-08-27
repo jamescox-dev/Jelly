@@ -54,9 +54,9 @@ public class NumValue : Value
 
     public override NumValue ToNumValue() => this;
 
-    public override ListValue ToListValue() => new ListValue(this);
+    public override ListValue ToListValue() => new(this);
 
-    public override DictValue ToDictValue() => new DictValue(this);
+    public override DictValue ToDictValue() => new(this);
 
     public override bool ToBool() => double.IsNaN(_value) || _value != 0.0;
 
@@ -129,12 +129,12 @@ public class NumValue : Value
         var negative = false;
         if (number.StartsWith('-'))
         {
-            number = number.Substring(1);
+            number = number[1..];
             negative = true;
         }
         if (number.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
         {
-            number = $"0{number.Substring(2)}";
+            number = $"0{number[2..]}";
             if (BigInteger.TryParse(number, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var parsedBigInt))
             {
                 if (parsedBigInt > DoubleMaxValueAsBigInt)
@@ -168,12 +168,12 @@ public class NumValue : Value
         var negative = false;
         if (number.StartsWith('-'))
         {
-            number = number.Substring(1);
+            number = number[1..];
             negative = true;
         }
         if (number.StartsWith($"0{prefix}", StringComparison.InvariantCultureIgnoreCase))
         {
-            number = number.Substring(2);
+            number = number[2..];
             var parsedBigInt = BigInteger.Zero;
             var postionValue = BigInteger.One;
             foreach (var ch in number.Reverse())

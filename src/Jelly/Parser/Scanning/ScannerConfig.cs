@@ -10,7 +10,7 @@ public class ScannerConfig : IScannerConfig
 
     static readonly HashSet<char> _escapeCharacters24Bit = new() { 'p', 'P' };
 
-    static readonly Dictionary<char, char> _escapeCharacterSubstitutions = new Dictionary<char, char>
+    static readonly Dictionary<char, char> _escapeCharacterSubstitutions = new()
     {
         { '0', '\0' },
         { 'a', '\a' }, { 'A', '\a' },

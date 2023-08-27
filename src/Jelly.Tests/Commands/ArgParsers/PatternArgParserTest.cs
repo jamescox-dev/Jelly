@@ -50,7 +50,7 @@ public class PatternMatchingArgParserTest
     {
         var mockPattern = new Mock<IArgPattern>();
         mockPattern.Setup(m => m.Match(It.IsAny<int>(), It.IsAny<ListValue>()))
-            .Returns(() => new ArgPatternResultMissing(0, new HashSet<Arg> { new Arg("a") }));
+            .Returns(() => new ArgPatternResultMissing(0, new HashSet<Arg> { new("a") }));
         var parser = new PatternArgParser(mockPattern.Object);
 
         parser.Invoking(p => p.Parse("need_lots_of_args", ListValue.EmptyList))
@@ -63,7 +63,7 @@ public class PatternMatchingArgParserTest
     {
         var mockPattern = new Mock<IArgPattern>();
         mockPattern.Setup(m => m.Match(It.IsAny<int>(), It.IsAny<ListValue>()))
-            .Returns(() => new ArgPatternResultMissing(0, new HashSet<Arg> { new Arg("c"), new Arg("a"), new Arg("b") }));
+            .Returns(() => new ArgPatternResultMissing(0, new HashSet<Arg> { new("c"), new("a"), new("b") }));
         var parser = new PatternArgParser(mockPattern.Object);
 
         parser.Invoking(p => p.Parse("test", ListValue.EmptyList))
@@ -76,7 +76,7 @@ public class PatternMatchingArgParserTest
     {
         var mockPattern = new Mock<IArgPattern>();
         mockPattern.Setup(m => m.Match(It.IsAny<int>(), It.IsAny<ListValue>()))
-            .Returns(() => new ArgPatternResultMissing(0, new HashSet<Arg> { new Arg("a"), new Arg("b"), new KwArg("w"), new KwArg("k") }));
+            .Returns(() => new ArgPatternResultMissing(0, new HashSet<Arg> { new("a"), new("b"), new KwArg("w"), new KwArg("k") }));
         var parser = new PatternArgParser(mockPattern.Object);
 
         parser.Invoking(p => p.Parse("command", ListValue.EmptyList))

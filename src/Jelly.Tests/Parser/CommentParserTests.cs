@@ -23,7 +23,7 @@ public class CommentParserTests
         var parser = new CommentParser();
         var scanner = new Scanner(source);
 
-        var node = parser.Parse(scanner);
+        parser.Parse(scanner);
 
         scanner.Position.Should().Be(expectedPosition);
     }
@@ -34,7 +34,7 @@ public class CommentParserTests
         var parser = new CommentParser();
         var scanner = new Scanner("not a comment");
 
-        var node = parser.Parse(scanner);
+        parser.Parse(scanner);
 
         scanner.Position.Should().Be(0);
     }

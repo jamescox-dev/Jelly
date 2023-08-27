@@ -225,10 +225,4 @@ public class TypeMarshallerTests
         _marshaller.Invoking(m => m.Marshal(jellyValue, typeof(bool[])))
             .Should().Throw<TypeError>("Unsupported CLR type.");
     }
-
-    public void IfAJellyValueIsMarshalledToAnUnsuportedTypeAnErrorIsThrown()
-    {
-        _marshaller.Invoking(m => m.Marshal(new StrValue("hi"), typeof(FileStream))).Should()
-            .Throw<TypeError>().WithMessage("Unsupported CLR type.");
-    }
 }

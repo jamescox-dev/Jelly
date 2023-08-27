@@ -1,6 +1,5 @@
 namespace Jelly.Values;
 
-using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -70,7 +69,8 @@ public class DictValue : Value
 
     public override DictValue ToDictValue() => this;
 
-    public Value this[Value key] {
+    public Value this[Value key]
+    {
         get
         {
             if (TryGetValue(key, out var value))
@@ -105,14 +105,14 @@ public class DictValue : Value
         {
             if (!first)
             {
-                str.Append("\n");
+                str.Append('\n');
             }
             else
             {
                 first = false;
             }
             str.Append(name.Escape());
-            str.Append(" ");
+            str.Append(' ');
             str.Append(value.Escape());
         }
 

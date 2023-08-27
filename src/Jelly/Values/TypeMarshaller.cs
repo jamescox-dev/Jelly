@@ -110,7 +110,7 @@ public class TypeMarshaller : ITypeMarshaller
         throw Error.BuildType("Unsupported CLR type.");
     }
 
-    bool TryMarshalToEnumerable<T>(Value jellyValue, Type clrType, Func<Value, T> convertionFunc, out object enumerableValue)
+    static bool TryMarshalToEnumerable<T>(Value jellyValue, Type clrType, Func<Value, T> convertionFunc, out object enumerableValue)
     {
         if (clrType.IsAssignableTo(typeof(IEnumerable<T>)))
         {

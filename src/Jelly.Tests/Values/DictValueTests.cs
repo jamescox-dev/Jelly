@@ -148,7 +148,8 @@ public class DictValueTests
     {
         var dict = new DictValue("a".ToValue(), 1.ToValue());
 
-        // TODO:  Implement this test.
+        dict.Invoking(d => d["b".ToValue()]).Should()
+            .Throw<KeyError>().WithMessage("key does not exist in dictionary.");
     }
 
     [Test]

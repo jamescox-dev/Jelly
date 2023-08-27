@@ -11,7 +11,6 @@ public class ShellTests
     FakeReaderWriter _fakeReaderWriter = null!;
     Mock<IEnv> _mockEnv = null!;
     Mock<IParser> _mockParser = null!;
-    Mock<IEvaluator> _mockEvaluator = null!;
     Mock<IScope> _mockScope = null!;
     Mock<ILibrary> _mockLibrary = null!;
 
@@ -273,7 +272,6 @@ public class ShellTests
         _mockEnv = new Mock<IEnv>();
         _fakeReaderWriter = new FakeReaderWriter();
         _mockParser = new Mock<IParser>();
-        _mockEvaluator = new Mock<IEvaluator>();
         _mockScope = new Mock<IScope>();
         _mockLibrary = new Mock<ILibrary>();
 

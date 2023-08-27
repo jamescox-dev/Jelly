@@ -1,7 +1,4 @@
 namespace Jelly.Evaluator.Tests;
-
-using Jelly.Runtime;
-
 [TestFixture]
 public class BinOpEvaluatorTests : EvaluatorTestsBase
 {
@@ -229,7 +226,8 @@ public class BinOpEvaluatorTests : EvaluatorTestsBase
     {
         var evaluated = false;
         Environment.GlobalScope.DefineCommand("a", new SimpleCommand((args) => BoolValue.False));
-        Environment.GlobalScope.DefineCommand("b", new SimpleCommand((args) => {
+        Environment.GlobalScope.DefineCommand("b", new SimpleCommand((args) =>
+        {
             evaluated = true; return BoolValue.True;
         }));
         var binOp = Node.BinOp(
@@ -237,7 +235,7 @@ public class BinOpEvaluatorTests : EvaluatorTestsBase
             Node.Command(Node.Literal("a"), new ListValue()),
             Node.Command(Node.Literal("b"), new ListValue()));
 
-        var result = Evaluate(binOp);
+        Evaluate(binOp);
 
         evaluated.Should().BeFalse();
     }
@@ -268,7 +266,7 @@ public class BinOpEvaluatorTests : EvaluatorTestsBase
             Node.Command(Node.Literal("a"), new ListValue()),
             Node.Command(Node.Literal("b"), new ListValue()));
 
-        var result = Evaluate(binOp);
+        Evaluate(binOp);
 
         evaluated.Should().BeFalse();
     }

@@ -26,7 +26,7 @@ public class KeywordArgPatternTests
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(0);
         result.Should().BeOfType<ArgPatternResultMissing>()
-            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg>{ new KwArg("another_key") });
+            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg> { new KwArg("another_key") });
     }
 
     [Test]
@@ -52,7 +52,7 @@ public class KeywordArgPatternTests
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(0);
         result.Should().BeOfType<ArgPatternResultMissing>()
-            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg>{ new KwArg("keyword") });
+            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg> { new KwArg("keyword") });
     }
 
     [Test]
@@ -65,7 +65,7 @@ public class KeywordArgPatternTests
 
         result.Should().BeOfType<ArgPatternResultMissing>().Which.Position.Should().Be(1);
         result.Should().BeOfType<ArgPatternResultMissing>()
-            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg>{ new Arg("more_words") });
+            .Which.MissingArgs.Should().BeEquivalentTo(new HashSet<Arg> { new("more_words") });
     }
 
     [TestCase(0, "one")]

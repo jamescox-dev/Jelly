@@ -7,7 +7,7 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("escape", new SimpleCommand(CmdEscape));
     }
 
-    public Value CmdEscape(ListValue args)
+    public static Value CmdEscape(ListValue args)
     {
         return args[0].Escape().ToValue();
     }

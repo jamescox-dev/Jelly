@@ -147,7 +147,7 @@ public class StringExtensions
     {
         var str = "this is a test";
 
-        var (ln, col) = str.IndexToLineAndColumn(-1);
+        var (ln, col) = str.IndexToLineAndColumn(index);
 
         ln.Should().Be(1);
         col.Should().Be(1);

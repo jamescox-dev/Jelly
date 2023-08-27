@@ -3,7 +3,7 @@ namespace Jelly.Experimental.Library;
 public class UtilsLibrary : ILibrary
 {
     static readonly StrValue Amount = new("amount");
-    readonly IArgParser IncArgParser = new StandardArgParser(new Arg("variable"), new OptArg("amount", Node.Literal(1)));
+    static readonly IArgParser IncArgParser = new StandardArgParser(new Arg("variable"), new OptArg("amount", Node.Literal(1)));
 
     public void LoadIntoScope(IScope scope)
     {
@@ -21,29 +21,29 @@ public class UtilsLibrary : ILibrary
         scope.DefineCommand("dec", new ArgParsedMacro("dec", IncArgParser, DecMacro));
     }
 
-    public bool IsNumCmd(double value)
+    public static bool IsNumCmd(double value)
     {
         return !double.IsNaN(value);
     }
 
-    public double NumConvertCmd(double value)
+    public static double NumConvertCmd(double value)
     {
         return value;
     }
 
-    public bool BoolConvertCmd(bool value)
+    public static bool BoolConvertCmd(bool value)
     {
         return value;
     }
 
-    public Value IncMacro(IEnv env, DictValue args)
+    public static Value IncMacro(IEnv env, DictValue args)
     {
         var name = env.Evaluate(Node.ToLiteralIfVariable(args.GetNode(Keywords.Variable))).ToString();
         var amount = args.GetNode(Amount);
         return Node.Assignment(name, Node.BinOp("add", Node.Variable(name), amount));
     }
 
-    public Value DecMacro(IEnv env, DictValue args)
+    public static Value DecMacro(IEnv env, DictValue args)
     {
         var name = env.Evaluate(Node.ToLiteralIfVariable(args.GetNode(Keywords.Variable))).ToString();
         var amount = args.GetNode(Amount);
