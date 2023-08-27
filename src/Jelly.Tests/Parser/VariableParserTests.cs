@@ -22,7 +22,7 @@ public class VariableParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("pi", 0, 3));
+        node.Should().Be(Node.Variable(0, 3, "pi"));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class VariableParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("pi", 0, 3));
+        node.Should().Be(Node.Variable(0, 3, "pi"));
     }
 
     [Test]
@@ -55,7 +55,7 @@ public class VariableParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("foo", 0, 4));
+        node.Should().Be(Node.Variable(0, 4, "foo"));
     }
 
     [Test]
@@ -130,7 +130,7 @@ public class VariableParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable(0, 8, "bar", Node.DictIndexer(4, 8, Node.Literal("foo", 5, 8))));
+        node.Should().Be(Node.Variable(0, 8, "bar", Node.DictIndexer(4, 8, Node.Literal(5, 8, "foo"))));
     }
 
     [Test]

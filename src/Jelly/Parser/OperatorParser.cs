@@ -8,7 +8,7 @@ public class OperatorParser : IParser
         {
             var start = scanner.Position;
             scanner.Advance(op.Length);
-            return Node.Literal(op.ToValue(), start, scanner.Position);
+            return Node.Literal(start, scanner.Position, op.ToValue());
         }
         return null;
     }

@@ -11,7 +11,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello".ToValue(), 0, 5));
+        node.Should().Be(Node.Literal(0, 5, "hello".ToValue()));
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello".ToValue(), 0, 5));
+        node.Should().Be(Node.Literal(0, 5, "hello".ToValue()));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello".ToValue(), 0, 5));
+        node.Should().Be(Node.Literal(0, 5, "hello".ToValue()));
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("goodbye".ToValue(), 7, 14));
+        node.Should().Be(Node.Literal(7, 14, "goodbye".ToValue()));
     }
 
     [Test]
@@ -66,7 +66,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello,".ToValue(), 0, 6));
+        node.Should().Be(Node.Literal(0, 6, "hello,".ToValue()));
         scanner.Position.Should().Be(6);
     }
 
@@ -90,7 +90,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal(@" \".ToValue(), 0, 4));
+        node.Should().Be(Node.Literal(0, 4, @" \".ToValue()));
     }
 
     [Test]
@@ -111,7 +111,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hi".ToValue(), 0, 2));
+        node.Should().Be(Node.Literal(0, 2, "hi".ToValue()));
         scanner.Position.Should().Be(2);
     }
 
@@ -123,7 +123,7 @@ public class SimpleWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("=".ToValue(), 2, 3));
+        node.Should().Be(Node.Literal(2, 3, "=".ToValue()));
         scanner.Position.Should().Be(3);
     }
 }

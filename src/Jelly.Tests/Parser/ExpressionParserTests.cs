@@ -24,7 +24,7 @@ public class ExpressionParserTests
         var expr = _parser.Parse(scanner);
 
         scanner.Position.Should().Be(3);
-        expr.Should().Be(Node.Expression(0, 3, Node.Literal(Value.Empty, 1, 1), Node.Literal(Value.Empty, 2, 2)));
+        expr.Should().Be(Node.Expression(0, 3, Node.Literal(1, 1, Value.Empty), Node.Literal(2, 2, Value.Empty)));
     }
 
     [Test]
@@ -56,7 +56,7 @@ public class ExpressionParserTests
 
         var expr = _parser.Parse(scanner);
 
-        expr.Should().Be(Node.Expression(0, 6, Node.Literal(56.5, 1, 5)));
+        expr.Should().Be(Node.Expression(0, 6, Node.Literal(1, 5, 56.5)));
     }
 
     [Test]
@@ -67,7 +67,7 @@ public class ExpressionParserTests
         var expr = _parser.Parse(scanner);
 
         scanner.Position.Should().Be(12);
-        expr.Should().Be(Node.Expression(0, 12, Node.Literal(12.0, 5, 7)));
+        expr.Should().Be(Node.Expression(0, 12, Node.Literal(5, 7, 12.0)));
     }
 
     [TestCase("+", "add", 5)]
@@ -86,8 +86,8 @@ public class ExpressionParserTests
             Node.Expression(0, secondOperandPosition + 2,
                 Node.BinOp(1, secondOperandPosition + 1,
                     expectedOp,
-                    Node.Literal(1.0, 1, 2),
-                    Node.Literal(2.0, secondOperandPosition, secondOperandPosition + 1))));
+                    Node.Literal(1, 2, 1.0),
+                    Node.Literal(secondOperandPosition, secondOperandPosition + 1, 2.0))));
     }
 
     [TestCase("~", "bitnot", 3)]
@@ -104,7 +104,7 @@ public class ExpressionParserTests
             Node.Expression(0, operandPosition + 2,
                 Node.UniOp(1, operandPosition + 1,
                     expectedOp,
-                    Node.Literal(1.0, operandPosition, operandPosition + 1))));
+                    Node.Literal(operandPosition, operandPosition + 1, 1.0))));
     }
 
     [TestCase("(* 1)", 1, 2, "Unexpected operator in expression.")]
@@ -134,20 +134,16 @@ public class ExpressionParserTests
                     Node.Expression(1, 8,
                         Node.BinOp(2, 7,
                             "add",
-                            Node.Literal(1.0, 2, 3),
-                            Node.Literal(2.0, 6, 7)
+                            Node.Literal(2, 3, 1.0),
+                            Node.Literal(6, 7, 2.0)
                         )
                     ),
                     Node.Script(11, 22,
-                        Node.Command(
-                            Node.Literal("avg", 12, 15),
-                            new ListValue(
-                                Node.Literal(1.0, 16, 17),
-                                Node.Literal(2.0, 18, 19),
-                                Node.Literal(3.0, 20, 21)
-                            ),
-                            12, 21
-                        )
+                        Node.Command(12, 21, Node.Literal(12, 15, "avg"), new ListValue(
+                            Node.Literal(16, 17, 1.0),
+                            Node.Literal(18, 19, 2.0),
+                            Node.Literal(20, 21, 3.0)
+                        ))
                     )
                 )
             )
@@ -165,8 +161,8 @@ public class ExpressionParserTests
             Node.Expression(0, 9,
                 Node.BinOp(1, 8,
                     "add",
-                    Node.Variable("a", 1, 3),
-                    Node.Variable("b", 6, 8)
+                    Node.Variable(1, 3, "a"),
+                    Node.Variable(6, 8, "b")
                 )
             )
         );
@@ -183,8 +179,8 @@ public class ExpressionParserTests
             Node.Expression(0, 7,
                 Node.BinOp(1, 6,
                     "add",
-                    Node.Variable("a", 1, 3),
-                    Node.Variable("b", 4, 6)
+                    Node.Variable(1, 3, "a"),
+                    Node.Variable(4, 6, "b")
                 )
             )
         );
@@ -205,10 +201,10 @@ public class ExpressionParserTests
                     "add",
                     Node.BinOp(1, 6,
                         "mul",
-                        Node.Literal(1.0, 1, 2),
-                        Node.Literal(2.0, 5, 6)
+                        Node.Literal(1, 2, 1.0),
+                        Node.Literal(5, 6, 2.0)
                     ),
-                    Node.Literal(3.0, 9, 10)
+                    Node.Literal(9, 10, 3.0)
                 )
             )
         );
@@ -216,11 +212,11 @@ public class ExpressionParserTests
             Node.Expression(0, 11,
                 Node.BinOp(1, 10,
                     "add",
-                    Node.Literal(1.0, 1, 2),
+                    Node.Literal(1, 2, 1.0),
                     Node.BinOp(5, 10,
                         "mul",
-                        Node.Literal(2.0, 5, 6),
-                        Node.Literal(3.0, 9, 10)
+                        Node.Literal(5, 6, 2.0),
+                        Node.Literal(9, 10, 3.0)
                     )
                 )
             )
@@ -236,10 +232,10 @@ public class ExpressionParserTests
 
         expr.Should().Be(Node.Expression(0, 13,
             Node.Command(
-                Node.Literal("max", 1, 4),
+                Node.Literal(1, 4, "max"),
                 new ListValue(
-                    Node.Variable("a", 5, 7),
-                    Node.Variable("b", 9, 11)))));
+                    Node.Variable(5, 7, "a"),
+                    Node.Variable(9, 11, "b")))));
     }
 
     [TestCase("(max)")]
@@ -260,7 +256,7 @@ public class ExpressionParserTests
 
         expr.Should().Be(Node.Expression(0, 7,
             Node.Command(
-                Node.Literal("max", 1, 4),
+                Node.Literal(1, 4, "max"),
                 new ListValue())));
     }
 

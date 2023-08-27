@@ -5,25 +5,25 @@ public static class Node
     public static DictValue Literal(Value value) =>
         new(Keywords.Type, Keywords.Literal, Keywords.Value, value);
 
-    public static DictValue Literal(Value value, int start, int end) =>
+    public static DictValue Literal(int start, int end, Value value) =>
         new(Keywords.Type, Keywords.Literal, Keywords.Value, value, Keywords.Position, ParsePosition(start, end));
 
     public static DictValue Literal(double value) => Literal(value.ToValue());
 
-    public static DictValue Literal(double value, int start, int end) => Literal(value.ToValue(), start, end);
+    public static DictValue Literal(int start, int end, double value) => Literal(start, end, value.ToValue());
 
     public static DictValue Literal(string value) => Literal(value.ToValue());
 
-    public static DictValue Literal(string value, int start, int end) => Literal(value.ToValue(), start, end);
+    public static DictValue Literal(int start, int end, string value) => Literal(start, end, value.ToValue());
 
     public static DictValue Literal(bool value) => Literal(value.ToValue());
 
-    public static DictValue Literal(bool value, int start, int end) => Literal(value.ToValue(), start, end);
+    public static DictValue Literal(int start, int end, bool value) => Literal(start, end, value.ToValue());
 
     public static DictValue Variable(string name) =>
         new(Keywords.Type, Keywords.Variable, Keywords.Name, name.ToValue());
 
-    public static DictValue Variable(string name, int start, int end) =>
+    public static DictValue Variable(int start, int end, string name) =>
         new(Keywords.Type, Keywords.Variable, Keywords.Name, name.ToValue(), Keywords.Position, ParsePosition(start, end));
 
     public static DictValue Variable(int start, int end, string name, params DictValue[] indexers) =>
@@ -38,7 +38,7 @@ public static class Node
     public static DictValue Command(DictValue name, ListValue args) =>
         new(Keywords.Type, Keywords.Command, Keywords.Name, name, Keywords.Args, args);
 
-    public static DictValue Command(DictValue name, ListValue args, int start, int end) =>
+    public static DictValue Command(int start, int end, DictValue name, ListValue args) =>
         new(Keywords.Type, Keywords.Command, Keywords.Name, name, Keywords.Args, args, Keywords.Position, ParsePosition(start, end));
 
     public static DictValue Script(params DictValue[] commands) =>
@@ -56,7 +56,7 @@ public static class Node
     public static DictValue Assignment(string name, DictValue value) =>
         new(Keywords.Type, Keywords.Assignment, Keywords.Name, name.ToValue(), Keywords.Value, value);
 
-    public static DictValue Assignment(string name, DictValue value, int start, int end) =>
+    public static DictValue Assignment(int start, int end, string name, DictValue value) =>
         new(Keywords.Type, Keywords.Assignment, Keywords.Name, name.ToValue(), Keywords.Value, value, Keywords.Position, ParsePosition(start, end));
 
     public static DictValue Assignment(int start, int end, string name, DictValue value, params DictValue[] indexers) =>

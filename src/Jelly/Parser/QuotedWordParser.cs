@@ -69,7 +69,7 @@ public class QuotedWordParser : IParser
         {
             if (literal.Length != 0)
             {
-                parts.Add(Node.Literal(literal.ToString(), literalStart, literalEnd));
+                parts.Add(Node.Literal(literalStart, literalEnd, literal.ToString()));
                 literalStart = literalEnd;
                 literal.Clear();
             }

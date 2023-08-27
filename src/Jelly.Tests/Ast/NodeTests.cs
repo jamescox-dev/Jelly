@@ -16,7 +16,7 @@ public class NodeTests
     [Test]
     public void OptionallyTheLiteralNodeCanHaveItSourcePositionSpecified()
     {
-        var node = Node.Literal("jello, world".ToValue(), 10, 20);
+        var node = Node.Literal(10, 20, "jello, world".ToValue());
 
         node.Should().Be(new DictValue(
             "type".ToValue(), "literal".ToValue(),
@@ -39,7 +39,7 @@ public class NodeTests
     [Test]
     public void OptionallyAVariableNodeCanHaveItSourcePositionSpecified()
     {
-        var node = Node.Variable("answer", 1, 2);
+        var node = Node.Variable(1, 2, "answer");
 
         node.Should().Be(new DictValue(
             "type".ToValue(), "variable".ToValue(),
@@ -114,7 +114,7 @@ public class NodeTests
         var name = Node.Literal("greet".ToValue());
         var args = new ListValue("Vic".ToValue(), "Bob".ToValue());
 
-        var node = Node.Command(name, args, 3, 141);
+        var node = Node.Command(3, 141, name, args);
 
         node.Should().Be(new DictValue(
             "type".ToValue(), "command".ToValue(),
@@ -202,7 +202,7 @@ public class NodeTests
     [Test]
     public void OptionallyAnAssignmentNodeCanHaveItSourcePositionSpecified()
     {
-        var node = Node.Assignment("username", Node.Literal("Bob".ToValue()), 8, 9);
+        var node = Node.Assignment(8, 9, "username", Node.Literal("Bob".ToValue()));
 
         node.Should().Be(new DictValue(
             "type".ToValue(), "assignment".ToValue(),
@@ -589,65 +589,65 @@ public class NodeTests
     [Test]
     public void ANodeCanBeRepositioned()
     {
-        var node = Node.Literal("test", 1, 2);
+        var node = Node.Literal(1, 2, "test");
 
         var repositionedNode = Node.Reposition(node, 3, 4);
 
-        repositionedNode.Should().Be(Node.Literal("test", 3, 4));
+        repositionedNode.Should().Be(Node.Literal(3, 4, "test"));
     }
 
     [Test]
     public void ANodeCanBeRepositionedToTheSamePositionAsAnotherNode()
     {
-        var other = Node.Literal("a", 3, 4);
-        var node = Node.Literal("test", 1, 2);
+        var other = Node.Literal(3, 4, "a");
+        var node = Node.Literal(1, 2, "test");
 
         var repositionedNode = Node.Reposition(node, other);
 
-        repositionedNode.Should().Be(Node.Literal("test", 3, 4));
+        repositionedNode.Should().Be(Node.Literal(3, 4, "test"));
     }
 
     [Test]
     public void ANodeIsNotRepositionedToTheSamePositionAsAnotherNodeIfTheOtherNodeDoesNotHaveAPosition()
     {
         var other = Node.Literal("a");
-        var node = Node.Literal("test", 1, 2);
+        var node = Node.Literal(1, 2, "test");
 
         var repositionedNode = Node.Reposition(node, other);
 
-        repositionedNode.Should().Be(Node.Literal("test", 1, 2));
+        repositionedNode.Should().Be(Node.Literal(1, 2, "test"));
     }
 
     [Test]
     public void ANodeCanBeRepositionedToTheStartOfOneNodeAndTheEndOfAnotherWhenBothNodesHaveAPosition()
     {
-        var start = Node.Literal("a", 3, 4);
-        var end = Node.Literal("a", 5, 6);
-        var node = Node.Literal("test", 1, 2);
+        var start = Node.Literal(3, 4, "a");
+        var end = Node.Literal(5, 6, "a");
+        var node = Node.Literal(1, 2, "test");
 
         var repositionedNode = Node.Reposition(node, start, end);
 
-        repositionedNode.Should().Be(Node.Literal("test", 3, 6));
+        repositionedNode.Should().Be(Node.Literal(3, 6, "test"));
     }
 
     [Test]
     public void ANodeIsNotRepositionedToStartOfOneNodeAndTheEndOfAnotherIfEitherOfTheOtherNodeDoesNotHaveAPosition()
     {
         var start1 = Node.Literal("a");
-        var end1 = Node.Literal("a", 5, 6);
-        var node1 = Node.Literal("test", 1, 2);
+        var end1 = Node.Literal(5, 6, "a");
+        var node1 = Node.Literal(1, 2, "test");
 
         var repositionedNode1 = Node.Reposition(node1, start1, end1);
 
-        repositionedNode1.Should().Be(Node.Literal("test", 1, 2));
+        repositionedNode1.Should().Be(Node.Literal(1, 2, "test"));
 
-        var start2 = Node.Literal("a", 3, 4);
+        var start2 = Node.Literal(3, 4, "a");
         var end2 = Node.Literal("a");
-        var node2 = Node.Literal("test", 1, 2);
+        var node2 = Node.Literal(1, 2, "test");
 
         var repositionedNode2 = Node.Reposition(node2, start2, end2);
 
-        repositionedNode2.Should().Be(Node.Literal("test", 1, 2));
+        repositionedNode2.Should().Be(Node.Literal(1, 2, "test"));
     }
 
     [Test]
@@ -676,11 +676,11 @@ public class NodeTests
     [Test]
     public void AVariableNodeCanBeConvertedToALiteralNodeAndThePositionCopied()
     {
-        var variable = Node.Variable("test2", 1, 2);
+        var variable = Node.Variable(1, 2, "test2");
 
         var literal = Node.ToLiteralIfVariable(variable);
 
-        literal.Should().Be(Node.Literal("test2", 1, 2));
+        literal.Should().Be(Node.Literal(1, 2, "test2"));
     }
 
     [Test]

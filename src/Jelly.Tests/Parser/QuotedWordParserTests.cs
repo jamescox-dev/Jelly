@@ -26,7 +26,7 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(4);
-        node.Should().Be(Node.Composite(0, 4, Node.Literal("hi", 1, 3)));
+        node.Should().Be(Node.Composite(0, 4, Node.Literal(1, 3, "hi")));
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(6);
-        node.Should().Be(Node.Composite(0, 6, Node.Literal(@"\'", 1, 5)));
+        node.Should().Be(Node.Composite(0, 6, Node.Literal(1, 5, @"\'")));
     }
 
     [Test]
@@ -71,7 +71,7 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Composite(0, 28,
-            Node.Literal("hello, $name how do you do", 1, 27)));
+            Node.Literal(1, 27, "hello, $name how do you do")));
     }
 
     [Test]
@@ -80,9 +80,9 @@ public class QuotedWordParserTests
         var parser = new QuotedWordParser();
         var scanner = new Scanner(@"'hello, {whoami} how do you do'");
         var expectedNode = Node.Composite(0, 31,
-            Node.Literal("hello, ", 1, 8),
-            Node.Script(8, 16, Node.Command(Node.Literal("whoami", 9, 15), new ListValue(), 9, 15)),
-            Node.Literal(" how do you do", 16, 30));
+            Node.Literal(1, 8, "hello, "),
+            Node.Script(8, 16, Node.Command(9, 15, Node.Literal(9, 15, "whoami"), new ListValue())),
+            Node.Literal(16, 30, " how do you do"));
 
         var node = parser.Parse(scanner);
 
@@ -97,7 +97,7 @@ public class QuotedWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("hello, {whoami} how do you do", 0, 31));
+        node.Should().Be(Node.Literal(0, 31, "hello, {whoami} how do you do"));
     }
 
     [Test]
@@ -119,7 +119,7 @@ public class QuotedWordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("", 0, 2));
+        node.Should().Be(Node.Literal(0, 2, ""));
     }
 
     [Test]
@@ -131,6 +131,6 @@ public class QuotedWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(14);
-        node.Should().Be(Node.Composite(0, 14, Node.Literal("hello\" world", 1, 13)));
+        node.Should().Be(Node.Composite(0, 14, Node.Literal(1, 13, "hello\" world")));
     }
 }

@@ -51,7 +51,7 @@ public class VariableParser : IParser
             }
             else if (nameEnd > start)
             {
-                return Node.Variable(name, start - 1, nameEnd);
+                return Node.Variable(start - 1, nameEnd, name);
             }
             else
             {
@@ -69,7 +69,7 @@ public class VariableParser : IParser
         var start = scanner.Position;
         if (scanner.AdvanceWhile(s => !(s.IsSpecialCharacter || IsTerminatingChar(s))) > 0)
         {
-            return Node.Literal(scanner.Source[start..scanner.Position], start, scanner.Position);
+            return Node.Literal(start, scanner.Position, scanner.Source[start..scanner.Position]);
         }
         return null;
     }

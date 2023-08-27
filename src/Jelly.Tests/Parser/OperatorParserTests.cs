@@ -12,7 +12,7 @@ public class OperatorParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(2);
-        node.Should().Be(Node.Literal("<=".ToValue(), 0, 2));
+        node.Should().Be(Node.Literal(0, 2, "<=".ToValue()));
     }
 
     [Test]

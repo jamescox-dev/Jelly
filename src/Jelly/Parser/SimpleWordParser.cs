@@ -23,7 +23,7 @@ public class SimpleWordParser : IParser
 
         if (scanner.AdvanceIf(s => s.IsAssignmentOperator))
         {
-            return Node.Literal(AssignmentOperator, start, scanner.Position);
+            return Node.Literal(start, scanner.Position, AssignmentOperator);
         }
 
         while (!scanner.IsEof)
@@ -44,7 +44,7 @@ public class SimpleWordParser : IParser
             }
         }
 
-        return start == scanner.Position ? null : Node.Literal(value.ToString().ToValue(), start, scanner.Position);
+        return start == scanner.Position ? null : Node.Literal(start, scanner.Position, value.ToString().ToValue());
     }
 
     public bool IsTerminatingChar(Scanner scanner) =>

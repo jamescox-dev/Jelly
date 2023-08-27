@@ -22,7 +22,7 @@ public class NestingWordParser : IParser
                     if (depth == 0)
                     {
                         scanner.Advance();
-                        return Node.Literal(scanner.Source[start .. (scanner.Position - 1)], start - 1, scanner.Position);
+                        return Node.Literal(start - 1, scanner.Position, scanner.Source[start .. (scanner.Position - 1)]);
                     }
                 }
                 if (scanner.IsEscapeCharacter)

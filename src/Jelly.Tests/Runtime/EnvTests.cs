@@ -132,8 +132,8 @@ public class EnvTests
     public void Setup()
     {
         _testNode = Node.Literal("test");
-        _errorTestNode = Node.Literal("boo!", 1, 5);
-        _clrErrorTestNode = Node.Literal("sys", 10, 50);
+        _errorTestNode = Node.Literal(1, 5, "boo!");
+        _clrErrorTestNode = Node.Literal(10, 50, "sys");
 
         _mockParser = new();
         _mockEvaluator = new();

@@ -19,7 +19,7 @@ public class ExpressionParser : IParser
         var operators = new Stack<OperatorAndNode>();
         var operands = new Stack<DictValue>();
 
-        operators.Push(new(Operator.None, Node.Literal(Value.Empty, scanner.Position, scanner.Position)));
+        operators.Push(new(Operator.None, Node.Literal(scanner.Position, scanner.Position, Value.Empty)));
 
         DictValue? prevWord = null;
         var prevWasOperator = true;
@@ -119,7 +119,7 @@ public class ExpressionParser : IParser
 
             if (operands.Count == 0 && (subExpressions.Count > 0 || includeEmpty))
             {
-                subExpressions.Add(Node.Literal(Value.Empty, scanner.Position - 1, scanner.Position - 1));
+                subExpressions.Add(Node.Literal(scanner.Position - 1, scanner.Position - 1, Value.Empty));
             }
             else if (operands.Count > 0)
             {

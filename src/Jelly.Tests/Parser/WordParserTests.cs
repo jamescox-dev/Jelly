@@ -11,7 +11,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("jelly", 0, 5));
+        node.Should().Be(Node.Literal(0, 5, "jelly"));
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("jelly", 0, 5));
+        node.Should().Be(Node.Literal(0, 5, "jelly"));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("=", 0, 1));
+        node.Should().Be(Node.Literal(0, 1, "="));
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Variable("jelly", 0, 6));
+        node.Should().Be(Node.Variable(0, 6, "jelly"));
     }
 
     [Test]
@@ -56,11 +56,10 @@ public class WordParserTests
         var node = parser.Parse(scanner);
 
         node.Should().Be(Node.Script(0, 9,
-            Node.Command(Node.Literal("add", 1, 4),
-            new ListValue(
-                Node.Literal("1", 5, 6),
-                Node.Literal("2", 7, 8)
-            ), 1, 8)
+            Node.Command(1, 8, Node.Literal(1, 4, "add"), new ListValue(
+                Node.Literal(5, 6, "1"),
+                Node.Literal(7, 8, "2")
+            ))
         ));
     }
 
@@ -84,7 +83,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Composite(0, 7, Node.Literal("jelly", 1, 6)));
+        node.Should().Be(Node.Composite(0, 7, Node.Literal(1, 6, "jelly")));
     }
 
     [Test]
@@ -95,7 +94,7 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Literal("jelly", 0, 7));
+        node.Should().Be(Node.Literal(0, 7, "jelly"));
     }
 
     [Test]
@@ -106,6 +105,6 @@ public class WordParserTests
 
         var node = parser.Parse(scanner);
 
-        node.Should().Be(Node.Expression(0, 4, Node.Literal(42.0.ToValue(), 1, 3)));
+        node.Should().Be(Node.Expression(0, 4, Node.Literal(1, 3, 42.0.ToValue())));
     }
 }

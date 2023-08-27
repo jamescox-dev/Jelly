@@ -24,7 +24,7 @@ public class NestingWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(2);
-        node.Should().Be(Node.Literal(Value.Empty, 0, 2));
+        node.Should().Be(Node.Literal(0, 2, Value.Empty));
     }
 
     [Test]
@@ -36,7 +36,7 @@ public class NestingWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(18);
-        node.Should().Be(Node.Literal("{hello}, $world!", 0, 18));
+        node.Should().Be(Node.Literal(0, 18, "{hello}, $world!"));
     }
 
     [Test]
@@ -48,7 +48,7 @@ public class NestingWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(22);
-        node.Should().Be(Node.Literal("open [ close ] close", 0, 22));
+        node.Should().Be(Node.Literal(0, 22, "open [ close ] close"));
     }
 
     [Test]
@@ -71,6 +71,6 @@ public class NestingWordParserTests
         var node = parser.Parse(scanner);
 
         scanner.Position.Should().Be(23);
-        node.Should().Be(Node.Literal(@" \[ \\\[ \\[ \\\\\] ]", 0, 23));
+        node.Should().Be(Node.Literal(0, 23, @" \[ \\\[ \\[ \\\\\] ]"));
     }
 }

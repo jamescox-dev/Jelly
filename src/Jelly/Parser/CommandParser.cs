@@ -47,7 +47,7 @@ public class CommandParser : IParser
                 throw error;
             }
             var variable = words[0];
-            var value = words.Count > 2 ? words[2] : Node.Literal(Value.Empty, scanner.Position, scanner.Position);
+            var value = words.Count > 2 ? words[2] : Node.Literal(scanner.Position, scanner.Position, Value.Empty);
             var endOfValue = (int)value.ToNode()[Keywords.Position].ToDictValue()[Keywords.End].ToDouble();
 
             if (variable.ContainsKey(Keywords.Indexers))
@@ -55,7 +55,7 @@ public class CommandParser : IParser
                 var indexers = variable[Keywords.Indexers].ToListValue().Select(v => v.ToNode()).ToArray();
                 return Node.Assignment(start, endOfValue, variable.GetString(Keywords.Name), value, indexers);
             }
-            return Node.Assignment(variable.GetString(Keywords.Name), value, start, endOfValue);
+            return Node.Assignment(start, endOfValue, variable.GetString(Keywords.Name), value);
         }
 
         return words.Count > 0 ? BuildCommandNode(words, start) : null;
@@ -64,7 +64,7 @@ public class CommandParser : IParser
     static DictValue BuildCommandNode(List<DictValue> words, int start)
     {
         var endOfLastWord = (int)words.Last().ToNode()[Keywords.Position].ToDictValue()[Keywords.End].ToDouble();
-        return Node.Command(words[0], new ListValue(words.Skip(1)), start, endOfLastWord);
+        return Node.Command(start, endOfLastWord, words[0], new ListValue(words.Skip(1)));
     }
 
     static bool IsAssignment(IReadOnlyList<DictValue> words) =>
