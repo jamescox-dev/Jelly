@@ -29,7 +29,7 @@ public class Scanner
 
     public bool AdvanceIf(Func<Scanner, bool> condition, int amount = 1)
     {
-        var result = condtion(this);
+        var result = condition(this);
 
         if (result)
         {
