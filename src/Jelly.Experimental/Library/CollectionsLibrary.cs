@@ -1,24 +1,41 @@
+using Jelly.Parser;
+
 namespace Jelly.Experimental.Library;
 
 public class CollectionsLibrary : ILibrary
 {
     public void LoadIntoScope(IScope scope)
     {
-        // TODO:  list?
+        scope.DefineCommand("list?", new WrappedCommand(IsList, TypeMarshaller.Shared));
         var listValCmd = new ValueGroupCommand("list", "list", "convert");
         listValCmd.AddCommand("convert", new WrappedCommand(ListConvert, TypeMarshaller.Shared));
         listValCmd.AddCommand("len", new WrappedCommand(ListLen, TypeMarshaller.Shared));
         listValCmd.AddMutatorCommand("add", new WrappedCommand(ListAdd, TypeMarshaller.Shared));
-        listValCmd.AddMutatorCommand("reverse", new WrappedCommand(ListReverse, TypeMarshaller.Shared));
         listValCmd.AddMutatorCommand("insert", new WrappedCommand(ListInsert, TypeMarshaller.Shared));
+        listValCmd.AddMutatorCommand("del", new WrappedCommand(ListDel, TypeMarshaller.Shared));
+        listValCmd.AddMutatorCommand("reverse", new WrappedCommand(ListReverse, TypeMarshaller.Shared));
         listValCmd.AddCommand("get", new WrappedCommand(ListGet, TypeMarshaller.Shared));
         listValCmd.AddMutatorCommand("set", new WrappedCommand(ListSet, TypeMarshaller.Shared));
         scope.DefineCommand("list", listValCmd);
 
+        scope.DefineCommand("dict?", new WrappedCommand(IsList, TypeMarshaller.Shared));
         var dictValCmd = new ValueGroupCommand("dict", "dict", "convert");
         dictValCmd.AddCommand("convert", new WrappedCommand(DictConvert, TypeMarshaller.Shared));
         dictValCmd.AddCommand("get", new WrappedCommand(DictGet, TypeMarshaller.Shared));
         scope.DefineCommand("dict", dictValCmd);
+    }
+
+    static bool IsList(Value value)
+    {
+        try
+        {
+            value.ToListValue();
+            return true;
+        }
+        catch (TypeError)
+        {
+            return false;
+        }
     }
 
     static Value ListConvert(ListValue list)
@@ -39,6 +56,11 @@ public class CollectionsLibrary : ILibrary
     static Value ListInsert(ListValue list, NumValue index, params Value[] values)
     {
         return list.InsertRange(index.ToIndexOf(list), new ListValue(values));
+    }
+
+    static Value ListDel(ListValue list, params Value[] indices)
+    {
+        return list.RemoveAtRange(indices.Select(i => i.ToIndexOf(list)));
     }
 
     static Value ListReverse(ListValue list)

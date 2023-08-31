@@ -58,6 +58,25 @@ public class ListValue : Value, IEnumerable<Value>
 
     public ListValue InsertRange(int index, ListValue list) => new(_items.InsertRange(index, list));
 
+    public ListValue RemoveAtRange(params int[] indices) => RemoveAtRange((IEnumerable<int>)indices);
+
+    public ListValue RemoveAtRange(IEnumerable<int> indices)
+    {
+        try
+        {
+            var newItems = _items;
+            foreach (var index in indices.OrderByDescending(i => i))
+            {
+                newItems = newItems.RemoveAt(index);
+            }
+            return new(newItems);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            throw new IndexError("index out of bounds.");
+        }
+    }
+
     public override ListValue ToListValue() => this;
 
     public override DictValue ToDictValue() => new((IEnumerable<Value>)this);

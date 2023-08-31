@@ -209,4 +209,42 @@ public class ListValueTests
         equal.Should().Throw<IndexError>().WithMessage("index out of bounds.");
         greater.Should().Throw<IndexError>().WithMessage("index out of bounds.");
     }
+
+    [Test]
+    public void AnItemCanBeRemovedFromAList()
+    {
+        var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
+
+        Value newList = list.RemoveAtRange(0);
+
+        newList.Should().Be(new ListValue("re".ToValue(), "mi".ToValue()));
+    }
+
+    [Test]
+    public void MultipleItemsCanBeRemovedFromAList()
+    {
+        var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
+
+        Value newList = list.RemoveAtRange(1, 2);
+
+        newList.Should().Be(new ListValue("do".ToValue()));
+    }
+
+    [Test]
+    public void NoItemsCanBeRemovedFromAList()
+    {
+        var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
+
+        Value newList = list.RemoveAtRange();
+
+        newList.Should().Be(new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue()));
+    }
+
+    [Test]
+    public void IfAnIndexIsOutOfBoundsWhenRemovingAnItemFromAListAnErrorIsRaised()
+    {
+        var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
+
+        list.Invoking(l => l.RemoveAtRange(3)).Should().Throw<IndexError>().WithMessage("index out of bounds.");
+    }
 }
