@@ -137,10 +137,12 @@ public class ShellTests
         _fakeReaderWriter.VerifyIoOpsContains(new WriteLineOp("the result!"));
     }
 
-    [Test]
-    public void IfTheResultIsAnEmptyStringTheResultIsNotPrinted()
+    [TestCase("noop1")]
+    [TestCase("noop2")]
+    [TestCase("noop3")]
+    public void IfTheResultIsAnEmptyValueTheResultIsNotPrinted(string input)
     {
-        _fakeReaderWriter.EnqueueInput("noop");
+        _fakeReaderWriter.EnqueueInput(input);
 
         _shell.Repl();
 
@@ -294,11 +296,17 @@ public class ShellTests
         _mockEnv.Setup(m => m.Parse("print 'jello,"))
             .Throws(Error.MissingEndToken("Oh!  No!"));
 
-        _mockEnv.Setup(m => m.Parse("noop"))
-            .Returns(new DictValue());
+        _mockEnv.Setup(m => m.Parse("noop1"))
+            .Returns(new DictValue("noop1".ToValue()));
+        _mockEnv.Setup(m => m.Parse("noop2"))
+            .Returns(new DictValue("noop2".ToValue()));
+        _mockEnv.Setup(m => m.Parse("noop3"))
+            .Returns(new DictValue("noop3".ToValue()));
 
         _mockEnv.Setup(m => m.Evaluate(_expectedParsedScript)).Returns("the result!".ToValue());
-        _mockEnv.Setup(m => m.Evaluate(new DictValue())).Returns(Value.Empty);
+        _mockEnv.Setup(m => m.Evaluate(new DictValue("noop1".ToValue()))).Returns(Value.Empty);
+        _mockEnv.Setup(m => m.Evaluate(new DictValue("noop2".ToValue()))).Returns(ListValue.EmptyList);
+        _mockEnv.Setup(m => m.Evaluate(new DictValue("noop3".ToValue()))).Returns(DictValue.EmptyDictionary);
 
         _shell = new Shell(
             _fakeReaderWriter,

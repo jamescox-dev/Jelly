@@ -112,7 +112,7 @@ public class Shell
 
     void PrintResult(Value result)
     {
-        if (result != Value.Empty)
+        if (!result.Equals(Value.Empty))
         {
             _writer.WriteLine(result.ToString());
         }
