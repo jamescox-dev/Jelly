@@ -1,5 +1,7 @@
 namespace Jelly.Values;
 
+using System;
+using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -83,6 +85,13 @@ public class DictValue : Value
 
     public DictValue SetItem(Value key, Value value) => new(_items.SetItem(key, value));
 
+    public DictValue SetItems(IEnumerable<KeyValuePair<Value, Value>> items)
+    {
+        return new(_items.SetItems(items));
+    }
+
+    public int Count => _items.Count;
+
     public bool ContainsKey(Value key) => _items.ContainsKey(key);
 
     public bool TryGetValue(Value key, out Value value)
@@ -126,5 +135,15 @@ public class DictValue : Value
     public IEnumerable<KeyValuePair<Value, Value>> ToEnumerable()
     {
         return _items;
+    }
+
+    public DictValue RemoveRange(IEnumerable<Value> keys)
+    {
+        return new(_items.RemoveRange(keys));
+    }
+
+    public DictValue RemoveRange(params Value[] keys)
+    {
+        return RemoveRange((IEnumerable<Value>)keys);
     }
 }

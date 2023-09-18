@@ -77,6 +77,14 @@ public class ListValue : Value, IEnumerable<Value>
         }
     }
 
+    public ListValue RemoveRange(IEnumerable<Value> values)
+    {
+        var valueSet = values.ToHashSet();
+        return new(_items.RemoveAll(i => values.Contains(i))); 
+    }
+
+    public ListValue RemoveRange(params Value[] values) => RemoveRange((IEnumerable<Value>)values);
+
     public override ListValue ToListValue() => this;
 
     public override DictValue ToDictValue() => new((IEnumerable<Value>)this);

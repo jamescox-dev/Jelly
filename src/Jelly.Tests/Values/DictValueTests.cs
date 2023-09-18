@@ -144,6 +144,36 @@ public class DictValueTests
     }
 
     [Test]
+    public void AItemCanBeRemovedFromADictionaryByItsKey()
+    {
+        var dict1 = new DictValue("a".ToValue(), 1.ToValue());
+
+        var dict2 = dict1.RemoveRange("a".ToValue());
+
+        dict2.Should().Be(DictValue.Empty);
+    }
+
+    [Test]
+    public void MultipleItemsCanBeRemovedFromADictionaryByItsKey()
+    {
+        var dict1 = new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 1.ToValue());
+
+        var dict2 = dict1.RemoveRange("a".ToValue(), "b".ToValue());
+
+        dict2.Should().Be(DictValue.Empty);
+    }
+
+    [Test]
+    public void WhenRemovingAnItemByItsKeyIfTheKeyDoesNotExistNoItemIsRemoved()
+    {
+        var dict1 = new DictValue("a".ToValue(), 1.ToValue());
+
+        var dict2 = dict1.RemoveRange("b".ToValue());
+
+        dict1.Should().Be(dict1);
+    }
+
+    [Test]
     public void WhenRetrievingAValueFromADictionaryByAKeyTheDoesNotExistAnErrorIsThrown()
     {
         var dict = new DictValue("a".ToValue(), 1.ToValue());
@@ -160,5 +190,31 @@ public class DictValueTests
         var dict2 = dict1.SetItem("b".ToValue(), 2.ToValue());
 
         dict2.Should().Be(new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 2.ToValue()));
+    }
+
+    [Test]
+    public void MultipleValuesCanBeSetByKeyInADictionary()
+    {
+        var dict1 = new DictValue("a".ToValue(), 1.ToValue());
+
+        var dict2 = dict1.SetItems(new DictValue("a".ToValue(), 2.ToValue(), "b".ToValue(), 1.ToValue()).ToEnumerable());
+
+        dict2.Should().Be(new DictValue("a".ToValue(), 2.ToValue(), "b".ToValue(), 1.ToValue()));
+    }
+
+    [Test]
+    public void TheNumberOfItemsInADictionaryCanBeRetrieved()
+    {
+        var dict0 = new DictValue();
+        var dict1 = new DictValue("a".ToValue(), 1.ToValue());
+        var dict2 = new DictValue("a".ToValue(), 1.ToValue(), "b".ToValue(), 1.ToValue());
+
+        var count0 = dict0.Count;
+        var count1 = dict1.Count;
+        var count2 = dict2.Count;
+
+        count0.Should().Be(0);
+        count1.Should().Be(1);
+        count2.Should().Be(2);
     }
 }

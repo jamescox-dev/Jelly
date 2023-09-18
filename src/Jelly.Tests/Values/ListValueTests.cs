@@ -241,6 +241,46 @@ public class ListValueTests
     }
 
     [Test]
+    public void AnItemCanBeRemovedFromAListByValue()
+    {
+        var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
+
+        Value newList = list.RemoveRange("re".ToValue());
+
+        newList.Should().Be(new ListValue("do".ToValue(), "mi".ToValue()));
+    }
+
+    [Test]
+    public void MultipleItemsCanBeRemovedFromAListByValue()
+    {
+        var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
+
+        Value newList = list.RemoveRange("do".ToValue(), "mi".ToValue());
+
+        newList.Should().Be(new ListValue("re".ToValue()));
+    }
+
+    [Test]
+    public void MultipleIdenticalItemsCanBeRemovedFromAListByValue()
+    {
+        var list = new ListValue("do".ToValue(), "do".ToValue(), "re".ToValue(), "mi".ToValue(), "mi".ToValue());
+
+        Value newList = list.RemoveRange("do".ToValue(), "mi".ToValue());
+
+        newList.Should().Be(new ListValue("re".ToValue()));
+    }
+
+    [Test]
+    public void NoItemsCanBeRemovedFromAListByValue()
+    {
+        var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
+
+        Value newList = list.RemoveRange();
+
+        newList.Should().Be(new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue()));
+    }
+
+    [Test]
     public void IfAnIndexIsOutOfBoundsWhenRemovingAnItemFromAListAnErrorIsRaised()
     {
         var list = new ListValue("do".ToValue(), "re".ToValue(), "mi".ToValue());
