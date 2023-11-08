@@ -1,0 +1,43 @@
+list:
+  description: Command group for working with lists.
+  usage: list $list $subcommand
+  args:
+    $list: The list the sub-command will work on.
+    $subcommand: 
+      description: The sub-command to run against the list.
+  returns: The result of the sub-command.
+  throws:
+    /error/name: When an invalid $subcommand is given.
+  commands:
+    get:
+      returns: The item at the given index.
+      usage: list $value get $index
+      args:
+        $index: 
+          description: 1-based index of the item to retrieve.
+          detail: Negative indexes count backwards from the end of the list.
+      throws:
+        /error/index: When $index is out of bounds.
+
+if:
+  description: Macro to conditionally running scripts.
+  usage:
+    - if (condition) {body} [elif (elifcondtion) {elifbody}]* [else {elsebody}]?
+  args:
+    (condition): Evaluated to determine if {body} should be run.
+    {body}: Evaluated if (condition) is true.
+    (elifcondition): Evaluated to determine if the following {elifbody} should be run.
+    {elifbody}: 
+  examples:
+    - |
+      if ($age < 13) {
+        print you are a child.
+      } elif ($age < 20) {
+        print you are a teenager.
+      } else {
+        print you are an adult.
+      }
+
+$PI:
+  desc: The mathematical constant π.
+  value: '3.1415926535897931'
