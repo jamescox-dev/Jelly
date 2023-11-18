@@ -8,21 +8,28 @@ public class Env : IEnv
 
     public IEvaluator Evaluator { get; }
 
+    public EnvHooks Hooks { get; }
+
     public IScope GlobalScope { get; }
 
     public IScope CurrentScope { get; private set; }
 
-    internal Env(IScope globalScope, IParser parser, IEvaluator evaluator)
+    internal Env(IScope globalScope, EnvHooks hooks, IParser parser, IEvaluator evaluator)
     {
         Parser = parser;
         Evaluator = evaluator;
+        Hooks = hooks;
         GlobalScope = globalScope;
         CurrentScope = GlobalScope;
     }
 
-    internal Env(IParser parser, IEvaluator evaluator) : this(new Scope(), parser, evaluator) { }
+    internal Env(IParser parser, IEvaluator evaluator) : this(new Scope(), new EnvHooks(), parser, evaluator) { }
 
-    public Env(IScope globalScope) : this(globalScope, new ScriptParser(), new Evaluator()) { }
+    public Env(IScope globalScope, EnvHooks hooks) : this(globalScope, hooks, new ScriptParser(), new Evaluator()) { }
+
+    public Env(IScope globalScope) : this(globalScope, new EnvHooks()) { }
+
+    public Env(EnvHooks hooks) : this(new Scope(), hooks) { }
 
     public Env() : this(new Scope()) { }
 
@@ -43,8 +50,11 @@ public class Env : IEnv
         try
         {
             Value result = null!;
-            Error.RethrowUnhandledClrExceptionsAsJellyErrors(() =>
-                result = Evaluator.Evaluate(this, node));
+            Error.RethrowUnhandledClrExceptionsAsJellyErrors(() => 
+            {
+                Hooks.OnEvaluate?.Invoke(node);
+                result = Evaluator.Evaluate(this, node);
+            });
             return result;
         }
         catch (Error error)

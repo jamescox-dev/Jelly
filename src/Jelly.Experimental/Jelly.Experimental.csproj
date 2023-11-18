@@ -5,10 +5,14 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackageId>Jelly.Experimental</PackageId>
+    <Version>0.0.1-dev2</Version>
+    <Authors>James Cox</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Jelly\Jelly.csproj" />
+    <PackageReference Include="Jelly" Version="0.0.1-dev2" />
   </ItemGroup>
 
 </Project>

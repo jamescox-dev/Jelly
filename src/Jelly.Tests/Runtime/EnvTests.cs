@@ -153,4 +153,24 @@ public class EnvTests
         _mockEvaluator.Setup(m => m.Evaluate(_environment, _clrErrorTestNode))
             .Throws(new Exception("CLR Error"));
     }
+
+    [Test]
+    public void TheOnEvaluateHookIsCalledForEachNodeEvaluated()
+    {
+        var evaluatedNodes = new List<DictValue>();
+        var onEvaluate = (DictValue node) => { evaluatedNodes.Add(node); };
+        var env = new Env(new EnvHooks(onEvaluate));
+        var a = Node.Literal(1);
+        var b = Node.Literal(2);
+        var binOp = Node.BinOp("add", a, b);
+        var expr = Node.Expression(binOp);
+
+        env.Evaluate(expr);
+
+        evaluatedNodes.Should().HaveCount(4);
+        evaluatedNodes[0].Should().Be(expr);
+        evaluatedNodes[1].Should().Be(binOp);
+        evaluatedNodes[2].Should().Be(a);
+        evaluatedNodes[3].Should().Be(b);
+    }
 }
