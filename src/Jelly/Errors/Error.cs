@@ -21,6 +21,7 @@ public class Error : Exception
         { "/error/type/", BuildType },
         { "/error/value/", BuildValue },
         { "/return/", Return },
+        { "/userbreak/", UserBreak },
     };
 
     public string Type { get; }
@@ -84,6 +85,10 @@ public class Error : Exception
     public static Error Break() => new Break();
 
     public static Error Break(string _, Value __) => Break();
+
+    public static Error UserBreak() => new UserBreak();
+
+    public static Error UserBreak(string _, Value __) => UserBreak();
 
     public static Error Continue() => new Continue();
 
@@ -270,4 +275,9 @@ public class Break : Error
 public class Continue : Error
 {
     public Continue() : base("/continue/", "Unexpected 'continue' outside of loop.") { }
+}
+
+public class UserBreak : Error
+{
+    public UserBreak() : base("/userbreak/", "User stopped script.") { }
 }

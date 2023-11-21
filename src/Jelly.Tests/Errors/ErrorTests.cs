@@ -82,6 +82,17 @@ public class ErrorTests
         error.GetType().Should().Be(typeof(Return));
     }
 
+    [Test]
+    public void AUserBreakCanBeCreated()
+    {
+        var error = Error.Create("/userbreak", string.Empty, "test".ToValue());
+
+        error.Type.Should().Be(Error.NormalizeType("/userbreak").ToLowerInvariant());
+        error.Message.Should().Be("User stopped script.");
+        error.Value.Should().Be(Value.Empty);
+        error.GetType().Should().Be(typeof(UserBreak));
+    }
+
     [TestCase("/error/", "/error/", true)]
     [TestCase("/error/", "/ERROR/", true)]
     [TestCase("/error/parse", "/error/", true)]
