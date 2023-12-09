@@ -48,7 +48,10 @@ public class CoreLibrary : ILibrary
                 new SingleArgPattern("body"))))
             );
 
-    static readonly IArgParser LsScopeItems = new StandardArgParser(new OptArg("localonly", Node.Literal(BoolValue.False)));
+    static readonly IArgParser RepeatArgParser = new StandardArgParser();
+
+    static readonly IArgParser LsScopeItemsArgParser = 
+        new StandardArgParser(new OptArg("localonly", Node.Literal(BoolValue.False)));
 
     public void LoadIntoScope(IScope scope)
     {
@@ -57,10 +60,11 @@ public class CoreLibrary : ILibrary
         scope.DefineCommand("def", new SimpleMacro(DefMacro));
         scope.DefineCommand("for", new ArgParsedMacro("for", ForArgParser, ForMacro));
         scope.DefineCommand("if", new SimpleMacro(IfMacro));
-        scope.DefineCommand("defs", new ArgParsedMacro("defs", LsScopeItems, LsDefCmd));
-        scope.DefineCommand("vars", new ArgParsedMacro("vars", LsScopeItems, LsVarCmd));
-        scope.DefineCommand("raise", new SimpleMacro(RaiseMacro));
+        scope.DefineCommand("defs", new ArgParsedMacro("defs", LsScopeItemsArgParser, LsDefCmd));
+        scope.DefineCommand("vars", new ArgParsedMacro("vars", LsScopeItemsArgParser, LsVarCmd));
+        scope.DefineCommand("repeat", new ArgParsedMacro("repeat", RepeatArgParser, RepeatMacro));
         scope.DefineCommand("return", new SimpleMacro(ReturnMacro));
+        scope.DefineCommand("throw", new SimpleMacro(ThrowMacro));
         scope.DefineCommand("try", new SimpleMacro(TryMacro));
         scope.DefineCommand("var", new SimpleMacro(VarMacro));
         scope.DefineCommand("while", new SimpleMacro(WhileMacro));
@@ -311,22 +315,9 @@ public class CoreLibrary : ILibrary
         return Node.Literal(new ListValue(variable.OrderBy(v => v, StringComparer.InvariantCulture).Select(c => c.ToValue())));
     }
 
-    Value RaiseMacro(IEnv env, ListValue args)
+    Value RepeatMacro(IEnv env, DictValue args)
     {
-        if (args.Count == 0)
-        {
-            throw Error.Arg("Expected 'type' argument.");
-        }
-        if (args.Count > 3)
-        {
-            throw Error.Arg($"Unexpected argument '{env.Evaluate(args[3].ToNode())}'.");
-        }
-
-        var type = args[0].ToNode();
-        var message = args.Count > 1 ? args[1].ToNode() : Node.Literal(Value.Empty);
-        var value = args.Count > 2 ? args[2].ToNode() : Node.Literal(Value.Empty);
-
-        return Node.Raise(type, message, value);
+        throw new NotImplementedException();
     }
 
     Value ReturnMacro(IEnv env, ListValue args)
@@ -348,6 +339,24 @@ public class CoreLibrary : ILibrary
             value);
     }
 
+    Value ThrowMacro(IEnv env, ListValue args)
+    {
+        if (args.Count == 0)
+        {
+            throw Error.Arg("Expected 'type' argument.");
+        }
+        if (args.Count > 3)
+        {
+            throw Error.Arg($"Unexpected argument '{env.Evaluate(args[3].ToNode())}'.");
+        }
+
+        var type = args[0].ToNode();
+        var message = args.Count > 1 ? args[1].ToNode() : Node.Literal(Value.Empty);
+        var value = args.Count > 2 ? args[2].ToNode() : Node.Literal(Value.Empty);
+
+        return Node.Raise(type, message, value);
+    }
+
     Value TryMacro(IEnv env, ListValue args)
     {
         if (args.Count == 0)
@@ -362,11 +371,11 @@ public class CoreLibrary : ILibrary
         {
             var arg = args[i].ToNode();
 
-            if (IsKeyword(arg, "except"))
+            if (IsKeyword(arg, "catch"))
             {
                 if (finallyBody is not null)
                 {
-                    throw Error.Arg("Unexpected 'except' argument after 'finally'.");
+                    throw Error.Arg("Unexpected 'catch' argument after 'finally'.");
                 }
                 if (args.Count <= i + 1)
                 {

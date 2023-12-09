@@ -30,8 +30,8 @@ public class CoreLibraryTests
             _env.GlobalScope.Invoking(s => s.GetCommand("if")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("defs")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("vars")).Should().NotThrow();
-            _env.GlobalScope.Invoking(s => s.GetCommand("raise")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("return")).Should().NotThrow();
+            _env.GlobalScope.Invoking(s => s.GetCommand("throw")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("try")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("var")).Should().NotThrow();
             _env.GlobalScope.Invoking(s => s.GetCommand("while")).Should().NotThrow();
@@ -681,7 +681,7 @@ public class CoreLibraryTests
 
     #endregion
 
-    #region raise
+    #region throw
 
     [TestFixture]
     public class RaiseTests : CoreLibraryTests
@@ -689,7 +689,7 @@ public class CoreLibraryTests
         [Test]
         public void WithNoArgumentsAnArgErrorIsThrow()
         {
-            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("throw");
             var env = new Env();
             var args = new ListValue();
 
@@ -700,7 +700,7 @@ public class CoreLibraryTests
         [Test]
         public void WithOneArgumentsARaiseNodeIsReturnedWithTheCorrectType()
         {
-            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("throw");
             var env = new Env();
             var args = new ListValue(Node.Literal("/error/type"));
 
@@ -715,7 +715,7 @@ public class CoreLibraryTests
         [Test]
         public void WithTwoArgumentsARaiseNodeIsReturnedWithTheCorrectTypeAndMessage()
         {
-            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("throw");
             var env = new Env();
             var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."));
 
@@ -730,7 +730,7 @@ public class CoreLibraryTests
         [Test]
         public void WithThreeArgumentsARaiseNodeIsReturnedWithTheCorrectTypeMessageAndValue()
         {
-            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("throw");
             var env = new Env();
             var args = new ListValue(Node.Literal("/error/type"), Node.Literal("Test message."), Node.Literal("value"));
 
@@ -745,7 +745,7 @@ public class CoreLibraryTests
         [Test]
         public void WithMoreThanThreeArgumentsAnArgErrorIsThrow()
         {
-            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("raise");
+            var raiseCmd = (SimpleMacro)_env.GlobalScope.GetCommand("throw");
             var env = new Env();
             var args = new ListValue(Value.Empty, Value.Empty, Value.Empty, Node.Literal("boo"));
 
@@ -866,9 +866,9 @@ public class CoreLibraryTests
                 .Throw<ArgError>("Expected 'finally_body' argument.");
         }
 
-        [TestCase("except")]
-        [TestCase("ExCepT")]
-        public void WhenTheThirdArgumentBeginsWithTheExceptKeywordButIsNotFollowedByAnyOtherArgumentsAnErrorIsThrows(string exceptKeyword)
+        [TestCase("catch")]
+        [TestCase("CaTcH")]
+        public void WhenTheThirdArgumentBeginsWithTheCatchKeywordButIsNotFollowedByAnyOtherArgumentsAnErrorIsThrows(string exceptKeyword)
         {
             var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
             var body = Node.Script(Node.Command(Node.Literal("print"), new ListValue("test".ToValue())));
@@ -877,8 +877,8 @@ public class CoreLibraryTests
                 .Throw<ArgError>().WithMessage("Expected 'error_details' argument.");
         }
 
-        [TestCase("EXCEPT")]
-        [TestCase("excepT")]
+        [TestCase("CATCH")]
+        [TestCase("catcH")]
         public void WhenTheThirdArgumentBeginsWithTheExceptKeywordAndIsFollowedByErrorDetailsButIsNotFollowedByAnyOtherArgumentsAnErrorIsThrows(string exceptKeyword)
         {
             var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
@@ -888,8 +888,8 @@ public class CoreLibraryTests
                 .Throw<ArgError>().WithMessage("Expected 'except_body' argument.");
         }
 
-        [TestCase("EXcept")]
-        [TestCase("excePT")]
+        [TestCase("CAtch")]
+        [TestCase("caTCH")]
         public void WhenTheThirdArgumentBeginsWithTheExceptKeywordAndIsFollowedByErrorDetailsExceptBodyTheCorrectTryNodeIsReturned(string exceptKeyword)
         {
             var tryCmd = (SimpleMacro)_env.GlobalScope.GetCommand("try");
@@ -915,8 +915,8 @@ public class CoreLibraryTests
 
             var result = tryCmd.InvokeMacroDelegate(_env, new ListValue(
                 body,
-                Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
-                Node.Literal("except"), Node.Literal("/error/type"), excepetBody));
+                Node.Literal("catch"), Node.Literal("/error/arg"), excepetBody,
+                Node.Literal("catch"), Node.Literal("/error/type"), excepetBody));
 
             result.Should().Be(Node.Try(
                 Node.Scope(body),
@@ -936,7 +936,7 @@ public class CoreLibraryTests
 
             var result = tryCmd.InvokeMacroDelegate(_env, new ListValue(
                 body,
-                Node.Literal("except"), Node.Literal("/error/arg"), excepetBody,
+                Node.Literal("catch"), Node.Literal("/error/arg"), excepetBody,
                 Node.Literal("finally"), finallyBody));
 
             result.Should().Be(Node.Try(
@@ -967,8 +967,8 @@ public class CoreLibraryTests
             tryCmd.Invoking(c => c.Invoke(_env, new ListValue(
                 body,
                 Node.Literal("finally"), finallyBody,
-                Node.Literal("except"), Node.Literal("/error/arg"), excepetBody))).Should()
-                    .Throw<ArgError>("Unexpected 'except' argument after 'finally'.");
+                Node.Literal("catch"), Node.Literal("/error/arg"), excepetBody))).Should()
+                    .Throw<ArgError>("Unexpected 'catch' argument after 'finally'.");
         }
 
         [Test]

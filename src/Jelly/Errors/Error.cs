@@ -2,6 +2,8 @@ namespace Jelly.Errors;
 
 using Humanizer;
 
+// TODO: Create ErrorFactory.
+
 public class Error : Exception
 {
     static readonly SortedDictionary<string, Func<string, Value, Error>> ErrorConstructors = new(StringComparer.InvariantCultureIgnoreCase)
