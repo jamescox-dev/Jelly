@@ -12,7 +12,7 @@ namespace Jelly
         public const int Major = 0;
         public const int Minor = 0;
         public const int Revision = 1;
-        public const string Tag = "dev3";
+        public const string Tag = "dev4";
 
         public static string VersionString =>
             $"{Major}.{Minor}.{Revision}" + (!string.IsNullOrEmpty(Tag) ? "-" + Tag : string.Empty);
