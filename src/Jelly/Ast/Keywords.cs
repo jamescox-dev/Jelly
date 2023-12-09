@@ -52,6 +52,7 @@ public static class Keywords
     public static readonly StrValue Str = new("str");
     public static readonly StrValue SubExpressions = new("subexpressions");
     public static readonly StrValue Then = new("then");
+    public static readonly StrValue Times = new("times");
     public static readonly StrValue Try = new("try");
     public static readonly StrValue Type = new("type");
     public static readonly StrValue UniOp = new("uniop");

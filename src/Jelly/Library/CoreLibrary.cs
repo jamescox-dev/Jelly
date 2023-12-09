@@ -48,7 +48,16 @@ public class CoreLibrary : ILibrary
                 new SingleArgPattern("body"))))
             );
 
-    static readonly IArgParser RepeatArgParser = new StandardArgParser();
+    static readonly IArgParser RepeatArgParser = new PatternArgParser(
+        new OrPattern(
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("times"),
+                new SingleArgPattern("body")
+            )),
+            new ExactPattern(new SequenceArgPattern(
+                new SingleArgPattern("body")
+            ))
+        ));
 
     static readonly IArgParser LsScopeItemsArgParser = 
         new StandardArgParser(new OptArg("localonly", Node.Literal(BoolValue.False)));
@@ -317,7 +326,19 @@ public class CoreLibrary : ILibrary
 
     Value RepeatMacro(IEnv env, DictValue args)
     {
-        throw new NotImplementedException();
+        var times = args.ContainsKey(Keywords.Times) 
+            ? args.GetNode(Keywords.Times)
+            : Node.Literal(double.PositiveInfinity);
+        var body = args.GetNode(Keywords.Body);
+        return Node.Scope(
+            Node.Script(
+                Node.DefineVariable("$$", times),
+                Node.While(
+                    Node.BinOp("gte", Node.Variable("$$"), Node.Literal(1)), 
+                    Node.Script(
+                        Node.Assignment("$$", Node.BinOp("sub", Node.Variable("$$"), Node.Literal(1))),
+                        body
+                    ))));
     }
 
     Value ReturnMacro(IEnv env, ListValue args)

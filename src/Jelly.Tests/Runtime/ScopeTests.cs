@@ -104,6 +104,17 @@ public class ScopeTests
     }
 
     [Test]
+    public void AListOfLocallyDefinedVariablesDoesNotIncludeHiddenVariables()
+    {
+        var scope = new Scope();
+        scope.DefineVariable("$$test", Value.Empty);
+
+        var commands = scope.GetVariableNames(true);
+
+        commands.Should().BeEmpty();
+    }
+
+    [Test]
     public void AListOfAllDefinedVariablesFromTheCurrentScopeAndOuterScopesCanBeReturned()
     {
         var outerScope = new Scope();

@@ -9,6 +9,8 @@ Parser
 ------
  - [ ] Refactor ExpressionParser.
  - [ ] BUG: Line continuation with \ adds an extra word to commands.
+ - [ ] special variables that start with $, cant be defined or assigned to, can be created by command such as try catch for error information $$errtype $$errmessage $$errdata.
+  - [ ] hidden variables that start with $$, cant be defined or assigned to or read, but can be used by macros.
 
 Commands
 --------
@@ -20,4 +22,4 @@ Library
  - [ ] Add lerp function
 
 ### core
- - [ ] Add repeat loop
+ - [x] Add repeat loop

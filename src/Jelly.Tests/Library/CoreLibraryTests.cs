@@ -756,6 +756,90 @@ public class CoreLibraryTests
 
     #endregion
 
+    #region repeat
+
+    [TestFixture]
+    public class RepeatTests : CoreLibraryTests
+    {
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void TheBodyIsEvaluatedTheGivenNumberOfTimesAnTheValueOfTheLastEvaluationIsReturned(int times) 
+        {
+            var repeatCmd = _env.GlobalScope.GetCommand("repeat");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = repeatCmd.Invoke(_env, new ListValue(
+                Node.Literal(times),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), ListValue.EmptyList))
+            ));
+
+            result.Should().Be(times.ToValue());
+            bodyCommand.Invocations.Should().Be(times);
+        }
+
+        [TestCase(2.1)]
+        [TestCase(2.5)]
+        [TestCase(2.9)]
+        public void TheBodyIsEvaluatedTheGivenNumberOfTimesWhenTimesIsARealNumberItIsRoundedDownToTheNearestWholeNumber(
+            double times) 
+        {
+            var repeatCmd = _env.GlobalScope.GetCommand("repeat");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            repeatCmd.Invoke(_env, new ListValue(
+                Node.Literal(times),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), ListValue.EmptyList))
+            ));
+
+            bodyCommand.Invocations.Should().Be(2);
+        }
+
+        [TestCase(0.0)]
+        [TestCase(-1.0)]
+        [TestCase(double.NegativeInfinity)]
+        public void TheBodyIsNotEvaluatedWhenTimesIsZeroOrLessAndTheResultIsAnEmptyValue(double times) 
+        {
+            var repeatCmd = _env.GlobalScope.GetCommand("repeat");
+            var bodyCommand = new RecordingTestCommand();
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            var result = repeatCmd.Invoke(_env, new ListValue(
+                Node.Literal(times),
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), ListValue.EmptyList))
+            ));
+
+            result.Should().Be(Value.Empty);
+            bodyCommand.Invocations.Should().Be(0);
+        }
+
+        [Test]
+        public void WhenTimesIsNotSpecifiedTheBodyIsEvaluatedUntilABreakIsThrown()
+        {
+            var count = 0;
+            var repeatCmd = _env.GlobalScope.GetCommand("repeat");
+            var bodyCommand = new SimpleCommand((_) => {
+                ++count;
+                if (count == 100) 
+                {
+                    throw Error.Break();
+                }
+                return Value.Empty;
+            });
+            _env.GlobalScope.DefineCommand("bodyCommand", bodyCommand);
+
+            repeatCmd.Invoke(_env, new ListValue(
+                Node.Script(Node.Command(Node.Literal("bodyCommand"), ListValue.EmptyList))
+            ));
+
+            count.Should().Be(100);
+        }
+    }
+
+    #endregion
+
     #region return
 
     [TestFixture]

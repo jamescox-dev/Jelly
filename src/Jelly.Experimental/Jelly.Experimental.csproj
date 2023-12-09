@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
 
     <PackageId>Jelly.Experimental</PackageId>
-    <Version>0.0.1-dev3</Version>
+    <Version>0.0.1-dev4</Version>
     <Authors>James Cox</Authors>
   </PropertyGroup>
 

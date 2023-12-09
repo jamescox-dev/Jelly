@@ -24,12 +24,17 @@ public class Scope : IScope
     {
         if (localOnly || OuterScope is null)
         {
-            return _variables.Keys;
+            return _variables.Keys.Where(VariableNameIsVisible);
         }
         else
         {
             return _variables.Keys.Concat(OuterScope.GetVariableNames()).Distinct();
         }
+    }
+
+    static bool VariableNameIsVisible(string name)
+    {
+        return !name.StartsWith("$$");
     }
 
     public void DefineVariable(string name, Value initialValue)
