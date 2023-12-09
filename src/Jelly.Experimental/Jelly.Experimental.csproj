@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jelly" Version="0.0.1-dev3" />
+    <PackageReference Include="Jelly" Version="0.0.1-dev4" />
   </ItemGroup>
 
 </Project>
