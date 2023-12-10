@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Jelly\Jelly.csproj" />
-    <ProjectReference Include="..\Jelly.Experimental\Jelly.Experimental.csproj" />
+    <PackageReference Include="Jelly" Version="0.0.1-dev4" />
+    <PackageReference Include="Jelly.Experimental" Version="0.0.1-dev4" />
   </ItemGroup>
 
 </Project>
