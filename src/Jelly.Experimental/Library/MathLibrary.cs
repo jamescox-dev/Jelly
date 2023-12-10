@@ -37,7 +37,7 @@ public class MathLibrary : ILibrary
         mathCmd.AddCommand("round", new WrappedCommand(Round, TypeMarshaller.Shared));
         mathCmd.AddCommand("ceil", new WrappedCommand((Func<double, double>)Math.Ceiling, TypeMarshaller.Shared));
         mathCmd.AddCommand("trunc", new WrappedCommand((Func<double, double>)Math.Truncate, TypeMarshaller.Shared));
-        mathCmd.AddCommand("lerp", new WrappedCommand(Lerp, TypeMarshaller);
+        mathCmd.AddCommand("lerp", new WrappedCommand(Lerp, TypeMarshaller.Shared));
     }
 
     static double Round(double n, int digits=0) => Math.Round(n, digits);
