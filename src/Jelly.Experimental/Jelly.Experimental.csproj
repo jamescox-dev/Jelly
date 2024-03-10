@@ -12,7 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jelly" Version="0.0.1-dev4" />
+    <ProjectReference Include="..\Jelly\Jelly.csproj" />
+    <!-- <PackageReference Include="Jelly" Version="0.0.1-dev4" /> -->
   </ItemGroup>
 
 </Project>

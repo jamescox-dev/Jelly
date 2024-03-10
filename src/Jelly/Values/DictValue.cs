@@ -1,149 +1,147 @@
 namespace Jelly.Values;
 
-using System;
-using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
 
 public class DictValue : Value
 {
-    public static readonly DictValue EmptyDictionary = new();
+  public static readonly DictValue EmptyDictionary = new();
 
-    readonly ImmutableSortedDictionary<Value, Value> _items;
+  readonly ImmutableSortedDictionary<Value, Value> _items;
 
-    public DictValue()
+  public DictValue()
+  {
+    _items = ImmutableSortedDictionary<Value, Value>.Empty;
+  }
+
+  public DictValue(params Value[] list) : this((IEnumerable<Value>)list)
+  {
+  }
+
+  public DictValue(ImmutableSortedDictionary<Value, Value> dict)
+  {
+    _items = dict;
+  }
+
+  public DictValue(IEnumerable<Value> list)
+  {
+    var items = ImmutableSortedDictionary.CreateBuilder<Value, Value>();
+
+    Value? key = null;
+    foreach (var item in list)
     {
-        _items = ImmutableSortedDictionary<Value, Value>.Empty;
+      if (key is null)
+      {
+        key = item;
+      }
+      else
+      {
+        items.Add(key, item);
+        key = null;
+      }
     }
 
-    public DictValue(params Value[] list) : this((IEnumerable<Value>)list)
+    if (key is not null)
     {
+      items.Add(key, Value.Empty);
     }
 
-    public DictValue(ImmutableSortedDictionary<Value, Value> dict)
+    _items = items.ToImmutable();
+  }
+
+  public DictValue(IEnumerable<KeyValuePair<Value, Value>> items)
+  {
+    _items = ImmutableSortedDictionary.CreateRange(items);
+  }
+
+  public override ListValue ToListValue()
+  {
+    var items = ImmutableList.CreateBuilder<Value>();
+
+    foreach (var kvPair in _items)
     {
-        _items = dict;
+      items.Add(kvPair.Key);
+      items.Add(kvPair.Value);
     }
 
-    public DictValue(IEnumerable<Value> list)
+    return new ListValue(items);
+  }
+
+  public override DictValue ToDictValue() => this;
+
+  public Value this[Value key]
+  {
+    get
     {
-        var items = ImmutableSortedDictionary.CreateBuilder<Value, Value>();
+      if (TryGetValue(key, out var value))
+      {
+        return value;
+      }
+      throw Error.Key("key does not exist in dictionary.");
+    }
+  }
 
-        Value? key = null;
-        foreach (var item in list)
-        {
-            if (key is null)
-            {
-                key = item;
-            }
-            else
-            {
-                items.Add(key, item);
-                key = null;
-            }
-        }
+  public DictValue SetItem(Value key, Value value) => new(_items.SetItem(key, value));
 
-        if (key is not null)
-        {
-            items.Add(key, Value.Empty);
-        }
+  public DictValue SetItems(IEnumerable<KeyValuePair<Value, Value>> items)
+  {
+    return new(_items.SetItems(items));
+  }
 
-        _items = items.ToImmutable();
+  public int Count => _items.Count;
+
+  public bool ContainsKey(Value key) => _items.ContainsKey(key);
+
+  public bool TryGetValue(Value key, out Value value)
+  {
+    if (_items.TryGetValue(key, out var itemValue))
+    {
+      value = itemValue;
+      return true;
+    }
+    value = Value.Empty;
+    return false;
+  }
+
+  public override string ToString()
+  {
+    var str = new StringBuilder();
+
+    var first = true;
+    foreach (var (name, value) in _items)
+    {
+      if (!first)
+      {
+        str.Append('\n');
+      }
+      else
+      {
+        first = false;
+      }
+      str.Append(name.Escape());
+      str.Append(' ');
+      str.Append(value.Escape());
     }
 
-    public DictValue(IEnumerable<KeyValuePair<Value, Value>> items)
-    {
-        _items = ImmutableSortedDictionary.CreateRange(items);
-    }
+    return str.ToString();
+  }
 
-    public override ListValue ToListValue()
-    {
-        var items = ImmutableList.CreateBuilder<Value>();
+  public override bool ToBool() => true;
 
-        foreach (var kvPair in _items)
-        {
-            items.Add(kvPair.Key);
-            items.Add(kvPair.Value);
-        }
+  public override double ToDouble() => double.NaN;
 
-        return new ListValue(items);
-    }
+  public IEnumerable<KeyValuePair<Value, Value>> ToEnumerable()
+  {
+    return _items;
+  }
 
-    public override DictValue ToDictValue() => this;
+  public DictValue RemoveRange(IEnumerable<Value> keys)
+  {
+    return new(_items.RemoveRange(keys));
+  }
 
-    public Value this[Value key]
-    {
-        get
-        {
-            if (TryGetValue(key, out var value))
-            {
-                return value;
-            }
-            throw Error.Key("key does not exist in dictionary.");
-        }
-    }
-
-    public DictValue SetItem(Value key, Value value) => new(_items.SetItem(key, value));
-
-    public DictValue SetItems(IEnumerable<KeyValuePair<Value, Value>> items)
-    {
-        return new(_items.SetItems(items));
-    }
-
-    public int Count => _items.Count;
-
-    public bool ContainsKey(Value key) => _items.ContainsKey(key);
-
-    public bool TryGetValue(Value key, out Value value)
-    {
-        if (_items.TryGetValue(key, out var itemValue))
-        {
-            value = itemValue;
-            return true;
-        }
-        value = Value.Empty;
-        return false;
-    }
-
-    public override string ToString()
-    {
-        var str = new StringBuilder();
-
-        var first = true;
-        foreach (var (name, value) in _items)
-        {
-            if (!first)
-            {
-                str.Append('\n');
-            }
-            else
-            {
-                first = false;
-            }
-            str.Append(name.Escape());
-            str.Append(' ');
-            str.Append(value.Escape());
-        }
-
-        return str.ToString();
-    }
-
-    public override bool ToBool() => true;
-
-    public override double ToDouble() => double.NaN;
-
-    public IEnumerable<KeyValuePair<Value, Value>> ToEnumerable()
-    {
-        return _items;
-    }
-
-    public DictValue RemoveRange(IEnumerable<Value> keys)
-    {
-        return new(_items.RemoveRange(keys));
-    }
-
-    public DictValue RemoveRange(params Value[] keys)
-    {
-        return RemoveRange((IEnumerable<Value>)keys);
-    }
+  public DictValue RemoveRange(params Value[] keys)
+  {
+    return RemoveRange((IEnumerable<Value>)keys);
+  }
 }
