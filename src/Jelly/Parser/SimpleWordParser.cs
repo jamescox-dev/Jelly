@@ -1,7 +1,5 @@
 namespace Jelly.Parser;
 
-using System.Text;
-
 public class SimpleWordParser : IParser
 {
     static readonly EscapeCharacterParser EscapeCharacterParser = new();

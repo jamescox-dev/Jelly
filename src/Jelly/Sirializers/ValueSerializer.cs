@@ -1,7 +1,5 @@
 namespace Jelly.Values;
 
-using System.Text;
-
 public static class ValueSerializer
 {
     public static string Escape(string str)

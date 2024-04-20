@@ -2,7 +2,6 @@ namespace Jelly.Values;
 
 using System.Collections;
 using System.Collections.Immutable;
-using System.Text;
 
 public class ListValue : Value, IEnumerable<Value>
 {
