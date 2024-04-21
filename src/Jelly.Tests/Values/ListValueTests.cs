@@ -1,4 +1,4 @@
-namespace Jelly.Values.Tests;
+namespace Jelly.Tests.Values;
 
 [TestFixture]
 public class ListValueTests

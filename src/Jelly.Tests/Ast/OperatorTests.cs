@@ -1,4 +1,4 @@
-namespace Jelly.Ast.Tests;
+namespace Jelly.Tests.Ast;
 
 [TestFixture]
 public class OperatorTests

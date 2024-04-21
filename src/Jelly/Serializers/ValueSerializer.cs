@@ -1,4 +1,4 @@
-namespace Jelly.Values;
+namespace Jelly.Serializers;
 
 public static class ValueSerializer
 {

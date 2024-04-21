@@ -1,4 +1,4 @@
-namespace Jelly.Evaluator.Tests;
+namespace Jelly.Tests.Evaluator;
 
 [TestFixture]
 public class EvaluatorTests : EvaluatorTestsBase
@@ -204,6 +204,6 @@ public class EvaluatorTests : EvaluatorTestsBase
 
     protected override IEvaluator BuildEvaluatorUnderTest()
     {
-        return new Evaluator();
+        return new Jelly.Evaluator.Evaluator();
     }
 }

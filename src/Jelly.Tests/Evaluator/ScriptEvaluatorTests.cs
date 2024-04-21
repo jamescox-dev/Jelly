@@ -1,4 +1,4 @@
-namespace Jelly.Evaluator.Tests;
+namespace Jelly.Tests.Evaluator;
 
 public class ScriptEvaluatorTests : EvaluatorTestsBase
 {

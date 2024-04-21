@@ -1,4 +1,6 @@
-namespace Jelly.Shell.Extensions;
+using Jelly.Shell.Extensions;
+
+namespace Jelly.Shell.Tests.Extensions;
 
 [TestFixture]
 public class StringExtensions

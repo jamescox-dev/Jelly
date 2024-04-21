@@ -1,4 +1,4 @@
-namespace Jelly.Values.Tests;
+namespace Jelly.Tests.Values;
 
 public class ValueTests
 {
@@ -143,7 +143,7 @@ public class ValueTests
   public void ValuesCanBeEscapedSoThatTheirValueCanBeReinterpretedByWordParserAndEvaluateBackToTheSameValue(string stringValue)
   {
     var parser = new WordParser();
-    var env = new Runtime.Env();
+    var env = new Jelly.Runtime.Env();
     var value = stringValue.ToValue();
 
     var escapedValue = value.Escape();

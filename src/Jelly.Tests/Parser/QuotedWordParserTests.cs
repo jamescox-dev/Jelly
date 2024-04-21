@@ -1,6 +1,4 @@
-namespace Jelly.Parser.Tests;
-
-using System.Text.Json;
+namespace Jelly.Tests.Parser;
 
 [TestFixture]
 public class QuotedWordParserTests

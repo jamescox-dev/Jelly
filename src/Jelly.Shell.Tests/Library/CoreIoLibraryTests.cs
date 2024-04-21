@@ -1,6 +1,6 @@
-namespace Jelly.Shell.Library.Tests;
+using Jelly.Shell.Library;
 
-using Jelly.Runtime;
+namespace Jelly.Shell.Tests.Library;
 
 [TestFixture]
 public class CoreIoLibraryTest

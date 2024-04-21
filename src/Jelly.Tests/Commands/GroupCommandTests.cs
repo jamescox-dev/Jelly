@@ -1,6 +1,4 @@
-namespace Jelly.Commands.Tests;
-
-using Jelly.Runtime;
+namespace Jelly.Tests.Commands;
 
 [TestFixture]
 public class GroupCommandTests

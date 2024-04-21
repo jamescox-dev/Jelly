@@ -1,4 +1,4 @@
-namespace Jelly.Commands.Tests;
+namespace Jelly.Tests.Commands;
 
 // TODO:  Rename this to ValueGroupCommandTests, and remove old ValueGroupCommandTest & VariableTestsGroupCommand.
 [TestFixture]

@@ -1,4 +1,6 @@
-namespace Jelly.Library.Tests;
+using Jelly.Library;
+
+namespace Jelly.Tests.Library;
 
 [TestFixture]
 public class LibraryGroupTests

@@ -1,6 +1,4 @@
-namespace Jelly.Serializers.Tests;
-
-using Jelly.Runtime;
+namespace Jelly.Tests.Serializers;
 
 public class ValueSerializerTests
 {

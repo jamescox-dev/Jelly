@@ -1,6 +1,4 @@
-namespace Jelly.Evaluator.Tests;
-
-using Jelly.Runtime;
+namespace Jelly.Tests.Evaluator;
 
 public abstract class EvaluatorTestsBase
 {

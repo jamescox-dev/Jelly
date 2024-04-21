@@ -1,4 +1,4 @@
-namespace Jelly.Commands.ArgParsers.Tests;
+namespace Jelly.Tests.Commands.ArgParsers;
 
 [TestFixture]
 public class OrPatternTests

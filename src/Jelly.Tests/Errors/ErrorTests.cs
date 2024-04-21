@@ -1,4 +1,4 @@
-namespace Jelly.Errors.Test;
+namespace Jelly.Tests.Errors;
 
 [TestFixture]
 public class ErrorTests

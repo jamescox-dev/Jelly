@@ -1,6 +1,6 @@
-namespace Jelly.Library.Tests;
+using Jelly.Library;
 
-using Jelly.Runtime;
+namespace Jelly.Tests.Library;
 
 [TestFixture]
 public class IoLibraryTests

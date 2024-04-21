@@ -1,4 +1,4 @@
-namespace Jelly.Parser.Scanning.Tests;
+namespace Jelly.Tests.Parser.Scanning;
 
 [TestFixture]
 public class ScannerTests

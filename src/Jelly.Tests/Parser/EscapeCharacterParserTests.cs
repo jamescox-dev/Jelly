@@ -1,7 +1,7 @@
 
 
 
-namespace Jelly.Parser.Tests;
+namespace Jelly.Tests.Parser;
 
 [TestFixture]
 public class EscapeCharacterParserTests

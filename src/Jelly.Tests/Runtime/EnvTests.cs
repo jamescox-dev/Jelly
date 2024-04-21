@@ -1,6 +1,4 @@
-namespace Jelly.Runtime.Tests;
-
-using Jelly.Evaluator;
+namespace Jelly.Tests.Runtime;
 
 [TestFixture]
 public class EnvTests
@@ -49,7 +47,7 @@ public class EnvTests
     {
         var env = new Env();
 
-        env.Evaluator.Should().BeOfType<Evaluator>();
+        env.Evaluator.Should().BeOfType<Jelly.Evaluator.Evaluator>();
     }
 
     [Test]

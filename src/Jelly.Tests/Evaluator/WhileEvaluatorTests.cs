@@ -1,4 +1,4 @@
-namespace Jelly.Evaluator.Tests;
+namespace Jelly.Tests.Evaluator;
 
 [TestFixture]
 public class WhileEvaluatorTests : EvaluatorTestsBase
